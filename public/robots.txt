@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /siswa/
+Disallow: /verifikator/
+Disallow: /api/
+Disallow: /logout
+
+Sitemap: https://ppdb.min2tanggamus.sch.id/sitemap.xml

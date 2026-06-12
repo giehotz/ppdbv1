@@ -1,0 +1,33 @@
+/* 
+ * Biodata Form Styles
+ * Custom scrollbar and mobile-specific tab shadows
+ */
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;    /* Firefox */
+}
+
+/* Add subtle shadow to indicate scrollability on mobile */
+@media (max-width: 768px) {
+    .scrollable-tabs {
+        position: relative;
+    }
+
+    .scrollable-tabs::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 30px;
+        background: linear-gradient(to right, transparent, rgba(249, 250, 251, 0.9));
+        pointer-events: none;
+    }
+}

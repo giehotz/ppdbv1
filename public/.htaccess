@@ -1,0 +1,50 @@
+# ----------------------------------------------------------------------
+# 1. Specify PHP Version
+# ----------------------------------------------------------------------
+AddHandler application/x-httpd-php81 .php
+
+# ----------------------------------------------------------------------
+# 2. Security and Performance Headers
+# ----------------------------------------------------------------------
+ServerSignature Off
+Options -Indexes
+
+# ----------------------------------------------------------------------
+# 3. Rewrite Engine (Core CI4 Logic)
+# ----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    # Pastikan SymLinks aktif agar rewrite bekerja
+    Options +FollowSymLinks
+    RewriteEngine On
+
+    # A. Redirect Trailing Slashes (Menghapus / di akhir URL agar konsisten)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # B. Handle Authorization Header (Penting untuk API/JWT)
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # C. Sembunyikan index.php & Redirect ke Controller
+    # Jika file atau direktori fisik tidak ditemukan, arahkan ke index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Fallback jika mod_rewrite tidak aktif
+<IfModule !mod_rewrite.c>
+    ErrorDocument 404 /index.php
+</IfModule>
+
+# ----------------------------------------------------------------------
+# 4. Additional Security Headers
+# ----------------------------------------------------------------------
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    # Tambahan: Mencegah kebocoran referer (Opsional tapi bagus)
+    Header always set Referrer-Policy "no-referrer-when-downgrade"
+</IfModule>
