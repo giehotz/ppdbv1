@@ -185,12 +185,12 @@ Manajemen Berkas
                                                             }
                                                             $ext = strtolower(pathinfo($b['nama_file'], PATHINFO_EXTENSION));
                                                             ?>
-                                                            <button onclick="openFilePreview('<?= esc($previewUrl) ?>', '<?= esc($b['nama_file']) ?>', '<?= $ext ?>')"
+                                                            <button onclick="openFilePreview('<?= esc($previewUrl, 'js') ?>', '<?= esc($b['nama_file'], 'js') ?>', '<?= esc($ext, 'js') ?>')"
                                                                 class="text-blue-500 hover:text-blue-700 transform hover:scale-110 transition duration-200"
                                                                 title="Lihat Berkas">
                                                                 <i class="fas fa-eye text-lg"></i>
                                                             </button>
-                                                            <button onclick="openStatusModal(<?= $b['id_berkas'] ?>, '<?= $b['status_verifikasi'] ?>', '<?= esc(addslashes($b['keterangan'] ?? '')) ?>')"
+                                                            <button onclick="openStatusModal(<?= (int)$b['id_berkas'] ?>, '<?= esc($b['status_verifikasi'], 'js') ?>', '<?= esc($b['keterangan'] ?? '', 'js') ?>')"
                                                                 class="text-emerald-500 hover:text-emerald-700 transform hover:scale-110 transition duration-200"
                                                                 title="Validasi Berkas">
                                                                 <i class="fas fa-check-square text-lg"></i>

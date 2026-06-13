@@ -161,9 +161,9 @@ class Biodata extends BaseController
             return redirect()->to('/login');
         }
 
-        $alasan = $this->request->getPost('alasan');
+        $alasan = $this->request->getPost('alasan') ?? '';
 
-        if (empty(trim($alasan))) {
+        if (trim($alasan) === '') {
             session()->setFlashdata('error', 'Alasan pengajuan buka kunci harus diisi.');
             return redirect()->back();
         }

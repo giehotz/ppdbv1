@@ -16,7 +16,7 @@ class VerifikatorFilter implements FilterInterface
         }
 
         // Check if user is verifikator
-        if (session()->get('user_type') !== 'verifikato') {
+        if (session()->get('user_type') !== 'verifikator') {
             session()->setFlashdata('error', 'Akses ditolak. Anda tidak memiliki izin untuk mengakses halaman verifikator.');
             // Redirect based on their actual role
             if (session()->get('user_type') === 'admin') {

@@ -127,7 +127,7 @@
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">No. KK Keluaga</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">No. KK Keluarga</label>
             <input type="text" name="no_kk" value="<?= $siswa['no_kk'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 

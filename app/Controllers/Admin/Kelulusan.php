@@ -38,11 +38,23 @@ class Kelulusan extends BaseController
             $builder->where('status_lulus', $status);
         }
 
+        $totalAll    = $this->siswaModel->countAll();
+        $totalLulus  = $this->siswaModel->where('status_lulus', 'Lulus')->countAllResults();
+        $totalTl     = $this->siswaModel->where('status_lulus', 'Tidak Lulus')->countAllResults();
+        $totalPending = $this->siswaModel->groupStart()
+            ->where('status_lulus', 'Pending')
+            ->orWhere('status_lulus IS NULL')
+            ->groupEnd()->countAllResults();
+
         $data = [
-            'siswa' => $builder->orderBy('id_siswa', 'DESC')->paginate(20),
-            'pager' => $this->siswaModel->pager,
-            'search' => $search,
-            'status' => $status
+            'siswa'        => $builder->orderBy('id_siswa', 'DESC')->paginate(20),
+            'pager'        => $this->siswaModel->pager,
+            'search'       => $search,
+            'status'       => $status,
+            'totalAll'     => $totalAll,
+            'totalLulus'   => $totalLulus,
+            'totalTl'      => $totalTl,
+            'totalPending' => $totalPending,
         ];
 
         return view('admin/kelulusan/index', $data);

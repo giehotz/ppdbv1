@@ -18,10 +18,19 @@ class Pengumuman extends BaseController
     {
         $search = $this->request->getGet('search');
 
+        $totalAll      = $this->pengumumanModel->countAll();
+        $totalGeneral  = $this->pengumumanModel->where('tipe', 'general')->countAllResults();
+        $totalUjian    = $this->pengumumanModel->where('tipe', 'ujian')->countAllResults();
+        $totalKelulusan = $this->pengumumanModel->where('tipe', 'kelulusan')->countAllResults();
+
         $data = [
-            'pengumuman' => $this->pengumumanModel->getAnnouncements($search),
-            'pager' => $this->pengumumanModel->pager,
-            'search' => $search
+            'pengumuman'     => $this->pengumumanModel->getAnnouncements($search),
+            'pager'          => $this->pengumumanModel->pager,
+            'search'         => $search,
+            'totalAll'       => $totalAll,
+            'totalGeneral'   => $totalGeneral,
+            'totalUjian'     => $totalUjian,
+            'totalKelulusan' => $totalKelulusan,
         ];
 
         return view('admin/pengumuman/index', $data);

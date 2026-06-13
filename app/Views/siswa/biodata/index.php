@@ -260,8 +260,15 @@ Data Biodata
 
                 saveTimeout = setTimeout(async () => {
                     const form = document.getElementById('formBiodata');
+                    // Temporarily enable disabled selects so their values are included
+                    const disabledEls = [];
+                    form.querySelectorAll('[disabled]').forEach(el => {
+                        disabledEls.push(el);
+                        el.disabled = false;
+                    });
                     const formData = new FormData(form);
                     const data = Object.fromEntries(formData.entries());
+                    disabledEls.forEach(el => el.disabled = true);
 
                     try {
                         const response = await fetch(config.baseUrl + '/siswa/biodata/auto-save', {
@@ -320,6 +327,11 @@ Data Biodata
             const btnPrev = document.getElementById('btnPrev');
             if (btnNext) btnNext.addEventListener('click', validateAndHighlight);
             if (btnPrev) btnPrev.addEventListener('click', validateAndHighlight);
+
+            // Ensure disabled selects submit their values on form submit
+            document.getElementById('formBiodata').addEventListener('submit', function() {
+                this.querySelectorAll('[disabled]').forEach(el => el.disabled = false);
+            });
         }
     });
 </script>

@@ -73,6 +73,11 @@ Detail Calon Siswa
                 <div class="flex items-center gap-1.5">
                     <i class="fas fa-id-card text-sm"></i> NISN: <span class="font-semibold text-white"><?= esc($siswa['nisn'] ?? '-') ?></span>
                 </div>
+                <?php if (!empty($siswa['nis'])): ?>
+                <div class="flex items-center gap-1.5">
+                    <i class="fas fa-id-badge text-sm"></i> NIS: <span class="font-semibold text-white"><?= esc($siswa['nis']) ?></span>
+                </div>
+                <?php endif; ?>
                 <div class="flex items-center gap-1.5">
                     <i class="fas fa-map-marker-alt text-sm"></i> Jalur: <span class="font-semibold text-white"><?= esc($siswa['jalur_pendaftaran'] ?? '-') ?></span>
                 </div>
@@ -280,6 +285,10 @@ Detail Calon Siswa
                 </div>
                 <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Nama Ayah</p><p class="font-semibold text-slate-800"><?= esc($siswa['nama_ayah'] ?? '-') ?> <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded ml-2"><?= esc($siswa['status_ayah'] ?? '-') ?></span></p></div>
                 <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">NIK Ayah</p><p class="font-semibold text-slate-800"><?= esc($siswa['nik_ayah'] ?? '-') ?></p></div>
+                <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Tempat Lahir Ayah</p><p class="font-semibold text-slate-800"><?= esc($siswa['tempat_lahir_ayah'] ?? '-') ?></p></div>
+                <?php if (!empty($siswa['tgl_lahir_ayah'])): ?>
+                <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Tanggal Lahir Ayah</p><p class="font-semibold text-slate-800"><?= date('d-m-Y', strtotime($siswa['tgl_lahir_ayah'])) ?></p></div>
+                <?php endif; ?>
                 <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Tahun Lahir</p><p class="font-semibold text-slate-800"><?= esc($siswa['th_lahir_ayah'] ?? '-') ?></p></div>
                 <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Pendidikan</p><p class="font-semibold text-slate-800"><?= esc($siswa['pdd_ayah'] ?? '-') ?></p></div>
                 <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Pekerjaan</p><p class="font-semibold text-slate-800"><?= esc($siswa['pekerjaan_ayah'] ?? '-') ?></p></div>
@@ -294,6 +303,10 @@ Detail Calon Siswa
                 </div>
                 <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Nama Ibu</p><p class="font-semibold text-slate-800"><?= esc($siswa['nama_ibu'] ?? '-') ?> <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded ml-2"><?= esc($siswa['status_ibu'] ?? '-') ?></span></p></div>
                 <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">NIK Ibu</p><p class="font-semibold text-slate-800"><?= esc($siswa['nik_ibu'] ?? '-') ?></p></div>
+                <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Tempat Lahir Ibu</p><p class="font-semibold text-slate-800"><?= esc($siswa['tempat_lahir_ibu'] ?? '-') ?></p></div>
+                <?php if (!empty($siswa['tgl_lahir_ibu'])): ?>
+                <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Tanggal Lahir Ibu</p><p class="font-semibold text-slate-800"><?= date('d-m-Y', strtotime($siswa['tgl_lahir_ibu'])) ?></p></div>
+                <?php endif; ?>
                 <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Tahun Lahir</p><p class="font-semibold text-slate-800"><?= esc($siswa['th_lahir_ibu'] ?? '-') ?></p></div>
                 <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Pendidikan</p><p class="font-semibold text-slate-800"><?= esc($siswa['pdd_ibu'] ?? '-') ?></p></div>
                 <div><p class="text-xs font-medium text-slate-500 uppercase mb-1">Pekerjaan</p><p class="font-semibold text-slate-800"><?= esc($siswa['pekerjaan_ibu'] ?? '-') ?></p></div>

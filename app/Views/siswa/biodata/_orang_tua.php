@@ -160,7 +160,7 @@
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">No. HP Orang Tua</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">No. HP Orang Tua <span class="text-red-500">*</span></label>
             <input type="text" name="no_hp_ortu" value="<?= $siswa['no_hp_ortu'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
     </div>

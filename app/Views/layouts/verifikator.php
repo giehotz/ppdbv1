@@ -7,7 +7,7 @@
     <title><?= $this->renderSection('title') ?> - Verifikator <?= $app_alias ?? 'PPDB' ?></title>
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
 
     <!-- Font Google -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">

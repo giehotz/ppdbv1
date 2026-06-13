@@ -229,7 +229,7 @@ Calon Siswa
                     class="px-5 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition duration-200 shadow-sm">
                     Batal
                 </button>
-                <button type="button" id="deleteConfirmBtn" disabled
+                <button type="button" id="deleteConfirmBtn" disabled onclick="executeDelete()"
                     class="px-5 py-2.5 bg-red-400 text-white font-semibold rounded-xl transition-all duration-200 cursor-not-allowed opacity-60 flex items-center shadow-sm">
                     <i class="fas fa-trash-alt mr-2"></i> Hapus Permanen
                 </button>

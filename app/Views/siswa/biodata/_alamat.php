@@ -9,7 +9,7 @@
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Provinsi</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Provinsi <span class="text-red-500">*</span></label>
             <select id="provinsi" name="prov" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">-- Pilih Provinsi --</option>
             </select>
@@ -17,7 +17,7 @@
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Kabupaten/Kota</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Kabupaten/Kota <span class="text-red-500">*</span></label>
             <select id="kabupaten" name="kab" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
                 <option value="">-- Pilih Provinsi Dahulu --</option>
             </select>
@@ -25,7 +25,7 @@
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Kecamatan</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Kecamatan <span class="text-red-500">*</span></label>
             <select id="kecamatan" name="kec" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
                 <option value="">-- Pilih Kabupaten/Kota Dahulu --</option>
             </select>
@@ -33,7 +33,7 @@
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Desa/Kelurahan</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Desa/Kelurahan <span class="text-red-500">*</span></label>
             <select id="kelurahan" name="desa" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
                 <option value="">-- Pilih Kecamatan Dahulu --</option>
             </select>
