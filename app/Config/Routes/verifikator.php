@@ -5,6 +5,14 @@ $routes->group('verifikator', ['filter' => ['verifikator', 'csrf']], function ($
 
     // Siswa (Students)
     $routes->get('siswa', 'Verifikator\Siswa::index');
+    $routes->get('siswa/create', 'Verifikator\Siswa::create');
+    $routes->post('siswa/store', 'Verifikator\Siswa::store');
+    $routes->get('siswa/biodata/(:num)', 'Verifikator\Siswa::biodata/$1');
+    $routes->post('siswa/biodataStore/(:num)', 'Verifikator\Siswa::biodataStore/$1');
+    $routes->get('siswa/berkas/(:num)', 'Verifikator\Siswa::berkas/$1');
+    $routes->post('siswa/berkasUpload/(:num)', 'Verifikator\Siswa::berkasUpload/$1');
+    $routes->post('siswa/berkasDelete/(:num)', 'Verifikator\Siswa::berkasDelete/$1');
+    $routes->get('siswa/cetak-akun/(:num)', 'Verifikator\Siswa::cetakAkun/$1');
     $routes->get('siswa/detail/(:num)', 'Verifikator\Siswa::detail/$1');
     $routes->post('siswa/verify/(:num)', 'Verifikator\Siswa::verify/$1');
     $routes->get('siswa/cetak/(:num)', 'Verifikator\Siswa::cetak/$1');

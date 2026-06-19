@@ -56,9 +56,15 @@
                 </li>
 
                 <li>
-                    <a href="<?= base_url('verifikator/siswa') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/siswa') === 0 ? $activeClass : '' ?>">
-                        <i class="fas fa-user-check w-6"></i>
+                    <a href="<?= base_url('verifikator/siswa') ?>" class="<?= $linkClass ?> <?= (uri_string() == 'verifikator/siswa' || (strpos(uri_string(), 'verifikator/siswa/') === 0 && strpos(uri_string(), 'verifikator/siswa/create') === false)) ? $activeClass : '' ?>">
+                        <i class="fas fa-users w-6"></i>
                         <span class="ml-2">Data Siswa</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= base_url('verifikator/siswa/create') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/siswa/create') === 0 ? $activeClass : '' ?>">
+                        <i class="fas fa-user-plus w-6"></i>
+                        <span class="ml-2">Daftarkan Siswa</span>
                     </a>
                 </li>
 
@@ -152,9 +158,15 @@
                     </a>
                 </li>
                 <li>
-                    <a href="<?= base_url('verifikator/siswa') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/siswa') === 0 ? $activeClass : '' ?>">
-                        <i class="fas fa-user-check w-6"></i>
+                    <a href="<?= base_url('verifikator/siswa') ?>" class="<?= $linkClass ?> <?= (uri_string() == 'verifikator/siswa' || (strpos(uri_string(), 'verifikator/siswa/') === 0 && strpos(uri_string(), 'verifikator/siswa/create') === false)) ? $activeClass : '' ?>">
+                        <i class="fas fa-users w-6"></i>
                         <span class="ml-2">Data Siswa</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= base_url('verifikator/siswa/create') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/siswa/create') === 0 ? $activeClass : '' ?>">
+                        <i class="fas fa-user-plus w-6"></i>
+                        <span class="ml-2">Daftarkan Siswa</span>
                     </a>
                 </li>
                 <li>
