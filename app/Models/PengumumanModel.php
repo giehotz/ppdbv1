@@ -24,6 +24,20 @@ class PengumumanModel extends Model
         'popup_countdown'
     ];
 
+    // Validation
+    protected $validationRules      = [
+        'judul'          => 'required|string|max_length[255]',
+        'tipe'           => 'required|in_list[general,ujian,kelulusan]',
+        'target_audience' => 'required|in_list[all,siswa,siswa_diverifikasi,siswa_lulus]',
+        'publish_date'   => 'permit_empty|valid_date',
+        'is_active'      => 'permit_empty|integer',
+        'is_popup'       => 'permit_empty|integer',
+        'popup_countdown' => 'permit_empty|integer',
+    ];
+    protected $validationMessages   = [];
+    protected $skipValidation       = false;
+    protected $cleanValidationRules = true;
+
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';

@@ -30,7 +30,7 @@ Detail Calon Siswa
         <a href="<?= base_url('admin/siswa/cetak-kartu/' . $siswa['id_siswa']) ?>" target="_blank" class="inline-flex items-center bg-white text-indigo-600 border border-indigo-200 hover:bg-indigo-50 font-medium py-2 px-4 rounded-xl transition-all shadow-sm">
             <i class="fas fa-print mr-2"></i> Cetak Kartu
         </a>
-        <form action="<?= base_url('admin/siswa/resetPassword/' . $siswa['id_siswa']) ?>" method="post" data-confirm="Yakin ingin mereset password siswa ini menjadi 123456?" class="inline-block">
+        <form action="<?= base_url('admin/siswa/resetPassword/' . $siswa['id_siswa']) ?>" method="post" data-confirm="Yakin ingin mereset password siswa ini? Password baru akan digenerate secara acak." class="inline-block">
             <?= csrf_field() ?>
             <button type="submit" class="inline-flex items-center bg-slate-800 hover:bg-slate-900 text-white font-medium py-2 px-4 rounded-xl transition-all shadow-sm">
                 <i class="fas fa-key mr-2"></i> Reset Password

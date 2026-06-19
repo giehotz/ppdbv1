@@ -101,7 +101,13 @@ class SiswaModel extends Model
     protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [];
+    protected $validationRules      = [
+        'nisn'          => 'required|numeric|min_length[10]|max_length[20]',
+        'nik'           => 'required|numeric|min_length[16]|max_length[20]',
+        'nama_lengkap'  => 'required|string|max_length[255]',
+        'email'         => 'permit_empty|valid_email|max_length[100]',
+        'no_hp'         => 'permit_empty|regex_match[/^[0-9+\-\s]+$/]|max_length[20]',
+    ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
@@ -120,7 +126,7 @@ class SiswaModel extends Model
     /**
      * Get students with pagination and search
      */
-    public function getStudents($search = '', $perPage = 20)
+    public function getStudents($search = '', $perPage = 20, $sortOrder = 'ASC')
     {
         if (!empty($search)) {
             $this->groupStart()
@@ -131,7 +137,7 @@ class SiswaModel extends Model
                 ->groupEnd();
         }
 
-        return $this->orderBy('tgl_siswa', 'DESC')
+        return $this->orderBy('tgl_siswa', $sortOrder)
             ->paginate($perPage);
     }
 

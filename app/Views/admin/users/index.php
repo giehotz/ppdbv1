@@ -117,12 +117,16 @@ $verifikatorCount = count(array_filter($users, fn($u) => $u['level'] === 'verifi
                                         <i class="fas fa-pen text-xs"></i>
                                     </a>
                                     <?php if ($user['level'] != 'admin') : ?>
-                                        <a href="<?= base_url('admin/users/delete/' . $user['id_user']) ?>"
+                                        <form method="post" action="<?= base_url('admin/users/delete/' . $user['id_user']) ?>"
                                             data-confirm="Yakin ingin menghapus user ini?"
-                                            class="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 flex items-center justify-center transition-colors duration-150"
-                                            title="Hapus User">
-                                            <i class="fas fa-trash-alt text-xs"></i>
-                                        </a>
+                                            style="display:inline">
+                                            <?= csrf_field() ?>
+                                            <button type="submit"
+                                                class="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 flex items-center justify-center transition-colors duration-150"
+                                                title="Hapus User">
+                                                <i class="fas fa-trash-alt text-xs"></i>
+                                            </button>
+                                        </form>
                                     <?php else : ?>
                                         <span class="w-8 h-8 rounded-lg bg-gray-100 text-gray-300 flex items-center justify-center cursor-not-allowed" title="Admin tidak dapat dihapus">
                                             <i class="fas fa-trash-alt text-xs"></i>

@@ -67,15 +67,19 @@ class SeoSettings extends BaseController
             }
 
             // Create upload directory if not exists
-            $uploadPath = FCPATH . 'uploads/seo';
+            $uploadPath = realpath(FCPATH . 'uploads/seo') ?: FCPATH . 'uploads/seo';
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0755, true);
+                $uploadPath = realpath($uploadPath);
             }
 
             // Delete old image if exists
             $oldSeo = $this->seoModel->find(1);
-            if (!empty($oldSeo['og_image']) && file_exists($uploadPath . '/' . $oldSeo['og_image'])) {
-                unlink($uploadPath . '/' . $oldSeo['og_image']);
+            if (!empty($oldSeo['og_image'])) {
+                $oldPath = realpath($uploadPath . '/' . basename($oldSeo['og_image']));
+                if ($oldPath && strpos($oldPath, $uploadPath) === 0 && file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
             }
 
             $newName = $fileOg->getRandomName();

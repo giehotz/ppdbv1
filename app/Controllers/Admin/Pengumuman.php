@@ -43,9 +43,13 @@ class Pengumuman extends BaseController
 
     public function store()
     {
+        $rawContent = $this->request->getPost('isi_pengumuman');
+        // Server-side HTML sanitization for CKEditor content
+        $cleanContent = $this->sanitizeHtml($rawContent);
+
         $data = [
             'judul' => $this->request->getPost('judul'),
-            'isi_pengumuman' => $this->request->getPost('isi_pengumuman'),
+            'isi_pengumuman' => $cleanContent,
             'tipe' => $this->request->getPost('tipe'),
             'target_audience' => $this->request->getPost('target_audience'),
             'publish_date' => $this->request->getPost('publish_date'),
@@ -87,9 +91,12 @@ class Pengumuman extends BaseController
 
     public function update($id)
     {
+        $rawContent = $this->request->getPost('isi_pengumuman');
+        $cleanContent = $this->sanitizeHtml($rawContent);
+
         $data = [
             'judul' => $this->request->getPost('judul'),
-            'isi_pengumuman' => $this->request->getPost('isi_pengumuman'),
+            'isi_pengumuman' => $cleanContent,
             'tipe' => $this->request->getPost('tipe'),
             'target_audience' => $this->request->getPost('target_audience'),
             'publish_date' => $this->request->getPost('publish_date'),
@@ -164,5 +171,43 @@ class Pengumuman extends BaseController
         }
 
         return redirect()->to('/admin/pengumuman');
+    }
+
+    private function sanitizeHtml($html)
+    {
+        if ($html === null || $html === '') {
+            return '';
+        }
+
+        // Strip dangerous tags but preserve safe formatting
+        static $allowedTags = '<p><br><b><strong><i><em><u><s><sub><sup><ol><ul><li><blockquote><pre><code><h1><h2><h3><h4><h5><h6><hr><table><thead><tbody><tr><th><td><div><span><a><img><figure><figcaption>';
+
+        // Decode entities first to avoid double-encoding issues
+        $html = html_entity_decode($html, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // Strip event handlers (onclick, onload, etc.)
+        $html = preg_replace('/\bon\w+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html);
+
+        // Strip javascript: and data: URIs in href/src
+        $html = preg_replace('/\s+(href|src|action|formaction)\s*=\s*"(?:javascript|data|vbscript):[^"]*"/i', ' $1="#"', $html);
+        $html = preg_replace('/\s+(href|src|action|formaction)\s*=\s*\'(?:javascript|data|vbscript):[^\']*\'/i', " $1='#'", $html);
+
+        // Strip <script> and <iframe> tags and their content
+        $html = preg_replace('/<script[^>]*>.*?<\/script>/is', '', $html);
+        $html = preg_replace('/<iframe[^>]*>.*?<\/iframe>/is', '', $html);
+        $html = preg_replace('/<embed[^>]*>.*?<\/embed>/is', '', $html);
+        $html = preg_replace('/<object[^>]*>.*?<\/object>/is', '', $html);
+
+        // Strip <base>, <link>, <meta>, <style> tags
+        $html = preg_replace('/<(?:base|link|meta|style)[^>]*>/i', '', $html);
+        $html = preg_replace('/<style[^>]*>.*?<\/style>/is', '', $html);
+
+        // Strip <form> tags (keep content)
+        $html = preg_replace('/<\/?form[^>]*>/i', '', $html);
+
+        // Strip <input>, <button>, <select>, <textarea>, <label> tags
+        $html = preg_replace('/<\/?(?:input|button|select|textarea|label|option|optgroup|fieldset|legend)[^>]*>/i', '', $html);
+
+        return strip_tags($html, $allowedTags);
     }
 }

@@ -84,6 +84,27 @@ class Users extends BaseController
 
     public function delete($id)
     {
+        $currentUserId = session()->get('id_user');
+        if ((int)$id === (int)$currentUserId) {
+            session()->setFlashdata('error', 'Tidak dapat menghapus akun sendiri.');
+            return redirect()->to('/admin/users');
+        }
+
+        $targetUser = $this->userModel->find($id);
+        if (!$targetUser) {
+            session()->setFlashdata('error', 'User tidak ditemukan.');
+            return redirect()->to('/admin/users');
+        }
+
+        // Prevent deleting last admin
+        if ($targetUser['level'] === 'admin') {
+            $adminCount = $this->userModel->where('level', 'admin')->countAllResults();
+            if ($adminCount <= 1) {
+                session()->setFlashdata('error', 'Tidak dapat menghapus admin terakhir.');
+                return redirect()->to('/admin/users');
+            }
+        }
+
         if ($this->userModel->delete($id)) {
             session()->setFlashdata('success', 'User berhasil dihapus.');
         } else {

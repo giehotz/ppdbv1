@@ -30,6 +30,7 @@ class LogAktivitas extends BaseController
 
     public function clear()
     {
+        // CSRF sudah otomatis diperiksa oleh filter di parent controller
         $confirm = $this->request->getPost('confirm_text');
         if ($confirm !== 'HAPUS LOG') {
             session()->setFlashdata('error', 'Penghapusan ditolak. Teks konfirmasi tidak sesuai.');

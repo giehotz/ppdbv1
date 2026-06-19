@@ -57,9 +57,12 @@
                                     <button onclick="openEditModal(<?= htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8') ?>)" class="text-yellow-600 hover:text-yellow-800" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <a href="<?= base_url('admin/anggota/delete/' . $row['id_anggota']) ?>" data-confirm="Yakin ingin menghapus data anggota ini?" class="text-red-600 hover:text-red-800" title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+                                    <form method="post" action="<?= base_url('admin/anggota/delete/' . $row['id_anggota']) ?>" data-confirm="Yakin ingin menghapus data anggota ini?" style="display:inline">
+                                        <?= csrf_field() ?>
+                                        <button type="submit" class="text-red-600 hover:text-red-800" title="Hapus" style="background:none;border:none;cursor:pointer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

@@ -1,6 +1,6 @@
 <?php
 
-$routes->group('siswa', ['filter' => 'siswa'], function ($routes) {
+$routes->group('siswa', ['filter' => ['siswa', 'csrf']], function ($routes) {
     $routes->get('dashboard', 'Siswa\Dashboard::index');
     $routes->get('biodata', 'Siswa\Biodata::index');
     $routes->post('biodata/update', 'Siswa\Biodata::update');

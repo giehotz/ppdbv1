@@ -165,29 +165,13 @@
     <div class="paper-container">
 
         <!-- KOP Surat Standard -->
-        <table class="header-table">
-            <tr>
-                <td class="header-logo">
-                    <?php if (!empty($web['logo_sekolah'])): ?>
-                        <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo">
-                    <?php endif; ?>
-                </td>
-                <td class="header-content">
-                    <div class="school-name"><?= $web['nama_sekolah'] ?? 'NAMA SEKOLAH' ?></div>
-                    <div class="school-address">
-                        <?= $web['alamat_sekolah'] ?? 'Alamat Sekolah' ?><br>
-                        Telp: <?= $web['telepon'] ?? '-' ?> | Email: <?= $web['email'] ?? '-' ?> <br>
-                        Website: <?= $web['website'] ?? base_url() ?>
-                    </div>
-                </td>
-                <td style="width: 90px;"></td> <!-- Spacer for center balance -->
-            </tr>
-        </table>
+        <?php helper('kop'); ?>
+        <?= render_kop_surat() ?>
 
         <!-- Judul -->
         <div class="form-title">
             <h2>Formulir Pendaftaran Siswa Baru</h2>
-            <p class="mb-5">Tahun Pelajaran <?= date('Y') ?>/<?= date('Y') + 1 ?></p>
+            <h2 style="text-decoration: none; text-transform: none; margin-bottom: 5px;">Tahun Pelajaran <?= date('Y') ?>/<?= date('Y') + 1 ?></h2>
             <p class="font-bold">No. Reg : <?= $siswa['no_pendaftaran'] ?></p>
         </div>
 
@@ -195,50 +179,89 @@
         <div class="section-title">A. DATA PRIBADI SISWA</div>
         <table style="width: 100%; border-collapse: collapse;">
             <tr>
-                <td style="vertical-align: top; padding-right: 10px;">
-                    <table class="data-table">
+                <!-- Kolom 1 -->
+                <td style="width: 38%; vertical-align: top; padding-right: 5px;">
+                    <table class="parent-inner-table">
                         <tr>
-                            <td class="label-col">NISN</td>
+                            <td class="parent-label">NISN</td>
                             <td class="sep-col">:</td>
                             <td><?= $siswa['nisn'] ?? '-' ?></td>
                         </tr>
                         <tr>
-                            <td class="label-col">Nama Lengkap</td>
+                            <td class="parent-label">Nama Lengkap</td>
                             <td class="sep-col">:</td>
                             <td class="font-bold"><?= strtoupper($siswa['nama_lengkap']) ?></td>
                         </tr>
                         <tr>
-                            <td class="label-col">NIK</td>
+                            <td class="parent-label">NIK</td>
                             <td class="sep-col">:</td>
                             <td><?= $siswa['nik'] ?? '-' ?></td>
                         </tr>
                         <tr>
-                            <td class="label-col">Jenis Kelamin</td>
+                            <td class="parent-label">Jenis Kelamin</td>
                             <td class="sep-col">:</td>
                             <td><?= $siswa['jk'] == 'L' ? 'Laki-laki' : ($siswa['jk'] == 'P' ? 'Perempuan' : '-') ?></td>
                         </tr>
                         <tr>
-                            <td class="label-col">Tempat, Tgl Lahir</td>
+                            <td class="parent-label">Tmpt, Tgl Lahir</td>
                             <td class="sep-col">:</td>
                             <td><?= ($siswa['tempat_lahir'] ?? '-') . ', ' . ($siswa['tgl_lahir'] ? date('d-m-Y', strtotime($siswa['tgl_lahir'])) : '-') ?></td>
                         </tr>
                         <tr>
-                            <td class="label-col">Agama</td>
+                            <td class="parent-label">Agama</td>
                             <td class="sep-col">:</td>
                             <td><?= $siswa['agama'] ?? '-' ?></td>
                         </tr>
                         <tr>
-                            <td class="label-col">No. Handphone</td>
+                            <td class="parent-label">No. Handphone</td>
                             <td class="sep-col">:</td>
                             <td><?= $siswa['no_hp_siswa'] ?? '-' ?></td>
                         </tr>
                         <tr>
-                            <td class="label-col">Email</td>
+                            <td class="parent-label">Email</td>
                             <td class="sep-col">:</td>
                             <td><?= $siswa['email'] ?? '-' ?></td>
                         </tr>
                     </table>
                 </td>
+
+                <!-- Kolom 2 -->
+                <td style="width: 38%; vertical-align: top; padding-left: 5px; border-left: 1px solid #ccc;">
+                    <table class="parent-inner-table">
+                        <tr>
+                            <td class="parent-label">No. KK</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['no_kk'] ?? '-' ?></td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Kepala Keluarga</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['kepala_keluarga'] ?? '-' ?></td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Status Keluarga</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['status_keluarga'] ?? '-' ?></td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Anak Ke / Sdr</td>
+                            <td class="sep-col">:</td>
+                            <td>Ke-<?= $siswa['anak_ke'] ?? '-' ?> dari <?= $siswa['jml_saudara'] ?? '-' ?> bersaudara</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Hobi / Cita-cita</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['hobi'] ?? '-' ?> / <?= $siswa['cita'] ?? '-' ?></td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">PAUD / TK</td>
+                            <td class="sep-col">:</td>
+                            <td>PAUD: <?= $siswa['paud'] ?? '-' ?>, TK: <?= $siswa['tk'] ?? '-' ?></td>
+                        </tr>
+                    </table>
+                </td>
+
+                <!-- Kolom 3 (Photo) -->
                 <td style="width: 3.5cm; vertical-align: top; text-align: right;">
                     <?php 
                         // Ambil foto dari tabel berkas
@@ -258,8 +281,33 @@
             </tr>
         </table>
 
-        <!-- B. DATA ALAMAT -->
-        <div class="section-title">B. ALAMAT TEMPAT TINGGAL</div>
+        <!-- B. DATA ASAL SEKOLAH -->
+        <div class="section-title">B. DATA ASAL SEKOLAH</div>
+        <table class="data-table">
+            <tr>
+                <td class="label-col">Nama Sekolah Asal</td>
+                <td class="sep-col">:</td>
+                <td class="font-bold"><?= $siswa['nama_sekolah'] ?? '-' ?></td>
+            </tr>
+            <tr>
+                <td class="label-col">NPSN Sekolah</td>
+                <td class="sep-col">:</td>
+                <td><?= $siswa['npsn_sekolah'] ?? '-' ?></td>
+            </tr>
+            <tr>
+                <td class="label-col">Jenjang / Status</td>
+                <td class="sep-col">:</td>
+                <td><?= $siswa['jenjang_sekolah'] ?? '-' ?> / <?= $siswa['status_sekolah'] ?? '-' ?></td>
+            </tr>
+            <tr>
+                <td class="label-col">Lokasi Sekolah</td>
+                <td class="sep-col">:</td>
+                <td><?= $siswa['lokasi_sekolah'] ?? '-' ?></td>
+            </tr>
+        </table>
+
+        <!-- C. DATA ALAMAT -->
+        <div class="section-title">C. ALAMAT TEMPAT TINGGAL</div>
         <table class="data-table">
             <tr>
                 <td class="label-col">Alamat Lengkap</td>
@@ -291,10 +339,15 @@
                 <td class="sep-col">:</td>
                 <td><?= $siswa['kode_pos'] ?? '-' ?></td>
             </tr>
+            <tr>
+                <td class="label-col">Jenis Tinggal</td>
+                <td class="sep-col">:</td>
+                <td><?= $siswa['jenis_tinggal'] ?? '-' ?></td>
+            </tr>
         </table>
 
-        <!-- C. DATA ORANG TUA / WALI -->
-        <div class="section-title">C. DATA ORANG TUA / WALI</div>
+        <!-- D. DATA ORANG TUA / WALI -->
+        <div class="section-title">D. DATA ORANG TUA / WALI</div>
         <!-- Layout Split 2 Kolom untuk Ayah dan Ibu -->
         <table class="parent-table-container">
             <tr>
@@ -305,12 +358,17 @@
                         <tr>
                             <td class="parent-label">Nama Ayah</td>
                             <td class="sep-col">:</td>
-                            <td><?= $siswa['nama_ayah'] ?? '-' ?></td>
+                            <td><?= $siswa['nama_ayah'] ?? '-' ?> (<?= $siswa['status_ayah'] ?? '-' ?>)</td>
                         </tr>
                         <tr>
                             <td class="parent-label">NIK Ayah</td>
                             <td class="sep-col">:</td>
                             <td><?= $siswa['nik_ayah'] ?? '-' ?></td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Tahun Lahir</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['th_lahir_ayah'] ?? '-' ?></td>
                         </tr>
                         <tr>
                             <td class="parent-label">Pendidikan</td>
@@ -322,6 +380,11 @@
                             <td class="sep-col">:</td>
                             <td><?= $siswa['pekerjaan_ayah'] ?? '-' ?></td>
                         </tr>
+                        <tr>
+                            <td class="parent-label">Penghasilan</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['penghasilan_ayah'] ?? '-' ?></td>
+                        </tr>
                     </table>
                 </td>
 
@@ -332,12 +395,17 @@
                         <tr>
                             <td class="parent-label">Nama Ibu</td>
                             <td class="sep-col">:</td>
-                            <td><?= $siswa['nama_ibu'] ?? '-' ?></td>
+                            <td><?= $siswa['nama_ibu'] ?? '-' ?> (<?= $siswa['status_ibu'] ?? '-' ?>)</td>
                         </tr>
                         <tr>
                             <td class="parent-label">NIK Ibu</td>
                             <td class="sep-col">:</td>
                             <td><?= $siswa['nik_ibu'] ?? '-' ?></td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Tahun Lahir</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['th_lahir_ibu'] ?? '-' ?></td>
                         </tr>
                         <tr>
                             <td class="parent-label">Pendidikan</td>
@@ -349,22 +417,93 @@
                             <td class="sep-col">:</td>
                             <td><?= $siswa['pekerjaan_ibu'] ?? '-' ?></td>
                         </tr>
+                        <tr>
+                            <td class="parent-label">Penghasilan</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['penghasilan_ibu'] ?? '-' ?></td>
+                        </tr>
                     </table>
                 </td>
             </tr>
         </table>
         
+        <?php if(!empty($siswa['nama_wali'])): ?>
+        <div style="font-weight: bold; font-family: Arial; border-bottom: 1px dotted #999; margin-bottom: 5px; margin-top: 5px;">3. DATA WALI</div>
+        <table class="parent-table-container">
+            <tr>
+                <td style="padding-right: 15px;">
+                    <table class="parent-inner-table">
+                        <tr>
+                            <td class="parent-label">Nama Wali</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['nama_wali'] ?? '-' ?></td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">NIK Wali</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['nik_wali'] ?? '-' ?></td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Tahun Lahir</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['th_lahir_wali'] ?? '-' ?></td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="padding-left: 15px; border-left: 1px solid #eee;">
+                    <table class="parent-inner-table">
+                        <tr>
+                            <td class="parent-label">Pendidikan</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['pdd_wali'] ?? '-' ?></td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Pekerjaan</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['pekerjaan_wali'] ?? '-' ?></td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Penghasilan</td>
+                            <td class="sep-col">:</td>
+                            <td><?= $siswa['penghasilan_wali'] ?? '-' ?></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <?php endif; ?>
+
         <!-- Kontak Darurat Ortu -->
         <table class="data-table" style="margin-top: 5px;">
             <tr>
-                <td class="label-col" style="font-weight: bold;">No. Handphone Ortu</td>
+                <td class="label-col" style="font-weight: bold;">No. HP Ortu/Wali</td>
                 <td class="sep-col">:</td>
                 <td class="font-bold"><?= $siswa['no_hp_ortu'] ?? '-' ?></td>
             </tr>
         </table>
 
-        <!-- D. STATUS PENDAFTARAN -->
-        <div class="section-title">D. STATUS PENDAFTARAN</div>
+        <!-- E. KESEJAHTERAAN -->
+        <div class="section-title">E. KESEJAHTERAAN</div>
+        <table class="data-table">
+            <tr>
+                <td class="label-col">No. KKS</td>
+                <td class="sep-col">:</td>
+                <td><?= $siswa['no_kks'] ?? '-' ?></td>
+            </tr>
+            <tr>
+                <td class="label-col">No. PKH</td>
+                <td class="sep-col">:</td>
+                <td><?= $siswa['no_pkh'] ?? '-' ?></td>
+            </tr>
+            <tr>
+                <td class="label-col">No. KIP</td>
+                <td class="sep-col">:</td>
+                <td><?= $siswa['no_kip'] ?? '-' ?></td>
+            </tr>
+        </table>
+
+        <!-- F. STATUS PENDAFTARAN -->
+        <div class="section-title">F. STATUS PENDAFTARAN</div>
         <table class="data-table">
             <tr>
                 <td class="label-col">Tanggal Daftar</td>

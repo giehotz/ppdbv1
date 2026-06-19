@@ -25,6 +25,13 @@ Calon Siswa
     </div>
 <?php endif; ?>
 
+<?php if (session()->getFlashdata('print_password')) : ?>
+    <?php session()->keepFlashdata('print_password'); ?>
+    <script>
+        window.open('<?= base_url('admin/siswa/cetak-password') ?>', '_blank');
+    </script>
+<?php endif; ?>
+
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <!-- Header Section -->
     <div class="px-6 py-5 border-b border-gray-100 bg-gray-50/50">
@@ -40,6 +47,7 @@ Calon Siswa
                 </a>
 
                 <form action="<?= base_url('admin/siswa') ?>" method="get" class="flex w-full sm:w-auto">
+                    <input type="hidden" name="sort" value="<?= esc($sort ?? 'ASC') ?>">
                     <div class="relative flex-grow">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400"></i>
@@ -68,20 +76,33 @@ Calon Siswa
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase text-xs tracking-wider">
+                    <th class="py-4 px-6 font-semibold w-12 text-center">No</th>
                     <th class="py-4 px-6 font-semibold">No. Pendaftaran</th>
                     <th class="py-4 px-6 font-semibold">NISN</th>
                     <th class="py-4 px-6 font-semibold">Nama Lengkap</th>
                     <th class="py-4 px-6 font-semibold">Gender</th>
                     <th class="py-4 px-6 font-semibold">Kelengkapan</th>
                     <th class="py-4 px-6 font-semibold">Status Validasi</th>
-                    <th class="py-4 px-6 font-semibold">Tanggal Daftar</th>
+                    <th class="py-4 px-6 font-semibold">
+                        <a href="<?= base_url('admin/siswa') ?>?search=<?= esc($search ?? '') ?>&sort=<?= ($sort ?? 'ASC') == 'ASC' ? 'DESC' : 'ASC' ?>" class="flex items-center hover:text-emerald-600 transition-colors group whitespace-nowrap" title="Klik untuk mengurutkan">
+                            Tanggal Daftar
+                            <?php if(($sort ?? 'ASC') == 'ASC'): ?>
+                                <i class="fas fa-sort-up ml-2 text-emerald-500 mt-1"></i>
+                            <?php else: ?>
+                                <i class="fas fa-sort-down ml-2 text-emerald-500 mb-1"></i>
+                            <?php endif; ?>
+                        </a>
+                    </th>
                     <th class="py-4 px-6 text-center font-semibold">Aksi</th>
                 </tr>
             </thead>
             <tbody class="text-gray-700 text-sm">
                 <?php if (!empty($siswa)) : ?>
+                    <?php $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; ?>
+                    <?php $nomor = 1 + (20 * ($page - 1)); ?>
                     <?php foreach ($siswa as $s) : ?>
                         <tr class="border-b border-gray-100 hover:bg-gray-50/80 transition-colors">
+                            <td class="py-3 px-6 whitespace-nowrap text-center text-gray-500 font-medium"><?= $nomor++ ?></td>
                             <td class="py-3 px-6 whitespace-nowrap font-bold text-gray-800">
                                 <span class="bg-gray-100 text-gray-700 py-1 px-2 rounded text-xs"><?= esc($s['no_pendaftaran']) ?></span>
                             </td>
@@ -133,12 +154,12 @@ Calon Siswa
                                         title="Cetak Kartu Pelajar">
                                         <i class="fas fa-id-card text-lg"></i>
                                     </a>
-                                    <form action="<?= base_url('admin/siswa/resetPassword/' . $s['id_siswa']) ?>" method="post" class="inline-block" data-confirm="Yakin ingin mereset password siswa ini menjadi 123456?">
-                                        <?= csrf_field() ?>
-                                        <button type="submit" class="text-amber-500 hover:text-amber-700 transform hover:scale-110 transition-transform focus:outline-none" title="Reset Password">
-                                            <i class="fas fa-key text-lg"></i>
-                                        </button>
-                                    </form>
+                                    <button type="button" 
+                                        onclick="openResetPasswordModal('<?= $s['id_siswa'] ?>', '<?= esc(addslashes($s['nama_lengkap'])) ?>')" 
+                                        class="text-amber-500 hover:text-amber-700 transform hover:scale-110 transition-transform focus:outline-none" 
+                                        title="Reset Password">
+                                        <i class="fas fa-key text-lg"></i>
+                                    </button>
                                     <button type="button"
                                         onclick="openDeleteModal('<?= esc(addslashes($s['nama_lengkap'])) ?>', '<?= base_url('admin/siswa/delete/' . $s['id_siswa']) ?>')"
                                         class="text-red-500 hover:text-red-700 transform hover:scale-110 transition-transform focus:outline-none"
@@ -152,7 +173,7 @@ Calon Siswa
                 <?php else : ?>
                     <!-- Empty State -->
                     <tr>
-                        <td colspan="8" class="py-12 px-6 text-center">
+                        <td colspan="9" class="py-12 px-6 text-center">
                             <div class="flex flex-col items-center justify-center text-gray-400">
                                 <?php if (!empty($search)) : ?>
                                     <i class="fas fa-search-minus text-5xl mb-4 text-gray-300"></i>
@@ -205,44 +226,94 @@ Calon Siswa
             </div>
 
             <!-- Body -->
-            <div class="px-6 py-6">
-                <p class="text-gray-600 mb-1 text-sm">Anda akan menghapus seluruh data pendaftaran milik:</p>
-                <p class="text-gray-900 font-bold text-xl mb-5 pb-4 border-b border-gray-100" id="deleteStudentName"></p>
+            <form method="post" id="deleteForm">
+                <?= csrf_field() ?>
+                <div class="px-6 py-6">
+                    <p class="text-gray-600 mb-1 text-sm">Anda akan menghapus seluruh data pendaftaran milik:</p>
+                    <p class="text-gray-900 font-bold text-xl mb-5 pb-4 border-b border-gray-100" id="deleteStudentName"></p>
 
-                <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-5">
-                    <p class="text-amber-800 text-sm flex items-start">
-                        <i class="fas fa-info-circle mt-0.5 mr-2"></i> 
-                        <span>Untuk mencegah kesalahan, silakan ketik kata <strong class="text-red-600 uppercase tracking-wide">hapus</strong> di bawah ini:</span>
-                    </p>
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-5">
+                        <p class="text-amber-800 text-sm flex items-start">
+                            <i class="fas fa-info-circle mt-0.5 mr-2"></i> 
+                            <span>Untuk mencegah kesalahan, silakan ketik kata <strong class="text-red-600 uppercase tracking-wide">hapus</strong> di bawah ini:</span>
+                        </p>
+                    </div>
+
+                    <input type="text" id="deleteConfirmInput" name="delete_confirm"
+                        class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-center text-lg font-medium focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/20 transition-all placeholder-gray-400"
+                        placeholder="Ketik 'hapus' di sini"
+                        autocomplete="off">
+                    <p class="text-xs text-gray-500 mt-2 text-center" id="deleteHint">Masukkan kata "hapus" untuk mengaktifkan tombol</p>
                 </div>
 
-                <input type="text" id="deleteConfirmInput"
-                    class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-center text-lg font-medium focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/20 transition-all placeholder-gray-400"
-                    placeholder="Ketik 'hapus' di sini"
-                    autocomplete="off">
-                <p class="text-xs text-gray-500 mt-2 text-center" id="deleteHint">Masukkan kata "hapus" untuk mengaktifkan tombol</p>
-            </div>
+                <!-- Footer -->
+                <div class="px-6 py-4 border-t border-gray-100 flex gap-3 justify-end bg-gray-50 rounded-b-2xl">
+                    <button type="button" onclick="closeDeleteModal()"
+                        class="px-5 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition duration-200 shadow-sm">
+                        Batal
+                    </button>
+                    <button type="submit" id="deleteConfirmBtn" disabled
+                        class="px-5 py-2.5 bg-red-400 text-white font-semibold rounded-xl transition-all duration-200 cursor-not-allowed opacity-60 flex items-center shadow-sm">
+                        <i class="fas fa-trash-alt mr-2"></i> Hapus Permanen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-            <!-- Footer -->
-            <div class="px-6 py-4 border-t border-gray-100 flex gap-3 justify-end bg-gray-50 rounded-b-2xl">
-                <button type="button" onclick="closeDeleteModal()"
-                    class="px-5 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition duration-200 shadow-sm">
-                    Batal
-                </button>
-                <button type="button" id="deleteConfirmBtn" disabled onclick="executeDelete()"
-                    class="px-5 py-2.5 bg-red-400 text-white font-semibold rounded-xl transition-all duration-200 cursor-not-allowed opacity-60 flex items-center shadow-sm">
-                    <i class="fas fa-trash-alt mr-2"></i> Hapus Permanen
-                </button>
+<!-- Reset Password Modal -->
+<div id="resetPasswordModal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-sm transition-opacity" onclick="closeResetPasswordModal()"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all scale-95 opacity-0" id="resetPasswordModalContent">
+            <div class="bg-amber-50 rounded-t-2xl px-6 py-5 border-b border-amber-100">
+                <div class="flex items-center gap-4">
+                    <div class="bg-amber-100 rounded-full p-3 shadow-sm">
+                        <i class="fas fa-key text-amber-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-amber-800">Reset Password Siswa</h3>
+                        <p class="text-sm text-amber-600 mt-0.5">Buat password baru dan cetak PDF</p>
+                    </div>
+                </div>
             </div>
+            <form method="post" id="resetPasswordForm">
+                <?= csrf_field() ?>
+                <div class="px-6 py-6">
+                    <p class="text-gray-600 mb-1 text-sm">Reset password untuk siswa:</p>
+                    <p class="text-gray-900 font-bold text-xl mb-5 pb-4 border-b border-gray-100" id="resetStudentName"></p>
+
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password Baru</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="newPasswordInput" name="new_password" required
+                            class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-lg font-medium focus:outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/20 transition-all"
+                            placeholder="Ketik password atau klik acak">
+                        <button type="button" onclick="generateRandomPassword()" 
+                            class="bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 font-medium px-4 py-2 rounded-xl transition">
+                            <i class="fas fa-random mb-1"></i><br><span class="text-xs">Acak</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500">Ketik manual atau gunakan tombol Acak. File PDF akan otomatis terdownload setelah Anda menyimpannya.</p>
+                </div>
+                <div class="px-6 py-4 border-t border-gray-100 flex gap-3 justify-end bg-gray-50 rounded-b-2xl">
+                    <button type="button" onclick="closeResetPasswordModal()"
+                        class="px-5 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition duration-200 shadow-sm">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold rounded-xl transition-all duration-200 shadow-sm flex items-center">
+                        <i class="fas fa-save mr-2"></i> Simpan & Download
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <script>
-    let deleteUrl = '';
-
     function openDeleteModal(name, url) {
-        deleteUrl = url;
+        document.getElementById('deleteForm').action = url;
         document.getElementById('deleteStudentName').textContent = name;
         document.getElementById('deleteConfirmInput').value = '';
         document.getElementById('deleteHint').textContent = 'Masukkan kata "hapus" untuk mengaktifkan tombol';
@@ -253,13 +324,11 @@ Calon Siswa
         const content = document.getElementById('deleteModalContent');
         modal.classList.remove('hidden');
 
-        // Animate in
         setTimeout(() => {
             content.classList.remove('scale-95', 'opacity-0');
             content.classList.add('scale-100', 'opacity-100');
         }, 10);
 
-        // Focus input
         setTimeout(() => {
             document.getElementById('deleteConfirmInput').focus();
         }, 200);
@@ -315,26 +384,57 @@ Calon Siswa
         }
     });
 
-    // Allow Enter key to confirm when valid
-    document.getElementById('deleteConfirmInput').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && this.value.trim().toLowerCase() === 'hapus') {
-            e.preventDefault(); // Hindari submit form lain jika ada
-            executeDelete();
+    // Validate on form submit (button click or Enter key)
+    document.getElementById('deleteForm').addEventListener('submit', function(e) {
+        const input = document.getElementById('deleteConfirmInput');
+        if (input.value.trim().toLowerCase() !== 'hapus') {
+            e.preventDefault();
+            return false;
         }
     });
-
-    function executeDelete() {
-        if (deleteUrl) {
-            window.location.href = deleteUrl;
-        }
-    }
 
     // Close modal on Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeDeleteModal();
+            closeResetPasswordModal();
         }
     });
+
+    // Reset Password Modal Logic
+    function openResetPasswordModal(id, name) {
+        document.getElementById('resetPasswordForm').action = '<?= base_url('admin/siswa/resetPassword') ?>/' + id;
+        document.getElementById('resetStudentName').textContent = name;
+        document.getElementById('newPasswordInput').value = '';
+        
+        const modal = document.getElementById('resetPasswordModal');
+        const content = document.getElementById('resetPasswordModalContent');
+        modal.classList.remove('hidden');
+
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closeResetPasswordModal() {
+        const content = document.getElementById('resetPasswordModalContent');
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            document.getElementById('resetPasswordModal').classList.add('hidden');
+        }, 200);
+    }
+
+    function generateRandomPassword() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let pass = '';
+        for (let i = 0; i < 6; i++) {
+            pass += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        document.getElementById('newPasswordInput').value = pass;
+    }
 </script>
 
 <style>

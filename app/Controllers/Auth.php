@@ -9,11 +9,16 @@ use App\Models\ResetPasswordModel;
 
 class Auth extends BaseController
 {
+    private const MAX_LOGIN_ATTEMPTS = 5;
+    private const LOGIN_LOCKOUT_MINUTES = 15;
+    private const MAX_FORGOT_ATTEMPTS = 3;
+    private const FORGOT_LOCKOUT_MINUTES = 60;
+
     public function index()
     {
         if (session()->get('logged_in')) {
             $userType = session()->get('user_type');
-            if ($userType === 'verifikato') {
+            if ($userType === 'verifikator') {
                 return redirect()->to('/verifikator/dashboard');
             } elseif ($userType === 'admin') {
                 return redirect()->to('/admin/dashboard');
@@ -35,10 +40,55 @@ class Auth extends BaseController
         return true;
     }
 
+    private function getClientIp(): string
+    {
+        $ip = $this->request->getIPAddress();
+        return $ip ?: '0.0.0.0';
+    }
+
+    private function throttleKey(string $prefix): string
+    {
+        $ip = $this->getClientIp();
+        return $prefix . str_replace(['{','}','(',')','/','\\','@',':'], '_', $ip);
+    }
+
+    private function isThrottled(string $key, int $maxAttempts, int $lockoutMinutes): bool
+    {
+        $cache = \Config\Services::cache();
+        $attempts = (int) $cache->get($key);
+        if ($attempts >= $maxAttempts) {
+            return true;
+        }
+        return false;
+    }
+
+    private function incrementAttempt(string $key, int $lockoutMinutes): int
+    {
+        $cache = \Config\Services::cache();
+        $attempts = (int) $cache->get($key);
+        $attempts++;
+        $cache->save($key, $attempts, $lockoutMinutes * 60);
+        return $attempts;
+    }
+
+    private function clearAttempts(string $key): void
+    {
+        $cache = \Config\Services::cache();
+        $cache->delete($key);
+    }
+
     public function login()
     {
         $session = session();
-        $identifier = $this->request->getVar('username'); // Can be username, NISN, or no_pendaftaran
+        $throttleKey = $this->throttleKey('login_attempts_');
+
+        // Check throttle
+        if ($this->isThrottled($throttleKey, self::MAX_LOGIN_ATTEMPTS, self::LOGIN_LOCKOUT_MINUTES)) {
+            $session->setFlashdata('msg', 'Terlalu banyak percobaan login. Silakan coba lagi dalam ' . self::LOGIN_LOCKOUT_MINUTES . ' menit.');
+            return redirect()->to('/login');
+        }
+
+        $identifier = $this->request->getVar('username');
         $password = $this->request->getVar('password');
 
         // Try admin login first
@@ -48,7 +98,7 @@ class Auth extends BaseController
         if ($admin) {
             $verify_pass = password_verify($password, $admin['password']);
             if ($verify_pass) {
-                // Update last_login
+                $this->clearAttempts($throttleKey);
                 $userModel->update($admin['id_user'], ['last_login' => date('Y-m-d H:i:s')]);
 
                 $ses_data = [
@@ -57,25 +107,26 @@ class Auth extends BaseController
                     'nama_lengkap'  => $admin['nama_lengkap'],
                     'level'         => $admin['level'],
                     'logged_in'     => TRUE,
-                    'user_type'     => $admin['level'] // 'admin' or 'verifikato'
+                    'user_type'     => $admin['level']
                 ];
                 $session->set($ses_data);
+                $session->regenerate();
 
-                // Catat log
-                catat_log('Login', 'Berhasil login sebagai ' . ($admin['level'] === 'verifikato' ? 'Verifikator' : 'Admin'));
+                catat_log('Login', 'Berhasil login sebagai ' . ($admin['level'] === 'verifikator' ? 'Verifikator' : 'Admin'));
 
-                if ($ses_data['level'] === 'verifikato') {
+                if ($ses_data['level'] === 'verifikator') {
                     return redirect()->to('/verifikator/dashboard')->withCookies();
                 }
 
                 return redirect()->to('/admin/dashboard')->withCookies();
             } else {
+                $this->incrementAttempt($throttleKey, self::LOGIN_LOCKOUT_MINUTES);
                 $session->setFlashdata('msg', 'Password Salah');
                 return redirect()->to('/login');
             }
         }
 
-        // Try student login (NISN, Email, NIK)
+        // Try student login
         $siswaModel = new \App\Models\SiswaModel();
         $siswa = $siswaModel->where('nisn', $identifier)
             ->orWhere('email', $identifier)
@@ -85,7 +136,7 @@ class Auth extends BaseController
         if ($siswa) {
             $verify_pass = password_verify($password, $siswa['password']);
             if ($verify_pass) {
-                // Update last_login
+                $this->clearAttempts($throttleKey);
                 $siswaModel->update($siswa['id_siswa'], ['last_login' => date('Y-m-d H:i:s')]);
                 $ses_data = [
                     'id_siswa'       => $siswa['id_siswa'],
@@ -93,21 +144,23 @@ class Auth extends BaseController
                     'nisn'           => $siswa['nisn'],
                     'nama_lengkap'   => $siswa['nama_lengkap'],
                     'email'          => $siswa['email'],
-                    'foto'           => $siswa['foto'], // Added for header photo display
+                    'foto'           => $siswa['foto'],
                     'logged_in'      => TRUE,
                     'user_type'      => 'siswa'
                 ];
                 $session->set($ses_data);
+                $session->regenerate();
 
-                // Catat log
                 catat_log('Login', 'Berhasil login sebagai calon siswa');
                 return redirect()->to('/siswa/dashboard');
             } else {
+                $this->incrementAttempt($throttleKey, self::LOGIN_LOCKOUT_MINUTES);
                 $session->setFlashdata('msg', 'Password Salah');
                 return redirect()->to('/login');
             }
         }
 
+        $this->incrementAttempt($throttleKey, self::LOGIN_LOCKOUT_MINUTES);
         $session->setFlashdata('msg', 'Username/Email/NISN/NIK tidak ditemukan');
         return redirect()->to('/login');
     }
@@ -130,7 +183,7 @@ class Auth extends BaseController
     {
         if (session()->get('logged_in')) {
             $userType = session()->get('user_type');
-            if ($userType === 'verifikato') {
+            if ($userType === 'verifikator') {
                 return redirect()->to('/verifikator/dashboard');
             } elseif ($userType === 'admin') {
                 return redirect()->to('/admin/dashboard');
@@ -197,7 +250,7 @@ class Auth extends BaseController
             $web = $tblWebModel->find(1);
             $format = !empty($web['format_no_daftar']) ? $web['format_no_daftar'] : 'PPDB-{TAHUN}-{URUT}';
             
-            $year = date('Y');
+            $year = !empty($web['th_pelajaran']) ? substr($web['th_pelajaran'], 0, 4) : date('Y');
             $month = date('m');
             $newNumber = str_pad($insertId, 4, '0', STR_PAD_LEFT);
             
@@ -227,10 +280,18 @@ class Auth extends BaseController
     public function submitForgotPassword()
     {
         $session = session();
+        $throttleKey = $this->throttleKey('forgot_attempts_');
+
+        if ($this->isThrottled($throttleKey, self::MAX_FORGOT_ATTEMPTS, self::FORGOT_LOCKOUT_MINUTES)) {
+            $session->setFlashdata('msg', 'Terlalu banyak permintaan reset password. Silakan coba lagi dalam ' . self::FORGOT_LOCKOUT_MINUTES . ' menit.');
+            return redirect()->to('/login');
+        }
+
         $nama = $this->request->getPost('nama');
         $nik  = $this->request->getPost('nik');
 
         if (empty($nama) || empty($nik)) {
+            $this->incrementAttempt($throttleKey, self::FORGOT_LOCKOUT_MINUTES);
             $session->setFlashdata('msg', 'Nama dan NIK wajib diisi.');
             return redirect()->to('/login');
         }
@@ -240,12 +301,14 @@ class Auth extends BaseController
         $siswa = $siswaModel->where('nik', $nik)->first();
 
         if (!$siswa) {
+            $this->incrementAttempt($throttleKey, self::FORGOT_LOCKOUT_MINUTES);
             $session->setFlashdata('msg', 'Data tidak ditemukan. Pastikan Nama dan NIK yang Anda masukkan sesuai dengan data pendaftaran.');
             return redirect()->to('/login');
         }
 
         // Validasi pencocokan nama dengan database (case-insensitive)
         if (strtolower(trim($nama)) !== strtolower(trim($siswa['nama_lengkap']))) {
+            $this->incrementAttempt($throttleKey, self::FORGOT_LOCKOUT_MINUTES);
             $session->setFlashdata('msg', 'Nama dan NIK tidak cocok dengan data yang terdaftar. Permintaan ditolak oleh sistem.');
             return redirect()->to('/login');
         }
@@ -258,6 +321,8 @@ class Auth extends BaseController
             $session->setFlashdata('msg', 'Permintaan reset password Anda sebelumnya masih diproses oleh Admin. Silakan hubungi WA admin jika belum ada balasan.');
             return redirect()->to('/login');
         }
+
+        $this->clearAttempts($throttleKey);
 
         // Simpan request
         $resetModel->insert([

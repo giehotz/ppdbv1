@@ -3,12 +3,12 @@
         <input type="hidden" name="section" value="hero">
         <div class="space-y-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Headline</label>
-                <input type="text" name="content[headline]" value="<?= esc($sections['hero']['headline']['content_value'] ?? '') ?>" placeholder="Penerimaan Peserta Didik Baru (<?= $app_alias ?? 'PPDB' ?>) Tahun Pelajaran <?= date('Y') ?>/<?= date('Y') + 1 ?>" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 py-2 px-3 border">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Headline <span class="text-xs text-gray-400 font-normal">(mendukung HTML & CSS)</span></label>
+                <input type="text" name="content[headline]" value="<?= $sections['hero']['headline']['content_value'] ?? '' ?>" placeholder="Penerimaan Peserta Didik Baru (<?= $app_alias ?? 'PPDB' ?>) Tahun Pelajaran <?= date('Y') ?>/<?= date('Y') + 1 ?>" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 py-2 px-3 border">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Subheadline</label>
-                <textarea name="content[subheadline]" rows="3" placeholder="Wujudkan generasi cerdas..." class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 py-2 px-3 border"><?= esc($sections['hero']['subheadline']['content_value'] ?? '') ?></textarea>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Subheadline <span class="text-xs text-gray-400 font-normal">(mendukung HTML & CSS)</span></label>
+                <textarea name="content[subheadline]" rows="3" placeholder="Wujudkan generasi cerdas..." class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 py-2 px-3 border"><?= $sections['hero']['subheadline']['content_value'] ?? '' ?></textarea>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

@@ -260,10 +260,11 @@
             </header>
 
             <!-- Content Area -->
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 lg:p-6">
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 lg:p-6 flex flex-col">
                 <?= $this->renderSection('content') ?>
             </main>
 
+            <?= $this->include('layouts/components/footer') ?>
         </div>
     </div>
 

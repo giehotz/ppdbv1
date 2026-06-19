@@ -68,6 +68,12 @@ class LandingContent extends BaseController
         }
 
         foreach ($updates as $key => $value) {
+            // Sanitize HTML fields to allow safe HTML while preventing XSS
+            $allowedHtmlFields = ['headline', 'subheadline', 'announcement'];
+            if (in_array($key, $allowedHtmlFields, true)) {
+                $value = $this->sanitizeHtml($value);
+            }
+
             $data = [
                 'content_value' => $value
             ];
@@ -292,5 +298,29 @@ class LandingContent extends BaseController
         }
 
         return redirect()->to('/admin/landing-content');
+    }
+
+    private function sanitizeHtml($html)
+    {
+        if ($html === null || $html === '') {
+            return '';
+        }
+
+        static $allowedTags = '<p><br><b><strong><i><em><u><s><sub><sup><ol><ul><li><blockquote><pre><code><h1><h2><h3><h4><h5><h6><hr><table><thead><tbody><tr><th><td><div><span><a><img><figure><figcaption>';
+
+        $html = html_entity_decode($html, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $html = preg_replace('/\bon\w+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html);
+        $html = preg_replace('/\s+(href|src|action|formaction)\s*=\s*"(?:javascript|data|vbscript):[^"]*"/i', ' $1="#"', $html);
+        $html = preg_replace('/\s+(href|src|action|formaction)\s*=\s*\'(?:javascript|data|vbscript):[^\']*\'/i', " $1='#'", $html);
+        $html = preg_replace('/<script[^>]*>.*?<\/script>/is', '', $html);
+        $html = preg_replace('/<iframe[^>]*>.*?<\/iframe>/is', '', $html);
+        $html = preg_replace('/<embed[^>]*>.*?<\/embed>/is', '', $html);
+        $html = preg_replace('/<object[^>]*>.*?<\/object>/is', '', $html);
+        $html = preg_replace('/<(?:base|link|meta|style)[^>]*>/i', '', $html);
+        $html = preg_replace('/<style[^>]*>.*?<\/style>/is', '', $html);
+        $html = preg_replace('/<\/?form[^>]*>/i', '', $html);
+        $html = preg_replace('/<\/?(?:input|button|select|textarea|label|option|optgroup|fieldset|legend)[^>]*>/i', '', $html);
+
+        return strip_tags($html, $allowedTags);
     }
 }

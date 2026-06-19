@@ -50,11 +50,15 @@ Detail Pesan Terkirim
         </div>
         
         <div class="mt-8 flex justify-end">
-            <a href="<?= base_url('admin/pesan/delete/' . $pesan['id_pesan']) ?>" 
-               onclick="return confirm('Yakin menghapus pesan ini?')" 
-               class="text-red-500 border border-red-500 hover:bg-red-50 px-4 py-2 rounded-md transition font-medium mr-2">
-                <i class="fas fa-trash mr-1"></i> Hapus Pesan
-            </a>
+            <form method="post" action="<?= base_url('admin/pesan/delete/' . $pesan['id_pesan']) ?>"
+                data-confirm="Yakin menghapus pesan ini?"
+                style="display:inline">
+                <?= csrf_field() ?>
+                <button type="submit"
+                    class="text-red-500 border border-red-500 hover:bg-red-50 px-4 py-2 rounded-md transition font-medium mr-2">
+                    <i class="fas fa-trash mr-1"></i> Hapus Pesan
+                </button>
+            </form>
             <a href="<?= base_url('admin/pesan/create') ?>" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition font-medium">
                 <i class="fas fa-paper-plane mr-1"></i> Kirim Pesan Baru
             </a>

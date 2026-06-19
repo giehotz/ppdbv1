@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $content['navbar']['nama_sekolah'] ?? 'PPDB Online - MIN 2 Tanggamus' ?></title>
+    <title><?= esc($content['navbar']['nama_sekolah'] ?? 'PPDB Online - MIN 2 Tanggamus') ?></title>
 
     <?php
     // Set page_title for the SEO partial to use
@@ -15,23 +15,26 @@
     <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
-                    colors: {
-                        madrasah: '#064e3b', // emerald-900 equivalent
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js"></script>
 
     <style>
+        #mobile-menu {
+            transition: all 0.3s ease-in-out;
+            transform-origin: top;
+            max-height: 0;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            overflow: hidden;
+            display: block;
+        }
+        #mobile-menu.open {
+            max-height: 500px;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
         .hero-parallax {
             background-attachment: fixed;
             background-position: center;
@@ -118,11 +121,11 @@
                     <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="w-10 h-10 md:w-11 md:h-11 object-contain transform group-hover:scale-105 transition duration-300">
                 <?php else: ?>
                     <div class="w-10 h-10 md:w-11 md:h-11 bg-madrasah rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md transform group-hover:scale-105 transition duration-300">
-                        <?= mb_substr($content['navbar']['nama_sekolah'] ?? 'M', 0, 1) ?>
+                        <?= mb_substr(esc($content['navbar']['nama_sekolah'] ?? 'M'), 0, 1) ?>
                     </div>
                 <?php endif; ?>
                 <span class="font-bold text-base md:text-xl tracking-tight text-gray-900 line-clamp-1 group-hover:text-emerald-700 transition-colors">
-                    <?= $content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus' ?>
+                    <?= esc($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus') ?>
                 </span>
             </a>
 
@@ -132,7 +135,7 @@
                 <a href="#jadwal" class="hover:text-emerald-600 transition">Jadwal</a>
                 <a href="#syarat" class="hover:text-emerald-600 transition">Syarat</a>
                 <a href="#kontak" class="hover:text-emerald-600 transition">Kontak</a>
-                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] == '1'): ?>
+                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
                     <a href="<?= base_url('pendaftar') ?>" class="hover:text-emerald-600 transition">Data Pendaftar</a>
                 <?php endif; ?>
             </div>
@@ -154,13 +157,13 @@
         </div>
 
         <!-- Mobile Menu Dropdown -->
-        <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-100 bg-white shadow-xl absolute w-full left-0 overflow-hidden origin-top transition-all duration-300">
+        <div id="mobile-menu" class="lg:hidden border-t border-gray-100 bg-white shadow-xl absolute w-full left-0">
             <div class="px-4 py-4 space-y-1">
                 <a href="#beranda" class="block py-3 px-4 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 font-semibold text-gray-700 transition">Beranda</a>
                 <a href="#jadwal" class="block py-3 px-4 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 font-semibold text-gray-700 transition">Jadwal</a>
                 <a href="#syarat" class="block py-3 px-4 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 font-semibold text-gray-700 transition">Syarat</a>
                 <a href="#kontak" class="block py-3 px-4 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 font-semibold text-gray-700 transition">Kontak</a>
-                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] == '1'): ?>
+                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
                     <a href="<?= base_url('pendaftar') ?>" class="block py-3 px-4 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 font-semibold text-gray-700 transition">Data Pendaftar</a>
                 <?php endif; ?>
 
@@ -201,9 +204,9 @@
                 <?= $content['hero']['subheadline'] ?? 'Mari bergabung bersama kami membentuk generasi mandiri, berprestasi, dan berakhlak mulia.' ?>
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-4 w-full sm:w-auto">
-                <a href="<?= $content['hero']['cta_link'] ?? base_url('auth/register') ?>"
+                <a href="<?= esc($content['hero']['cta_link'] ?? base_url('auth/register'), 'attr') ?>"
                     class="bg-yellow-500 hover:bg-yellow-400 text-yellow-950 font-bold py-4 px-10 rounded-full transition-all duration-300 shadow-[0_0_20px_rgba(234,179,8,0.4)] hover:shadow-[0_0_30px_rgba(234,179,8,0.6)] transform hover:-translate-y-1 text-lg flex items-center justify-center group">
-                    <?= $content['hero']['cta_text'] ?? 'Daftar Sekarang' ?>
+                    <?= esc($content['hero']['cta_text'] ?? 'Daftar Sekarang') ?>
                     <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                 </a>
                 <a href="#syarat"
@@ -238,8 +241,8 @@
                             <div class="w-16 h-16 bg-white shadow-sm rounded-2xl flex items-center justify-center text-emerald-600 mb-6 text-2xl group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-400 relative z-10 border border-emerald-50">
                                 <i class="<?= esc($f['ikon'] ?? 'fas fa-star') ?>"></i>
                             </div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800 relative z-10"><?= $f['judul'] ?></h3>
-                            <p class="text-gray-500 leading-relaxed relative z-10"><?= $f['deskripsi'] ?></p>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800 relative z-10"><?= esc($f['judul']) ?></h3>
+                            <p class="text-gray-500 leading-relaxed relative z-10"><?= esc($f['deskripsi']) ?></p>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -258,7 +261,7 @@
         <div class="container mx-auto px-4 md:px-6 relative z-10">
             <div class="text-center mb-20">
                 <span class="inline-block py-1 px-3 rounded-full bg-emerald-100 text-emerald-700 font-bold tracking-wider text-xs mb-3 uppercase shadow-sm">Timeline PPDB</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4"><?= $content['jadwal']['title'] ?? 'Jadwal Pelaksanaan' ?></h2>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4"><?= esc($content['jadwal']['title'] ?? 'Jadwal Pelaksanaan') ?></h2>
                 <div class="w-20 h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600 mx-auto rounded-full mb-4"></div>
                 <p class="text-gray-500 max-w-2xl mx-auto">Catat tanggal penting berikut agar Anda tidak tertinggal setiap tahapan proses pendaftaran.</p>
             </div>
@@ -275,16 +278,16 @@
                     </div>
                     <div class="flex-grow flex flex-col">
                         <div class="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-2">Tahap 1</div>
-                        <h3 class="text-2xl font-bold mb-4 text-gray-800 line-clamp-2"><?= $content['jadwal']['tahap1_judul'] ?? 'Pendaftaran Online' ?></h3>
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800 line-clamp-2"><?= esc($content['jadwal']['tahap1_judul'] ?? 'Pendaftaran Online') ?></h3>
 
                         <div class="mt-auto pt-6 border-t border-gray-100">
                             <div class="flex items-center space-x-3 mb-2 text-gray-600">
                                 <i class="far fa-calendar-alt text-emerald-500 w-5"></i>
-                                <span class="font-semibold text-gray-800"><?= $content['jadwal']['tahap1_tanggal'] ?? '01 Mei - 15 Mei 2024' ?></span>
+                                <span class="font-semibold text-gray-800"><?= esc($content['jadwal']['tahap1_tanggal'] ?? '01 Mei - 15 Mei 2024') ?></span>
                             </div>
                             <div class="flex items-start space-x-3 text-gray-500">
                                 <i class="fas fa-info-circle text-emerald-500 w-5 mt-1"></i>
-                                <span class="text-sm leading-relaxed"><?= $content['jadwal']['tahap1_keterangan'] ?? 'Melalui website resmi PPDB' ?></span>
+                                <span class="text-sm leading-relaxed"><?= esc($content['jadwal']['tahap1_keterangan'] ?? 'Melalui website resmi PPDB') ?></span>
                             </div>
                         </div>
                     </div>
@@ -298,16 +301,16 @@
                     </div>
                     <div class="flex-grow flex flex-col">
                         <div class="text-xs font-bold text-yellow-600 uppercase tracking-widest mb-2">Tahap 2</div>
-                        <h3 class="text-2xl font-bold mb-4 text-gray-800 line-clamp-2"><?= $content['jadwal']['tahap2_judul'] ?? 'Verifikasi Berkas' ?></h3>
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800 line-clamp-2"><?= esc($content['jadwal']['tahap2_judul'] ?? 'Verifikasi Berkas') ?></h3>
 
                         <div class="mt-auto pt-6 border-t border-gray-100">
                             <div class="flex items-center space-x-3 mb-2 text-gray-600">
                                 <i class="far fa-calendar-alt text-yellow-500 w-5"></i>
-                                <span class="font-semibold text-gray-800"><?= $content['jadwal']['tahap2_tanggal'] ?? '17 Mei - 20 Mei 2024' ?></span>
+                                <span class="font-semibold text-gray-800"><?= esc($content['jadwal']['tahap2_tanggal'] ?? '17 Mei - 20 Mei 2024') ?></span>
                             </div>
                             <div class="flex items-start space-x-3 text-gray-500">
                                 <i class="fas fa-info-circle text-yellow-500 w-5 mt-1"></i>
-                                <span class="text-sm leading-relaxed"><?= $content['jadwal']['tahap2_keterangan'] ?? 'Datang langsung ke Madrasah membawa berkas asli' ?></span>
+                                <span class="text-sm leading-relaxed"><?= esc($content['jadwal']['tahap2_keterangan'] ?? 'Datang langsung ke Madrasah membawa berkas asli') ?></span>
                             </div>
                         </div>
                     </div>
@@ -321,16 +324,16 @@
                     </div>
                     <div class="flex-grow flex flex-col">
                         <div class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">Tahap 3</div>
-                        <h3 class="text-2xl font-bold mb-4 text-gray-800 line-clamp-2"><?= $content['jadwal']['tahap3_judul'] ?? 'Pengumuman Hasil' ?></h3>
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800 line-clamp-2"><?= esc($content['jadwal']['tahap3_judul'] ?? 'Pengumuman Hasil') ?></h3>
 
                         <div class="mt-auto pt-6 border-t border-gray-100">
                             <div class="flex items-center space-x-3 mb-2 text-gray-600">
                                 <i class="far fa-calendar-alt text-blue-500 w-5"></i>
-                                <span class="font-semibold text-gray-800"><?= $content['jadwal']['tahap3_tanggal'] ?? '25 Mei 2024' ?></span>
+                                <span class="font-semibold text-gray-800"><?= esc($content['jadwal']['tahap3_tanggal'] ?? '25 Mei 2024') ?></span>
                             </div>
                             <div class="flex items-start space-x-3 text-gray-500">
                                 <i class="fas fa-info-circle text-blue-500 w-5 mt-1"></i>
-                                <span class="text-sm leading-relaxed"><?= $content['jadwal']['tahap3_keterangan'] ?? 'Dilihat melalui website atau papan pengumuman' ?></span>
+                                <span class="text-sm leading-relaxed"><?= esc($content['jadwal']['tahap3_keterangan'] ?? 'Dilihat melalui website atau papan pengumuman') ?></span>
                             </div>
                         </div>
                     </div>
@@ -347,7 +350,7 @@
                 <!-- Left Title Area -->
                 <div class="w-full lg:w-1/3 lg:sticky lg:top-32">
                     <span class="inline-block py-1 px-3 rounded-full bg-emerald-100 text-emerald-700 font-bold tracking-wider text-xs mb-3 uppercase shadow-sm">Information</span>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 leading-tight"><?= $content['syarat']['title'] ?? 'Persyaratan Pendaftaran' ?></h2>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 leading-tight"><?= esc($content['syarat']['title'] ?? 'Persyaratan Pendaftaran') ?></h2>
                     <p class="text-gray-500 mb-8 text-lg">Harap persiapkan dokumen-dokumen berikut untuk memperlancar proses pendaftaran Ananda tercinta.</p>
 
                     <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-8 relative overflow-hidden">
@@ -358,7 +361,7 @@
                         <p class="text-sm text-amber-700 relative z-10">Semua berkas fisik wajib dibawa di dalam stopmap saat proses <span class="font-bold">Verifikasi Berkas (Tahap 2)</span> ke madrasah.</p>
                     </div>
 
-                    <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] == '1'): ?>
+                    <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
                         <a href="<?= base_url('pendaftar') ?>" class="inline-flex items-center justify-center bg-gray-900 hover:bg-emerald-600 text-white font-semibold py-3.5 px-6 rounded-xl shadow-md transition-all duration-300 group w-full sm:w-auto">
                             <i class="fas fa-search mr-2"></i>
                             <span>Cek Data Pendaftar Publik</span>
@@ -394,7 +397,7 @@
                                 </div>
                                 <div class="pt-1">
                                     <h4 class="text-gray-900 font-bold mb-1">Syarat <?= $idx + 1 ?></h4>
-                                    <p class="text-gray-500 text-sm leading-relaxed"><?= $syaratText ?></p>
+                                    <p class="text-gray-500 text-sm leading-relaxed"><?= esc($syaratText) ?></p>
                                 </div>
                             </div>
                         <?php
@@ -526,7 +529,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-semibold text-emerald-200 text-xs uppercase tracking-wider mb-1">Alamat Madrasah</h4>
-                                    <p class="text-white font-medium leading-relaxed"><?= $content['kontak']['alamat'] ?? 'Jl. Raya No. 123, Kab. Tanggamus, Lampung' ?></p>
+                                    <p class="text-white font-medium leading-relaxed"><?= esc($content['kontak']['alamat'] ?? 'Jl. Raya No. 123, Kab. Tanggamus, Lampung') ?></p>
                                 </div>
                             </div>
 
@@ -536,7 +539,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-semibold text-emerald-200 text-xs uppercase tracking-wider mb-1">WhatsApp Panitia</h4>
-                                    <p class="text-white font-medium text-lg leading-relaxed"><?= $content['kontak']['whatsapp_nama'] ?? '+62 812-3456-7890 (Bpk. Ahmad)' ?></p>
+                                    <p class="text-white font-medium text-lg leading-relaxed"><?= esc($content['kontak']['whatsapp_nama'] ?? '+62 812-3456-7890 (Bpk. Ahmad)') ?></p>
                                 </div>
                             </div>
                         </div>
@@ -574,8 +577,15 @@
                         <span class="text-xs font-bold text-gray-800 tracking-wider">LOKASI KAMI</span>
                     </div>
                     <!-- Arbitrary Tailwind variants used to style the inner iframe regardless of user input -->
-                    <div class="w-full h-[350px] md:h-[450px] rounded-[2rem] overflow-hidden [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:border-0 saturate-[1.1] contrast-[1.05]">
-                        <?= $content['kontak']['google_maps'] ?>
+                    <div class="w-full h-[350px] md:h-[450px] rounded-[2rem] overflow-hidden">
+                        <?php
+                        $mapsHtml = $content['kontak']['google_maps'] ?? '';
+                        if (preg_match('/<iframe[^>]+src=["\'](https?:\/\/[^"\']+\.google\.[^"\']+maps[^"\']*)["\'][^>]*><\/iframe>/i', $mapsHtml, $m)) {
+                            echo '<iframe src="' . esc($m[1]) . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
+                        } else {
+                            echo esc($mapsHtml);
+                        }
+                        ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -648,7 +658,7 @@
                         <?php if (!empty($web['logo_sekolah'])): ?>
                             <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="w-10 h-10 object-contain bg-white rounded-lg p-1">
                         <?php endif; ?>
-                        <h3 class="text-2xl font-bold tracking-tight"><?= $content['footer']['nama_sekolah'] ?? ($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus') ?></h3>
+                        <h3 class="text-2xl font-bold tracking-tight"><?= esc($content['footer']['nama_sekolah'] ?? ($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus')) ?></h3>
                     </div>
                     <p class="text-gray-400 font-medium">Mandiri, Berprestasi, Berakhlak Mulia</p>
                 </div>
@@ -660,22 +670,22 @@
                             <i class="fab fa-whatsapp"></i>
                         </a>
                         <?php if (!empty($content['footer']['facebook_link'])): ?>
-                            <a href="<?= $content['footer']['facebook_link'] ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 flex items-center justify-center transition-colors">
+                            <a href="<?= esc($content['footer']['facebook_link'], 'attr') ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 flex items-center justify-center transition-colors">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
                         <?php endif; ?>
                         <?php if (!empty($content['footer']['instagram_link'])): ?>
-                            <a href="<?= $content['footer']['instagram_link'] ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-pink-600 flex items-center justify-center transition-colors">
+                            <a href="<?= esc($content['footer']['instagram_link'], 'attr') ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-pink-600 flex items-center justify-center transition-colors">
                                 <i class="fab fa-instagram"></i>
                             </a>
                         <?php endif; ?>
                         <?php if (!empty($content['footer']['tiktok_link'])): ?>
-                            <a href="<?= $content['footer']['tiktok_link'] ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-black flex items-center justify-center transition-colors">
+                            <a href="<?= esc($content['footer']['tiktok_link'], 'attr') ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-black flex items-center justify-center transition-colors">
                                 <i class="fab fa-tiktok"></i>
                             </a>
                         <?php endif; ?>
                         <?php if (!empty($content['footer']['youtube_link'])): ?>
-                            <a href="<?= $content['footer']['youtube_link'] ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-red-600 flex items-center justify-center transition-colors">
+                            <a href="<?= esc($content['footer']['youtube_link'], 'attr') ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-red-600 flex items-center justify-center transition-colors">
                                 <i class="fab fa-youtube"></i>
                             </a>
                         <?php endif; ?>
@@ -684,7 +694,7 @@
             </div>
 
             <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-                <p>&copy; <?= date('Y') ?> <?= esc($web['nama_sekolah'] ?? '') ?>. <?= $content['footer']['copyright'] ?? 'Official Website PPDB. All rights reserved.' ?></p>
+                <p>&copy; <?= date('Y') ?> <?= esc($web['nama_sekolah'] ?? '') ?>. <?= esc($content['footer']['copyright'] ?? 'Official Website PPDB. All rights reserved.') ?></p>
                 <!-- <div class="mt-4 md:mt-0 space-x-4">
                     <a href="<?= base_url('login') ?>" class="hover:text-emerald-400 transition">Admin Login</a>
                 </div> -->
@@ -744,7 +754,7 @@
             if (popup.lampiran && (popup.lampiran.match(/\.(jpg|jpeg|png|gif)$/i))) {
                 html += `<img src="<?= base_url('uploads/pengumuman/') ?>${popup.lampiran}" class="w-full rounded-lg mb-4 shadow-sm border border-gray-200">`;
             }
-            html += `<div class="prose prose-sm prose-emerald max-w-none text-gray-600">${popup.isi_pengumuman}</div>`;
+            html += `<div class="prose prose-sm prose-emerald max-w-none text-gray-600">${DOMPurify.sanitize(popup.isi_pengumuman)}</div>`;
             
             contentContainer.innerHTML = html;
             modal.classList.remove('hidden');
@@ -810,12 +820,12 @@
         const menuIcon = btn.querySelector('i');
 
         btn.addEventListener('click', () => {
-            if (mobileMenu.classList.contains('hidden')) {
-                mobileMenu.classList.remove('hidden');
+            if (!mobileMenu.classList.contains('open')) {
+                mobileMenu.classList.add('open');
                 menuIcon.classList.remove('fa-bars');
                 menuIcon.classList.add('fa-times');
             } else {
-                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('open');
                 menuIcon.classList.remove('fa-times');
                 menuIcon.classList.add('fa-bars');
             }
@@ -836,7 +846,7 @@
                     });
 
                     // Close mobile menu
-                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('open');
                     menuIcon.classList.remove('fa-times');
                     menuIcon.classList.add('fa-bars');
                 }

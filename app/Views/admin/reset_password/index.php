@@ -72,7 +72,7 @@ Antrean Permintaan Reset Password
                             </td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex items-center justify-center gap-2 flex-wrap">
-                                    <form action="<?= base_url('admin/reset-password/approve/' . $r['id']) ?>" method="post" class="inline" data-confirm="Reset password siswa ini ke 123456?">
+                                    <form action="<?= base_url('admin/reset-password/approve/' . $r['id']) ?>" method="post" class="inline" data-confirm="Reset password siswa ini? Password baru akan digenerate secara acak.">
                                         <?= csrf_field() ?>
                                         <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1.5 px-3 rounded shadow-sm transition text-xs flex items-center gap-1">
                                             <i class="fas fa-check"></i> Reset & Setujui

@@ -73,12 +73,17 @@
                                     title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <a href="<?= base_url('admin/landing-content/deleteFaq/' . $row['id']) ?>" 
-                               class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-2 py-1 rounded transition duration-200 delete-btn"
-                               onclick="return confirm('Apakah Anda yakin ingin menghapus data FAQ ini?')"
-                               title="Hapus">
-                                <i class="fas fa-trash"></i>
-                            </a>
+                            <form method="post" action="<?= base_url('admin/landing-content/deleteFaq/' . $row['id']) ?>"
+                                data-confirm="Apakah Anda yakin ingin menghapus data FAQ ini?"
+                                data-confirm-icon="question"
+                                style="display:inline">
+                                <?= csrf_field() ?>
+                                <button type="submit"
+                                    class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-2 py-1 rounded transition duration-200 delete-btn"
+                                    title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     <?php endforeach; ?>

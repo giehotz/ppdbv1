@@ -195,12 +195,16 @@ Manajemen Berkas
                                                                 title="Validasi Berkas">
                                                                 <i class="fas fa-check-square text-lg"></i>
                                                             </button>
-                                                            <a href="<?= base_url('admin/berkas/delete/' . $b['id_berkas']) ?>"
+                                                            <form method="post" action="<?= base_url('admin/berkas/delete/' . $b['id_berkas']) ?>"
                                                                 data-confirm="Yakin ingin menghapus berkas ini?"
-                                                                class="text-red-500 hover:text-red-700 transform hover:scale-110 transition duration-200"
-                                                                title="Hapus Berkas">
-                                                                <i class="fas fa-trash-alt text-lg"></i>
-                                                            </a>
+                                                                style="display:inline">
+                                                                <?= csrf_field() ?>
+                                                                <button type="submit"
+                                                                    class="text-red-500 hover:text-red-700 transform hover:scale-110 transition duration-200"
+                                                                    title="Hapus Berkas">
+                                                                    <i class="fas fa-trash-alt text-lg"></i>
+                                                                </button>
+                                                            </form>
                                                         </div>
                                                     </td>
                                                 </tr>

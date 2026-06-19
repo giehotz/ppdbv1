@@ -207,22 +207,8 @@
 <body>
 
     <div class="container">
-        <div class="header">
-            <div class="header-inner">
-                <div class="header-logo">
-                    <?php if (!empty($web['logo_sekolah'])): ?>
-                        <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo">
-                    <?php endif; ?>
-                </div>
-                <div class="header-text">
-                    <h1>KEMENTERIAN AGAMA</h1>
-                    <h2><?= strtoupper($web['nama_sekolah']) ?></h2>
-                    <p><?= $web['alamat_sekolah'] ?></p>
-                    <p>Telp: <?= $web['telepon'] ?> | Email: <?= $web['email'] ?> | Website: <?= $web['website'] ?></p>
-                </div>
-                <div class="header-spacer"></div>
-            </div>
-        </div>
+        <?php helper('kop'); ?>
+        <?= render_kop_surat() ?>
 
         <div class="content">
             <div class="title">SURAT KETERANGAN LULUS SELEKSI</div>

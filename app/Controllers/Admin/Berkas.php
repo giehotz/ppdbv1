@@ -54,25 +54,37 @@ class Berkas extends BaseController
         return redirect()->to('/admin/berkas');
     }
 
+    private function resolveBerkasPath(array $berkas): ?string
+    {
+        $baseDir = realpath(FCPATH . 'uploads/berkas/') ?: FCPATH . 'uploads/berkas/';
+
+        if (!empty($berkas['path_file'])) {
+            $filePath = realpath(FCPATH . $berkas['path_file']);
+        } else {
+            $siswaModel = new \App\Models\SiswaModel();
+            $siswa = $siswaModel->find($berkas['id_siswa']);
+            $nisn = $siswa['nisn'] ?? '';
+            $cleanNisn = preg_replace('/[^a-zA-Z0-9_-]/', '', $nisn);
+            $filePath = realpath(FCPATH . 'uploads/berkas/' . $cleanNisn . '/' . $berkas['nama_file']);
+        }
+
+        if ($filePath === false || strpos($filePath, $baseDir) !== 0) {
+            return null;
+        }
+
+        return $filePath;
+    }
+
     public function delete($id)
     {
         $berkas = $this->berkasModel->find($id);
 
         if ($berkas) {
-            // Delete file from server
-            if (!empty($berkas['path_file'])) {
-                $filePath = FCPATH . $berkas['path_file'];
-            } else {
-                // Fallback: get NISN from siswa table
-                $siswaModel = new \App\Models\SiswaModel();
-                $siswa = $siswaModel->find($berkas['id_siswa']);
-                $filePath = FCPATH . 'uploads/berkas/' . ($siswa['nisn'] ?? '') . '/' . $berkas['nama_file'];
-            }
-            if (file_exists($filePath)) {
+            $filePath = $this->resolveBerkasPath($berkas);
+            if ($filePath !== null && file_exists($filePath)) {
                 unlink($filePath);
             }
 
-            // Delete record from database
             if ($this->berkasModel->delete($id)) {
                 session()->setFlashdata('success', 'Berkas berhasil dihapus.');
             } else {
@@ -94,16 +106,9 @@ class Berkas extends BaseController
             return redirect()->to('/admin/berkas');
         }
 
-        // Build file path using path_file or fallback to NISN subfolder
-        if (!empty($berkas['path_file'])) {
-            $filePath = FCPATH . $berkas['path_file'];
-        } else {
-            $siswaModel = new \App\Models\SiswaModel();
-            $siswa = $siswaModel->find($berkas['id_siswa']);
-            $filePath = FCPATH . 'uploads/berkas/' . ($siswa['nisn'] ?? '') . '/' . $berkas['nama_file'];
-        }
+        $filePath = $this->resolveBerkasPath($berkas);
 
-        if (!file_exists($filePath)) {
+        if ($filePath === null || !file_exists($filePath)) {
             session()->setFlashdata('error', 'File tidak ditemukan di server.');
             return redirect()->to('/admin/berkas');
         }

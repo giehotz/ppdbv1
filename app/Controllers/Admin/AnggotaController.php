@@ -37,6 +37,9 @@ class AnggotaController extends BaseController
 
         $foto = $this->request->getFile('foto');
         if ($foto && $foto->isValid() && !$foto->hasMoved()) {
+            if (!$this->validateUploadedFoto($foto)) {
+                return redirect()->to(base_url('admin/anggota'))->with('error', 'File foto harus berformat JPG, PNG, atau WebP maksimal 2MB.');
+            }
             $newName = $foto->getRandomName();
             $foto->move('uploads/kartu', $newName);
             $data['foto'] = $newName;
@@ -61,6 +64,9 @@ class AnggotaController extends BaseController
 
         $foto = $this->request->getFile('foto');
         if ($foto && $foto->isValid() && !$foto->hasMoved()) {
+            if (!$this->validateUploadedFoto($foto)) {
+                return redirect()->to(base_url('admin/anggota'))->with('error', 'File foto harus berformat JPG, PNG, atau WebP maksimal 2MB.');
+            }
             $newName = $foto->getRandomName();
             $foto->move('uploads/kartu', $newName);
             $data['foto'] = $newName;
@@ -78,10 +84,32 @@ class AnggotaController extends BaseController
     public function delete($id)
     {
         $old = $this->anggotaModel->find($id);
-        if ($old && !empty($old['foto']) && file_exists('uploads/kartu/' . $old['foto'])) {
-            unlink('uploads/kartu/' . $old['foto']);
+        if ($old && !empty($old['foto'])) {
+            $cleanName = basename($old['foto']);
+            $fotoPath = FCPATH . 'uploads/kartu/' . $cleanName;
+            if (file_exists($fotoPath)) {
+                unlink($fotoPath);
+            }
         }
         $this->anggotaModel->delete($id);
         return redirect()->to(base_url('admin/anggota'))->with('success', 'Data Anggota berhasil dihapus.');
+    }
+
+    private function validateUploadedFoto($file): bool
+    {
+        $allowedMime = ['image/jpeg', 'image/png', 'image/webp'];
+        $allowedExt = ['jpg', 'jpeg', 'png', 'webp'];
+
+        if (!in_array($file->getMimeType(), $allowedMime)) {
+            return false;
+        }
+        if (!in_array(strtolower($file->getExtension()), $allowedExt)) {
+            return false;
+        }
+        if ($file->getSize() > 2048000) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Protect .env files
+    RewriteRule ^\.env - [F,L]
+    RewriteRule ^\.env\. - [F,L]
+    # Protect debug/config files
+    RewriteRule ^_debug - [F,L]
+    RewriteRule ^(composer\.json|composer\.lock|\.gitignore) - [F,L]
+</IfModule>
+<FilesMatch "^\.env|_debug|composer\.(json|lock)$">
+    Require all denied
+</FilesMatch>

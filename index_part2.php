@@ -305,6 +305,7 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js"></script>
     <script>
         const popups = <?= json_encode($popups) ?>;
         let currentPopupIndex = 0;
@@ -325,7 +326,7 @@
             if (popup.lampiran && (popup.lampiran.match(/\.(jpg|jpeg|png|gif)$/i))) {
                 html += `<img src="<?= base_url('uploads/pengumuman/') ?>${popup.lampiran}" class="w-full rounded-lg mb-4 shadow-sm border border-surface-variant">`;
             }
-            html += `<div class="prose prose-sm prose-emerald max-w-none">${popup.isi_pengumuman}</div>`;
+            html += `<div class="prose prose-sm prose-emerald max-w-none">${DOMPurify.sanitize(popup.isi_pengumuman)}</div>`;
             
             contentContainer.innerHTML = html;
             modal.classList.remove('hidden');

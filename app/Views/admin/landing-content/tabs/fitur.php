@@ -30,7 +30,10 @@
                                     </td>
                                     <td class="py-2 px-4 border-b text-right text-sm">
                                         <button onclick='editFitur(<?= json_encode($f) ?>)' class="text-blue-600 hover:text-blue-900 mr-2"><i class="fas fa-edit"></i></button>
-                                        <a href="<?= base_url('admin/landing-content/deleteFitur/' . $f['fitur_id']) ?>" data-confirm="Yakin hapus?" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></a>
+                                        <form method="post" action="<?= base_url('admin/landing-content/deleteFitur/' . $f['fitur_id']) ?>" data-confirm="Yakin hapus?" style="display:inline">
+                                            <?= csrf_field() ?>
+                                            <button type="submit" class="text-red-600 hover:text-red-900" style="background:none;border:none;cursor:pointer;padding:0"><i class="fas fa-trash"></i></button>
+                                        </form>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

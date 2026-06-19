@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Pendaftar - <?= isset($content['navbar']['nama_sekolah']) ? $content['navbar']['nama_sekolah'] : 'PPDB Online' ?></title>
+    <title>Daftar Pendaftar - <?= isset($content['navbar']['nama_sekolah']) ? esc($content['navbar']['nama_sekolah']) : 'PPDB Online' ?></title>
     
     <?php
     $page_title = 'Daftar Pendaftar';
@@ -65,17 +65,17 @@
                     <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 object-contain rounded-full bg-white p-0.5 border border-gray-100">
                 <?php else: ?>
                     <div class="w-8 h-8 md:w-10 md:h-10 bg-madrasah rounded-full flex items-center justify-center text-white font-bold text-lg md:text-xl">
-                        <?= mb_substr($content['navbar']['nama_sekolah'] ?? 'M', 0, 1) ?>
+                        <?= mb_substr(esc($content['navbar']['nama_sekolah'] ?? 'M'), 0, 1) ?>
                     </div>
                 <?php endif; ?>
-                <span class="font-bold text-sm sm:text-lg md:text-xl tracking-tight leading-tight"><?= $content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus' ?></span>
+                <span class="font-bold text-sm sm:text-lg md:text-xl tracking-tight leading-tight"><?= esc($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus') ?></span>
             </div>
             <div class="hidden lg:flex space-x-6 font-medium">
                 <a href="<?= base_url('/') ?>#beranda" class="hover:text-green-600 transition">Beranda</a>
                 <a href="<?= base_url('/') ?>#jadwal" class="hover:text-green-600 transition">Jadwal</a>
                 <a href="<?= base_url('/') ?>#syarat" class="hover:text-green-600 transition">Syarat</a>
                 <a href="<?= base_url('/') ?>#kontak" class="hover:text-green-600 transition">Kontak</a>
-                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] == '1'): ?>
+                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
                     <a href="<?= base_url('pendaftar') ?>" class="text-green-600 transition border-b-2 border-green-600 pb-1">Data Pendaftar</a>
                 <?php endif; ?>
             </div>
@@ -93,7 +93,7 @@
             <a href="<?= base_url('/') ?>#jadwal" class="block py-2 px-3 rounded-lg hover:bg-green-50 hover:text-green-600 font-medium">Jadwal</a>
             <a href="<?= base_url('/') ?>#syarat" class="block py-2 px-3 rounded-lg hover:bg-green-50 hover:text-green-600 font-medium">Syarat</a>
             <a href="<?= base_url('/') ?>#kontak" class="block py-2 px-3 rounded-lg hover:bg-green-50 hover:text-green-600 font-medium">Kontak</a>
-            <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] == '1'): ?>
+            <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
                 <a href="<?= base_url('pendaftar') ?>" class="block py-2 px-3 rounded-lg bg-green-50 text-green-600 font-medium">Data Pendaftar</a>
             <?php endif; ?>
             <div class="border-t border-gray-200 pt-3 mt-2 flex flex-col space-y-2 sm:hidden">
@@ -217,7 +217,7 @@
     <!-- FOOTER -->
     <footer class="bg-madrasah text-white pt-8 pb-6 mt-auto">
         <div class="container mx-auto px-4 text-center">
-            <h3 class="text-xl font-bold mb-2"><?= $content['footer']['nama_sekolah'] ?? ($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus') ?></h3>
+            <h3 class="text-xl font-bold mb-2"><?= esc($content['footer']['nama_sekolah'] ?? ($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus')) ?></h3>
             <p class="text-green-200 text-sm mb-4">&copy; <?= date('Y') ?> <?= esc($web['nama_sekolah'] ?? '') ?>. <?= esc($content['footer']['copyright'] ?? 'Official Website PPDB. All rights reserved.') ?></p>
         </div>
     </footer>

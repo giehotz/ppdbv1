@@ -78,12 +78,16 @@ Pesan Pribadi Terkirim
                                         title="Detail">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="<?= base_url('admin/pesan/delete/' . $p['id_pesan']) ?>"
-                                        onclick="return confirm('Yakin ingin menghapus pesan ini?')"
-                                        class="text-red-500 hover:text-red-700 transform hover:scale-110"
-                                        title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+                                    <form method="post" action="<?= base_url('admin/pesan/delete/' . $p['id_pesan']) ?>"
+                                        data-confirm="Yakin ingin menghapus pesan ini?"
+                                        style="display:inline">
+                                        <?= csrf_field() ?>
+                                        <button type="submit"
+                                            class="text-red-500 hover:text-red-700 transform hover:scale-110"
+                                            title="Hapus">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

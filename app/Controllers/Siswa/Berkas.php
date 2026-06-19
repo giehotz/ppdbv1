@@ -92,8 +92,15 @@ class Berkas extends BaseController
             mkdir($uploadPath, 0777, true);
         }
 
+        // Validate extension
+        $allowedExts = ['jpg', 'jpeg', 'png', 'pdf'];
+        $extension = strtolower($file->getExtension());
+        if (!in_array($extension, $allowedExts)) {
+            session()->setFlashdata('error', 'Ekstensi file tidak diizinkan. Hanya JPG, PNG, atau PDF.');
+            return redirect()->back();
+        }
+
         // Generate filename: e.g. KK_Nama Siswa_NISN.pdf
-        $extension = $file->getExtension();
         $jenisLabel = strtoupper($jenisBerkas);
         $namaClean = str_replace(' ', '_', $siswa['nama_lengkap']);
         $fileName = $jenisLabel . '_' . $namaClean . '_' . $nisn . '.' . $extension;
@@ -157,9 +164,11 @@ class Berkas extends BaseController
         $siswa = $siswaModel->find($idSiswa);
         $nisn = $siswa['nisn'];
 
-        // Delete file
-        $filePath = FCPATH . 'uploads/berkas/' . $nisn . '/' . $berkas['nama_file'];
-        if (file_exists($filePath)) {
+        // Delete file with path traversal protection
+        $safeNisn = preg_replace('/[^a-zA-Z0-9_-]/', '', $nisn);
+        $baseDir = realpath(FCPATH . 'uploads/berkas/') ?: FCPATH . 'uploads/berkas/';
+        $filePath = realpath(FCPATH . 'uploads/berkas/' . $safeNisn . '/' . $berkas['nama_file']);
+        if ($filePath !== false && strpos($filePath, $baseDir) === 0 && file_exists($filePath)) {
             unlink($filePath);
         }
 

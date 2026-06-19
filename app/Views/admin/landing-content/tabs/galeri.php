@@ -12,7 +12,10 @@
                             </div>
                             <div class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition">
                                 <button onclick='editGaleri(<?= json_encode($g) ?>)' class="bg-white p-1 rounded shadow text-blue-600 hover:text-blue-800"><i class="fas fa-edit"></i></button>
-                                <a href="<?= base_url('admin/landing-content/deleteGaleri/' . $g['galeri_id']) ?>" data-confirm="Yakin hapus?" class="bg-white p-1 rounded shadow text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
+                                <form method="post" action="<?= base_url('admin/landing-content/deleteGaleri/' . $g['galeri_id']) ?>" data-confirm="Yakin hapus?" style="display:inline">
+                                    <?= csrf_field() ?>
+                                    <button type="submit" class="bg-white p-1 rounded shadow text-red-600 hover:text-red-800" style="border:none;cursor:pointer"><i class="fas fa-trash"></i></button>
+                                </form>
                             </div>
                             <?php if (!$g['is_active']): ?>
                                 <div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">Non-Aktif</div>

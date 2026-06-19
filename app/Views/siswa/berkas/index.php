@@ -106,9 +106,13 @@ Upload Berkas Pendaftaran
                                 </div>
 
                                 <div class="flex items-center gap-2 w-full sm:w-auto">
-                                    <a href="<?= base_url('uploads/berkas/' . $siswa['nisn'] . '/' . $uploadedBerkas[$jenis]['nama_file']) ?>" target="_blank" class="flex-1 sm:flex-none inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-200 p-2.5 rounded-xl text-sm transition-all duration-200 shadow-sm" title="Lihat Berkas">
+                                    <?php 
+                                        $fileUrl = base_url('uploads/berkas/' . $siswa['nisn'] . '/' . $uploadedBerkas[$jenis]['nama_file']);
+                                        $isPdf = (strtolower(pathinfo($uploadedBerkas[$jenis]['nama_file'], PATHINFO_EXTENSION)) == 'pdf') ? 'true' : 'false';
+                                    ?>
+                                    <button type="button" onclick="openPreview('<?= $fileUrl ?>', '<?= esc($label) ?>', <?= $isPdf ?>)" class="flex-1 sm:flex-none inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-200 p-2.5 rounded-xl text-sm transition-all duration-200 shadow-sm" title="Lihat Berkas">
                                         <i class="fas fa-eye"></i>
-                                    </a>
+                                    </button>
 
                                     <button type="button" onclick="document.getElementById('form-replace-<?= $jenis ?>').classList.toggle('hidden')" class="flex-1 sm:flex-none inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:text-amber-600 hover:border-amber-200 p-2.5 rounded-xl text-sm transition-all duration-200 shadow-sm" title="Ganti Berkas">
                                         <i class="fas fa-sync-alt"></i>
@@ -259,6 +263,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+</script>
+
+<!-- Modal Preview Berkas -->
+<div id="previewModal" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 lg:p-10 transition-opacity">
+    <div class="bg-white rounded-3xl w-full max-w-5xl overflow-hidden flex flex-col shadow-2xl animate-fade-in-down" style="max-height: 90vh;">
+        <div class="flex justify-between items-center p-5 md:p-6 border-b border-slate-100 bg-slate-50/50">
+            <h3 class="text-xl font-black text-slate-800 flex items-center gap-3" id="previewTitle">
+                <i class="fas fa-eye text-blue-500"></i> Preview Berkas
+            </h3>
+            <button type="button" onclick="closePreview()" class="w-10 h-10 flex items-center justify-center rounded-2xl bg-white border border-slate-200 text-slate-500 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-all duration-200 shadow-sm">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+        </div>
+        <div class="flex-1 overflow-auto bg-slate-100/50 flex items-center justify-center p-4 md:p-8 relative" id="previewContent">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+</div>
+
+<script>
+function openPreview(url, title, isPdf) {
+    const titleEl = document.getElementById('previewTitle');
+    titleEl.innerHTML = `<i class="fas fa-eye text-blue-500"></i> Preview: ${title}`;
+    const content = document.getElementById('previewContent');
+    
+    // Loading state while iframe/image loads
+    content.innerHTML = '<div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 gap-3"><i class="fas fa-circle-notch fa-spin text-4xl text-blue-500"></i><span class="text-sm font-bold animate-pulse">Memuat Dokumen...</span></div>';
+    
+    if (isPdf) {
+        content.innerHTML += `<iframe src="${url}" class="w-full rounded-2xl border border-slate-200 relative z-10 bg-white shadow-sm" style="height: 75vh;" onload="this.previousSibling.style.display='none'"></iframe>`;
+    } else {
+        content.innerHTML += `<img src="${url}" class="max-w-full rounded-2xl object-contain relative z-10 shadow-sm bg-white p-2 border border-slate-200" style="max-height: 75vh;" onload="this.previousSibling.style.display='none'">`;
+    }
+    
+    document.getElementById('previewModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closePreview() {
+    document.getElementById('previewModal').classList.add('hidden');
+    document.getElementById('previewContent').innerHTML = ''; // Clear iframe/image to free memory
+    document.body.style.overflow = 'auto'; // Restore scrolling
+}
 </script>
 
 <?= $this->endSection() ?>

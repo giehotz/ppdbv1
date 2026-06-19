@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $content['navbar']['nama_sekolah'] ?? 'PPDB Online - MIN 2 Tanggamus' ?></title>
+    <title><?= esc($content['navbar']['nama_sekolah'] ?? 'PPDB Online - MIN 2 Tanggamus') ?></title>
 
     <?php
     // Set page_title for the SEO partial to use
@@ -15,44 +15,7 @@
     <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        display: ['"Sora"', 'sans-serif'],
-                        body: ['"DM Sans"', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: {
-                            50: '#ecfdf5',
-                            100: '#d1fae5',
-                            200: '#a7f3d0',
-                            400: '#34d399',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                            800: '#065f46',
-                            900: '#064e3b',
-                            950: '#022c22',
-                        },
-                        gold: '#f59e0b',
-                    },
-                    borderRadius: {
-                        '4xl': '2rem',
-                        '5xl': '2.5rem',
-                    },
-                    boxShadow: {
-                        'glow-green': '0 0 40px -8px rgba(16, 185, 129, 0.5)',
-                        'glow-gold': '0 0 40px -8px rgba(245, 158, 11, 0.5)',
-                        'card': '0 4px 40px -8px rgba(0,0,0,0.08)',
-                        'card-hover': '0 20px 60px -12px rgba(16, 185, 129, 0.18)',
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js"></script>
 
     <style>
         :root {
@@ -494,11 +457,11 @@
                          class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-110">
                 <?php else: ?>
                     <div class="w-10 h-10 rounded-2xl bg-primary-800 flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                        <?= mb_substr($content['navbar']['nama_sekolah'] ?? 'M', 0, 1) ?>
+                        <?= mb_substr(esc($content['navbar']['nama_sekolah'] ?? 'M'), 0, 1) ?>
                     </div>
                 <?php endif; ?>
                 <span class="font-display font-bold text-lg text-gray-900 group-hover:text-primary-700 transition-colors leading-tight">
-                    <?= $content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus' ?>
+                    <?= esc($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus') ?>
                 </span>
             </a>
 
@@ -508,7 +471,7 @@
                 <a href="#jadwal" class="nav-link">Jadwal</a>
                 <a href="#syarat" class="nav-link">Persyaratan</a>
                 <a href="#kontak" class="nav-link">Kontak</a>
-                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] == '1'): ?>
+                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
                     <a href="<?= base_url('pendaftar') ?>" class="nav-link">Data Pendaftar</a>
                 <?php endif; ?>
             </div>
@@ -547,7 +510,7 @@
                 <a href="#kontak" class="mobile-link flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-primary-50 text-gray-700 font-semibold transition-colors">
                     <i class="fas fa-phone text-primary-500 w-5"></i> Kontak
                 </a>
-                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] == '1'): ?>
+                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
                     <a href="<?= base_url('pendaftar') ?>" class="mobile-link flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-primary-50 text-gray-700 font-semibold transition-colors">
                         <i class="fas fa-users text-primary-500 w-5"></i> Data Pendaftar
                     </a>
@@ -606,9 +569,9 @@
 
                 <!-- CTA Buttons -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center reveal reveal-delay-3">
-                    <a href="<?= $content['hero']['cta_link'] ?? base_url('auth/register') ?>"
+                    <a href="<?= esc($content['hero']['cta_link'] ?? base_url('auth/register'), 'attr') ?>"
                        class="btn-primary text-lg px-10 py-5 w-full sm:w-auto">
-                        <?= $content['hero']['cta_text'] ?? 'Daftar Sekarang' ?>
+                        <?= esc($content['hero']['cta_text'] ?? 'Daftar Sekarang') ?>
                         <i class="fas fa-arrow-right"></i>
                     </a>
                     <a href="#syarat"
@@ -649,8 +612,8 @@
                     <div class="icon-box bg-primary-50 text-primary-600 mb-6">
                         <i class="<?= esc($f['ikon'] ?? 'fas fa-star') ?>"></i>
                     </div>
-                    <h3 class="font-display text-xl font-bold text-gray-900 mb-3"><?= $f['judul'] ?></h3>
-                    <p class="text-gray-500 leading-relaxed text-sm"><?= $f['deskripsi'] ?></p>
+                    <h3 class="font-display text-xl font-bold text-gray-900 mb-3"><?= esc($f['judul']) ?></h3>
+                    <p class="text-gray-500 leading-relaxed text-sm"><?= esc($f['deskripsi']) ?></p>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -667,7 +630,7 @@
                 <span class="section-label"><i class="fas fa-calendar-check"></i> Timeline PPDB</span>
                 <div class="section-divider mx-auto mt-4"></div>
                 <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-900 mt-2">
-                    <?= $content['jadwal']['title'] ?? 'Jadwal Pelaksanaan' ?>
+                    <?= esc($content['jadwal']['title'] ?? 'Jadwal Pelaksanaan') ?>
                 </h2>
             </div>
 
@@ -683,14 +646,14 @@
                     </div>
                     <div class="h-1 w-10 rounded-full bg-primary-400 mb-5"></div>
                     <h3 class="font-display text-xl font-bold text-gray-900 mb-2">
-                        <?= $content['jadwal']['tahap1_judul'] ?? 'Pendaftaran Online' ?>
+                        <?= esc($content['jadwal']['tahap1_judul'] ?? 'Pendaftaran Online') ?>
                     </h3>
                     <p class="text-primary-700 font-semibold text-sm mb-2">
                         <i class="fas fa-calendar-days mr-1"></i>
-                        <?= $content['jadwal']['tahap1_tanggal'] ?? '01 Mei – 15 Mei' ?>
+                        <?= esc($content['jadwal']['tahap1_tanggal'] ?? '01 Mei – 15 Mei') ?>
                     </p>
                     <p class="text-gray-500 text-sm leading-relaxed">
-                        <?= $content['jadwal']['tahap1_keterangan'] ?? 'Melalui website resmi PPDB' ?>
+                        <?= esc($content['jadwal']['tahap1_keterangan'] ?? 'Melalui website resmi PPDB') ?>
                     </p>
                 </div>
 
@@ -704,14 +667,14 @@
                     </div>
                     <div class="h-1 w-10 rounded-full bg-amber-400 mb-5"></div>
                     <h3 class="font-display text-xl font-bold text-gray-900 mb-2">
-                        <?= $content['jadwal']['tahap2_judul'] ?? 'Verifikasi Berkas' ?>
+                        <?= esc($content['jadwal']['tahap2_judul'] ?? 'Verifikasi Berkas') ?>
                     </h3>
                     <p class="text-amber-700 font-semibold text-sm mb-2">
                         <i class="fas fa-calendar-days mr-1"></i>
-                        <?= $content['jadwal']['tahap2_tanggal'] ?? '17 Mei – 20 Mei' ?>
+                        <?= esc($content['jadwal']['tahap2_tanggal'] ?? '17 Mei – 20 Mei') ?>
                     </p>
                     <p class="text-gray-500 text-sm leading-relaxed">
-                        <?= $content['jadwal']['tahap2_keterangan'] ?? 'Datang langsung ke Madrasah membawa berkas asli' ?>
+                        <?= esc($content['jadwal']['tahap2_keterangan'] ?? 'Datang langsung ke Madrasah membawa berkas asli') ?>
                     </p>
                 </div>
 
@@ -725,14 +688,14 @@
                     </div>
                     <div class="h-1 w-10 rounded-full bg-blue-400 mb-5"></div>
                     <h3 class="font-display text-xl font-bold text-gray-900 mb-2">
-                        <?= $content['jadwal']['tahap3_judul'] ?? 'Pengumuman Hasil' ?>
+                        <?= esc($content['jadwal']['tahap3_judul'] ?? 'Pengumuman Hasil') ?>
                     </h3>
                     <p class="text-blue-700 font-semibold text-sm mb-2">
                         <i class="fas fa-calendar-days mr-1"></i>
-                        <?= $content['jadwal']['tahap3_tanggal'] ?? '25 Mei 2024' ?>
+                        <?= esc($content['jadwal']['tahap3_tanggal'] ?? '25 Mei 2024') ?>
                     </p>
                     <p class="text-gray-500 text-sm leading-relaxed">
-                        <?= $content['jadwal']['tahap3_keterangan'] ?? 'Dilihat melalui website atau papan pengumuman' ?>
+                        <?= esc($content['jadwal']['tahap3_keterangan'] ?? 'Dilihat melalui website atau papan pengumuman') ?>
                     </p>
                 </div>
             </div>
@@ -751,7 +714,7 @@
                     <span class="section-label reveal"><i class="fas fa-clipboard-list"></i> Persyaratan</span>
                     <div class="section-divider mt-4 reveal"></div>
                     <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight reveal">
-                        <?= $content['syarat']['title'] ?? 'Persyaratan Pendaftaran' ?>
+                        <?= esc($content['syarat']['title'] ?? 'Persyaratan Pendaftaran') ?>
                     </h2>
                     <p class="text-gray-500 mt-5 text-base leading-relaxed reveal">
                         Harap persiapkan dokumen-dokumen berikut untuk memperlancar proses pendaftaran.
@@ -772,7 +735,7 @@
                         </div>
                     </div>
 
-                    <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] == '1'): ?>
+                    <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
                     <a href="<?= base_url('pendaftar') ?>"
                        class="mt-6 inline-flex items-center gap-2 bg-gray-900 hover:bg-primary-700 text-white px-7 py-3.5 rounded-full font-semibold text-sm transition-all duration-300 reveal">
                         <i class="fas fa-users"></i>
@@ -814,7 +777,7 @@
                         </div>
                         <div>
                             <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Syarat <?= $idx + 1 ?></span>
-                            <p class="text-gray-700 font-medium text-sm mt-1 leading-relaxed"><?= $syaratText ?></p>
+                            <p class="text-gray-700 font-medium text-sm mt-1 leading-relaxed"><?= esc($syaratText) ?></p>
                         </div>
                     </div>
                     <?php $idx++; endfor; ?>
@@ -962,7 +925,7 @@
                                     <div>
                                         <p class="text-primary-300 text-xs font-bold uppercase tracking-widest mb-1">Alamat Madrasah</p>
                                         <p class="text-white font-medium leading-snug">
-                                            <?= $content['kontak']['alamat'] ?? 'Jl. Raya No. 123, Kab. Tanggamus, Lampung' ?>
+                                            <?= esc($content['kontak']['alamat'] ?? 'Jl. Raya No. 123, Kab. Tanggamus, Lampung') ?>
                                         </p>
                                     </div>
                                 </div>
@@ -975,7 +938,7 @@
                                     <div>
                                         <p class="text-primary-300 text-xs font-bold uppercase tracking-widest mb-1">WhatsApp Panitia</p>
                                         <p class="text-white font-semibold text-xl">
-                                            <?= $content['kontak']['whatsapp_nama'] ?? '+62 812-3456-7890' ?>
+                                            <?= esc($content['kontak']['whatsapp_nama'] ?? '+62 812-3456-7890') ?>
                                         </p>
                                     </div>
                                 </div>
@@ -995,7 +958,7 @@
                             </p>
 
                             <?php $waNumber = $content['kontak']['whatsapp_number'] ?? '6281234567890'; ?>
-                            <a href="https://wa.me/<?= $waNumber ?>" target="_blank" rel="noopener noreferrer"
+                            <a href="https://wa.me/<?= esc($waNumber) ?>" target="_blank" rel="noopener noreferrer"
                                class="btn-green w-full mt-8 py-5 text-lg">
                                 <i class="fab fa-whatsapp text-2xl"></i>
                                 Chat via WhatsApp
@@ -1012,7 +975,21 @@
                 <?php if (!empty($content['kontak']['google_maps'])): ?>
                 <div class="mt-8 rounded-4xl overflow-hidden shadow-xl border border-primary-100 reveal"
                      style="height: 400px;">
-                    <?= $content['kontak']['google_maps'] ?>
+                    <?php
+                            $mapsSrc = $content['kontak']['google_maps'] ?? '';
+                            $isValidMaps = preg_match('/^<iframe[^>]+src="https:\/\/(www\.)?google\.com\/maps\/embed\?[^"]+"[^>]*><\/iframe>$/', $mapsSrc);
+                            if (!$isValidMaps) {
+                                $matches = [];
+                                preg_match('/src="([^"]+)"/', $mapsSrc, $matches);
+                                $srcUrl = $matches[1] ?? '';
+                                if (strpos($srcUrl, 'https://www.google.com/maps/embed?') === 0) {
+                                    $isValidMaps = true;
+                                    $mapsSrc = '<iframe src="' . esc($srcUrl, 'attr') . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
+                                }
+                            }
+                            if ($isValidMaps): ?>
+                        <?= $mapsSrc ?>
+                    <?php endif; ?>
                 </div>
                 <?php endif; ?>
             </div>
@@ -1093,12 +1070,12 @@
                         <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="h-12 w-auto">
                     <?php else: ?>
                         <div class="w-12 h-12 bg-primary-700 rounded-2xl flex items-center justify-center font-bold text-xl">
-                            <?= mb_substr($content['footer']['nama_sekolah'] ?? $content['navbar']['nama_sekolah'] ?? 'M', 0, 1) ?>
+                            <?= mb_substr(esc($content['footer']['nama_sekolah'] ?? $content['navbar']['nama_sekolah'] ?? 'M'), 0, 1) ?>
                         </div>
                     <?php endif; ?>
                     <div>
                         <h3 class="font-display font-bold text-xl leading-tight">
-                            <?= $content['footer']['nama_sekolah'] ?? $content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus' ?>
+                            <?= esc($content['footer']['nama_sekolah'] ?? $content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus') ?>
                         </h3>
                         <p class="text-primary-300 text-sm mt-0.5">Madrasah Ibtidaiyah Negeri</p>
                     </div>
@@ -1106,30 +1083,30 @@
 
                 <!-- Social Media -->
                 <div class="flex gap-3">
-                    <a href="https://wa.me/<?= $content['kontak']['whatsapp_number'] ?? '' ?>" target="_blank"
+                    <a href="https://wa.me/<?= esc($content['kontak']['whatsapp_number'] ?? '') ?>" target="_blank"
                        class="social-btn hover:!bg-green-500" aria-label="WhatsApp">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                     <?php if (!empty($content['footer']['facebook_link'])): ?>
-                    <a href="<?= $content['footer']['facebook_link'] ?>" target="_blank"
+                    <a href="<?= esc($content['footer']['facebook_link'], 'attr') ?>" target="_blank"
                        class="social-btn hover:!bg-blue-600" aria-label="Facebook">
                         <i class="fab fa-facebook-f"></i>
                     </a>
                     <?php endif; ?>
                     <?php if (!empty($content['footer']['instagram_link'])): ?>
-                    <a href="<?= $content['footer']['instagram_link'] ?>" target="_blank"
+                    <a href="<?= esc($content['footer']['instagram_link'], 'attr') ?>" target="_blank"
                        class="social-btn hover:!bg-pink-600" aria-label="Instagram">
                         <i class="fab fa-instagram"></i>
                     </a>
                     <?php endif; ?>
                     <?php if (!empty($content['footer']['tiktok_link'])): ?>
-                    <a href="<?= $content['footer']['tiktok_link'] ?>" target="_blank"
+                    <a href="<?= esc($content['footer']['tiktok_link'], 'attr') ?>" target="_blank"
                        class="social-btn hover:!bg-black" aria-label="TikTok">
                         <i class="fab fa-tiktok"></i>
                     </a>
                     <?php endif; ?>
                     <?php if (!empty($content['footer']['youtube_link'])): ?>
-                    <a href="<?= $content['footer']['youtube_link'] ?>" target="_blank"
+                    <a href="<?= esc($content['footer']['youtube_link'], 'attr') ?>" target="_blank"
                        class="social-btn hover:!bg-red-600" aria-label="YouTube">
                         <i class="fab fa-youtube"></i>
                     </a>
@@ -1139,7 +1116,7 @@
 
             <div class="pt-8 text-center text-primary-500 text-sm">
                 &copy; <?= date('Y') ?>
-                <?= $content['footer']['nama_sekolah'] ?? $content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus' ?>
+                <?= esc($content['footer']['nama_sekolah'] ?? $content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus') ?>
                 &nbsp;&bull;&nbsp; Official PPDB Website
             </div>
         </div>
@@ -1298,7 +1275,7 @@
                 html += `<img src="<?= base_url('uploads/pengumuman/') ?>${popup.lampiran}" class="w-full rounded-2xl mb-5 shadow-lg">`;
             }
             html += `<h3 class="font-display text-xl font-bold text-gray-900 mb-3">${popup.judul}</h3>`;
-            html += `<div class="text-gray-600 text-sm leading-relaxed">${popup.isi_pengumuman}</div>`;
+            html += `<div class="text-gray-600 text-sm leading-relaxed">${DOMPurify.sanitize(popup.isi_pengumuman)}</div>`;
             content.innerHTML = html;
             modal.style.display = 'flex';
 

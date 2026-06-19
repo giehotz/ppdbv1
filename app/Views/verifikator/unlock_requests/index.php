@@ -47,8 +47,8 @@ Antrean Permohonan Buka Kunci
                                 <div class="text-xs text-gray-400"><?= date('H:i:s', strtotime($r['created_at'])) ?></div>
                             </td>
                             <td class="py-3 px-6">
-                                <span class="font-semibold text-gray-800 block"><?= $r['nama_lengkap'] ?></span>
-                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded mt-1 inline-block"><?= $r['no_pendaftaran'] ?></span>
+                                <span class="font-semibold text-gray-800 block"><?= esc($r['nama_lengkap']) ?></span>
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded mt-1 inline-block"><?= esc($r['no_pendaftaran']) ?></span>
                             </td>
                             <td class="py-3 px-6">
                                 <div class="bg-gray-50 p-3 rounded text-sm italic border-l-4 border-yellow-400 text-gray-700">
@@ -76,7 +76,7 @@ Antrean Permohonan Buka Kunci
                     <?php endforeach; ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="4" class="py-8 px-6 text-center text-gray-500 flex-col items-center">
+                        <td colspan="4" class="py-8 px-6 text-center text-gray-500">
                             <i class="fas fa-inbox text-4xl text-gray-300 mb-3 block"></i>
                             <p>Keren! Belum ada satupun antrean permohonan perbaikan biodata saat ini.</p>
                         </td>

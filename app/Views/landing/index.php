@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title><?= $content['navbar']['nama_sekolah'] ?? 'PPDB Online - Madrasah Al-Maqam' ?><?= ($seo_global['meta_title_suffix'] ?? '') ?></title>
+    <title><?= esc($content['navbar']['nama_sekolah'] ?? 'PPDB Online - Madrasah Al-Maqam') ?><?= esc($seo_global['meta_title_suffix'] ?? '') ?></title>
     
     <?php
     // Set page_title for the SEO partial to use
@@ -15,71 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js"></script>
 
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "tertiary-fixed-dim": "#9ad1cb",
-                        "secondary": "#735c00",
-                        "error": "#ba1a1a",
-                        "secondary-fixed": "#ffe088",
-                        "surface": "#f7f9fb",
-                        "on-primary": "#ffffff",
-                        "on-tertiary-fixed-variant": "#144f4b",
-                        "inverse-surface": "#2d3133",
-                        "tertiary": "#2e6560",
-                        "surface-container-lowest": "#ffffff",
-                        "on-primary-fixed-variant": "#005137",
-                        "primary-fixed": "#85f8c4",
-                        "surface-dim": "#d8dadc",
-                        "primary-container": "#00855d",
-                        "on-surface": "#191c1e",
-                        "surface-tint": "#006c4a",
-                        "tertiary-container": "#487e79",
-                        "on-tertiary": "#ffffff",
-                        "surface-container-high": "#e6e8ea",
-                        "on-primary-fixed": "#002114",
-                        "surface-container-highest": "#e0e3e5",
-                        "surface-bright": "#f7f9fb",
-                        "surface-container": "#eceef0",
-                        "on-tertiary-container": "#f3fffd",
-                        "on-secondary-fixed-variant": "#574500",
-                        "on-surface-variant": "#3d4a42",
-                        "tertiary-fixed": "#b5ede7",
-                        "background": "#f7f9fb",
-                        "on-secondary": "#ffffff",
-                        "on-primary-container": "#f5fff7",
-                        "primary-fixed-dim": "#68dba9",
-                        "primary": "#006948",
-                        "secondary-container": "#fed65b",
-                        "outline-variant": "#bccac0",
-                        "error-container": "#ffdad6",
-                        "on-error-container": "#93000a",
-                        "inverse-on-surface": "#eff1f3",
-                        "on-background": "#191c1e",
-                        "on-tertiary-fixed": "#00201e",
-                        "inverse-primary": "#68dba9",
-                        "on-secondary-container": "#745c00",
-                        "outline": "#6d7a72",
-                        "on-error": "#ffffff",
-                        "on-secondary-fixed": "#241a00",
-                        "surface-variant": "#e0e3e5",
-                        "surface-container-low": "#f2f4f6",
-                        "secondary-fixed-dim": "#e9c349"
-                    },
-                    fontFamily: {
-                        "headline": ["Plus Jakarta Sans", "sans-serif"],
-                        "body": ["Plus Jakarta Sans", "sans-serif"],
-                        "label": ["Plus Jakarta Sans", "sans-serif"]
-                    },
-                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
-                },
-            },
-        }
-    </script>
     <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -126,16 +63,26 @@
         #mobile-menu {
             transition: all 0.3s ease-in-out;
             transform-origin: top;
+            visibility: visible;
+            opacity: 1;
+            transform: scaleY(1);
+            display: block;
         }
         #mobile-menu.hidden {
             opacity: 0;
             transform: scaleY(0);
-            display: none;
-        }
-        #mobile-menu:not(.hidden) {
-            opacity: 1;
-            transform: scaleY(1);
+            visibility: hidden;
+            pointer-events: none;
             display: block;
+        }
+        /* Timeline circle positioning on md+ */
+        @media (min-width: 768px) {
+            .timeline-wrap > .timeline-item:nth-child(odd) .timeline-circle {
+                translate: -50% 0;
+            }
+            .timeline-wrap > .timeline-item:nth-child(even) .timeline-circle {
+                translate: 50% 0;
+            }
         }
         
         /* Lightbox */
@@ -156,11 +103,11 @@
                         <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="w-10 h-10 object-contain mr-2 transform group-hover:scale-105 transition duration-300">
                     <?php else: ?>
                         <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm mr-2 transform group-hover:scale-105 transition duration-300">
-                            <?= mb_substr($content['navbar']['nama_sekolah'] ?? 'M', 0, 1) ?>
+                            <?= mb_substr(esc($content['navbar']['nama_sekolah'] ?? 'M'), 0, 1) ?>
                         </div>
                     <?php endif; ?>
                     <span class="text-xl font-bold text-emerald-900 tracking-tighter font-headline line-clamp-1 group-hover:text-primary transition-colors">
-                        <?= $content['navbar']['nama_sekolah'] ?? 'Madrasah Al-Maqam' ?>
+                        <?= esc($content['navbar']['nama_sekolah'] ?? 'Madrasah Al-Maqam') ?>
                     </span>
                 </a>
             </div>
@@ -170,7 +117,7 @@
                 <a class="nav-link font-['Plus_Jakarta_Sans'] font-semibold text-sm tracking-tight text-slate-600 hover:text-emerald-700 transition-all duration-300" href="#schedule">Jadwal</a>
                 <a class="nav-link font-['Plus_Jakarta_Sans'] font-semibold text-sm tracking-tight text-slate-600 hover:text-emerald-700 transition-all duration-300" href="#requirements">Persyaratan</a>
                 <a class="nav-link font-['Plus_Jakarta_Sans'] font-semibold text-sm tracking-tight text-slate-600 hover:text-emerald-700 transition-all duration-300" href="#contact">Kontak</a>
-                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] == '1'): ?>
+                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
                     <a class="nav-link font-['Plus_Jakarta_Sans'] font-semibold text-sm tracking-tight text-slate-600 hover:text-emerald-700 transition-all duration-300" href="<?= base_url('pendaftar') ?>">Data Pendaftar</a>
                 <?php endif; ?>
             </div>
@@ -194,7 +141,7 @@
                 <a href="#schedule" class="block py-3 px-4 rounded-xl hover:bg-surface-container-low hover:text-primary font-semibold text-on-surface transition">Jadwal</a>
                 <a href="#requirements" class="block py-3 px-4 rounded-xl hover:bg-surface-container-low hover:text-primary font-semibold text-on-surface transition">Persyaratan</a>
                 <a href="#contact" class="block py-3 px-4 rounded-xl hover:bg-surface-container-low hover:text-primary font-semibold text-on-surface transition">Kontak</a>
-                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] == '1'): ?>
+                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
                     <a href="<?= base_url('pendaftar') ?>" class="block py-3 px-4 rounded-xl hover:bg-surface-container-low hover:text-primary font-semibold text-on-surface transition">Data Pendaftar</a>
                 <?php endif; ?>
 
@@ -227,14 +174,14 @@
                 Tahun Pelajaran <?= date('Y') ?>/<?= date('Y') + 1 ?>
             </span>
             <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold text-white font-headline leading-tight tracking-tight mb-8 drop-shadow-sm">
-                <?= $content['hero']['headline'] ?? 'Wujudkan Masa Depan Gemilang di <span class="text-secondary-fixed">Madrasah Al-Maqam</span>' ?>
+                <?= $content['hero']['headline'] ?? 'Wujudkan Masa Depan Gemilang di Madrasah Al-Maqam' ?>
             </h1>
             <p class="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
                 <?= $content['hero']['subheadline'] ?? 'Mencetak generasi rabbani yang unggul dalam ilmu pengetahuan dan berakhlak mulia melalui kurikulum integratif dan lingkungan islami yang asri.' ?>
             </p>
             <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center w-full sm:w-auto">
-                <a href="<?= $content['hero']['cta_link'] ?? base_url('auth/register') ?>" class="bg-secondary-fixed text-on-secondary-fixed px-10 py-4 rounded-md font-bold text-lg hover:scale-105 transition-transform shadow-[0_0_20px_rgba(254,214,91,0.3)] flex justify-center items-center">
-                    <?= $content['hero']['cta_text'] ?? 'Daftar Sekarang' ?>
+                <a href="<?= esc($content['hero']['cta_link'] ?? base_url('auth/register'), 'attr') ?>" class="bg-secondary-fixed text-on-secondary-fixed px-10 py-4 rounded-md font-bold text-lg hover:scale-105 transition-transform shadow-[0_0_20px_rgba(254,214,91,0.3)] flex justify-center items-center">
+                    <?= esc($content['hero']['cta_text'] ?? 'Daftar Sekarang') ?>
                 </a>
                 <a href="#requirements" class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-4 rounded-md font-bold text-lg hover:bg-white/20 transition-all flex justify-center items-center">
                     Pelajari Persyaratan
@@ -285,61 +232,61 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-8">
             <div class="text-center mb-16">
                 <span class="inline-block bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4">Timeline</span>
-                <h2 class="text-3xl md:text-4xl font-bold font-headline text-primary mb-4"><?= $content['jadwal']['title'] ?? 'Jadwal Pelaksanaan PPDB' ?></h2>
+                <h2 class="text-3xl md:text-4xl font-bold font-headline text-primary mb-4"><?= esc($content['jadwal']['title'] ?? 'Jadwal Pelaksanaan PPDB') ?></h2>
                 <div class="h-1 w-24 bg-secondary mx-auto mb-4"></div>
                 <p class="text-on-surface-variant text-lg">Pastikan Anda tidak melewatkan setiap tahapan penting proses pendaftaran kami.</p>
             </div>
 
-            <div class="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-outline-variant/30">
+            <div class="timeline-wrap space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-outline-variant/30">
                 
                 <!-- Phase 1 -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover:scale-105 transition-transform duration-300">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-surface bg-primary text-white shadow-md shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                <div class="timeline-item relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover:scale-105 transition-transform duration-300">
+                    <div class="timeline-circle flex items-center justify-center w-10 h-10 rounded-full border-2 border-surface bg-primary text-white shadow-md shrink-0 md:order-1 z-10">
                         <span class="material-symbols-outlined text-sm font-bold" data-icon="app_registration">app_registration</span>
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[45%] p-6 rounded-xl bg-surface shadow-sm border-l-4 border-primary/50 hover:border-primary transition-colors">
                         <div class="flex items-center justify-between mb-3">
-                            <span class="font-bold text-primary text-lg"><?= $content['jadwal']['tahap1_judul'] ?? 'Pendaftaran Online' ?></span>
+                            <span class="font-bold text-primary text-lg"><?= esc($content['jadwal']['tahap1_judul'] ?? 'Pendaftaran Online') ?></span>
                         </div>
                         <div class="flex items-center gap-2 mb-2 text-primary font-semibold text-sm">
                             <span class="material-symbols-outlined text-base">calendar_month</span>
-                            <span><?= $content['jadwal']['tahap1_tanggal'] ?? '01 Mei - 15 Mei 2024' ?></span>
+                            <span><?= esc($content['jadwal']['tahap1_tanggal'] ?? '01 Mei - 15 Mei 2024') ?></span>
                         </div>
-                        <p class="text-on-surface-variant text-sm mt-2 leading-relaxed"><?= $content['jadwal']['tahap1_keterangan'] ?? 'Melalui website resmi PPDB' ?></p>
+                        <p class="text-on-surface-variant text-sm mt-2 leading-relaxed"><?= esc($content['jadwal']['tahap1_keterangan'] ?? 'Melalui website resmi PPDB') ?></p>
                     </div>
                 </div>
 
                 <!-- Phase 2 -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover:scale-105 transition-transform duration-300">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-surface bg-secondary text-white shadow-md shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                <div class="timeline-item relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover:scale-105 transition-transform duration-300">
+                    <div class="timeline-circle flex items-center justify-center w-10 h-10 rounded-full border-2 border-surface bg-secondary text-white shadow-md shrink-0 md:order-1 z-10">
                         <span class="material-symbols-outlined text-sm font-bold" data-icon="assignment_ind">assignment_ind</span>
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[45%] p-6 rounded-xl bg-surface-container-low shadow-sm border-l-4 border-secondary/50 hover:border-secondary transition-colors">
                         <div class="flex items-center justify-between mb-3">
-                            <span class="font-bold text-primary text-lg"><?= $content['jadwal']['tahap2_judul'] ?? 'Verifikasi Berkas' ?></span>
+                            <span class="font-bold text-primary text-lg"><?= esc($content['jadwal']['tahap2_judul'] ?? 'Verifikasi Berkas') ?></span>
                         </div>
                         <div class="flex items-center gap-2 mb-2 text-secondary font-semibold text-sm">
                             <span class="material-symbols-outlined text-base">calendar_month</span>
-                            <span><?= $content['jadwal']['tahap2_tanggal'] ?? '17 Mei - 20 Mei 2024' ?></span>
+                            <span><?= esc($content['jadwal']['tahap2_tanggal'] ?? '17 Mei - 20 Mei 2024') ?></span>
                         </div>
-                        <p class="text-on-surface-variant text-sm mt-2 leading-relaxed"><?= $content['jadwal']['tahap2_keterangan'] ?? 'Datang langsung ke Madrasah membawa berkas asli' ?></p>
+                        <p class="text-on-surface-variant text-sm mt-2 leading-relaxed"><?= esc($content['jadwal']['tahap2_keterangan'] ?? 'Datang langsung ke Madrasah membawa berkas asli') ?></p>
                     </div>
                 </div>
 
                 <!-- Phase 3 -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover:scale-105 transition-transform duration-300">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-surface bg-tertiary text-white shadow-md shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                <div class="timeline-item relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover:scale-105 transition-transform duration-300">
+                    <div class="timeline-circle flex items-center justify-center w-10 h-10 rounded-full border-2 border-surface bg-tertiary text-white shadow-md shrink-0 md:order-1 z-10">
                         <span class="material-symbols-outlined text-sm font-bold" data-icon="campaign">campaign</span>
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[45%] p-6 rounded-xl bg-surface shadow-sm border-l-4 border-tertiary/50 hover:border-tertiary transition-colors">
                         <div class="flex items-center justify-between mb-3">
-                            <span class="font-bold text-primary text-lg"><?= $content['jadwal']['tahap3_judul'] ?? 'Pengumuman Hasil' ?></span>
+                            <span class="font-bold text-primary text-lg"><?= esc($content['jadwal']['tahap3_judul'] ?? 'Pengumuman Hasil') ?></span>
                         </div>
                         <div class="flex items-center gap-2 mb-2 text-tertiary font-semibold text-sm">
                             <span class="material-symbols-outlined text-base">calendar_month</span>
-                            <span><?= $content['jadwal']['tahap3_tanggal'] ?? '25 Mei 2024' ?></span>
+                            <span><?= esc($content['jadwal']['tahap3_tanggal'] ?? '25 Mei 2024') ?></span>
                         </div>
-                        <p class="text-on-surface-variant text-sm mt-2 leading-relaxed"><?= $content['jadwal']['tahap3_keterangan'] ?? 'Dilihat melalui website atau papan pengumuman' ?></p>
+                        <p class="text-on-surface-variant text-sm mt-2 leading-relaxed"><?= esc($content['jadwal']['tahap3_keterangan'] ?? 'Dilihat melalui website atau papan pengumuman') ?></p>
                     </div>
                 </div>
 
@@ -350,7 +297,7 @@
     <section class="py-24 px-4 sm:px-8 max-w-7xl mx-auto scroll-mt-20" id="requirements">
         <div class="grid md:grid-cols-2 gap-16 items-center">
             <div>
-                <h2 class="text-3xl md:text-4xl font-bold font-headline text-primary mb-6"><?= $content['syarat']['title'] ?? 'Persyaratan Dokumen' ?></h2>
+                <h2 class="text-3xl md:text-4xl font-bold font-headline text-primary mb-6"><?= esc($content['syarat']['title'] ?? 'Persyaratan Dokumen') ?></h2>
                 <p class="text-on-surface-variant mb-8 text-lg">Siapkan dokumen digital atau berkas fisik berikut sebelum memulai pengisian formulir pendaftaran online.</p>
                 <div class="space-y-4">
                     <?php
@@ -378,7 +325,7 @@
                     <?php endfor; ?>
                 </div>
                 
-                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] == '1'): ?>
+                <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
                 <div class="mt-8">
                     <a href="<?= base_url('pendaftar') ?>" class="inline-flex items-center gap-2 bg-surface-container-highest text-primary font-bold px-6 py-3 rounded-md hover:bg-surface-variant transition-colors shadow-sm">
                         <span class="material-symbols-outlined">search</span>
@@ -511,7 +458,7 @@
                         </div>
                         <div>
                             <p class="font-bold text-on-surface mb-1">Alamat Kampus</p>
-                            <p class="text-on-surface-variant leading-relaxed"><?= $content['kontak']['alamat'] ?? 'Jl. Raya No. 123, Kab. Tanggamus' ?></p>
+                            <p class="text-on-surface-variant leading-relaxed"><?= esc($content['kontak']['alamat'] ?? 'Jl. Raya No. 123, Kab. Tanggamus') ?></p>
                         </div>
                     </div>
                     
@@ -531,7 +478,7 @@
                         </div>
                         <div>
                             <p class="font-bold text-on-surface mb-1">WhatsApp Hotline</p>
-                            <p class="text-on-surface-variant font-medium"><?= $content['kontak']['whatsapp_nama'] ?? '+62 812-3456-7890 (Panitia)' ?></p>
+                            <p class="text-on-surface-variant font-medium"><?= esc($content['kontak']['whatsapp_nama'] ?? '+62 812-3456-7890 (Panitia)') ?></p>
                         </div>
                     </div>
                 </div>
@@ -547,8 +494,15 @@
             
             <div class="h-80 lg:h-auto bg-surface-variant relative">
                 <?php if (!empty($content['kontak']['google_maps'])): ?>
-                    <div class="w-full h-full [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:border-0 saturate-[1.1] contrast-[1.05]">
-                        <?= $content['kontak']['google_maps'] ?>
+                    <div class="w-full h-full">
+                        <?php
+                        $mapsHtml = $content['kontak']['google_maps'] ?? '';
+                        if (preg_match('/<iframe[^>]+src=["\'](https?:\/\/[^"\']+\.google\.[^"\']+maps[^"\']*)["\'][^>]*><\/iframe>/i', $mapsHtml, $m)) {
+                            echo '<iframe src="' . esc($m[1]) . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
+                        } else {
+                            echo esc($mapsHtml);
+                        }
+                        ?>
                     </div>
                 <?php else: ?>
                     <img class="w-full h-full object-cover grayscale opacity-50" data-alt="map block placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3MnA1hCd7z6LZiMZygXHMEqdD4iV5PSKRiCzKmj0tZ53hw1XYFxyRmcGjy1NZuT1Mj-kz3WFDxQvJKqtKx78aHQGGZc0el5yOcfl6Q93WGnRDfJ6ZPPUPglNA3RswqneUqlCf02C00ii2aw7ww-N4VsWPTg9BPSlUcxugyTxqTXTOEH7aVLoj6A4-BI7hgV3t2EPXSgMpmEyhBkpIgRQ13TUIaPQyWX0bo3bl8VyFdopCxYCqHB11gs5dHAwubD_2Md28UQLhlvXp"/>
@@ -623,7 +577,7 @@
                     <?php if (!empty($web['logo_sekolah'])): ?>
                         <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="w-12 h-12 object-contain bg-white rounded-lg p-1">
                     <?php endif; ?>
-                    <span class="text-xl font-extrabold text-white block tracking-tight"><?= $content['footer']['nama_sekolah'] ?? ($content['navbar']['nama_sekolah'] ?? 'Madrasah Al-Maqam') ?></span>
+                    <span class="text-xl font-extrabold text-white block tracking-tight"><?= esc($content['footer']['nama_sekolah'] ?? ($content['navbar']['nama_sekolah'] ?? 'Madrasah Al-Maqam')) ?></span>
                 </div>
                 <p class="font-['Plus_Jakarta_Sans'] text-sm leading-relaxed text-emerald-100/70 mb-8 max-w-sm">
                     Mencetak generasi rabbani yang unggul dalam ilmu pengetahuan dan berakhlak mulia melalui kurikulum integratif dan lingkungan islami yang asri.
@@ -677,7 +631,7 @@
         </div>
         
         <div class="border-t border-emerald-800/50 py-6 text-center text-sm font-medium text-emerald-100/50">
-            <?= esc($web['nama_sekolah'] ?? '') ?> &copy; <?= date('Y') ?> <?= $content['footer']['copyright'] ?? 'Official Website PPDB. All rights reserved.' ?>
+            <?= esc($web['nama_sekolah'] ?? '') ?> &copy; <?= date('Y') ?> <?= esc($content['footer']['copyright'] ?? 'Official Website PPDB. All rights reserved.') ?>
         </div>
     </footer>
 
@@ -726,7 +680,7 @@
             if (popup.lampiran && (popup.lampiran.match(/\.(jpg|jpeg|png|gif)$/i))) {
                 html += `<img src="<?= base_url('uploads/pengumuman/') ?>${popup.lampiran}" class="w-full rounded-lg mb-4 shadow-sm border border-surface-variant">`;
             }
-            html += `<div class="prose prose-sm prose-emerald max-w-none">${popup.isi_pengumuman}</div>`;
+            html += `<div class="prose prose-sm prose-emerald max-w-none">${DOMPurify.sanitize(popup.isi_pengumuman)}</div>`;
             
             contentContainer.innerHTML = html;
             modal.classList.remove('hidden');

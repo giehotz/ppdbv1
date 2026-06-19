@@ -8,10 +8,12 @@ use App\Models\TblWebModel;
 class Settings extends BaseController
 {
     protected $tblWebModel;
+    protected $settingKopModel;
 
     public function __construct()
     {
         $this->tblWebModel = new TblWebModel();
+        $this->settingKopModel = new \App\Models\SettingKopModel();
     }
 
     public function index()
@@ -42,9 +44,24 @@ class Settings extends BaseController
             }
         }
 
+        $kop = $this->settingKopModel->find(1);
+        if (!$kop) {
+            $this->settingKopModel->insert([
+                'id' => 1,
+                'logo_kiri' => 'logo-kemenag.png',
+                'kementerian_pusat' => 'KEMENTERIAN AGAMA REPUBLIK INDONESIA',
+                'kementerian_kabupaten' => 'KANTOR KEMENTERIAN AGAMA KABUPATEN TANGGAMUS',
+                'nama_madrasah' => 'MADRASAH IBTIDAIYAH NEGERI 2 TANGGAMUS',
+                'alamat_madrasah' => 'Jln. Lap. Ampera No. 109 Purwodadi Kec. Gisting Kab. Tanggamus (0729) 347578 35378',
+                'email_madrasah' => 'Email : minduatanggamus@gmail.com',
+            ]);
+            $kop = $this->settingKopModel->find(1);
+        }
+
         $data = [
             'web' => $web,
-            'penghasilan_list' => trim($penghasilan_list)
+            'penghasilan_list' => trim($penghasilan_list),
+            'kop' => $kop
         ];
         return view('admin/settings/index', $data);
     }
@@ -131,6 +148,49 @@ class Settings extends BaseController
             $newName = $fileLogo->getRandomName();
             $fileLogo->move('uploads/logo', $newName);
             $data['logo_sekolah'] = $newName;
+        }
+
+        // Handle Kop settings
+        $dataKop = [
+            'kementerian_pusat' => $this->request->getPost('kementerian_pusat'),
+            'kementerian_kabupaten' => $this->request->getPost('kementerian_kabupaten'),
+            'nama_madrasah' => $this->request->getPost('nama_madrasah_kop'),
+            'alamat_madrasah' => $this->request->getPost('alamat_madrasah_kop'),
+            'email_madrasah' => $this->request->getPost('email_madrasah_kop'),
+        ];
+
+        // Handle File Upload (Logo Kop)
+        $fileLogoKop = $this->request->getFile('logo_kiri');
+        if ($fileLogoKop && $fileLogoKop->isValid() && !$fileLogoKop->hasMoved()) {
+            $validationRuleKop = [
+                'logo_kiri' => [
+                    'label' => 'Logo Kiri Kop',
+                    'rules' => 'uploaded[logo_kiri]'
+                        . '|is_image[logo_kiri]'
+                        . '|mime_in[logo_kiri,image/jpg,image/jpeg,image/png]'
+                        . '|ext_in[logo_kiri,jpg,jpeg,png]'
+                        . '|max_size[logo_kiri,2048]',
+                ],
+            ];
+
+            if (!$this->validate($validationRuleKop)) {
+                $errorMsg = $this->validator->getError('logo_kiri');
+                session()->setFlashdata('error', 'Gagal memuat logo kop: ' . $errorMsg);
+                return redirect()->back()->withInput();
+            }
+
+            $newKopName = $fileLogoKop->getRandomName();
+            $fileLogoKop->move('uploads/kop', $newKopName);
+            $dataKop['logo_kiri'] = $newKopName;
+        }
+
+        $kopModel = new \App\Models\SettingKopModel();
+        $kopExists = $kopModel->find(1);
+        if ($kopExists) {
+            $kopModel->update(1, $dataKop);
+        } else {
+            $dataKop['id'] = 1;
+            $kopModel->insert($dataKop);
         }
 
         if ($this->tblWebModel->update($id, $data)) {

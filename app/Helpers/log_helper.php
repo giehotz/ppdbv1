@@ -36,7 +36,7 @@ if (!function_exists('catat_log')) {
             'tindakan'   => $tindakan,
             'keterangan' => $keterangan,
             'ip_address' => $request->getIPAddress(),
-            'user_agent' => substr((string)$request->getUserAgent(), 0, 255), // truncate if too long
+            'user_agent' => substr(preg_replace('/[^\x20-\x7E\s]/', '', (string)$request->getUserAgent()), 0, 128),
             'created_at' => date('Y-m-d H:i:s'),
         ];
 

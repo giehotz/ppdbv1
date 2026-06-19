@@ -98,13 +98,13 @@ Manajemen Berkas
                         <tr class="border-b border-gray-200 hover:bg-gray-50 align-top">
                             <!-- Student Info Column -->
                             <td class="py-4 px-6 bg-gray-50 border-r border-gray-200">
-                                <div class="font-bold text-gray-800 text-base mb-1"><?= $student['nama_lengkap'] ?></div>
+                                <div class="font-bold text-gray-800 text-base mb-1"><?= esc($student['nama_lengkap']) ?></div>
                                 <div class="text-xs text-gray-500 mb-1">
                                     <span class="font-semibold">No. Pendaftaran:</span> <br>
-                                    <span class="font-mono bg-white px-1 border rounded"><?= $student['no_pendaftaran'] ?></span>
+                                    <span class="font-mono bg-white px-1 border rounded"><?= esc($student['no_pendaftaran']) ?></span>
                                 </div>
                                 <div class="text-xs text-gray-500">
-                                    <span class="font-semibold">NISN:</span> <?= $student['nisn'] ?>
+                                    <span class="font-semibold">NISN:</span> <?= esc($student['nisn']) ?>
                                 </div>
                             </td>
 
@@ -127,22 +127,22 @@ Manajemen Berkas
                                             <?php foreach ($student['berkas_list'] as $b) : ?>
                                                 <tr class="border-b last:border-0 border-gray-100 hover:bg-white transition-colors">
                                                     <td class="py-2 px-3 text-center">
-                                                        <input type="checkbox" class="berkas-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" value="<?= $b['id_berkas'] ?>" onclick="updateBulkBar()">
+                                                        <input type="checkbox" class="berkas-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" value="<?= esc($b['id_berkas']) ?>" onclick="updateBulkBar()">
                                                     </td>
                                                     <td class="py-2 px-3 align-middle">
-                                                        <span class="font-medium text-gray-700"><?= $b['jenis_berkas'] ?></span>
+                                                        <span class="font-medium text-gray-700"><?= esc($b['jenis_berkas']) ?></span>
                                                         <?php if (!empty($b['keterangan'])): ?>
                                                             <div class="text-xs text-gray-500 mt-0.5 italic flex">
                                                                 <i class="fas fa-info-circle mr-1 mt-0.5 text-blue-500"></i>
-                                                                <span><?= $b['keterangan'] ?></span>
+                                                                <span><?= esc($b['keterangan']) ?></span>
                                                             </div>
                                                         <?php endif; ?>
                                                     </td>
                                                     <td class="py-2 px-3 align-middle">
-                                                        <span class="text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded inline-block max-w-[150px] truncate" title="<?= $b['nama_file'] ?>">
-                                                            <?= $b['nama_file'] ?>
+                                                        <span class="text-xs font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded inline-block max-w-[150px] truncate" title="<?= esc($b['nama_file']) ?>">
+                                                            <?= esc($b['nama_file']) ?>
                                                         </span>
-                                                        <div class="text-[10px] text-gray-400 mt-0.5"><?= date('d/M/Y H:i', strtotime($b['created_at'])) ?></div>
+                                                        <div class="text-[10px] text-gray-400 mt-0.5"><?= !empty($b['created_at']) && strtotime($b['created_at']) ? date('d/M/Y H:i', strtotime($b['created_at'])) : '-' ?></div>
                                                     </td>
                                                     <td class="py-2 px-3 text-center align-middle">
                                                         <?php if ($b['status_verifikasi'] == 'valid') : ?>
@@ -166,16 +166,17 @@ Manajemen Berkas
                                                             if (!empty($b['path_file'])) {
                                                                 $previewUrl = base_url($b['path_file']);
                                                             } else {
-                                                                $previewUrl = base_url('uploads/berkas/' . ($student['nisn'] ?? '') . '/' . $b['nama_file']);
+                                                                $nisnDir = !empty($student['nisn']) ? $student['nisn'] : 'unknown';
+                                                            $previewUrl = base_url('uploads/berkas/' . $nisnDir . '/' . $b['nama_file']);
                                                             }
                                                             $ext = strtolower(pathinfo($b['nama_file'], PATHINFO_EXTENSION));
                                                             ?>
-                                                            <button onclick="openFilePreview('<?= esc($previewUrl) ?>', '<?= esc($b['nama_file']) ?>', '<?= $ext ?>')"
+                                                            <button onclick="openFilePreview('<?= esc($previewUrl) ?>', '<?= esc($b['nama_file']) ?>', '<?= esc($ext) ?>')"
                                                                 class="text-blue-500 hover:text-blue-700 transition bg-blue-50 p-1.5 rounded"
                                                                 title="Lihat Berkas">
                                                                 <i class="fas fa-eye"></i>
                                                             </button>
-                                                            <button onclick="openStatusModal(<?= $b['id_berkas'] ?>, '<?= $b['status_verifikasi'] ?>', '<?= esc($b['keterangan'] ?? '') ?>')"
+                                                            <button onclick="openStatusModal(<?= esc($b['id_berkas']) ?>, '<?= esc($b['status_verifikasi']) ?>', '<?= esc($b['keterangan'] ?? '', 'js') ?>')"
                                                                 class="text-green-500 hover:text-green-700 transition bg-green-50 p-1.5 rounded"
                                                                 title="Validasi Berkas">
                                                                 <i class="fas fa-check-square"></i>
@@ -202,7 +203,7 @@ Manajemen Berkas
         </table>
     </div>
 
-    <?php if (!empty($berkas)) : ?>
+    <?php if (!empty($pager) && $pager->getPageCount() > 1) : ?>
         <div class="px-6 py-4 border-t border-gray-200">
             <?= $pager->links() ?>
         </div>

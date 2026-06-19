@@ -34,9 +34,10 @@ class ResetPassword extends BaseController
             return redirect()->to('/admin/reset-password');
         }
 
-        // Reset password siswa ke '123456'
-        $defaultPassword = password_hash('123456', PASSWORD_DEFAULT);
-        $this->siswaModel->update($request['id_siswa'], ['password' => $defaultPassword]);
+        // Generate random 12-char password
+        $newPassword = bin2hex(random_bytes(6));
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        $this->siswaModel->update($request['id_siswa'], ['password' => $hashedPassword]);
 
         // Update status request
         $this->resetModel->update($id, ['status' => 'Disetujui']);
@@ -50,7 +51,7 @@ class ResetPassword extends BaseController
         // Generate WA message
         $appUrl = base_url('/login');
         $pesan = "Halo " . ($siswa['nama_lengkap'] ?? $request['nama']) . ", permintaan reset password Anda telah disetujui.\n\n"
-            . "Password baru Anda: 123456\n"
+            . "Password baru Anda: " . $newPassword . "\n"
             . "Silakan login di: " . $appUrl . "\n\n"
             . "Catatan: Segera ganti password setelah login demi keamanan akun Anda.";
 
@@ -59,7 +60,7 @@ class ResetPassword extends BaseController
             $waUrl = "https://wa.me/" . $nomorWa . "?text=" . urlencode($pesan);
         }
 
-        session()->setFlashdata('success', 'Password siswa berhasil direset menjadi <strong>123456</strong>.');
+        session()->setFlashdata('success', 'Password siswa berhasil direset menjadi <strong>' . $newPassword . '</strong>.');
         if (!empty($waUrl)) {
             session()->setFlashdata('wa_url', $waUrl);
             session()->setFlashdata('wa_nama', $siswa['nama_lengkap'] ?? $request['nama']);

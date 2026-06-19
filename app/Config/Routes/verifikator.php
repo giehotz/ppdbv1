@@ -1,6 +1,6 @@
 <?php
 
-$routes->group('verifikator', ['filter' => 'verifikator'], function ($routes) {
+$routes->group('verifikator', ['filter' => ['verifikator', 'csrf']], function ($routes) {
     $routes->get('dashboard', 'Verifikator\Dashboard::index');
 
     // Siswa (Students)
@@ -25,5 +25,5 @@ $routes->group('verifikator', ['filter' => 'verifikator'], function ($routes) {
     $routes->get('pesan/create', 'Verifikator\Pesan::create');
     $routes->post('pesan/store', 'Verifikator\Pesan::store');
     $routes->get('pesan/detail/(:num)', 'Verifikator\Pesan::detail/$1');
-    $routes->get('pesan/delete/(:num)', 'Verifikator\Pesan::delete/$1');
+    $routes->post('pesan/delete/(:num)', 'Verifikator\Pesan::delete/$1');
 });

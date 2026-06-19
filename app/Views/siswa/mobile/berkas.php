@@ -74,9 +74,13 @@ Upload Berkas
                             </div>
                         </div>
                         <div class="flex space-x-2 ml-2">
-                            <a href="<?= base_url('uploads/berkas/' . $siswa['nisn'] . '/' . $uploadedBerkas[$jenis]['nama_file']) ?>" target="_blank" class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200">
+                            <?php 
+                                $fileUrl = base_url('uploads/berkas/' . $siswa['nisn'] . '/' . $uploadedBerkas[$jenis]['nama_file']);
+                                $isPdf = (strtolower(pathinfo($uploadedBerkas[$jenis]['nama_file'], PATHINFO_EXTENSION)) == 'pdf') ? 'true' : 'false';
+                            ?>
+                            <button type="button" onclick="openPreview('<?= $fileUrl ?>', '<?= esc($label) ?>', <?= $isPdf ?>)" class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200">
                                 <i class="fas fa-eye text-sm"></i>
-                            </a>
+                            </button>
                             <form action="<?= base_url('siswa/berkas/delete/' . $uploadedBerkas[$jenis]['id_berkas']) ?>" method="post" class="inline" data-confirm="Yakin hapus berkas ini?">
                                 <?= csrf_field() ?>
                                 <button type="submit" class="w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
@@ -112,5 +116,53 @@ Upload Berkas
         </div>
     <?php endforeach; ?>
 </div>
+
+<!-- Modal Preview Berkas -->
+<div id="previewModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity">
+    <div class="bg-white rounded-2xl w-full max-w-3xl overflow-hidden flex flex-col shadow-2xl animate-fade-in-down" style="max-height: 90vh;">
+        <div class="flex justify-between items-center p-4 border-b border-slate-100">
+            <h3 class="font-bold text-slate-800" id="previewTitle">Preview Berkas</h3>
+            <button type="button" onclick="closePreview()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-rose-100 hover:text-rose-600 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="flex-1 overflow-auto bg-slate-50/50 flex items-center justify-center p-4 relative" id="previewContent">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-down { animation: fadeInDown 0.3s ease-out forwards; }
+</style>
+
+<script>
+function openPreview(url, title, isPdf) {
+    document.getElementById('previewTitle').textContent = title;
+    const content = document.getElementById('previewContent');
+    
+    // Loading state while iframe/image loads
+    content.innerHTML = '<div class="absolute inset-0 flex items-center justify-center text-slate-400"><i class="fas fa-circle-notch fa-spin text-3xl"></i></div>';
+    
+    if (isPdf) {
+        content.innerHTML += `<iframe src="${url}" class="w-full rounded-xl border border-slate-200 relative z-10 bg-white" style="height: 70vh;" onload="this.previousSibling.style.display='none'"></iframe>`;
+    } else {
+        content.innerHTML += `<img src="${url}" class="max-w-full rounded-xl object-contain relative z-10 shadow-sm" style="max-height: 70vh;" onload="this.previousSibling.style.display='none'">`;
+    }
+    
+    document.getElementById('previewModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling on mobile
+}
+
+function closePreview() {
+    document.getElementById('previewModal').classList.add('hidden');
+    document.getElementById('previewContent').innerHTML = ''; // Clear iframe/image to free memory
+    document.body.style.overflow = 'auto'; // Restore scrolling
+}
+</script>
 
 <?= $this->endSection() ?>

@@ -14,15 +14,27 @@ class NotifikasiPengumuman extends BaseController
         $this->pengumumanModel = new PengumumanModel();
     }
 
+    private function requireAuth(): bool
+    {
+        if (!session()->get('logged_in')) {
+            $this->response->setStatusCode(401)->setJSON([
+                'success' => false,
+                'message' => 'Unauthorized'
+            })->send();
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Get count of active announcements for students
      */
     public function count()
     {
-        // Get current datetime in local timezone
+        if (!$this->requireAuth()) return;
+
         $now = date('Y-m-d H:i:s');
 
-        // Count active announcements
         $count = $this->pengumumanModel
             ->where('is_active', 1)
             ->groupStart()
@@ -42,9 +54,10 @@ class NotifikasiPengumuman extends BaseController
      */
     public function recent()
     {
+        if (!$this->requireAuth()) return;
+
         $now = date('Y-m-d H:i:s');
 
-        // Get last 5 active announcements
         $announcements = $this->pengumumanModel
             ->select('id_pengumuman, judul, tipe, publish_date')
             ->where('is_active', 1)

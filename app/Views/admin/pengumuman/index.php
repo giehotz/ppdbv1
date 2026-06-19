@@ -162,22 +162,31 @@ $kelulusanCount = $totalKelulusan ?? 0;
                             </td>
                             <td class="py-4 px-6 text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <a href="<?= base_url('admin/pengumuman/toggleStatus/' . $p['id_pengumuman']) ?>"
-                                        class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 flex items-center justify-center transition-colors duration-150"
-                                        title="<?= $p['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?>">
-                                        <i class="fas fa-power-off text-xs"></i>
-                                    </a>
+                                    <form method="post" action="<?= base_url('admin/pengumuman/toggleStatus/' . $p['id_pengumuman']) ?>"
+                                        data-confirm="Ubah status pengumuman ini?"
+                                        style="display:inline">
+                                        <?= csrf_field() ?>
+                                        <button type="submit"
+                                            class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 flex items-center justify-center transition-colors duration-150"
+                                            title="<?= $p['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?>">
+                                            <i class="fas fa-power-off text-xs"></i>
+                                        </button>
+                                    </form>
                                     <a href="<?= base_url('admin/pengumuman/edit/' . $p['id_pengumuman']) ?>"
                                         class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700 flex items-center justify-center transition-colors duration-150"
                                         title="Edit">
                                         <i class="fas fa-pen text-xs"></i>
                                     </a>
-                                    <a href="<?= base_url('admin/pengumuman/delete/' . $p['id_pengumuman']) ?>"
+                                    <form method="post" action="<?= base_url('admin/pengumuman/delete/' . $p['id_pengumuman']) ?>"
                                         data-confirm="Yakin ingin menghapus pengumuman ini?"
-                                        class="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 flex items-center justify-center transition-colors duration-150"
-                                        title="Hapus">
-                                        <i class="fas fa-trash-alt text-xs"></i>
-                                    </a>
+                                        style="display:inline">
+                                        <?= csrf_field() ?>
+                                        <button type="submit"
+                                            class="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 flex items-center justify-center transition-colors duration-150"
+                                            title="Hapus">
+                                            <i class="fas fa-trash-alt text-xs"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

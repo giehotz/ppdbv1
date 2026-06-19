@@ -11,42 +11,42 @@ Pengaturan Sistem
 <?= $this->section('content') ?>
 
 <?php if (session()->getFlashdata('success')) : ?>
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"><?= session()->getFlashdata('success') ?></span>
+    <div class="flex items-center gap-3 bg-primary-container/30 text-on-primary-container border border-primary/20 px-5 py-4 rounded-xl mb-6 shadow-sm" role="alert">
+        <span class="material-symbols-outlined text-primary text-2xl">check_circle</span>
+        <span class="font-semibold text-sm"><?= session()->getFlashdata('success') ?></span>
     </div>
 <?php endif; ?>
 
 <?php if (session()->getFlashdata('error')) : ?>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"><?= session()->getFlashdata('error') ?></span>
+    <div class="flex items-center gap-3 bg-error-container/30 text-on-error-container border border-error/20 px-5 py-4 rounded-xl mb-6 shadow-sm" role="alert">
+        <span class="material-symbols-outlined text-error text-2xl">error</span>
+        <span class="font-semibold text-sm"><?= session()->getFlashdata('error') ?></span>
     </div>
 <?php endif; ?>
 
 <!-- Tab Navigation -->
-<div class="mb-6">
-    <div class="border-b border-gray-200">
-        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="settings-tabs" role="tablist">
-            <li class="mr-2" role="presentation">
-                <button class="tab-link inline-block p-4 border-b-2 rounded-t-lg transition-all duration-200" id="sistem-tab-btn" data-target="tab-sistem" type="button" role="tab">
-                    <i class="fas fa-cogs mr-2 text-gray-500"></i> Sistem PPDB
-                </button>
-            </li>
-            <li class="mr-2" role="presentation">
-                <button class="tab-link inline-block p-4 border-b-2 rounded-t-lg border-transparent hover:text-gray-600 hover:border-gray-300 transition-all duration-200" id="sekolah-tab-btn" data-target="tab-sekolah" type="button" role="tab">
-                    <i class="fas fa-school mr-2 text-gray-500"></i> Profil Sekolah
-                </button>
-            </li>
-            <li class="mr-2" role="presentation">
-                <button class="tab-link inline-block p-4 border-b-2 rounded-t-lg border-transparent hover:text-gray-600 hover:border-gray-300 transition-all duration-200" id="referensi-tab-btn" data-target="tab-referensi" type="button" role="tab">
-                    <i class="fas fa-list mr-2 text-gray-500"></i> Data Referensi
-                </button>
-            </li>
-            <li class="mr-2" role="presentation">
-                <button class="tab-link inline-block p-4 border-b-2 rounded-t-lg border-transparent hover:text-gray-600 hover:border-gray-300 transition-all duration-200" id="biodata-tab-btn" data-target="tab-biodata" type="button" role="tab">
-                    <i class="fas fa-clipboard-check mr-2 text-gray-500"></i> Wajib Biodata
-                </button>
-            </li>
-        </ul>
+<div class="mb-8">
+    <div class="flex flex-wrap gap-1 p-1.5 bg-surface-container-high rounded-xl" id="settings-tabs" role="tablist">
+        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="sistem-tab-btn" data-target="tab-sistem" type="button" role="tab">
+            <span class="material-symbols-outlined text-lg">settings</span>
+            <span>Sistem PPDB</span>
+        </button>
+        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="sekolah-tab-btn" data-target="tab-sekolah" type="button" role="tab">
+            <span class="material-symbols-outlined text-lg">school</span>
+            <span>Profil Sekolah</span>
+        </button>
+        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="referensi-tab-btn" data-target="tab-referensi" type="button" role="tab">
+            <span class="material-symbols-outlined text-lg">list_alt</span>
+            <span>Data Referensi</span>
+        </button>
+        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="biodata-tab-btn" data-target="tab-biodata" type="button" role="tab">
+            <span class="material-symbols-outlined text-lg">fact_check</span>
+            <span>Wajib Biodata</span>
+        </button>
+        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="kop-tab-btn" data-target="tab-kop" type="button" role="tab">
+            <span class="material-symbols-outlined text-lg">description</span>
+            <span>Kop Dokumen</span>
+        </button>
     </div>
 </div>
 
@@ -54,11 +54,10 @@ Pengaturan Sistem
     <?= csrf_field() ?>
 
     <div class="space-y-6">
-        <!-- Tab Content -->
         <div id="tab-sistem" class="tab-content hidden">
             <?= view('admin/settings/_tab_sistem') ?>
         </div>
-        
+
         <div id="tab-sekolah" class="tab-content hidden">
             <?= view('admin/settings/_tab_sekolah') ?>
         </div>
@@ -71,10 +70,15 @@ Pengaturan Sistem
             <?= view('admin/settings/_tab_biodata') ?>
         </div>
 
+        <div id="tab-kop" class="tab-content hidden">
+            <?= view('admin/settings/_tab_kop') ?>
+        </div>
+
         <!-- Submit Button -->
-        <div class="flex justify-end pt-4 border-t border-gray-100">
-            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded shadow-lg transform transition active:scale-95 duration-200">
-                <i class="fas fa-save mr-2"></i> Simpan Perubahan
+        <div class="flex justify-end pt-6 border-t border-surface-variant">
+            <button type="submit" class="inline-flex items-center gap-2 bg-primary hover:bg-primary text-white font-bold py-3 px-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.97]">
+                <span class="material-symbols-outlined text-lg">save</span>
+                Simpan Perubahan
             </button>
         </div>
     </div>
@@ -85,56 +89,30 @@ Pengaturan Sistem
         const tabLinks = document.querySelectorAll('.tab-link');
         const tabContents = document.querySelectorAll('.tab-content');
 
-        /**
-         * Function to set active tab
-         * @param {string} targetId - ID of the tab content to show
-         */
         function setActiveTab(targetId) {
-            // Unset all active states
             tabLinks.forEach(link => {
-                link.classList.remove('active', 'border-green-600', 'text-green-600');
-                link.classList.add('border-transparent', 'text-gray-500');
-                
-                // Update icon colors
-                const icon = link.querySelector('i');
-                if (icon) {
-                    icon.classList.remove('text-green-600');
-                    icon.classList.add('text-gray-500');
-                }
-                
+                link.classList.remove('bg-surface', 'text-primary', 'shadow-sm');
+                link.classList.add('text-on-surface-variant');
+
                 if (link.getAttribute('data-target') === targetId) {
-                    link.classList.add('active', 'border-green-600', 'text-green-600');
-                    link.classList.remove('border-transparent', 'text-gray-500');
-                    
-                    if (icon) {
-                        icon.classList.remove('text-gray-500');
-                        icon.classList.add('text-green-600');
-                    }
+                    link.classList.remove('text-on-surface-variant');
+                    link.classList.add('bg-surface', 'text-primary', 'shadow-sm');
                 }
             });
 
-            // Toggle content visibility
             tabContents.forEach(content => {
-                if (content.id === targetId) {
-                    content.classList.remove('hidden');
-                } else {
-                    content.classList.add('hidden');
-                }
+                content.classList.toggle('hidden', content.id !== targetId);
             });
 
-            // Save preference to localStorage
             localStorage.setItem('active_settings_tab', targetId);
         }
 
-        // Add click listeners to buttons
         tabLinks.forEach(link => {
             link.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                setActiveTab(targetId);
+                setActiveTab(this.getAttribute('data-target'));
             });
         });
 
-        // Initialize from localStorage correctly
         const lastTab = localStorage.getItem('active_settings_tab');
         if (lastTab && document.getElementById(lastTab)) {
             setActiveTab(lastTab);
@@ -144,4 +122,4 @@ Pengaturan Sistem
     });
 </script>
 
-<?= $this->endSection() ?>
+<?= $this->endSection() ?>

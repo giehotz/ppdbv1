@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $this->renderSection('title') ?> - Verifikator <?= $app_alias ?? 'PPDB' ?></title>
+    <title><?= $this->renderSection('title') ?> - Verifikator <?= esc($app_alias ?? 'PPDB') ?></title>
 
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
@@ -36,7 +36,7 @@
         <div class="p-6 flex items-center justify-center border-b border-blue-700">
             <span class="text-2xl font-bold tracking-wider flex items-center">
                 <?php if (!empty($web_logo) && file_exists(FCPATH . 'uploads/logo/' . $web_logo)): ?>
-                    <img src="<?= base_url('uploads/logo/' . $web_logo) ?>" alt="Logo" class="h-8 w-auto mr-2">
+                    <img src="<?= base_url('uploads/logo/' . esc($web_logo, 'url')) ?>" alt="Logo" class="h-8 w-auto mr-2">
                 <?php endif; ?>
                 VERIFIKATOR
             </span>
@@ -112,10 +112,10 @@
             </div>
 
             <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-600 hidden md:inline-block">Halo, <strong><?= session()->get('nama_lengkap') ?></strong></span>
+                <span class="text-sm text-gray-600 hidden md:inline-block">Halo, <strong><?= esc(session()->get('nama_lengkap')) ?></strong></span>
                 <div class="relative">
                     <img class="h-8 w-8 rounded-full object-cover border border-gray-300"
-                        src="https://ui-avatars.com/api/?name=<?= urlencode(session()->get('nama_lengkap')) ?>&background=random&color=fff&background=1d4ed8"
+                        src="https://ui-avatars.com/api/?name=<?= urlencode(session()->get('nama_lengkap')) ?>&background=1d4ed8&color=fff"
                         alt="Avatar">
                 </div>
             </div>
@@ -127,9 +127,7 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-white border-t border-gray-200 p-4 text-center text-sm text-gray-500">
-            &copy; <?= date('Y') ?> <?= $app_alias ?? 'PPDB' ?> Online - <?= \Config\Services::renderer()->getData()['web']['nama_sekolah'] ?? 'Sekolah' ?>. All rights reserved.
-        </footer>
+        <?= $this->include('layouts/components/footer') ?>
     </div>
 
     <!-- Mobile Sidebar Backdrop (Hidden by default) -->
@@ -148,25 +146,25 @@
         <div class="flex-1 overflow-y-auto py-4">
             <ul>
                 <li>
-                    <a href="<?= base_url('verifikator/dashboard') ?>" class="<?= $linkClass ?>">
+                    <a href="<?= base_url('verifikator/dashboard') ?>" class="<?= $linkClass ?> <?= uri_string() == 'verifikator/dashboard' ? $activeClass : '' ?>">
                         <i class="fas fa-tachometer-alt w-6"></i>
                         <span class="ml-2">Dashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="<?= base_url('verifikator/siswa') ?>" class="<?= $linkClass ?>">
+                    <a href="<?= base_url('verifikator/siswa') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/siswa') === 0 ? $activeClass : '' ?>">
                         <i class="fas fa-user-check w-6"></i>
                         <span class="ml-2">Data Siswa</span>
                     </a>
                 </li>
                 <li>
-                    <a href="<?= base_url('verifikator/berkas') ?>" class="<?= $linkClass ?>">
+                    <a href="<?= base_url('verifikator/berkas') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/berkas') === 0 ? $activeClass : '' ?>">
                         <i class="fas fa-file-signature w-6"></i>
                         <span class="ml-2">Verifikasi Berkas</span>
                     </a>
                 </li>
                 <li>
-                    <a href="<?= base_url('verifikator/unlockrequest') ?>" class="<?= $linkClass ?>">
+                    <a href="<?= base_url('verifikator/unlockrequest') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/unlockrequest') === 0 ? $activeClass : '' ?>">
                         <i class="fas fa-unlock-alt w-6"></i>
                         <span class="ml-2">Antrean Buka Kunci</span>
                     </a>

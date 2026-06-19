@@ -18,8 +18,9 @@ class Siswa extends BaseController
     public function index()
     {
         $search = $this->request->getGet('search');
+        $sortOrder = $this->request->getGet('sort') == 'DESC' ? 'DESC' : 'ASC';
 
-        $siswaList = $this->siswaModel->getStudents($search);
+        $siswaList = $this->siswaModel->getStudents($search, 20, $sortOrder);
 
         // Add completion percentage
         foreach ($siswaList as &$s) {
@@ -30,7 +31,8 @@ class Siswa extends BaseController
         $data = [
             'siswa' => $siswaList,
             'pager' => $this->siswaModel->pager,
-            'search' => $search
+            'search' => $search,
+            'sort' => $sortOrder
         ];
 
         return view('admin/siswa/index', $data);
@@ -110,7 +112,14 @@ class Siswa extends BaseController
 
     public function delete($id)
     {
+        $siswa = $this->siswaModel->find($id);
+        if (!$siswa) {
+            session()->setFlashdata('error', 'Data siswa tidak ditemukan.');
+            return redirect()->to('/admin/siswa');
+        }
+
         if ($this->siswaModel->delete($id)) {
+            catat_log('Hapus Siswa', 'Menghapus data siswa: ' . ($siswa['nama_lengkap'] ?? $id) . ' (NISN: ' . ($siswa['nisn'] ?? '-') . ')');
             session()->setFlashdata('success', 'Data siswa berhasil dihapus.');
         } else {
             session()->setFlashdata('error', 'Gagal menghapus data siswa.');
@@ -121,11 +130,24 @@ class Siswa extends BaseController
 
     public function resetPassword($id)
     {
-        // Set default password '123456'
-        $defaultPassword = password_hash('123456', PASSWORD_DEFAULT);
+        $newPassword = $this->request->getPost('new_password');
+        if (empty($newPassword)) {
+            $newPassword = bin2hex(random_bytes(6));
+        }
+        
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        $student = $this->siswaModel->find($id);
 
-        if ($this->siswaModel->update($id, ['password' => $defaultPassword])) {
-            session()->setFlashdata('success', 'Password siswa berhasil direset menjadi 123456.');
+        if ($student && $this->siswaModel->update($id, ['password' => $hashedPassword])) {
+            $printData = [
+                'nama' => $student['nama_lengkap'],
+                'nisn' => $student['nisn'] ?? '-',
+                'no_daftar' => $student['no_pendaftaran'],
+                'password' => $newPassword,
+                'tanggal' => date('d-m-Y H:i:s')
+            ];
+            session()->setFlashdata('success', 'Password siswa berhasil direset. Menyiapkan dokumen cetak...');
+            session()->setFlashdata('print_password', $printData);
         } else {
             session()->setFlashdata('error', 'Gagal mereset password siswa.');
         }
@@ -184,7 +206,18 @@ class Siswa extends BaseController
             'ttd'      => $ttdModel->first() ?? [],
             'printer'  => $printerModel->first() ?? [],
         ];
-
         return view('admin/siswa/cetak_kartu', $data);
+    }
+
+    public function cetakPassword()
+    {
+        $printData = session()->getFlashdata('print_password');
+
+        if (!$printData) {
+            return redirect()->to(base_url('admin/siswa'))->with('error', 'Data password tidak ditemukan atau sesi cetak telah kedaluwarsa.');
+        }
+
+        // Tampilkan view cetak
+        return view('admin/siswa/cetak_password', ['data' => $printData]);
     }
 }

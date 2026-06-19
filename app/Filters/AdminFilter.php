@@ -18,7 +18,7 @@ class AdminFilter implements FilterInterface
         // Check if user is admin
         if (session()->get('user_type') !== 'admin') {
             session()->setFlashdata('error', 'Akses ditolak. Anda tidak memiliki izin untuk mengakses halaman admin.');
-            if (session()->get('user_type') === 'verifikato') {
+            if (session()->get('user_type') === 'verifikator') {
                 return redirect()->to('/verifikator/dashboard')->withCookies();
             }
             return redirect()->to('/siswa/dashboard')->withCookies();

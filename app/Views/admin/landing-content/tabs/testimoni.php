@@ -23,7 +23,10 @@
 
                             <div class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition">
                                 <button onclick='editTestimoni(<?= json_encode($t) ?>)' class="bg-gray-100 p-1 rounded text-blue-600 hover:text-blue-800"><i class="fas fa-edit"></i></button>
-                                <a href="<?= base_url('admin/landing-content/deleteTestimoni/' . $t['testimoni_id']) ?>" data-confirm="Yakin hapus?" class="bg-gray-100 p-1 rounded text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
+                                <form method="post" action="<?= base_url('admin/landing-content/deleteTestimoni/' . $t['testimoni_id']) ?>" data-confirm="Yakin hapus?" style="display:inline">
+                                    <?= csrf_field() ?>
+                                    <button type="submit" class="bg-gray-100 p-1 rounded text-red-600 hover:text-red-800" style="border:none;cursor:pointer"><i class="fas fa-trash"></i></button>
+                                </form>
                             </div>
                         </div>
                     <?php endforeach; ?>
