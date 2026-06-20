@@ -11,38 +11,40 @@ Data Biodata
 <?= $this->section('content') ?>
 
 <?php if (session()->getFlashdata('success')): ?>
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl mb-4 text-sm" role="alert">
+    <div class="flex items-center p-3 mb-4 text-emerald-800 bg-emerald-50/80 backdrop-blur-sm border border-emerald-200/50 rounded-xl text-xs font-bold">
+        <i class="fas fa-check-circle mr-2 text-emerald-500"></i>
         <?= session()->getFlashdata('success') ?>
     </div>
 <?php endif; ?>
 
 <?php if (session()->getFlashdata('error')): ?>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm" role="alert">
+    <div class="flex items-center p-3 mb-4 text-rose-800 bg-rose-50/80 backdrop-blur-sm border border-rose-200/50 rounded-xl text-xs font-bold">
+        <i class="fas fa-exclamation-triangle mr-2 text-rose-500"></i>
         <?= session()->getFlashdata('error') ?>
     </div>
 <?php endif; ?>
 
-<div class="bg-white rounded-2xl shadow-sm mb-6 overflow-hidden">
+<div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/20 mb-6 overflow-hidden">
     <!-- Horizontal Scrollable Tabs optimized for mobile -->
-    <div class="border-b border-gray-100 bg-white">
+    <div class="border-b border-slate-100/50 bg-transparent">
         <nav class="flex overflow-x-auto scrollbar-hide py-1 pl-1" style="-webkit-overflow-scrolling: touch;">
-            <button onclick="showTab('dataDiri')" id="tab-dataDiri" class="tab-button whitespace-nowrap py-3 px-4 text-sm font-semibold border-b-2 border-blue-600 text-blue-600 flex-shrink-0 transition-colors">
-                <i class="fas fa-user mr-2"></i>Data Diri
+            <button onclick="showTab('dataDiri')" id="tab-dataDiri" class="tab-button whitespace-nowrap py-3 px-4 text-xs font-semibold border-b-2 border-emerald-600 text-emerald-600 flex-shrink-0 transition-colors bg-white/40 backdrop-blur-sm">
+                <i class="fas fa-user mr-1.5"></i>Data Diri
             </button>
-            <button onclick="showTab('alamat')" id="tab-alamat" class="tab-button whitespace-nowrap py-3 px-4 text-sm font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-700 flex-shrink-0 transition-colors">
-                <i class="fas fa-map-marker-alt mr-2"></i>Alamat
+            <button onclick="showTab('alamat')" id="tab-alamat" class="tab-button whitespace-nowrap py-3 px-4 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-700 flex-shrink-0 transition-colors bg-white/40 backdrop-blur-sm">
+                <i class="fas fa-map-marker-alt mr-1.5"></i>Alamat
             </button>
-            <button onclick="showTab('orangTua')" id="tab-orangTua" class="tab-button whitespace-nowrap py-3 px-4 text-sm font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-700 flex-shrink-0 transition-colors">
-                <i class="fas fa-users mr-2"></i>Orang Tua
+            <button onclick="showTab('orangTua')" id="tab-orangTua" class="tab-button whitespace-nowrap py-3 px-4 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-700 flex-shrink-0 transition-colors bg-white/40 backdrop-blur-sm">
+                <i class="fas fa-users mr-1.5"></i>Orang Tua
             </button>
-            <button onclick="showTab('kesejahteraan')" id="tab-kesejahteraan" class="tab-button whitespace-nowrap py-3 px-4 text-sm font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-700 flex-shrink-0 transition-colors">
-                <i class="fas fa-hand-holding-heart mr-2"></i>Kesejahteraan
+            <button onclick="showTab('kesejahteraan')" id="tab-kesejahteraan" class="tab-button whitespace-nowrap py-3 px-4 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-700 flex-shrink-0 transition-colors bg-white/40 backdrop-blur-sm">
+                <i class="fas fa-hand-holding-heart mr-1.5"></i>Kesejahteraan
             </button>
-            <button onclick="showTab('sekolah')" id="tab-sekolah" class="tab-button whitespace-nowrap py-3 px-4 text-sm font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-700 flex-shrink-0 transition-colors">
-                <i class="fas fa-school mr-2"></i>Asal Sekolah
+            <button onclick="showTab('sekolah')" id="tab-sekolah" class="tab-button whitespace-nowrap py-3 px-4 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-700 flex-shrink-0 transition-colors bg-white/40 backdrop-blur-sm">
+                <i class="fas fa-school mr-1.5"></i>Asal Sekolah
             </button>
-            <button onclick="showTab('berkas')" id="tab-berkas" class="tab-button whitespace-nowrap py-3 px-4 text-sm font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-700 flex-shrink-0 transition-colors">
-                <i class="fas fa-file-upload mr-2"></i>Berkas
+            <button onclick="showTab('berkas')" id="tab-berkas" class="tab-button whitespace-nowrap py-3 px-4 text-xs font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-700 flex-shrink-0 transition-colors bg-white/40 backdrop-blur-sm">
+                <i class="fas fa-file-upload mr-1.5"></i>Berkas
             </button>
         </nav>
     </div>
@@ -51,7 +53,6 @@ Data Biodata
     $status_verifikasi = strtolower(trim($siswa['status_verifikasi'] ?? ''));
     $isFinal = (($siswa['status_pendaftaran'] ?? '') === 'Final') && ($status_verifikasi !== 'ditolak');
 
-    // Set data globally in the view instance so partials can access it
     $this->setData([
         'isFinal' => $isFinal,
         'siswa' => $siswa,
@@ -62,22 +63,22 @@ Data Biodata
     ]);
     ?>
 
-    <!-- Progress Bar (Mobile) -->
-    <div class="px-4 pt-4 font-sans">
+    <!-- Progress Bar Glass -->
+    <div class="px-4 pt-4">
         <div class="flex justify-between items-center mb-2">
-            <span class="text-xs font-semibold text-gray-700">Kelengkapan (Wajib 100%)</span>
-            <span class="text-xs font-bold <?= ($completionPercentage ?? 0) < 100 ? 'text-red-500' : 'text-green-600' ?>" id="progressText">
+            <span class="text-[10px] font-semibold text-slate-600">Kelengkapan (Wajib 100%)</span>
+            <span class="text-xs font-bold <?= ($completionPercentage ?? 0) < 100 ? 'text-rose-500' : 'text-emerald-600' ?>" id="progressText">
                 <?= $completionPercentage ?? 0 ?>%
             </span>
         </div>
-        <div class="w-full bg-gray-200 rounded-full h-2">
-            <div id="progressBar" class="<?= ($completionPercentage ?? 0) < 100 ? 'bg-red-500' : 'bg-green-600' ?> h-2 rounded-full transition-all duration-500" style="width: <?= $completionPercentage ?? 0 ?>%"></div>
+        <div class="w-full bg-slate-100 rounded-full h-2">
+            <div id="progressBar" class="<?= ($completionPercentage ?? 0) < 100 ? 'bg-rose-500' : 'bg-emerald-500' ?> h-2 rounded-full transition-all duration-500" style="width: <?= $completionPercentage ?? 0 ?>%"></div>
         </div>
-        <p class="text-[11px] text-gray-500 mt-1.5" id="progressInfo">
+        <p class="text-[10px] text-slate-500 mt-1.5" id="progressInfo">
             <?php if (($completionPercentage ?? 0) < 100): ?>
-                Ada <span class="font-bold text-red-500"><?= count($incompleteFields ?? []) ?></span> kolom wajib yang belum diisi.
+                Ada <span class="font-bold text-rose-500"><?= count($incompleteFields ?? []) ?></span> kolom wajib yang belum diisi.
             <?php else: ?>
-                <span class="text-green-600 font-medium"><i class="fas fa-check-circle mr-1"></i> Biodata 100% lengkap!</span>
+                <span class="text-emerald-600 font-medium"><i class="fas fa-check-circle mr-1"></i> Biodata 100% lengkap!</span>
             <?php endif; ?>
         </p>
     </div>
@@ -95,22 +96,22 @@ Data Biodata
     <div class="px-4 pb-4">
         <?= $this->include('siswa/biodata/_upload_berkas') ?>
 
-        <!-- Navigation Buttons - Sticky at bottom of card inside container -->
-        <div class="pt-3 border-t border-gray-100 flex justify-between items-center rounded-b-2xl">
-            <button type="button" id="btnPrev" onclick="navigateTab('prev')" class="bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold py-2 px-4 rounded-xl text-xs transition-colors shadow-sm disabled:opacity-50 flex items-center">
+        <!-- Navigation Buttons -->
+        <div class="pt-3 border-t border-slate-100/50 flex justify-between items-center rounded-b-2xl">
+            <button type="button" id="btnPrev" onclick="navigateTab('prev')" class="bg-white/60 backdrop-blur-sm border border-slate-200/50 hover:bg-slate-100/80 text-slate-700 font-bold py-2 px-4 rounded-xl text-[10px] transition-colors shadow-sm disabled:opacity-50 flex items-center active:scale-[0.95]">
                 <i class="fas fa-chevron-left mr-1"></i>Prev
             </button>
 
             <div class="flex gap-2">
-                <button type="button" id="btnNext" onclick="navigateTab('next')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition-colors shadow-sm flex items-center">
+                <button type="button" id="btnNext" onclick="navigateTab('next')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl text-[10px] transition-colors shadow-sm flex items-center active:scale-[0.95]">
                     Next<i class="fas fa-chevron-right ml-1"></i>
                 </button>
 
                 <?php if (!$isFinal): ?>
-                    <button type="button" id="btnFinalize" onclick="confirmFinalize()" class="hidden bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition-colors shadow-sm items-center">
+                    <button type="button" id="btnFinalize" onclick="confirmFinalize()" class="hidden bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded-xl text-[10px] transition-colors shadow-sm items-center active:scale-[0.95]">
                         <i class="fas fa-paper-plane mr-1"></i>Kirim Data
                     </button>
-                    <button type="submit" form="formBiodata" id="btnSubmit" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition-colors shadow-sm items-center">
+                    <button type="submit" form="formBiodata" id="btnSubmit" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl text-[10px] transition-colors shadow-sm items-center active:scale-[0.95]">
                         <i class="fas fa-save mr-1"></i>Simpan
                     </button>
                 <?php endif; ?>
@@ -134,7 +135,6 @@ Data Biodata
 <script src="<?= base_url('js/biodata.js') ?>"></script>
 
 <script>
-    // Initialize data from PHP to JS
     setupBiodata({
         baseUrl: '<?= base_url() ?>',
         csrfToken: '<?= csrf_token() ?>',
@@ -152,7 +152,6 @@ Data Biodata
 
     setPercentage(<?= $completionPercentage ?? 0 ?>);
 
-    // Auto-open specific tab from session flashdata
     document.addEventListener('DOMContentLoaded', function() {
         <?php if (session()->getFlashdata('tab') === 'berkas'): ?>
             setTimeout(() => {
@@ -163,13 +162,11 @@ Data Biodata
         <?php
         $defaultWelcomeMsg = 'Untuk mengakses <b>Dashboard</b> dan fitur lainnya, Anda <b style="color:#dc2626">wajib melengkapi biodata hingga 100%</b>.';
         $defaultWelcomeFooter = '📋 Isi setiap tab formulir secara lengkap. Data tersimpan <b>otomatis</b> saat Anda mengetik.';
-        /** @var string $welcomeRaw */
         $welcomeRaw = (string) ($web['popup_biodata_welcome'] ?? '');
         $customWelcome = !empty($welcomeRaw) ? nl2br(esc($welcomeRaw)) : '';
         
         $defaultWarningMsg = 'Anda <b style="color:#dc2626">belum dapat mengakses menu tersebut</b> karena biodata belum lengkap.';
         $defaultWarningFooter = '📝 Lengkapi <b>seluruh kolom wajib</b> hingga <b style="color:#16a34a">100%</b> untuk mengakses Dashboard dan fitur lainnya.';
-        /** @var string $warningRaw */
         $warningRaw = (string) ($web['popup_biodata_warning'] ?? '');
         $customWarning = !empty($warningRaw) ? nl2br(esc($warningRaw)) : '';
         ?>
@@ -192,7 +189,7 @@ Data Biodata
                     </div>
                 `,
                 confirmButtonText: '<i class="fas fa-edit mr-1"></i> Mulai Isi Biodata',
-                confirmButtonColor: '#2563eb',
+                confirmButtonColor: '#059669',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 customClass: {
@@ -203,7 +200,6 @@ Data Biodata
         }
         <?php endif; ?>
 
-        // Popup peringatan saat siswa di-redirect dari menu lain
         <?php if (session()->getFlashdata('warning')): ?>
         Swal.fire({
             icon: 'warning',
@@ -221,7 +217,7 @@ Data Biodata
                 </div>
             `,
             confirmButtonText: '<i class="fas fa-edit mr-1"></i> Isi Biodata Sekarang',
-            confirmButtonColor: '#d97706',
+            confirmButtonColor: '#059669',
             allowOutsideClick: false,
             allowEscapeKey: false,
             customClass: {
@@ -231,9 +227,6 @@ Data Biodata
         });
         <?php endif; ?>
 
-
-
-        // WIZARD, AUTO-SAVE & VALIDATION
         if (!isFinal) {
             const requiredFields = [
                 'nisn', 'nik', 'nama_lengkap', 'jk', 'tempat_lahir', 'tgl_lahir', 'agama', 
@@ -245,9 +238,9 @@ Data Biodata
                     const el = document.querySelector(`[name="${fieldName}"]`);
                     if (el) {
                         if (!el.value.trim()) {
-                            el.classList.add('border-red-500', 'bg-red-50');
+                            el.classList.add('border-rose-500', 'bg-rose-50');
                         } else {
-                            el.classList.remove('border-red-500', 'bg-red-50');
+                            el.classList.remove('border-rose-500', 'bg-rose-50');
                         }
                     }
                 });
@@ -260,7 +253,6 @@ Data Biodata
                 
                 saveTimeout = setTimeout(async () => {
                     const form = document.getElementById('formBiodata');
-                    // Temporarily enable disabled selects so their values are included
                     const disabledEls = [];
                     form.querySelectorAll('[disabled]').forEach(el => {
                         disabledEls.push(el);
@@ -292,24 +284,24 @@ Data Biodata
                             
                             if (progressText) {
                                 progressText.textContent = pct + '%';
-                                progressText.className = pct < 100 ? 'text-xs font-bold text-red-500' : 'text-xs font-bold text-green-600';
+                                progressText.className = pct < 100 ? 'text-xs font-bold text-rose-500' : 'text-xs font-bold text-emerald-600';
                             }
                             if (progressBar) {
                                 progressBar.style.width = pct + '%';
-                                progressBar.className = pct < 100 ? 'bg-red-500 h-2 rounded-full transition-all duration-500' : 'bg-green-600 h-2 rounded-full transition-all duration-500';
+                                progressBar.className = pct < 100 ? 'bg-rose-500 h-2 rounded-full transition-all duration-500' : 'bg-emerald-500 h-2 rounded-full transition-all duration-500';
                             }
                             if (progressInfo) {
                                 if (pct < 100) {
-                                    progressInfo.innerHTML = `Ada <span class="font-bold text-red-500">${incompleteCount}</span> kolom wajib yang belum diisi.`;
+                                    progressInfo.innerHTML = `Ada <span class="font-bold text-rose-500">${incompleteCount}</span> kolom wajib yang belum diisi.`;
                                 } else {
-                                    progressInfo.innerHTML = `<span class="text-green-600 font-medium"><i class="fas fa-check-circle mr-1"></i> Biodata 100% lengkap!</span>`;
+                                    progressInfo.innerHTML = `<span class="text-emerald-600 font-medium"><i class="fas fa-check-circle mr-1"></i> Biodata 100% lengkap!</span>`;
                                 }
                             }
                         }
                     } catch (error) {
                         console.error("Auto-save failed", error);
                     }
-                }, 1500); // 1.5s delay
+                }, 1500);
             }
 
             validateAndHighlight();
@@ -325,7 +317,6 @@ Data Biodata
             if (btnNext) btnNext.addEventListener('click', validateAndHighlight);
             if (btnPrev) btnPrev.addEventListener('click', validateAndHighlight);
 
-            // Ensure disabled selects submit their values on form submit
             document.getElementById('formBiodata').addEventListener('submit', function() {
                 this.querySelectorAll('[disabled]').forEach(el => el.disabled = false);
             });

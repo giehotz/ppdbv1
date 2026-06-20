@@ -240,8 +240,8 @@ class Auth extends BaseController
             'status_verifikasi' => 'Menunggu'
         ];
 
-        // Eksekusi insert, CI4 akan mengembalikan Insert ID dari DB
-        $insertId = $siswaModel->insert($data);
+        // Eksekusi insert, CI4 akan mengembalikan Insert ID dari DB. Bypass model validation karena NIK belum ada.
+        $insertId = $siswaModel->skipValidation(true)->insert($data);
         $no_pendaftaran = '';
 
         if ($insertId) {

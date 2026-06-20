@@ -164,19 +164,19 @@ Manajemen Berkas
                                                             <?php
                                                             // Build preview URL
                                                             if (!empty($b['path_file'])) {
-                                                                $previewUrl = base_url($b['path_file']);
+                                                                $previewUrl = base_url(implode('/', array_map('rawurlencode', explode('/', $b['path_file']))));
                                                             } else {
-                                                                $nisnDir = !empty($student['nisn']) ? $student['nisn'] : 'unknown';
-                                                            $previewUrl = base_url('uploads/berkas/' . $nisnDir . '/' . $b['nama_file']);
+                                                                $nisnDir = !empty($student['nisn']) ? rawurlencode($student['nisn']) : 'unknown';
+                                                            $previewUrl = base_url('uploads/berkas/' . $nisnDir . '/' . rawurlencode($b['nama_file']));
                                                             }
                                                             $ext = strtolower(pathinfo($b['nama_file'], PATHINFO_EXTENSION));
                                                             ?>
-                                                            <button onclick="openFilePreview('<?= esc($previewUrl) ?>', '<?= esc($b['nama_file']) ?>', '<?= esc($ext) ?>')"
+                                                            <button onclick="openFilePreview('<?= esc($previewUrl, 'js') ?>', '<?= esc($b['nama_file'], 'js') ?>', '<?= esc($ext, 'js') ?>')"
                                                                 class="text-blue-500 hover:text-blue-700 transition bg-blue-50 p-1.5 rounded"
                                                                 title="Lihat Berkas">
                                                                 <i class="fas fa-eye"></i>
                                                             </button>
-                                                            <button onclick="openStatusModal(<?= esc($b['id_berkas']) ?>, '<?= esc($b['status_verifikasi']) ?>', '<?= esc($b['keterangan'] ?? '', 'js') ?>')"
+                                                            <button onclick="openStatusModal(<?= esc($b['id_berkas'], 'js') ?>, '<?= esc($b['status_verifikasi'], 'js') ?>', '<?= esc($b['keterangan'] ?? '', 'js') ?>')"
                                                                 class="text-green-500 hover:text-green-700 transition bg-green-50 p-1.5 rounded"
                                                                 title="Validasi Berkas">
                                                                 <i class="fas fa-check-square"></i>
@@ -360,7 +360,7 @@ Manajemen Berkas
         const modal = document.getElementById('statusModal');
         const form = document.getElementById('statusForm');
 
-        form.action = '<?= base_url('verifikator/berkas/updateStatus/') ?>' + id;
+        form.action = '<?= esc(base_url('verifikator/berkas/updateStatus/'), 'js') ?>' + id;
 
         // Check correct radio button
         const radios = form.querySelectorAll('input[name="status"]');

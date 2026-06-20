@@ -40,8 +40,8 @@
                             <i class="fas <?= isset($uploadedBerkas[$jenis]) ? 'fa-file-check' : 'fa-file-upload' ?> text-2xl"></i>
                         </div>
                         <div class="min-w-0">
-                            <h4 class="text-base font-bold text-gray-800 leading-tight mb-1 truncate" title="<?= $label ?>">
-                                <?= $label ?>
+                            <h4 class="text-base font-bold text-gray-800 leading-tight mb-1 truncate" title="<?= esc($label, 'attr') ?>">
+                                <?= esc($label) ?>
                             </h4>
                             <div class="flex items-center">
                                 <?php if (isset($uploadedBerkas[$jenis])): ?>
@@ -73,8 +73,8 @@
                                         <i class="fas <?= $iconClass ?> text-xl"></i>
                                     </div>
                                     <div class="truncate">
-                                        <p class="text-xs font-bold text-gray-700 truncate mb-0.5" title="<?= $uploadedBerkas[$jenis]['nama_file'] ?>">
-                                            <?= $uploadedBerkas[$jenis]['nama_file'] ?>
+                                        <p class="text-xs font-bold text-gray-700 truncate mb-0.5" title="<?= esc($uploadedBerkas[$jenis]['nama_file'], 'attr') ?>">
+                                            <?= esc($uploadedBerkas[$jenis]['nama_file']) ?>
                                         </p>
                                         <p class="text-[10px] text-gray-500 font-medium">
                                             Ukuran: <?= number_format($uploadedBerkas[$jenis]['ukuran_file'] / 1024, 1) ?> KB
@@ -84,7 +84,7 @@
 
                                 <!-- Action Buttons -->
                                 <div class="flex items-center space-x-2 shrink-0 w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0 border-gray-200">
-                                    <a href="<?= base_url('uploads/berkas/' . $siswa['nisn'] . '/' . $uploadedBerkas[$jenis]['nama_file']) ?>" 
+                                    <a href="<?= base_url('uploads/berkas/' . rawurlencode($siswa['nisn']) . '/' . rawurlencode($uploadedBerkas[$jenis]['nama_file'])) ?>" 
                                        target="_blank" 
                                        class="flex items-center justify-center w-9 h-9 bg-white border border-gray-200 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition-all shadow-sm"
                                        title="Lihat Berkas">
@@ -98,7 +98,7 @@
                                         <i class="fas fa-sync-alt"></i>
                                     </button>
 
-                                    <form action="<?= base_url('siswa/berkas/delete/' . $uploadedBerkas[$jenis]['id_berkas']) ?>" 
+                                    <form action="<?= isset($berkasDeleteUrl) ? $berkasDeleteUrl . $uploadedBerkas[$jenis]['id_berkas'] : base_url('siswa/berkas/delete/' . $uploadedBerkas[$jenis]['id_berkas']) ?>" 
                                           method="post" 
                                           class="inline" 
                                           data-confirm="Apakah Anda yakin ingin menghapus dokumen ini?">
@@ -114,7 +114,7 @@
 
                             <!-- Form Ganti (Hidden Grid) -->
                             <div id="form-ganti-<?= $jenis ?>" class="hidden mt-3 p-4 bg-amber-50 rounded-xl border-2 border-dashed border-amber-200 animate-fadeIn">
-                                <form action="<?= base_url('siswa/berkas/upload') ?>" method="post" enctype="multipart/form-data" class="berkas-upload-form flex flex-col sm:flex-row items-center gap-3">
+                                <form action="<?= $berkasUploadUrl ?? base_url('siswa/berkas/upload') ?>" method="post" enctype="multipart/form-data" class="berkas-upload-form flex flex-col sm:flex-row items-center gap-3">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="jenis_berkas" value="<?= $jenis ?>">
                                     <div class="w-full flex-1">
@@ -140,7 +140,7 @@
                         <?php else: ?>
                             <!-- STATE: BELUM UPLOAD (Empty Card Grid) -->
                             <div class="relative group/upload">
-                                <form action="<?= base_url('siswa/berkas/upload') ?>" method="post" enctype="multipart/form-data" class="berkas-upload-form">
+                                <form action="<?= $berkasUploadUrl ?? base_url('siswa/berkas/upload') ?>" method="post" enctype="multipart/form-data" class="berkas-upload-form">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="jenis_berkas" value="<?= $jenis ?>">
                                     

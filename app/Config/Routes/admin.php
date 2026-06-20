@@ -107,4 +107,19 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     // SEO Settings
     $routes->get('seo', 'Admin\SeoSettings::index');
     $routes->post('seo/update', 'Admin\SeoSettings::update');
+
+    // Twibbon Campaigns
+    $routes->group('twibbon', function ($routes) {
+        $routes->get('/', 'Admin\Twibbon::index');
+        $routes->get('create', 'Admin\Twibbon::create');
+        $routes->post('store', 'Admin\Twibbon::store');
+        $routes->get('edit/(:num)', 'Admin\Twibbon::edit/$1');
+        $routes->post('update/(:num)', 'Admin\Twibbon::update/$1');
+        $routes->post('delete/(:num)', 'Admin\Twibbon::delete/$1');
+        $routes->get('stats/(:num)', 'Admin\Twibbon::stats/$1');
+        $routes->get('setting', 'Admin\Twibbon::setting');
+        $routes->post('saveSetting', 'Admin\Twibbon::saveSetting');
+        $routes->post('cleanup', 'Admin\Twibbon::cleanup');
+        $routes->get('download-zip', 'Admin\Twibbon::downloadZip');
+    });
 });

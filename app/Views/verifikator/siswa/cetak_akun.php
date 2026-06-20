@@ -23,9 +23,9 @@
         .info-value.password { font-family: monospace; font-size: 1.2rem; letter-spacing: 0.1em; background: #e2e8f0; padding: 0.25rem 0.5rem; border-radius: 0.25rem; }
         .warning { border-left: 4px solid #ef4444; background: #fef2f2; padding: 1rem; border-radius: 0.5rem; font-size: 0.875rem; color: #991b1b; line-height: 1.5; }
         .footer { margin-top: 3rem; text-align: right; font-size: 0.875rem; color: #475569; }
-        .print-btn { position: fixed; bottom: 2rem; right: 2rem; background: #2563eb; color: #fff; border: none; padding: 1rem 2rem; font-size: 1rem; font-weight: 600; border-radius: 9999px; cursor: pointer; box-shadow: 0 4px 6px -1px rgb(37 99 235 / 0.5); display: flex; align-items: center; gap: 0.5rem; transition: background 0.2s; }
+        .print-btn { position: fixed; bottom: 2rem; right: 2rem; background: #2563eb; color: #fff; border: none; padding: 1rem 2rem; font-size: 1rem; font-weight: 600; border-radius: 9999px; cursor: pointer; box-shadow: 0 4px 6px -1px rgb(37 99 235 / 0.5); display: flex; align-items: center; gap: 0.5rem; transition: background 0.2s; z-index: 9999; }
         .print-btn:hover { background: #1d4ed8; }
-        .back-btn { position: fixed; bottom: 2rem; left: 2rem; background: #64748b; color: #fff; text-decoration: none; padding: 1rem 2rem; font-size: 1rem; font-weight: 600; border-radius: 9999px; box-shadow: 0 4px 6px -1px rgb(100 116 139 / 0.5); transition: background 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+        .back-btn { position: fixed; bottom: 2rem; left: 2rem; background: #64748b; color: #fff; text-decoration: none; padding: 1rem 2rem; font-size: 1rem; font-weight: 600; border-radius: 9999px; box-shadow: 0 4px 6px -1px rgb(100 116 139 / 0.5); transition: background 0.2s; display: flex; align-items: center; gap: 0.5rem; z-index: 9999; }
         .back-btn:hover { background: #475569; }
         @media print {
             body { background: #fff; padding: 0; }
@@ -46,25 +46,7 @@
     </button>
 
     <div class="page">
-        <!-- Optional: Integrate with KOP Helper if available, or static header -->
-        <div class="header">
-            <?php 
-            // Coba ambil logo dari tabel setting_kop (jika ada helper)
-            // fallback ke logo statis
-            $db = \Config\Database::connect();
-            $kop = $db->table('setting_kop')->get()->getRowArray();
-            ?>
-            <?php if (!empty($kop['logo_kiri']) && file_exists(FCPATH . 'uploads/kop/' . $kop['logo_kiri'])): ?>
-                <img src="<?= base_url('uploads/kop/' . $kop['logo_kiri']) ?>" alt="Logo">
-            <?php else: ?>
-                <div style="width: 70px; height: 70px; background: #e2e8f0; border-radius: 50%; margin-right: 1.5rem;"></div>
-            <?php endif; ?>
-            
-            <div class="header-text">
-                <h1>PANITIA PENERIMAAN PESERTA DIDIK BARU</h1>
-                <p><?= esc($kop['nama_instansi'] ?? 'Instansi Pendidikan') ?></p>
-            </div>
-        </div>
+        <?= render_kop_surat() ?>
 
         <div class="title">
             <h2>INFORMASI AKUN PENDAFTARAN SISWA</h2>
@@ -89,7 +71,7 @@
             <div class="info-row" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed #cbd5e1;">
                 <div class="info-label">Password Sementara</div>
                 <div class="info-colon">:</div>
-                <div class="info-value"><span class="password">[Dibuat oleh Verifikator]</span></div>
+                <div class="info-value"><span class="password"><?= !empty($siswa['password_asli']) ? esc($siswa['password_asli']) : '[Hubungi Verifikator]' ?></span></div>
             </div>
         </div>
 

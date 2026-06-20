@@ -12,10 +12,13 @@ $routes->group('verifikator', ['filter' => ['verifikator', 'csrf']], function ($
     $routes->get('siswa/berkas/(:num)', 'Verifikator\Siswa::berkas/$1');
     $routes->post('siswa/berkasUpload/(:num)', 'Verifikator\Siswa::berkasUpload/$1');
     $routes->post('siswa/berkasDelete/(:num)', 'Verifikator\Siswa::berkasDelete/$1');
+    $routes->get('siswa/cetak-password', 'Verifikator\Siswa::cetakPassword');
     $routes->get('siswa/cetak-akun/(:num)', 'Verifikator\Siswa::cetakAkun/$1');
     $routes->get('siswa/detail/(:num)', 'Verifikator\Siswa::detail/$1');
     $routes->post('siswa/verify/(:num)', 'Verifikator\Siswa::verify/$1');
     $routes->get('siswa/cetak/(:num)', 'Verifikator\Siswa::cetak/$1');
+    $routes->post('siswa/resetPassword/(:num)', 'Verifikator\Siswa::resetPassword/$1');
+    $routes->post('siswa/delete/(:num)', 'Verifikator\Siswa::delete/$1');
 
     // Berkas (Documents)
     $routes->get('berkas', 'Verifikator\Berkas::index');

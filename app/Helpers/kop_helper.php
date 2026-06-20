@@ -8,8 +8,13 @@ if (!function_exists('render_kop_surat')) {
      */
     function render_kop_surat()
     {
-        $kopModel = new \App\Models\SettingKopModel();
-        $kop = $kopModel->find(1);
+        try {
+            $kopModel = new \App\Models\SettingKopModel();
+            $kop = $kopModel->find(1);
+        } catch (\Exception $e) {
+            $kop = null;
+            log_message('warning', 'Gagal memuat SettingKopModel: ' . $e->getMessage());
+        }
 
         if (!$kop) {
             // Default fallback if no data in database

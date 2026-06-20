@@ -96,8 +96,15 @@ class ExportSiswa extends BaseController
             'BC' => 'No. PKH',
             'BD' => 'No. KIP',
             // Status
-            'BE' => 'Status Verifikasi',
-            'BF' => 'Tanggal Daftar',
+            // Tambahan
+            'BG' => 'Jalur Pendaftaran',
+            'BH' => 'Jarak (km)',
+            'BI' => 'Transportasi',
+            'BJ' => 'Tempat Lahir Ayah',
+            'BK' => 'Tanggal Lahir Ayah',
+            'BL' => 'Tempat Lahir Ibu',
+            'BM' => 'Tanggal Lahir Ibu',
+            'BN' => 'Kompetensi Keahlian',
         ];
 
         // Write headers
@@ -106,7 +113,7 @@ class ExportSiswa extends BaseController
         }
 
         // Style header row
-        $lastCol = 'BF';
+        $lastCol = 'BN';
         $headerRange = "A1:{$lastCol}1";
         $sheet->getStyle($headerRange)->applyFromArray([
             'font' => [
@@ -205,6 +212,15 @@ class ExportSiswa extends BaseController
                 // Status
                 $sheet->setCellValue("BE{$row}", $s['status_verifikasi'] ?? '');
                 $sheet->setCellValue("BF{$row}", isset($s['tgl_siswa']) ? date('d/m/Y', strtotime($s['tgl_siswa'])) : '');
+                // Tambahan
+                $sheet->setCellValue("BG{$row}", $s['jalur_pendaftaran'] ?? '');
+                $sheet->setCellValue("BH{$row}", $s['jarak'] ?? '');
+                $sheet->setCellValue("BI{$row}", $s['trans'] ?? '');
+                $sheet->setCellValue("BJ{$row}", $s['tempat_lahir_ayah'] ?? '');
+                $sheet->setCellValue("BK{$row}", $s['tgl_lahir_ayah'] ?? '');
+                $sheet->setCellValue("BL{$row}", $s['tempat_lahir_ibu'] ?? '');
+                $sheet->setCellValue("BM{$row}", $s['tgl_lahir_ibu'] ?? '');
+                $sheet->setCellValue("BN{$row}", $s['komp_ahli'] ?? '');
                 $row++;
                 $index++;
             }

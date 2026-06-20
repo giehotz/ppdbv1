@@ -5,12 +5,12 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2">
             <label class="block text-sm font-medium text-gray-700 mb-2">Nama Sekolah</label>
-            <input type="text" name="nama_sekolah" value="<?= $siswa['nama_sekolah'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="nama_sekolah" value="<?= esc($siswa['nama_sekolah'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">NPSN Sekolah</label>
-            <input type="text" name="npsn_sekolah" value="<?= $siswa['npsn_sekolah'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="npsn_sekolah" value="<?= esc($siswa['npsn_sekolah'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
@@ -34,7 +34,12 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi Sekolah</label>
-            <input type="text" name="lokasi_sekolah" value="<?= $siswa['lokasi_sekolah'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="lokasi_sekolah" value="<?= esc($siswa['lokasi_sekolah'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Kompetensi Keahlian (Jurusan)</label>
+            <input type="text" name="komp_ahli" value="<?= esc($siswa['komp_ahli'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh: Teknik Komputer dan Jaringan">
         </div>
     </div>
 </div>

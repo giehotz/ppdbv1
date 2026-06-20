@@ -22,6 +22,13 @@ $routes->group('siswa', ['filter' => ['siswa', 'csrf']], function ($routes) {
     $routes->get('kelulusan', 'Siswa\Kelulusan::index');
     $routes->get('kelulusan/cetak', 'Siswa\Kelulusan::cetak');
 
+    // Twibbon
+    $routes->group('twibbon', function ($routes) {
+        $routes->get('/', 'Siswa\Twibbon::index');
+        $routes->get('(:segment)', 'Siswa\Twibbon::detail/$1');
+        $routes->post('process', 'Siswa\Twibbon::process');
+    });
+
     // Profile
     $routes->get('profile', 'Siswa\Profile::index');
     $routes->post('profile/update-foto', 'Siswa\Profile::updateFoto');

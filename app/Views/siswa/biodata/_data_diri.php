@@ -23,17 +23,17 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">NISN <span class="text-red-500">*</span></label>
-            <input type="text" name="nisn" value="<?= $siswa['nisn'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" readonly>
+            <input type="text" name="nisn" value="<?= esc($siswa['nisn'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" readonly>
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">NIK <span class="text-red-500">*</span></label>
-            <input type="text" name="nik" value="<?= $siswa['nik'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="nik" value="<?= esc($siswa['nik'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div class="md:col-span-2">
             <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
-            <input type="text" name="nama_lengkap" value="<?= $siswa['nama_lengkap'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="nama_lengkap" value="<?= esc($siswa['nama_lengkap'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
@@ -70,42 +70,42 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Tempat Lahir <span class="text-red-500">*</span></label>
-            <input type="text" name="tempat_lahir" value="<?= $siswa['tempat_lahir'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="tempat_lahir" value="<?= esc($siswa['tempat_lahir'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Lahir <span class="text-red-500">*</span></label>
-            <input type="date" name="tgl_lahir" value="<?= $siswa['tgl_lahir'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="date" name="tgl_lahir" value="<?= esc($siswa['tgl_lahir'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-            <input type="email" name="email" value="<?= $siswa['email'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="email" name="email" value="<?= esc($siswa['email'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">No. HP Siswa</label>
-            <input type="text" name="no_hp_siswa" value="<?= $siswa['no_hp_siswa'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="no_hp_siswa" value="<?= esc($siswa['no_hp_siswa'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Anak Ke</label>
-            <input type="number" name="anak_ke" value="<?= $siswa['anak_ke'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="number" name="anak_ke" value="<?= esc($siswa['anak_ke'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Saudara</label>
-            <input type="number" name="jml_saudara" value="<?= $siswa['jml_saudara'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="number" name="jml_saudara" value="<?= esc($siswa['jml_saudara'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Hobi</label>
-            <input type="text" name="hobi" value="<?= $siswa['hobi'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="hobi" value="<?= esc($siswa['hobi'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Cita-cita</label>
-            <input type="text" name="cita" value="<?= $siswa['cita'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="cita" value="<?= esc($siswa['cita'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
@@ -128,12 +128,24 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">No. KK Keluarga</label>
-            <input type="text" name="no_kk" value="<?= $siswa['no_kk'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="no_kk" value="<?= esc($siswa['no_kk'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Kepala Keluarga</label>
-            <input type="text" name="kepala_keluarga" value="<?= $siswa['kepala_keluarga'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="kepala_keluarga" value="<?= esc($siswa['kepala_keluarga'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Jalur Pendaftaran</label>
+            <select name="jalur_pendaftaran" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">-- Pilih Jalur --</option>
+                <option value="Zonasi" <?= ($siswa['jalur_pendaftaran'] ?? '') == 'Zonasi' ? 'selected' : '' ?>>Zonasi</option>
+                <option value="Afirmasi" <?= ($siswa['jalur_pendaftaran'] ?? '') == 'Afirmasi' ? 'selected' : '' ?>>Afirmasi</option>
+                <option value="Prestasi" <?= ($siswa['jalur_pendaftaran'] ?? '') == 'Prestasi' ? 'selected' : '' ?>>Prestasi</option>
+                <option value="Mutasi" <?= ($siswa['jalur_pendaftaran'] ?? '') == 'Mutasi' ? 'selected' : '' ?>>Mutasi</option>
+                <option value="Umum" <?= ($siswa['jalur_pendaftaran'] ?? '') == 'Umum' ? 'selected' : '' ?>>Umum</option>
+            </select>
         </div>
     </div>
 </div>

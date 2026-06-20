@@ -7,7 +7,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2">
             <label class="block text-sm font-medium text-gray-700 mb-2">Nama Ayah <span class="text-red-500">*</span></label>
-            <input type="text" name="nama_ayah" value="<?= $siswa['nama_ayah'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="nama_ayah" value="<?= esc($siswa['nama_ayah'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
@@ -22,17 +22,27 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">NIK Ayah</label>
-            <input type="text" name="nik_ayah" value="<?= $siswa['nik_ayah'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="nik_ayah" value="<?= esc($siswa['nik_ayah'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Tempat Lahir Ayah</label>
+            <input type="text" name="tempat_lahir_ayah" value="<?= esc($siswa['tempat_lahir_ayah'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Lahir Ayah</label>
+            <input type="date" name="tgl_lahir_ayah" value="<?= esc($siswa['tgl_lahir_ayah'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Lahir Ayah</label>
-            <input type="number" name="th_lahir_ayah" value="<?= $siswa['th_lahir_ayah'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="number" name="th_lahir_ayah" value="<?= esc($siswa['th_lahir_ayah'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Pendidikan Ayah</label>
-            <input type="text" name="pdd_ayah" value="<?= $siswa['pdd_ayah'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="pdd_ayah" value="<?= esc($siswa['pdd_ayah'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
@@ -86,7 +96,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2">
             <label class="block text-sm font-medium text-gray-700 mb-2">Nama Ibu <span class="text-red-500">*</span></label>
-            <input type="text" name="nama_ibu" value="<?= $siswa['nama_ibu'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="nama_ibu" value="<?= esc($siswa['nama_ibu'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
@@ -101,17 +111,27 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">NIK Ibu</label>
-            <input type="text" name="nik_ibu" value="<?= $siswa['nik_ibu'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="nik_ibu" value="<?= esc($siswa['nik_ibu'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Tempat Lahir Ibu</label>
+            <input type="text" name="tempat_lahir_ibu" value="<?= esc($siswa['tempat_lahir_ibu'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Lahir Ibu</label>
+            <input type="date" name="tgl_lahir_ibu" value="<?= esc($siswa['tgl_lahir_ibu'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Lahir Ibu</label>
-            <input type="number" name="th_lahir_ibu" value="<?= $siswa['th_lahir_ibu'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="number" name="th_lahir_ibu" value="<?= esc($siswa['th_lahir_ibu'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Pendidikan Ibu</label>
-            <input type="text" name="pdd_ibu" value="<?= $siswa['pdd_ibu'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="pdd_ibu" value="<?= esc($siswa['pdd_ibu'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
@@ -161,7 +181,7 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">No. HP Orang Tua <span class="text-red-500">*</span></label>
-            <input type="text" name="no_hp_ortu" value="<?= $siswa['no_hp_ortu'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="no_hp_ortu" value="<?= esc($siswa['no_hp_ortu'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
     </div>
 
@@ -179,27 +199,27 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2">
             <label class="block text-sm font-medium text-gray-700 mb-2">Nama Wali</label>
-            <input type="text" id="nama_wali" name="nama_wali" value="<?= $siswa['nama_wali'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 wali-field">
+            <input type="text" id="nama_wali" name="nama_wali" value="<?= esc($siswa['nama_wali'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 wali-field">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">NIK Wali</label>
-            <input type="text" id="nik_wali" name="nik_wali" value="<?= $siswa['nik_wali'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 wali-field">
+            <input type="text" id="nik_wali" name="nik_wali" value="<?= esc($siswa['nik_wali'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 wali-field">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Lahir Wali</label>
-            <input type="number" id="th_lahir_wali" name="th_lahir_wali" value="<?= $siswa['th_lahir_wali'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 wali-field">
+            <input type="number" id="th_lahir_wali" name="th_lahir_wali" value="<?= esc($siswa['th_lahir_wali'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 wali-field">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Pendidikan Wali</label>
-            <input type="text" id="pdd_wali" name="pdd_wali" value="<?= $siswa['pdd_wali'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 wali-field">
+            <input type="text" id="pdd_wali" name="pdd_wali" value="<?= esc($siswa['pdd_wali'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 wali-field">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Pekerjaan Wali</label>
-            <input type="text" id="pekerjaan_wali" name="pekerjaan_wali" value="<?= $siswa['pekerjaan_wali'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 wali-field">
+            <input type="text" id="pekerjaan_wali" name="pekerjaan_wali" value="<?= esc($siswa['pekerjaan_wali'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 wali-field">
         </div>
 
         <div>

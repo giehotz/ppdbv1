@@ -25,6 +25,13 @@ Calon Siswa
     </div>
 <?php endif; ?>
 
+<?php if (session()->getFlashdata('print_password')) : ?>
+    <?php session()->keepFlashdata('print_password'); ?>
+    <script>
+        window.open('<?= base_url('verifikator/siswa/cetak-password') ?>', '_blank');
+    </script>
+<?php endif; ?>
+
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <!-- Header Section -->
     <div class="px-6 py-5 border-b border-gray-100 bg-gray-50/50">
@@ -89,7 +96,7 @@ Calon Siswa
                             <td class="py-3 px-6 min-w-[150px]">
                                 <div class="flex items-center gap-3">
                                     <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                                        <div class="<?= $s['kelengkapan'] == 100 ? 'bg-emerald-500' : ($s['kelengkapan'] >= 50 ? 'bg-blue-500' : 'bg-red-500') ?> h-2.5 rounded-full" style="width: <?= esc($s['kelengkapan']) ?>%"></div>
+                                        <div class="<?= $s['kelengkapan'] == 100 ? 'bg-emerald-500' : ($s['kelengkapan'] >= 50 ? 'bg-blue-500' : 'bg-red-500') ?> h-2.5 rounded-full" style="width: <?= esc($s['kelengkapan'], 'attr') ?>%"></div>
                                     </div>
                                     <span class="text-xs text-gray-600 font-bold"><?= esc($s['kelengkapan']) ?>%</span>
                                 </div>
@@ -124,6 +131,12 @@ Calon Siswa
                                         title="Cetak Formulir">
                                         <i class="fas fa-print text-lg"></i>
                                     </a>
+                                    <button type="button"
+                                        onclick="openResetPasswordModal('<?= $s['id_siswa'] ?>', '<?= esc(addslashes($s['nama_lengkap'])) ?>')"
+                                        class="text-amber-500 hover:text-amber-700 transform hover:scale-110 transition-transform focus:outline-none"
+                                        title="Reset Password">
+                                        <i class="fas fa-key text-lg"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -162,6 +175,55 @@ Calon Siswa
     <?php endif; ?>
 </div>
 
+<!-- Reset Password Modal -->
+<div id="resetPasswordModal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-sm transition-opacity" onclick="closeResetPasswordModal()"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all scale-95 opacity-0" id="resetPasswordModalContent">
+            <div class="bg-amber-50 rounded-t-2xl px-6 py-5 border-b border-amber-100">
+                <div class="flex items-center gap-4">
+                    <div class="bg-amber-100 rounded-full p-3 shadow-sm">
+                        <i class="fas fa-key text-amber-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-amber-800">Reset Password Siswa</h3>
+                        <p class="text-sm text-amber-600 mt-0.5">Buat password baru dan cetak PDF</p>
+                    </div>
+                </div>
+            </div>
+            <form method="post" id="resetPasswordForm">
+                <?= csrf_field() ?>
+                <div class="px-6 py-6">
+                    <p class="text-gray-600 mb-1 text-sm">Reset password untuk siswa:</p>
+                    <p class="text-gray-900 font-bold text-xl mb-5 pb-4 border-b border-gray-100" id="resetStudentName"></p>
+
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password Baru</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="newPasswordInput" name="new_password" required
+                            class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-lg font-medium focus:outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/20 transition-all"
+                            placeholder="Ketik password atau klik acak">
+                        <button type="button" onclick="generateRandomPassword()"
+                            class="bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 font-medium px-4 py-2 rounded-xl transition">
+                            <i class="fas fa-random mb-1"></i><br><span class="text-xs">Acak</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500">Ketik manual atau gunakan tombol Acak. File PDF akan otomatis terdownload setelah Anda menyimpannya.</p>
+                </div>
+                <div class="px-6 py-4 border-t border-gray-100 flex gap-3 justify-end bg-gray-50 rounded-b-2xl">
+                    <button type="button" onclick="closeResetPasswordModal()"
+                        class="px-5 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition duration-200 shadow-sm">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold rounded-xl transition-all duration-200 shadow-sm flex items-center">
+                        <i class="fas fa-save mr-2"></i> Simpan & Download
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <style>
     /* Styling tambahan untuk pagination bawaan CI4 agar cocok dengan desain Tailwind */
     .pagination-wrapper ul.pagination {
@@ -195,5 +257,46 @@ Calon Siswa
         color: #111827;
     }
 </style>
+
+<script>
+    // Reset Password Modal Logic
+    function openResetPasswordModal(id, name) {
+        document.getElementById('resetPasswordForm').action = '<?= base_url('verifikator/siswa/resetPassword') ?>/' + id;
+        document.getElementById('resetStudentName').textContent = name;
+        document.getElementById('newPasswordInput').value = '';
+
+        const modal = document.getElementById('resetPasswordModal');
+        const content = document.getElementById('resetPasswordModalContent');
+        modal.classList.remove('hidden');
+
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closeResetPasswordModal() {
+        const content = document.getElementById('resetPasswordModalContent');
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            document.getElementById('resetPasswordModal').classList.add('hidden');
+        }, 200);
+    }
+
+    function generateRandomPassword() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let pass = '';
+        for (let i = 0; i < 6; i++) {
+            pass += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        document.getElementById('newPasswordInput').value = pass;
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeResetPasswordModal();
+    });
+</script>
 
 <?= $this->endSection() ?>

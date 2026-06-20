@@ -102,7 +102,7 @@ class Berkas extends BaseController
 
         // Generate filename: e.g. KK_Nama Siswa_NISN.pdf
         $jenisLabel = strtoupper($jenisBerkas);
-        $namaClean = str_replace(' ', '_', $siswa['nama_lengkap']);
+        $namaClean = preg_replace('/[^a-zA-Z0-9_-]/', '_', str_replace(' ', '_', $siswa['nama_lengkap']));
         $fileName = $jenisLabel . '_' . $namaClean . '_' . $nisn . '.' . $extension;
 
         // Move file

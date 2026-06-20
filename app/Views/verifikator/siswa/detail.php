@@ -27,9 +27,23 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
     </a>
 
     <div class="flex flex-wrap items-center gap-3">
+        <!-- Tombol Edit Data & Berkas (Menuju ke form biodata yang sudah disatukan) -->
+        <a href="<?= base_url('verifikator/siswa/biodata/' . $siswa['id_siswa']) ?>" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 shadow-sm">
+            <i class="fas fa-edit mr-2"></i> Edit Biodata & Berkas
+        </a>
+
+        <!-- Tombol Cetak Formulir -->
         <a href="<?= base_url('verifikator/siswa/cetak/' . $siswa['id_siswa']) ?>" target="_blank" class="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 shadow-sm">
             <i class="fas fa-print mr-2"></i> Cetak Formulir
         </a>
+
+        <!-- Tombol Hapus Siswa -->
+        <form action="<?= base_url('verifikator/siswa/delete/' . $siswa['id_siswa']) ?>" method="post" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data siswa ini secara permanen? Semua berkas dan biodata akan terhapus!');">
+            <?= csrf_field() ?>
+            <button type="submit" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 shadow-sm">
+                <i class="fas fa-trash-alt mr-2"></i> Hapus Siswa
+            </button>
+        </form>
     </div>
 </div>
 
@@ -54,7 +68,7 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">NISN</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['nisn'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['nisn'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Nama Lengkap</p>
@@ -62,7 +76,7 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">NIK</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['nik'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['nik'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Jenis Kelamin</p>
@@ -73,51 +87,51 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tempat, Tanggal Lahir</p>
                     <p class="text-gray-900 font-medium">
-                        <?= esc($siswa['tempat_lahir'] ?? '-') ?>, 
-                        <?= $siswa['tgl_lahir'] ? date('d-m-Y', strtotime($siswa['tgl_lahir'])) : '-' ?>
+                        <?= esc($siswa['tempat_lahir'] ?? '' ?: '-') ?>, 
+                        <?= (!empty($siswa['tgl_lahir']) && strtotime($siswa['tgl_lahir'])) ? date('d-m-Y', strtotime($siswa['tgl_lahir'])) : '-' ?>
                     </p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Agama</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['agama'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['agama'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">No. HP Siswa / Email</p>
                     <p class="text-gray-900 font-medium">
-                        <?= esc($siswa['no_hp_siswa'] ?? '-') ?> <br>
-                        <span class="text-sm text-gray-500 font-normal"><?= esc($siswa['email'] ?? '-') ?></span>
+                        <?= esc($siswa['no_hp_siswa'] ?? '' ?: '-') ?> <br>
+                        <span class="text-sm text-gray-500 font-normal"><?= esc($siswa['email'] ?? '' ?: '-') ?></span>
                     </p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Status Dalam Keluarga</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['status_keluarga'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['status_keluarga'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Anak Ke / Jml Saudara</p>
                     <p class="text-gray-900 font-medium">
-                        <?= esc($siswa['anak_ke'] ?? '-') ?> dari <?= esc($siswa['jml_saudara'] ?? '-') ?> bersaudara
+                        <?= esc($siswa['anak_ke'] ?? '' ?: '-') ?> dari <?= esc($siswa['jml_saudara'] ?? '' ?: '-') ?> bersaudara
                     </p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Hobi / Cita-cita</p>
                     <p class="text-gray-900 font-medium">
-                        <?= esc($siswa['hobi'] ?? '-') ?> / <?= esc($siswa['cita'] ?? '-') ?>
+                        <?= esc($siswa['hobi'] ?? '' ?: '-') ?> / <?= esc($siswa['cita'] ?? '' ?: '-') ?>
                     </p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Riwayat Pendidikan</p>
                     <p class="text-gray-900 font-medium text-sm mt-1">
-                        <span class="inline-block bg-gray-100 rounded px-2 py-1 mr-2">PAUD: <?= esc($siswa['paud'] ?? '-') ?></span>
-                        <span class="inline-block bg-gray-100 rounded px-2 py-1">TK: <?= esc($siswa['tk'] ?? '-') ?></span>
+                        <span class="inline-block bg-gray-100 rounded px-2 py-1 mr-2">PAUD: <?= esc($siswa['paud'] ?? '' ?: '-') ?></span>
+                        <span class="inline-block bg-gray-100 rounded px-2 py-1">TK: <?= esc($siswa['tk'] ?? '' ?: '-') ?></span>
                     </p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">No. KK</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['no_kk'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['no_kk'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Kepala Keluarga</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['kepala_keluarga'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['kepala_keluarga'] ?? '' ?: '-') ?></p>
                 </div>
             </div>
         </div>
@@ -133,31 +147,31 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
             <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="sm:col-span-2">
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Alamat Lengkap</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['alamat_siswa'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['alamat_siswa'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Desa/Kelurahan</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['desa'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['desa'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Kecamatan</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['kec'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['kec'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Kabupaten/Kota</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['kab'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['kab'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Provinsi (Kode Pos)</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['prov'] ?? '-') ?> (<?= esc($siswa['kode_pos'] ?? '-') ?>)</p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['prov'] ?? '' ?: '-') ?> (<?= esc($siswa['kode_pos'] ?? '' ?: '-') ?>)</p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Jenis Tinggal</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['jenis_tinggal'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['jenis_tinggal'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Transportasi / Jarak</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['trans'] ?? '-') ?> (<?= esc($siswa['jarak'] ?? '-') ?>)</p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['trans'] ?? '' ?: '-') ?> (<?= esc($siswa['jarak'] ?? '' ?: '-') ?>)</p>
                 </div>
             </div>
         </div>
@@ -179,13 +193,14 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
                         <h4 class="font-bold text-gray-800 text-lg">Data Ayah</h4>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pl-11">
-                        <div><p class="text-xs text-gray-500 uppercase">Nama Ayah</p><p class="font-medium"><?= esc($siswa['nama_ayah'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Status</p><p class="font-medium"><?= esc($siswa['status_ayah'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">NIK</p><p class="font-medium"><?= esc($siswa['nik_ayah'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Tahun Lahir</p><p class="font-medium"><?= esc($siswa['th_lahir_ayah'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Pendidikan</p><p class="font-medium"><?= esc($siswa['pdd_ayah'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Pekerjaan</p><p class="font-medium"><?= esc($siswa['pekerjaan_ayah'] ?? '-') ?></p></div>
-                        <div class="sm:col-span-2"><p class="text-xs text-gray-500 uppercase">Penghasilan</p><p class="font-medium"><?= esc($siswa['penghasilan_ayah'] ?? '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Nama Ayah</p><p class="font-medium"><?= esc($siswa['nama_ayah'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Status</p><p class="font-medium"><?= esc($siswa['status_ayah'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">NIK</p><p class="font-medium"><?= esc($siswa['nik_ayah'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Tmp, Tgl Lahir</p><p class="font-medium"><?= esc($siswa['tempat_lahir_ayah'] ?? '' ?: '-') ?>, <?= !empty($siswa['tgl_lahir_ayah']) && strtotime($siswa['tgl_lahir_ayah']) ? date('d-m-Y', strtotime($siswa['tgl_lahir_ayah'])) : '-' ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Tahun Lahir</p><p class="font-medium"><?= esc($siswa['th_lahir_ayah'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Pendidikan</p><p class="font-medium"><?= esc($siswa['pdd_ayah'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Pekerjaan</p><p class="font-medium"><?= esc($siswa['pekerjaan_ayah'] ?? '' ?: '-') ?></p></div>
+                        <div class="sm:col-span-2"><p class="text-xs text-gray-500 uppercase">Penghasilan</p><p class="font-medium"><?= esc($siswa['penghasilan_ayah'] ?? '' ?: '-') ?></p></div>
                     </div>
                 </div>
 
@@ -198,13 +213,14 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
                         <h4 class="font-bold text-gray-800 text-lg">Data Ibu</h4>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pl-11">
-                        <div><p class="text-xs text-gray-500 uppercase">Nama Ibu</p><p class="font-medium"><?= esc($siswa['nama_ibu'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Status</p><p class="font-medium"><?= esc($siswa['status_ibu'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">NIK</p><p class="font-medium"><?= esc($siswa['nik_ibu'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Tahun Lahir</p><p class="font-medium"><?= esc($siswa['th_lahir_ibu'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Pendidikan</p><p class="font-medium"><?= esc($siswa['pdd_ibu'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Pekerjaan</p><p class="font-medium"><?= esc($siswa['pekerjaan_ibu'] ?? '-') ?></p></div>
-                        <div class="sm:col-span-2"><p class="text-xs text-gray-500 uppercase">Penghasilan</p><p class="font-medium"><?= esc($siswa['penghasilan_ibu'] ?? '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Nama Ibu</p><p class="font-medium"><?= esc($siswa['nama_ibu'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Status</p><p class="font-medium"><?= esc($siswa['status_ibu'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">NIK</p><p class="font-medium"><?= esc($siswa['nik_ibu'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Tmp, Tgl Lahir</p><p class="font-medium"><?= esc($siswa['tempat_lahir_ibu'] ?? '' ?: '-') ?>, <?= !empty($siswa['tgl_lahir_ibu']) && strtotime($siswa['tgl_lahir_ibu']) ? date('d-m-Y', strtotime($siswa['tgl_lahir_ibu'])) : '-' ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Tahun Lahir</p><p class="font-medium"><?= esc($siswa['th_lahir_ibu'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Pendidikan</p><p class="font-medium"><?= esc($siswa['pdd_ibu'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Pekerjaan</p><p class="font-medium"><?= esc($siswa['pekerjaan_ibu'] ?? '' ?: '-') ?></p></div>
+                        <div class="sm:col-span-2"><p class="text-xs text-gray-500 uppercase">Penghasilan</p><p class="font-medium"><?= esc($siswa['penghasilan_ibu'] ?? '' ?: '-') ?></p></div>
                     </div>
                 </div>
 
@@ -217,12 +233,12 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
                         <h4 class="font-bold text-gray-800 text-lg">Data Wali <span class="text-sm font-normal text-gray-500">(Opsional)</span></h4>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pl-11">
-                        <div><p class="text-xs text-gray-500 uppercase">Nama Wali</p><p class="font-medium"><?= esc($siswa['nama_wali'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">NIK</p><p class="font-medium"><?= esc($siswa['nik_wali'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Tahun Lahir</p><p class="font-medium"><?= esc($siswa['th_lahir_wali'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Pendidikan</p><p class="font-medium"><?= esc($siswa['pdd_wali'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Pekerjaan</p><p class="font-medium"><?= esc($siswa['pekerjaan_wali'] ?? '-') ?></p></div>
-                        <div><p class="text-xs text-gray-500 uppercase">Penghasilan</p><p class="font-medium"><?= esc($siswa['penghasilan_wali'] ?? '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Nama Wali</p><p class="font-medium"><?= esc($siswa['nama_wali'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">NIK</p><p class="font-medium"><?= esc($siswa['nik_wali'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Tahun Lahir</p><p class="font-medium"><?= esc($siswa['th_lahir_wali'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Pendidikan</p><p class="font-medium"><?= esc($siswa['pdd_wali'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Pekerjaan</p><p class="font-medium"><?= esc($siswa['pekerjaan_wali'] ?? '' ?: '-') ?></p></div>
+                        <div><p class="text-xs text-gray-500 uppercase">Penghasilan</p><p class="font-medium"><?= esc($siswa['penghasilan_wali'] ?? '' ?: '-') ?></p></div>
                     </div>
                 </div>
 
@@ -230,7 +246,7 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
                 <div class="mt-6 bg-emerald-50 p-4 rounded-lg border border-emerald-100 flex items-center justify-between">
                     <div>
                         <p class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1">Kontak Darurat (No. HP Ortu/Wali)</p>
-                        <p class="text-emerald-900 font-bold text-xl"><?= esc($siswa['no_hp_ortu'] ?? '-') ?></p>
+                        <p class="text-emerald-900 font-bold text-xl"><?= esc($siswa['no_hp_ortu'] ?? '' ?: '-') ?></p>
                     </div>
                     <div class="text-emerald-400">
                         <i class="fas fa-phone-alt fa-2x"></i>
@@ -306,25 +322,25 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
             <div class="p-6 space-y-4">
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Nama Sekolah</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['nama_sekolah'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['nama_sekolah'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">NPSN</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['npsn_sekolah'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['npsn_sekolah'] ?? '' ?: '-') ?></p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Jenjang</p>
-                        <p class="text-gray-900 font-medium"><?= esc($siswa['jenjang_sekolah'] ?? '-') ?></p>
+                        <p class="text-gray-900 font-medium"><?= esc($siswa['jenjang_sekolah'] ?? '' ?: '-') ?></p>
                     </div>
                     <div>
                         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Status</p>
-                        <p class="text-gray-900 font-medium"><?= esc($siswa['status_sekolah'] ?? '-') ?></p>
+                        <p class="text-gray-900 font-medium"><?= esc($siswa['status_sekolah'] ?? '' ?: '-') ?></p>
                     </div>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Lokasi</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['lokasi_sekolah'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['lokasi_sekolah'] ?? '' ?: '-') ?></p>
                 </div>
             </div>
         </div>
@@ -337,15 +353,15 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
             <div class="p-6 space-y-4">
                 <div class="flex items-center justify-between border-b border-gray-50 pb-2">
                     <span class="text-sm font-semibold text-gray-500 uppercase">KKS</span>
-                    <span class="font-medium text-gray-900"><?= esc($siswa['no_kks'] ?? '-') ?></span>
+                    <span class="font-medium text-gray-900"><?= esc($siswa['no_kks'] ?? '' ?: '-') ?></span>
                 </div>
                 <div class="flex items-center justify-between border-b border-gray-50 pb-2">
                     <span class="text-sm font-semibold text-gray-500 uppercase">PKH</span>
-                    <span class="font-medium text-gray-900"><?= esc($siswa['no_pkh'] ?? '-') ?></span>
+                    <span class="font-medium text-gray-900"><?= esc($siswa['no_pkh'] ?? '' ?: '-') ?></span>
                 </div>
                 <div class="flex items-center justify-between">
                     <span class="text-sm font-semibold text-gray-500 uppercase">KIP</span>
-                    <span class="font-medium text-gray-900"><?= esc($siswa['no_kip'] ?? '-') ?></span>
+                    <span class="font-medium text-gray-900"><?= esc($siswa['no_kip'] ?? '' ?: '-') ?></span>
                 </div>
             </div>
         </div>
@@ -358,15 +374,15 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
             <div class="p-6 space-y-4">
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tanggal Daftar</p>
-                    <p class="text-gray-900 font-medium"><?= $siswa['tgl_siswa'] ? date('d/m/Y H:i', strtotime($siswa['tgl_siswa'])) : '-' ?></p>
+                    <p class="text-gray-900 font-medium"><?= (!empty($siswa['tgl_siswa']) && strtotime($siswa['tgl_siswa'])) ? date('d/m/Y H:i', strtotime($siswa['tgl_siswa'])) : '-' ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Jalur Pendaftaran</p>
-                    <p class="text-gray-900 font-medium bg-blue-50 text-blue-700 px-2 py-1 rounded inline-block mt-1"><?= esc($siswa['jalur_pendaftaran'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium bg-blue-50 text-blue-700 px-2 py-1 rounded inline-block mt-1"><?= esc($siswa['jalur_pendaftaran'] ?? '' ?: '-') ?></p>
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Pilihan Jurusan</p>
-                    <p class="text-gray-900 font-medium"><?= esc($siswa['komp_ahli'] ?? '-') ?></p>
+                    <p class="text-gray-900 font-medium"><?= esc($siswa['komp_ahli'] ?? '' ?: '-') ?></p>
                 </div>
             </div>
         </div>

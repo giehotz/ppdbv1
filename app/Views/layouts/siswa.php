@@ -61,7 +61,7 @@
         <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden" onclick="toggleMobileMenu()"></div>
 
         <!-- Sidebar -->
-        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white flex-shrink-0 transition-all duration-300 ease-in-out z-30">
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 w-64 bg-gradient-to-b from-emerald-600 to-emerald-800 text-white flex-shrink-0 transition-all duration-300 ease-in-out z-30">
             <div class="p-6">
                 <div class="flex items-center justify-between">
                     <div id="sidebar-brand">
@@ -115,6 +115,11 @@
                 <a href="<?= base_url('siswa/pengumuman') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-blue-700 transition duration-200 <?= strpos(uri_string(), 'siswa/pengumuman') !== false ? 'bg-blue-700 border-l-4 border-white' : '' ?>">
                     <i class="fas fa-bullhorn w-6 text-center"></i>
                     <span class="sidebar-text ml-3">Pengumuman</span>
+                </a>
+
+                <a href="<?= base_url('siswa/twibbon') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-blue-700 transition duration-200 <?= strpos(uri_string(), 'siswa/twibbon') !== false ? 'bg-blue-700 border-l-4 border-white' : '' ?>">
+                    <i class="fas fa-image w-6 text-center"></i>
+                    <span class="sidebar-text ml-3">Twibbon</span>
                 </a>
 
                 <?php 

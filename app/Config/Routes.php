@@ -44,3 +44,10 @@ $routes->group('api/notifikasi', function ($routes) {
     $routes->get('count', 'API\NotifikasiPengumuman::count');
     $routes->get('recent', 'API\NotifikasiPengumuman::recent');
 });
+
+// Twibbon Public Routes
+$routes->group('twibbon', function ($routes) {
+    $routes->get('/', 'Twibbon::index');
+    $routes->get('(:segment)', 'Twibbon::detail/$1');
+    $routes->post('process', 'Twibbon::process');
+});

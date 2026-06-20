@@ -72,6 +72,7 @@
             ['label' => 'Pesan Pribadi',   'icon' => 'envelope',       'url' => 'admin/pesan'],
             ['label' => 'Pengumuman',      'icon' => 'bullhorn',       'url' => 'admin/pengumuman'],
             ['label' => 'Landing Content', 'icon' => 'laptop-code',    'url' => 'admin/landing-content'],
+            ['label' => 'Kampanye Twibbon', 'icon' => 'image',         'url' => 'admin/twibbon'],
             ['label' => 'Pengaturan Sistem','icon' => 'cogs',          'url' => 'admin/settings'],
             ['label' => 'Pengaturan SEO',  'icon' => 'search',         'url' => 'admin/seo'],
         ],

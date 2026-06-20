@@ -5,7 +5,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2">
             <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap <span class="text-red-500">*</span></label>
-            <textarea name="alamat_siswa" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><?= $siswa['alamat_siswa'] ?? '' ?></textarea>
+            <textarea name="alamat_siswa" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><?= esc($siswa['alamat_siswa'] ?? '') ?></textarea>
         </div>
 
         <div>
@@ -41,7 +41,7 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Kode Pos</label>
-            <input type="text" name="kode_pos" value="<?= $siswa['kode_pos'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="kode_pos" value="<?= esc($siswa['kode_pos'] ?? '', 'attr') ?>" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
@@ -52,6 +52,24 @@
                 <option value="Bersama Wali" <?= ($siswa['jenis_tinggal'] ?? '') == 'Bersama Wali' ? 'selected' : '' ?>>Bersama Wali</option>
                 <option value="Kost" <?= ($siswa['jenis_tinggal'] ?? '') == 'Kost' ? 'selected' : '' ?>>Kost</option>
                 <option value="Asrama" <?= ($siswa['jenis_tinggal'] ?? '') == 'Asrama' ? 'selected' : '' ?>>Asrama</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Jarak ke Sekolah (km)</label>
+            <input type="number" name="jarak" value="<?= esc($siswa['jarak'] ?? '', 'attr') ?>" step="0.1" min="0" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.0">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Transportasi</label>
+            <select name="trans" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">-- Pilih --</option>
+                <option value="Jalan Kaki" <?= ($siswa['trans'] ?? '') == 'Jalan Kaki' ? 'selected' : '' ?>>Jalan Kaki</option>
+                <option value="Sepeda" <?= ($siswa['trans'] ?? '') == 'Sepeda' ? 'selected' : '' ?>>Sepeda</option>
+                <option value="Motor" <?= ($siswa['trans'] ?? '') == 'Motor' ? 'selected' : '' ?>>Motor</option>
+                <option value="Mobil" <?= ($siswa['trans'] ?? '') == 'Mobil' ? 'selected' : '' ?>>Mobil</option>
+                <option value="Angkutan Umum" <?= ($siswa['trans'] ?? '') == 'Angkutan Umum' ? 'selected' : '' ?>>Angkutan Umum</option>
+                <option value="Lainnya" <?= ($siswa['trans'] ?? '') == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
             </select>
         </div>
     </div>
