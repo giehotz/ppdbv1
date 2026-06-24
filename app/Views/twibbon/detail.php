@@ -4,6 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buat Twibbon - <?= esc($campaign['title']) ?> - <?= esc($web['nama_sekolah'] ?? 'PPDB') ?></title>
+    <meta name="description" content="<?= esc(strip_tags($campaign['description'] ?: 'Ikut serta dalam kampanye twibbon kami dengan memasang foto profil Anda di bingkai ini.')) ?>">
+
+    <!-- Open Graph / Facebook / WhatsApp / Telegram -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?= current_url() ?>">
+    <meta property="og:title" content="Buat Twibbon - <?= esc($campaign['title']) ?>">
+    <meta property="og:description" content="<?= esc(strip_tags($campaign['description'] ?: 'Ikut serta dalam kampanye twibbon kami dengan memasang foto profil Anda di bingkai ini.')) ?>">
+    <meta property="og:image" content="<?= base_url($frame['file_path']) ?>">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="<?= esc($frame['width'] ?? '1080') ?>">
+    <meta property="og:image:height" content="<?= esc($frame['height'] ?? '1080') ?>">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="<?= current_url() ?>">
+    <meta name="twitter:title" content="Buat Twibbon - <?= esc($campaign['title']) ?>">
+    <meta name="twitter:description" content="<?= esc(strip_tags($campaign['description'] ?: 'Ikut serta dalam kampanye twibbon kami dengan memasang foto profil Anda di bingkai ini.')) ?>">
+    <meta name="twitter:image" content="<?= base_url($frame['file_path']) ?>">
+
     <link rel="icon" type="image/png" href="<?= base_url('favicon.png') ?>">
     <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -41,6 +60,16 @@
             background-color: rgba(0, 0, 0, 0.1) !important;
             opacity: 0.8 !important;
         }
+        .bg-checkerboard {
+            background-color: #f9fafb;
+            background-image: 
+                linear-gradient(45deg, #e5e7eb 25%, transparent 25%), 
+                linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #e5e7eb 75%), 
+                linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
@@ -66,7 +95,7 @@
             
             <!-- Column 1: Editor Canvas -->
             <div class="md:col-span-6 flex flex-col items-center">
-                <div class="relative w-full max-w-[420px] aspect-square bg-white rounded-2xl shadow-xl overflow-hidden border border-emerald-100" id="editor-container">
+                <div class="relative w-full max-w-[420px] aspect-square bg-checkerboard rounded-2xl shadow-xl overflow-hidden border border-emerald-100" id="editor-container">
                     
                     <!-- User Image Container -->
                     <div id="image-wrapper" class="w-full h-full absolute inset-0">
@@ -76,8 +105,8 @@
                     <!-- Frame PNG Overlay (Stops pointer events so we can drag the cropper underneath) -->
                     <img src="<?= base_url($frame['file_path']) ?>" alt="Frame" id="frame-overlay" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none">
 
-                    <!-- Empty State Upload Trigger -->
-                    <div id="upload-placeholder" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center bg-white bg-opacity-95 hover:bg-opacity-100 cursor-pointer transition-all duration-200" onclick="document.getElementById('photo-input').click()">
+                    <!-- Empty State Upload Trigger (Placed on top of the frame overlay with a semi-transparent white background) -->
+                    <div id="upload-placeholder" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-all duration-200 hover:bg-white/80" style="background-color: rgba(255, 255, 255, 0.75);" onclick="document.getElementById('photo-input').click()">
                         <div class="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mb-4 shadow-sm border border-emerald-100">
                             <i class="fas fa-cloud-upload-alt text-2xl"></i>
                         </div>
@@ -207,7 +236,7 @@
                     // Initialize Cropper.js
                     cropper = new Cropper(img, {
                         aspectRatio: 1, // 1:1 ratio
-                        viewMode: 1, // Crop box must be within container
+                        viewMode: 0, // Allow zooming out smaller than crop box
                         autoCropArea: 1, // Crop box is maximum width/height of container
                         background: false,
                         guides: false,
@@ -216,6 +245,12 @@
                         cropBoxMovable: false,
                         cropBoxResizable: false,
                         dragMode: 'move', // Allow panning the image
+                        zoom: function(event) {
+                            // Prevent zoom out below 10% (0.1 ratio) of the original image
+                            if (event.detail.ratio < 0.1) {
+                                event.preventDefault();
+                            }
+                        }
                     });
                 };
                 reader.readAsDataURL(selectedFile);

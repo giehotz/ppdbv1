@@ -31,6 +31,19 @@ $routes->group('verifikator', ['filter' => ['verifikator', 'csrf']], function ($
     $routes->post('unlockrequest/approve/(:num)', 'Verifikator\UnlockRequest::approve/$1');
     $routes->post('unlockrequest/reject/(:num)', 'Verifikator\UnlockRequest::reject/$1');
 
+    // Pembiayaan (Payment/Fee)
+    $routes->get('pembiayaan', 'Verifikator\Pembiayaan::index');
+    $routes->post('pembiayaan/tambah-semua-siswa', 'Verifikator\Pembiayaan::tambahTagihanSemuaSiswa');
+    $routes->get('pembiayaan/siswa/(:num)', 'Verifikator\Pembiayaan::detail/$1');
+    $routes->post('pembiayaan/siswa/(:num)/tagihan/tambah', 'Verifikator\Pembiayaan::tambahTagihan/$1');
+    $routes->post('pembiayaan/siswa/(:num)/tagihan/tambah-semua', 'Verifikator\Pembiayaan::tambahSemuaTagihan/$1');
+    $routes->post('pembiayaan/siswa/(:num)/tagihan/hapus', 'Verifikator\Pembiayaan::hapusTagihan/$1');
+    $routes->post('pembiayaan/siswa/(:num)/bayar', 'Verifikator\Pembiayaan::bayar/$1');
+    $routes->post('pembiayaan/siswa/(:num)/upload-bukti', 'Verifikator\Pembiayaan::uploadBukti/$1');
+    $routes->post('pembiayaan/siswa/(:num)/hapus-bukti', 'Verifikator\Pembiayaan::hapusBukti/$1');
+    $routes->post('pembiayaan/siswa/(:num)/update-status', 'Verifikator\Pembiayaan::updateStatusBayar/$1');
+    $routes->get('pembiayaan/siswa/(:num)/kuitansi', 'Verifikator\Pembiayaan::kuitansi/$1');
+
     // Pesan (Private Messages)
     $routes->get('pesan', 'Verifikator\Pesan::index');
     $routes->get('pesan/create', 'Verifikator\Pesan::create');

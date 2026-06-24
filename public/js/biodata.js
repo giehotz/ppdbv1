@@ -143,10 +143,11 @@ function setSavedValues(values) {
 }
 
 // Function to set status final from PHP
-function setIsFinal(status) {
+function setIsFinal(status, verifikatorMode = false) {
     isFinal = status;
-    if (isFinal) {
+    if (isFinal && !verifikatorMode) {
         // Disable all inputs automatically using JS if status is Final to avoid tampering
+        // Skip when verifikator is editing — they need to modify data
         setTimeout(() => {
             document.querySelectorAll('#formBiodata input, #formBiodata select, #formBiodata textarea').forEach(el => {
                 if (el.name !== 'csrf_test_name') { // Don't disable CSRF if needed, but usually it's hidden

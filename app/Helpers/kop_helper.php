@@ -1,5 +1,26 @@
 <?php
 
+if (!function_exists('image_to_base64')) {
+    /**
+     * Convert an image file to a base64 Data URI
+     *
+     * @param string $relativePath Relative path from FCPATH
+     * @return string Base64 data URI or empty string if not found
+     */
+    function image_to_base64($relativePath)
+    {
+        $fullPath = FCPATH . $relativePath;
+        if (file_exists($fullPath) && !is_dir($fullPath)) {
+            $type = pathinfo($fullPath, PATHINFO_EXTENSION);
+            $data = @file_get_contents($fullPath);
+            if ($data !== false) {
+                return 'data:image/' . $type . ';base64,' . base64_encode($data);
+            }
+        }
+        return '';
+    }
+}
+
 if (!function_exists('render_kop_surat')) {
     /**
      * Render the Kop Surat for PDF or printing
@@ -30,11 +51,42 @@ if (!function_exists('render_kop_surat')) {
 
         // Get logo image path for PDF (usually requires absolute local path or base64 for dompdf)
         $logoPath = 'uploads/kop/' . $kop['logo_kiri'];
-        if (file_exists(FCPATH . $logoPath)) {
+        $logoSrc = '';
+
+        // 1. Try base64 conversion first
+        if (!empty($kop['logo_kiri'])) {
+            $logoSrc = image_to_base64($logoPath);
+        }
+
+        // 2. If base64 failed but it is a custom uploaded logo, use base_url directly
+        if (empty($logoSrc) && !empty($kop['logo_kiri']) && $kop['logo_kiri'] !== 'logo-kemenag.png') {
             $logoSrc = base_url($logoPath);
-        } else {
-            // Fallback to default asset if uploaded file doesn't exist
-            $logoSrc = base_url('assets/images/logo-kemenag.png');
+        }
+
+        // 3. If logoSrc is still empty or the file does not exist, fall back to school logo from tbl_web
+        $fullPath = FCPATH . $logoPath;
+        if (empty($logoSrc) || !file_exists($fullPath) || is_dir($fullPath)) {
+            try {
+                $webModel = new \App\Models\TblWebModel();
+                $web = $webModel->first();
+                if ($web && !empty($web['logo_sekolah'])) {
+                    $schoolLogoPath = 'uploads/logo/' . $web['logo_sekolah'];
+                    $schoolLogoSrc = image_to_base64($schoolLogoPath);
+                    if (empty($schoolLogoSrc)) {
+                        $schoolLogoSrc = base_url($schoolLogoPath);
+                    }
+                    if (!empty($schoolLogoSrc)) {
+                        $logoSrc = $schoolLogoSrc;
+                    }
+                }
+            } catch (\Exception $e) {
+                // Ignore
+            }
+        }
+
+        // 4. Ultimate fallback
+        if (empty($logoSrc)) {
+            $logoSrc = base_url($logoPath);
         }
 
         $html = '

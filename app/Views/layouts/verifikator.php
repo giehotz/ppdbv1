@@ -81,7 +81,18 @@
                         <span class="ml-2">Antrean Buka Kunci</span>
                     </a>
                 </li>
-                
+
+                <li class="px-6 py-2 text-xs font-semibold text-blue-300 uppercase tracking-wider mt-4">
+                    Keuangan
+                </li>
+
+                <li>
+                    <a href="<?= base_url('verifikator/pembiayaan') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/pembiayaan') === 0 ? $activeClass : '' ?>">
+                        <i class="fas fa-money-bill-wave w-6"></i>
+                        <span class="ml-2">Pembiayaan</span>
+                    </a>
+                </li>
+
                 <li class="px-6 py-2 text-xs font-semibold text-blue-300 uppercase tracking-wider mt-4">
                     Komunikasi
                 </li>
@@ -179,6 +190,12 @@
                     <a href="<?= base_url('verifikator/unlockrequest') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/unlockrequest') === 0 ? $activeClass : '' ?>">
                         <i class="fas fa-unlock-alt w-6"></i>
                         <span class="ml-2">Antrean Buka Kunci</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= base_url('verifikator/pembiayaan') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/pembiayaan') === 0 ? $activeClass : '' ?>">
+                        <i class="fas fa-money-bill-wave w-6"></i>
+                        <span class="ml-2">Pembiayaan</span>
                     </a>
                 </li>
             </ul>

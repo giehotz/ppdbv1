@@ -976,20 +976,19 @@
                 <div class="mt-8 rounded-4xl overflow-hidden shadow-xl border border-primary-100 reveal"
                      style="height: 400px;">
                     <?php
-                            $mapsSrc = $content['kontak']['google_maps'] ?? '';
-                            $isValidMaps = preg_match('/^<iframe[^>]+src="https:\/\/(www\.)?google\.com\/maps\/embed\?[^"]+"[^>]*><\/iframe>$/', $mapsSrc);
-                            if (!$isValidMaps) {
-                                $matches = [];
-                                preg_match('/src="([^"]+)"/', $mapsSrc, $matches);
-                                $srcUrl = $matches[1] ?? '';
-                                if (strpos($srcUrl, 'https://www.google.com/maps/embed?') === 0) {
-                                    $isValidMaps = true;
-                                    $mapsSrc = '<iframe src="' . esc($srcUrl, 'attr') . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
-                                }
-                            }
-                            if ($isValidMaps): ?>
-                        <?= $mapsSrc ?>
-                    <?php endif; ?>
+                    $mapsHtml = $content['kontak']['google_maps'] ?? '';
+                    if (preg_match('/<iframe[^>]+src=["\'](https?:\/\/[^"\']+\.google\.[^"\']+maps[^"\']*)["\'][^>]*><\/iframe>/i', $mapsHtml, $m)) {
+                        echo '<iframe src="' . esc($m[1]) . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
+                    } else {
+                        // Fallback: If it's a raw URL or custom embed, output or wrap it
+                        $srcUrl = trim($mapsHtml);
+                        if (filter_var($srcUrl, FILTER_VALIDATE_URL)) {
+                            echo '<iframe src="' . esc($srcUrl, 'attr') . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
+                        } else {
+                            echo $mapsHtml; // Output as-is
+                        }
+                    }
+                    ?>
                 </div>
                 <?php endif; ?>
             </div>

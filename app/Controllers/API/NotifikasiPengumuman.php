@@ -20,8 +20,8 @@ class NotifikasiPengumuman extends BaseController
             $this->response->setStatusCode(401)->setJSON([
                 'success' => false,
                 'message' => 'Unauthorized'
-            })->send();
-            return false;
+            ])->send();
+          return false;
         }
         return true;
     }

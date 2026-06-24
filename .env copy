@@ -32,9 +32,9 @@ app_baseURL = 'http://localhost:8080'
 #--------------------------------------------------------------------
 
 #  database.default.hostname = localhost
-#  database.default.database = u1448571_ppdb
-#  database.default.username = u1448571_ppdb
-#  database.default.password = GiVr^-PP}T9BHbQc
+#  database.default.database = u1448571_pmbm
+#  database.default.username = u1448571_pmbm
+#  database.default.password = }YquUAX{YXzY$-Mb
 #  database.default.DBDriver = MySQLi
 #  database.default.DBPrefix =
 #  database.default.port = 3306

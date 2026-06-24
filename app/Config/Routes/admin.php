@@ -104,6 +104,20 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     $routes->post('setting-kartu/saveTandaTangan', 'Admin\SettingKartuController::saveTandaTangan');
     $routes->post('setting-kartu/savePrinter', 'Admin\SettingKartuController::savePrinter');
 
+    // Pembiayaan (Payment/Fee)
+    $routes->get('pembiayaan', 'Admin\Pembiayaan::index');
+    $routes->post('pembiayaan/store', 'Admin\Pembiayaan::store');
+    $routes->post('pembiayaan/update', 'Admin\Pembiayaan::update');
+    $routes->post('pembiayaan/delete/(:num)', 'Admin\Pembiayaan::delete/$1');
+    $routes->post('pembiayaan/activate/(:num)', 'Admin\Pembiayaan::activate/$1');
+    $routes->get('pembiayaan/siswa', 'Admin\Pembiayaan::siswaList');
+    $routes->get('pembiayaan/siswa/(:num)', 'Admin\Pembiayaan::siswaDetail/$1');
+    $routes->post('pembiayaan/siswa/(:num)/tagihan/tambah', 'Admin\Pembiayaan::tambahTagihan/$1');
+    $routes->post('pembiayaan/siswa/(:num)/tagihan/tambah-semua', 'Admin\Pembiayaan::tambahSemuaTagihan/$1');
+    $routes->post('pembiayaan/siswa/(:num)/tagihan/hapus', 'Admin\Pembiayaan::hapusTagihan/$1');
+    $routes->post('pembiayaan/siswa/(:num)/update-status', 'Admin\Pembiayaan::updateStatusBayar/$1');
+    $routes->get('pembiayaan/siswa/(:num)/kuitansi', 'Admin\Pembiayaan::kuitansi/$1');
+
     // SEO Settings
     $routes->get('seo', 'Admin\SeoSettings::index');
     $routes->post('seo/update', 'Admin\SeoSettings::update');

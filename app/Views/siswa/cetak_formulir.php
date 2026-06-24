@@ -110,7 +110,14 @@
                 ?>
                 <div class="photo-box">
                     <?php if (!empty($fotoBerkas['nama_file'])): ?>
-                        <img src="<?= base_url('uploads/berkas/' . $siswa['nisn'] . '/' . $fotoBerkas['nama_file']) ?>">
+                        <?php 
+                        $fotoPath = 'uploads/berkas/' . $siswa['nisn'] . '/' . $fotoBerkas['nama_file'];
+                        $fotoSrc = image_to_base64($fotoPath);
+                        if (empty($fotoSrc)) {
+                            $fotoSrc = base_url($fotoPath);
+                        }
+                        ?>
+                        <img src="<?= $fotoSrc ?>">
                     <?php else: ?>
                         <div class="text-center font-bold" style="color: #ccc; font-family: Arial;">Pas Foto 3x4</div>
                     <?php endif; ?>

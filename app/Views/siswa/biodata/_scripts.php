@@ -9,7 +9,7 @@
         csrfHash: '<?= csrf_hash() ?>'
     });
 
-    setIsFinal(<?= (isset($isFinal) && $isFinal) ? 'true' : 'false' ?>);
+    setIsFinal(<?= (isset($isFinal) && $isFinal) ? 'true' : 'false' ?>, <?= (isset($isVerifikator) && $isVerifikator) ? 'true' : 'false' ?>);
 
     setSavedValues({
         prov: '<?= esc($siswa['prov'] ?? '', 'js') ?>',

@@ -37,6 +37,11 @@ Detail Calon Siswa - <?= esc($siswa['nama_lengkap']) ?>
             <i class="fas fa-print mr-2"></i> Cetak Formulir
         </a>
 
+        <!-- Tombol Pembiayaan -->
+        <a href="<?= base_url('verifikator/pembiayaan/siswa/' . $siswa['id_siswa']) ?>" class="inline-flex items-center bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 shadow-sm">
+            <i class="fas fa-money-bill-wave mr-2"></i> Pembiayaan
+        </a>
+
         <!-- Tombol Hapus Siswa -->
         <form action="<?= base_url('verifikator/siswa/delete/' . $siswa['id_siswa']) ?>" method="post" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data siswa ini secara permanen? Semua berkas dan biodata akan terhapus!');">
             <?= csrf_field() ?>

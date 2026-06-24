@@ -29,6 +29,10 @@ $routes->group('siswa', ['filter' => ['siswa', 'csrf']], function ($routes) {
         $routes->post('process', 'Siswa\Twibbon::process');
     });
 
+    // Pembiayaan
+    $routes->get('pembiayaan', 'Siswa\Pembiayaan::index');
+    $routes->get('pembiayaan/kuitansi', 'Siswa\Pembiayaan::kuitansi');
+
     // Profile
     $routes->get('profile', 'Siswa\Profile::index');
     $routes->post('profile/update-foto', 'Siswa\Profile::updateFoto');

@@ -93,23 +93,43 @@ class TwibbonLib
         $cropW = isset($cropData['width']) ? intval($cropData['width']) : imagesx($photoImg);
         $cropH = isset($cropData['height']) ? intval($cropData['height']) : imagesy($photoImg);
 
-        // Ensure crop boundaries are within the image
         $photoW = imagesx($photoImg);
         $photoH = imagesy($photoImg);
-        $cropX = max(0, min($cropX, $photoW - 1));
-        $cropY = max(0, min($cropY, $photoH - 1));
-        $cropW = max(1, min($cropW, $photoW - $cropX));
-        $cropH = max(1, min($cropH, $photoH - $cropY));
 
-        // Copy and resample photo onto canvas (photo goes to layer 0, background)
-        imagecopyresampled(
-            $canvas,      // destination
-            $photoImg,    // source
-            0, 0,         // destination X, Y
-            $cropX, $cropY, // source X, Y
-            $frameWidth, $frameHeight, // destination width, height
-            $cropW, $cropH // source width, height
-        );
+        // Calculate intersection between crop box and photo in photo's coordinate space
+        $interX1 = max($cropX, 0);
+        $interY1 = max($cropY, 0);
+        $interX2 = min($cropX + $cropW, $photoW);
+        $interY2 = min($cropY + $cropH, $photoH);
+
+        $interW = $interX2 - $interX1;
+        $interH = $interY2 - $interY1;
+
+        if ($interW > 0 && $interH > 0 && $cropW > 0 && $cropH > 0) {
+            // Scale factors
+            $scaleX = $frameWidth / $cropW;
+            $scaleY = $frameHeight / $cropH;
+
+            // Offsets of the intersection inside the crop box
+            $offsetX = $interX1 - $cropX;
+            $offsetY = $interY1 - $cropY;
+
+            // Destination dimensions and coordinates on the canvas
+            $destX = intval($offsetX * $scaleX);
+            $destY = intval($offsetY * $scaleY);
+            $destW = intval($interW * $scaleX);
+            $destH = intval($interH * $scaleY);
+
+            // Copy and resample only the visible part of the photo onto canvas
+            imagecopyresampled(
+                $canvas,        // destination
+                $photoImg,      // source
+                $destX, $destY, // destination X, Y
+                $interX1, $interY1, // source X, Y
+                $destW, $destH, // destination width, height
+                $interW, $interH // source width, height
+            );
+        }
 
         // 7. Overlay the frame PNG (goes to layer 1, foreground)
         imagecopy(
