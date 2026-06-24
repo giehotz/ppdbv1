@@ -128,3 +128,6 @@ _modules/*
 
 # CKEditor
 /public/js/ckeditor/
+
+# Deploy ZIP
+/deploy.zip
