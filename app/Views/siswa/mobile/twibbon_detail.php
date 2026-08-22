@@ -11,7 +11,7 @@
     .cropper-view-box, .cropper-face { border-radius: 0%; outline: none !important; }
     .cropper-line, .cropper-point { display: none !important; }
     .cropper-modal { background-color: rgba(0,0,0,0.1) !important; opacity: 0.8 !important; }
-    .editor-box { aspect-ratio: 1 / 1; }
+
     .scroll-x { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     .scroll-x::-webkit-scrollbar { display: none; }
 </style>
@@ -28,7 +28,7 @@
 
     <!-- Editor Canvas Glass -->
     <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/20 overflow-hidden mb-4">
-        <div class="relative w-full editor-box" id="editor-container">
+        <div class="relative w-full editor-box" id="editor-container" style="aspect-ratio: <?= (int)($frame['width'] ?? 1) ?> / <?= (int)($frame['height'] ?? 1) ?>">
             <div id="image-wrapper" class="w-full h-full absolute inset-0">
                 <img id="image-to-crop" src="" class="max-w-full hidden">
             </div>
@@ -98,6 +98,10 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script>
+const FRAME_W = <?= (int)($frame['width'] ?? 1080) ?>;
+const FRAME_H = <?= (int)($frame['height'] ?? 1080) ?>;
+const FRAME_RATIO = FRAME_W / FRAME_H;
+
 let cropper = null;
 let selectedFile = null;
 
@@ -120,7 +124,7 @@ function loadPhoto(event) {
         document.getElementById('btn-select-text').innerText = 'Ganti';
         if (cropper) cropper.destroy();
         cropper = new Cropper(img, {
-            aspectRatio: 1, viewMode: 1, autoCropArea: 1,
+            aspectRatio: FRAME_RATIO, viewMode: 1, autoCropArea: 1,
             background: false, guides: false, center: false, highlight: false,
             cropBoxMovable: false, cropBoxResizable: false, dragMode: 'move',
         });

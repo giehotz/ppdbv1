@@ -104,7 +104,7 @@ class Twibbon extends BaseController
                             'y'      => 0,
                             'width'  => $width,
                             'height' => $height,
-                            'shape'  => 'square'
+                            'shape'  => ($width === $height) ? 'square' : 'rectangle'
                         ]
                     ]),
                     'sort_order'  => 0
@@ -222,7 +222,7 @@ class Twibbon extends BaseController
                             'y'      => 0,
                             'width'  => $width,
                             'height' => $height,
-                            'shape'  => 'square'
+                            'shape'  => ($width === $height) ? 'square' : 'rectangle'
                           ]
                       ])
                   ];

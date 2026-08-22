@@ -11,7 +11,7 @@
     .cropper-view-box, .cropper-face { border-radius: 0%; outline: none !important; }
     .cropper-line, .cropper-point { display: none !important; }
     .cropper-modal { background-color: rgba(0,0,0,0.1) !important; opacity: 0.8 !important; }
-    #editor-container { aspect-ratio: 1 / 1; max-width: 420px; }
+    #editor-container { max-width: 420px; }
 </style>
 <?= $this->endSection() ?>
 
@@ -21,7 +21,7 @@
 
         <!-- Editor -->
         <div class="md:col-span-6 flex flex-col items-center">
-            <div class="relative w-full max-w-[420px] aspect-square bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200" id="editor-container">
+            <div class="relative w-full max-w-[420px] bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200" id="editor-container" style="aspect-ratio: <?= (int)($frame['width'] ?? 1) ?> / <?= (int)($frame['height'] ?? 1) ?>">
                 <div id="image-wrapper" class="w-full h-full absolute inset-0">
                     <img id="image-to-crop" src="" class="max-w-full hidden">
                 </div>
@@ -110,6 +110,10 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script>
+const FRAME_W = <?= (int)($frame['width'] ?? 1080) ?>;
+const FRAME_H = <?= (int)($frame['height'] ?? 1080) ?>;
+const FRAME_RATIO = FRAME_W / FRAME_H;
+
 let cropper = null;
 let selectedFile = null;
 
@@ -137,7 +141,7 @@ function loadPhoto(event) {
         if (cropper) cropper.destroy();
 
         cropper = new Cropper(img, {
-            aspectRatio: 1,
+            aspectRatio: FRAME_RATIO,
             viewMode: 1,
             autoCropArea: 1,
             background: false,

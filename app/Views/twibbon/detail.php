@@ -95,7 +95,7 @@
             
             <!-- Column 1: Editor Canvas -->
             <div class="md:col-span-6 flex flex-col items-center">
-                <div class="relative w-full max-w-[420px] aspect-square bg-checkerboard rounded-2xl shadow-xl overflow-hidden border border-emerald-100" id="editor-container">
+                <div class="relative w-full max-w-[420px] bg-checkerboard rounded-2xl shadow-xl overflow-hidden border border-emerald-100" id="editor-container" style="aspect-ratio: <?= (int)($frame['width'] ?? 1) ?> / <?= (int)($frame['height'] ?? 1) ?>">
                     
                     <!-- User Image Container -->
                     <div id="image-wrapper" class="w-full h-full absolute inset-0">
@@ -103,7 +103,7 @@
                     </div>
 
                     <!-- Frame PNG Overlay (Stops pointer events so we can drag the cropper underneath) -->
-                    <img src="<?= base_url($frame['file_path']) ?>" alt="Frame" id="frame-overlay" class="absolute inset-0 w-full h-full object-cover z-20 pointer-events-none">
+                    <img src="<?= base_url($frame['file_path']) ?>" alt="Frame" id="frame-overlay" class="absolute inset-0 w-full h-full object-contain z-20 pointer-events-none">
 
                     <!-- Empty State Upload Trigger (Placed on top of the frame overlay with a semi-transparent white background) -->
                     <div id="upload-placeholder" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-all duration-200 hover:bg-white/80" style="background-color: rgba(255, 255, 255, 0.75);" onclick="document.getElementById('photo-input').click()">
@@ -202,6 +202,10 @@
     <!-- Cropper.js & Script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script>
+        const FRAME_W = <?= (int)($frame['width'] ?? 1080) ?>;
+        const FRAME_H = <?= (int)($frame['height'] ?? 1080) ?>;
+        const FRAME_RATIO = FRAME_W / FRAME_H;
+
         let cropper = null;
         let selectedFile = null;
 
@@ -235,7 +239,7 @@
 
                     // Initialize Cropper.js
                     cropper = new Cropper(img, {
-                        aspectRatio: 1, // 1:1 ratio
+                        aspectRatio: FRAME_RATIO,
                         viewMode: 0, // Allow zooming out smaller than crop box
                         autoCropArea: 1, // Crop box is maximum width/height of container
                         background: false,

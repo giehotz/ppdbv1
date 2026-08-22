@@ -200,7 +200,7 @@
                             </div>
                             <p class="text-sm font-semibold text-gray-700">Klik untuk upload bingkai</p>
                             <p class="text-xs text-gray-400 mt-1">Format PNG transparan</p>
-                            <p class="text-xs text-gray-400">Dimensi persegi (misal 1080×1080px)</p>
+                            <p class="text-xs text-gray-400">Dimensi menyesuaikan ukuran bingkai yang diunggah</p>
                         </div>
                     </div>
 
