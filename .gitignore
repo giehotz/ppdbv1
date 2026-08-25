@@ -131,3 +131,7 @@ _modules/*
 
 # Deploy ZIP
 /deploy.zip
+
+# Documentation & Notes
+/docs/
+docs/
