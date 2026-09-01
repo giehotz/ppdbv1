@@ -150,3 +150,14 @@ public/uploads/*
 !public/uploads/**/index.html
 !public/uploads/**/.gitkeep
 !public/uploads/**/.htaccess
+
+#-------------------------
+# Untracked Local Files
+#-------------------------
+_nul
+.env copy
+builds
+index_part1.php
+index_part2.php
+scratch.php
+scratch_clear_cache.php
