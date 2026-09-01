@@ -1,14 +1,18 @@
 <?= $this->extend('layouts/admin') ?>
 
-<?= $this->section('title') ?>Tambah Kampanye Twibbon<?= $this->endSection() ?>
+<?= $this->section('title') ?>
+Tambah Kampanye Twibbon
+<?= $this->endSection() ?>
 
-<?= $this->section('page_title') ?>Tambah Kampanye Twibbon<?= $this->endSection() ?>
+<?= $this->section('page_title') ?>
+<span class="material-symbols-outlined text-brand-500 mr-1">wallpaper</span> Tambah Kampanye Twibbon
+<?= $this->endSection() ?>
 
 <?= $this->section('head') ?>
 <style>
     .frame-dropzone {
         border: 2px dashed #d1d5db;
-        border-radius: 12px;
+        border-radius: 1rem;
         padding: 1.5rem;
         text-align: center;
         cursor: pointer;
@@ -20,23 +24,35 @@
         align-items: center;
         justify-content: center;
     }
+    .dark .frame-dropzone {
+        border-color: #374151;
+        background: rgba(255, 255, 255, 0.02);
+    }
     .frame-dropzone:hover,
     .frame-dropzone.dragover {
-        border-color: #16a34a;
-        background: #f0fdf4;
+        border-color: #465fff;
+        background: #f0f4ff;
+    }
+    .dark .frame-dropzone:hover,
+    .dark .frame-dropzone.dragover {
+        border-color: #465fff;
+        background: rgba(70, 95, 255, 0.08);
     }
     .frame-dropzone.has-image {
         padding: 0.5rem;
         background: #fff;
         border-style: solid;
-        border-color: #16a34a;
+        border-color: #465fff;
+    }
+    .dark .frame-dropzone.has-image {
+        background: #111827;
     }
     .frame-preview {
         max-width: 100%;
         max-height: 240px;
         object-fit: contain;
         display: none;
-        border-radius: 8px;
+        border-radius: 0.75rem;
     }
     .frame-dropzone.has-image .frame-preview {
         display: block;
@@ -47,17 +63,17 @@
     .frame-dropzone.has-image .dropzone-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(0,0,0,0.4);
-        border-radius: 8px;
+        background: rgba(0,0,0,0.5);
+        border-radius: 0.75rem;
         opacity: 0;
         transition: opacity 0.2s ease;
         display: flex;
         align-items: center;
         justify-content: center;
         color: #fff;
-        font-size: 0.8rem;
-        font-weight: 600;
-        gap: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        gap: 0.35rem;
     }
     .frame-dropzone.has-image:hover .dropzone-overlay {
         opacity: 1;
@@ -73,29 +89,23 @@
 <?= $this->section('content') ?>
 <div class="max-w-5xl mx-auto">
 
-    <!-- Header -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                <i class="fas fa-image text-xl"></i>
+    <!-- Header Card -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
+                <span class="material-symbols-outlined text-2xl">add_photo_alternate</span>
             </div>
             <div>
-                <h1 class="text-xl font-bold text-gray-900">Buat Kampanye Baru</h1>
-                <p class="text-sm text-gray-500 mt-0.5">Isi data kampanye dan unggah bingkai PNG transparan.</p>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white">Buat Kampanye Twibbon Baru</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Unggah bingkai PNG transparan dan atur periode publikasi kampanye</p>
             </div>
         </div>
-        <a href="<?= base_url('admin/twibbon') ?>" class="text-gray-500 hover:text-gray-700 flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-            <i class="fas fa-arrow-left"></i> Kembali
+        <a href="<?= base_url('admin/twibbon') ?>"
+           class="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3.5 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-theme-xs hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            <span>Kembali</span>
         </a>
     </div>
-
-    <!-- Error Alerts -->
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="bg-red-50 border border-red-200 text-red-700 px-5 py-3.5 rounded-xl relative mb-6 flex items-start gap-3">
-            <i class="fas fa-exclamation-circle mt-0.5"></i>
-            <span><?= session()->getFlashdata('error') ?></span>
-        </div>
-    <?php endif; ?>
 
     <?php $errors = session('errors') ?? []; ?>
 
@@ -108,131 +118,128 @@
             <div class="lg:col-span-3 space-y-6">
 
                 <!-- Informasi Kampanye -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-base font-bold text-gray-800 mb-1 flex items-center gap-2">
-                        <i class="fas fa-info-circle text-emerald-600"></i> Informasi Kampanye
-                    </h3>
-                    <p class="text-xs text-gray-400 mb-5">Detail utama yang akan ditampilkan ke publik.</p>
+                <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div class="border-b border-gray-100 dark:border-gray-800 pb-4 mb-5 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-brand-500 text-lg">info</span>
+                        <h4 class="text-sm font-bold text-gray-900 dark:text-white">Informasi Utama Kampanye</h4>
+                    </div>
 
-                    <div class="space-y-5">
+                    <div class="space-y-4">
                         <div>
-                            <label for="title" class="block text-sm font-semibold text-gray-700 mb-1.5">Judul Kampanye <span class="text-red-500">*</span></label>
-                            <input type="text" name="title" id="title"
-                                class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow <?= isset($errors['title']) ? 'border-red-400 ring-1 ring-red-400' : '' ?>"
-                                value="<?= old('title') ?>" placeholder="Contoh: Twibbon Sukseskan PPDB 2026" required>
+                            <label for="title" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                Judul Kampanye <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="title" id="title" required
+                                   value="<?= old('title') ?>" placeholder="Contoh: Twibbon Sukseskan PPDB 2026/2027"
+                                   class="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white px-4 py-2.5 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500 outline-none">
                             <?php if (isset($errors['title'])): ?>
-                                <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i> <?= $errors['title'] ?></p>
+                                <p class="text-red-500 text-xs mt-1.5"><?= $errors['title'] ?></p>
                             <?php endif; ?>
                         </div>
 
                         <div>
-                            <label for="description" class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi Kampanye</label>
+                            <label for="description" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                Deskripsi Kampanye
+                            </label>
                             <textarea name="description" id="description" rows="4"
-                                class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow resize-y"
-                                placeholder="Tuliskan deskripsi singkat mengenai kampanye ini..."><?= old('description') ?></textarea>
+                                      placeholder="Tuliskan deskripsi singkat atau instruksi pemasangan twibbon..."
+                                      class="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white px-4 py-2.5 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500 outline-none leading-relaxed"><?= old('description') ?></textarea>
                         </div>
                     </div>
                 </div>
 
                 <!-- Periode & Status -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-base font-bold text-gray-800 mb-1 flex items-center gap-2">
-                        <i class="fas fa-calendar-alt text-emerald-600"></i> Periode &amp; Status
-                    </h3>
-                    <p class="text-xs text-gray-400 mb-5">Atur jadwal aktif dan status kampanye.</p>
+                <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div class="border-b border-gray-100 dark:border-gray-800 pb-4 mb-5 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-brand-500 text-lg">calendar_month</span>
+                        <h4 class="text-sm font-bold text-gray-900 dark:text-white">Jadwal & Status Kampanye</h4>
+                    </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label for="start_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai</label>
-                            <div class="relative">
-                                <i class="fas fa-calendar-day absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
-                                <input type="date" name="start_date" id="start_date"
-                                    class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow"
-                                    value="<?= old('start_date') ?>">
-                            </div>
+                            <label for="start_date" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">Tanggal Mulai</label>
+                            <input type="date" name="start_date" id="start_date" value="<?= old('start_date') ?>"
+                                   class="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white px-4 py-2.5 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500 outline-none">
                         </div>
                         <div>
-                            <label for="end_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Selesai</label>
-                            <div class="relative">
-                                <i class="fas fa-calendar-check absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
-                                <input type="date" name="end_date" id="end_date"
-                                    class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow"
-                                    value="<?= old('end_date') ?>">
-                            </div>
+                            <label for="end_date" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">Tanggal Selesai</label>
+                            <input type="date" name="end_date" id="end_date" value="<?= old('end_date') ?>"
+                                   class="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white px-4 py-2.5 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500 outline-none">
                         </div>
                         <div class="sm:col-span-2">
-                            <label for="is_active" class="block text-sm font-semibold text-gray-700 mb-1.5">Status Kampanye <span class="text-red-500">*</span></label>
-                            <div class="relative">
-                                <i class="fas fa-toggle-on absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
-                                <select name="is_active" id="is_active"
-                                    class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow appearance-none bg-white" required>
-                                    <option value="1" <?= old('is_active', '1') == '1' ? 'selected' : '' ?>>Aktif</option>
-                                    <option value="0" <?= old('is_active') == '0' ? 'selected' : '' ?>>Non-Aktif</option>
-                                </select>
-                                <i class="fas fa-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
-                            </div>
+                            <label for="is_active" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">Status Publikasi <span class="text-red-500">*</span></label>
+                            <select name="is_active" id="is_active" required
+                                    class="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white px-4 py-2.5 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500 outline-none">
+                                <option value="1" <?= old('is_active', '1') == '1' ? 'selected' : '' ?>>Aktif (Dapat Diakses Publik)</option>
+                                <option value="0" <?= old('is_active') == '0' ? 'selected' : '' ?>>Non-Aktif</option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Right Column: Frame Upload -->
+            <!-- Right Column: Frame Upload Dropzone -->
             <div class="lg:col-span-2">
+                <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] sticky top-24">
+                    <div class="border-b border-gray-100 dark:border-gray-800 pb-4 mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-brand-500 text-lg">crop_square</span>
+                        <h4 class="text-sm font-bold text-gray-900 dark:text-white">File Bingkai Twibbon <span class="text-red-500">*</span></h4>
+                    </div>
 
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-24">
-                    <h3 class="text-base font-bold text-gray-800 mb-1 flex items-center gap-2">
-                        <i class="fas fa-stop text-emerald-600"></i> Bingkai Twibbon <span class="text-red-500">*</span>
-                    </h3>
-                    <p class="text-xs text-gray-400 mb-4">Upload bingkai PNG transparan (maks. 5MB).</p>
+                    <p class="text-xs text-gray-400 mb-4">Wajib berformat PNG transparan (Maks. 5MB).</p>
 
                     <!-- Dropzone -->
                     <div class="frame-dropzone" id="frame-dropzone" onclick="document.getElementById('frame').click()">
                         <div class="frame-wrapper">
                             <img id="frame-preview" class="frame-preview" src="#" alt="Preview Bingkai">
                             <div class="dropzone-overlay">
-                                <i class="fas fa-sync-alt"></i> Ganti File
+                                <span class="material-symbols-outlined text-sm">sync</span> Ganti File
                             </div>
                         </div>
                         <div class="dropzone-text">
-                            <div class="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
-                                <i class="fas fa-cloud-upload-alt text-2xl text-emerald-500"></i>
+                            <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 flex items-center justify-center mx-auto mb-3">
+                                <span class="material-symbols-outlined text-2xl">cloud_upload</span>
                             </div>
-                            <p class="text-sm font-semibold text-gray-700">Klik untuk upload bingkai</p>
-                            <p class="text-xs text-gray-400 mt-1">Format PNG transparan</p>
-                            <p class="text-xs text-gray-400">Dimensi menyesuaikan ukuran bingkai yang diunggah</p>
+                            <p class="text-xs font-bold text-gray-800 dark:text-gray-200">Klik atau Drag & Drop Bingkai</p>
+                            <p class="text-[11px] text-gray-400 mt-1">Format PNG transparan</p>
+                            <p class="text-[10px] text-gray-400">Rasio 1:1 atau sesuai ukuran bingkai</p>
                         </div>
                     </div>
 
                     <input type="file" name="frame" id="frame" accept="image/png"
-                        class="hidden <?= isset($errors['frame']) ? 'border-red-400' : '' ?>"
-                        onchange="previewFrame(this)" required>
+                           class="hidden" onchange="previewFrame(this)" required>
 
                     <?php if (isset($errors['frame'])): ?>
-                        <p class="text-red-500 text-xs mt-2 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i> <?= $errors['frame'] ?></p>
+                        <p class="text-red-500 text-xs mt-2"><?= $errors['frame'] ?></p>
                     <?php endif; ?>
 
-                    <p id="file-info" class="text-xs text-gray-400 mt-3 hidden flex items-center gap-1.5">
-                        <i class="fas fa-file-image text-emerald-500"></i>
-                        <span id="file-name"></span>
-                        <span class="text-gray-300">•</span>
+                    <p id="file-info" class="text-xs text-gray-500 dark:text-gray-400 mt-3 hidden flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-sm text-brand-500">image</span>
+                        <span id="file-name" class="font-mono text-gray-800 dark:text-gray-200"></span>
+                        <span>&bull;</span>
                         <span id="file-size"></span>
                     </p>
                 </div>
-
             </div>
 
         </div>
 
-        <!-- Actions -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p class="text-xs text-gray-400"><i class="fas fa-info-circle text-emerald-500 mr-1"></i> Pastikan bingkai memiliki area transparan di tengah untuk foto.</p>
+        <!-- Action Footer -->
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 mt-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-xs text-gray-400 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-base text-brand-500">lightbulb</span>
+                <span>Pastikan gambar bingkai memiliki lubang transparan di tengah untuk foto peserta.</span>
+            </p>
             <div class="flex items-center gap-3 w-full sm:w-auto">
-                <button type="reset" class="flex-1 sm:flex-none bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold px-6 py-2.5 rounded-lg transition-colors text-sm">
-                    Reset
-                </button>
-                <button type="submit" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors shadow-sm text-sm flex items-center justify-center gap-2">
-                    <i class="fas fa-save"></i> Simpan Kampanye
+                <a href="<?= base_url('admin/twibbon') ?>"
+                   class="flex-1 sm:flex-none inline-flex items-center justify-center rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-2.5 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                    Batal
+                </a>
+                <button type="submit"
+                        class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 px-6 py-2.5 text-xs font-bold text-white shadow-theme-xs transition active:scale-[0.97]">
+                    <span class="material-symbols-outlined text-base">save</span>
+                    <span>Simpan Kampanye</span>
                 </button>
             </div>
         </div>
@@ -251,14 +258,12 @@ function previewFrame(input) {
     if (input.files && input.files[0]) {
         const file = input.files[0];
 
-        // Validate type
         if (file.type !== 'image/png') {
             alert('Hanya file PNG yang diperbolehkan.');
             input.value = '';
             return;
         }
 
-        // Validate size (5MB)
         if (file.size > 5 * 1024 * 1024) {
             alert('Ukuran file maksimal 5MB.');
             input.value = '';
@@ -279,10 +284,11 @@ function previewFrame(input) {
     }
 }
 
-// Drag-and-drop support
 (function() {
     const dropzone = document.getElementById('frame-dropzone');
     const input = document.getElementById('frame');
+
+    if (!dropzone || !input) return;
 
     dropzone.addEventListener('dragover', function(e) {
         e.preventDefault();

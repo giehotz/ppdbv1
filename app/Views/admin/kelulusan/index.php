@@ -5,18 +5,6 @@
 
 <?= $this->section('content') ?>
 
-<?php if (session()->getFlashdata('success')) : ?>
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"><?= session()->getFlashdata('success') ?></span>
-    </div>
-<?php endif; ?>
-
-<?php if (session()->getFlashdata('error')) : ?>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"><?= session()->getFlashdata('error') ?></span>
-    </div>
-<?php endif; ?>
-
 <?php
 $totalSiswa   = $totalAll ?? count($siswa);
 $lulusCount   = $totalLulus ?? 0;
@@ -24,65 +12,95 @@ $tlCount      = $totalTl ?? 0;
 $pendingCount = $totalPending ?? 0;
 ?>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-            <i class="fas fa-user-graduate text-gray-600 text-xl"></i>
+<!-- Metric Stats Row -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="flex items-center justify-between">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                <i class="fas fa-user-graduate text-lg"></i>
+            </div>
+            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600 dark:bg-gray-800 dark:text-gray-400">Total</span>
         </div>
-        <div>
-            <p class="text-sm text-gray-500 font-medium">Total Siswa</p>
-            <p class="text-2xl font-bold text-gray-800"><?= $totalSiswa ?></p>
-        </div>
-    </div>
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
-            <i class="fas fa-check-circle text-green-600 text-xl"></i>
-        </div>
-        <div>
-            <p class="text-sm text-gray-500 font-medium">Lulus</p>
-            <p class="text-2xl font-bold text-gray-800"><?= $lulusCount ?></p>
+        <div class="mt-4 flex items-end justify-between">
+            <div>
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Total Siswa</span>
+                <h4 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90"><?= number_format($totalSiswa) ?></h4>
+            </div>
         </div>
     </div>
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
-            <i class="fas fa-times-circle text-red-600 text-xl"></i>
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="flex items-center justify-between">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
+                <i class="fas fa-check-circle text-lg"></i>
+            </div>
+            <span class="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">Diterima</span>
         </div>
-        <div>
-            <p class="text-sm text-gray-500 font-medium">Tidak Lulus</p>
-            <p class="text-2xl font-bold text-gray-800"><?= $tlCount ?></p>
+        <div class="mt-4 flex items-end justify-between">
+            <div>
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Lulus Seleksi</span>
+                <h4 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90"><?= number_format($lulusCount) ?></h4>
+            </div>
         </div>
     </div>
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
-            <i class="fas fa-hourglass-half text-amber-600 text-xl"></i>
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="flex items-center justify-between">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400">
+                <i class="fas fa-times-circle text-lg"></i>
+            </div>
+            <span class="rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-500/15 dark:text-red-400">Ditolak</span>
         </div>
-        <div>
-            <p class="text-sm text-gray-500 font-medium">Pending</p>
-            <p class="text-2xl font-bold text-gray-800"><?= $pendingCount ?></p>
+        <div class="mt-4 flex items-end justify-between">
+            <div>
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Tidak Lulus</span>
+                <h4 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90"><?= number_format($tlCount) ?></h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="flex items-center justify-between">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">
+                <i class="fas fa-hourglass-half text-lg"></i>
+            </div>
+            <span class="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">Belum Ditentukan</span>
+        </div>
+        <div class="mt-4 flex items-end justify-between">
+            <div>
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Pending</span>
+                <h4 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90"><?= number_format($pendingCount) ?></h4>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-100">
+<!-- Table Card -->
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="border-b border-gray-100 px-5 py-4 dark:border-gray-800 md:px-6">
         <form action="<?= base_url('admin/kelulusan') ?>" method="get" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <h3 class="text-lg font-semibold text-gray-800 sm:mr-2">Data Kelulusan</h3>
+            <div>
+                <h3 class="text-sm font-bold text-gray-800 dark:text-white">Data Kelulusan Siswa</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Tentukan dan perbarui status kelulusan peserta.</p>
+            </div>
             <div class="flex-1"></div>
             <div class="relative">
-                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                    <i class="fas fa-search text-xs"></i>
+                </span>
                 <input type="text" name="search" value="<?= esc($search ?? '') ?>"
                     placeholder="Cari Nama/NISN..."
-                    class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none w-full sm:w-56">
+                    class="h-9 w-full rounded-lg border border-gray-200 bg-gray-50/50 py-2 pr-3 pl-9 text-xs text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none dark:border-gray-800 dark:bg-gray-900/50 dark:text-gray-100 dark:placeholder:text-gray-500 sm:w-56">
             </div>
             <select name="status"
-                class="border border-gray-300 rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none">
+                class="h-9 rounded-lg border border-gray-200 bg-gray-50/50 px-3 py-1.5 text-xs text-gray-800 focus:border-brand-500 focus:outline-none dark:border-gray-800 dark:bg-gray-900/50 dark:text-gray-100">
                 <option value="">Semua Status</option>
                 <option value="Lulus" <?= ($status == 'Lulus') ? 'selected' : '' ?>>Lulus</option>
                 <option value="Tidak Lulus" <?= ($status == 'Tidak Lulus') ? 'selected' : '' ?>>Tidak Lulus</option>
                 <option value="Pending" <?= ($status == 'Pending') ? 'selected' : '' ?>>Pending</option>
             </select>
-            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition duration-150 inline-flex items-center gap-2 shrink-0">
-                <i class="fas fa-filter"></i> Filter
+            <button type="submit" class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-brand-500 px-4 py-2 text-xs font-semibold text-white shadow-theme-xs transition-colors hover:bg-brand-600 shrink-0">
+                <i class="fas fa-filter text-xs"></i> Filter
             </button>
         </form>
     </div>
@@ -90,62 +108,62 @@ $pendingCount = $totalPending ?? 0;
     <div class="overflow-x-auto">
         <table class="w-full text-left" id="kelulusanTable">
             <thead>
-                <tr class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider">
-                    <th class="py-4 px-4 w-10">
+                <tr class="border-b border-gray-100 text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:border-gray-800 dark:text-gray-500 bg-gray-50/50 dark:bg-gray-800/30">
+                    <th class="py-3.5 px-4 w-10">
                         <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"
-                            class="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500">
+                            class="h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800">
                     </th>
-                    <th class="py-4 px-6">Siswa</th>
-                    <th class="py-4 px-6">No. Pendaftaran</th>
-                    <th class="py-4 px-6">Asal Sekolah</th>
-                    <th class="py-4 px-6 text-center">Status</th>
-                    <th class="py-4 px-6 text-center">Aksi</th>
+                    <th class="py-3.5 px-5">Siswa</th>
+                    <th class="py-3.5 px-4">No. Pendaftaran</th>
+                    <th class="py-3.5 px-4">Asal Sekolah</th>
+                    <th class="py-3.5 px-4 text-center">Status</th>
+                    <th class="py-3.5 px-5 text-center">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="text-gray-600 text-sm divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-100 text-xs dark:divide-gray-800">
                 <?php if (!empty($siswa)) : ?>
                     <?php foreach ($siswa as $s) :
                         $initial = strtoupper(substr($s['nama_lengkap'], 0, 1));
                     ?>
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
-                            <td class="py-4 px-4">
-                                <input type="checkbox" class="siswa-checkbox h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                        <tr class="hover:bg-gray-50/50 transition-colors dark:hover:bg-white/[0.02]">
+                            <td class="py-3.5 px-4">
+                                <input type="checkbox" class="siswa-checkbox h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800"
                                     value="<?= $s['id_siswa'] ?>" onclick="updateBulkBar()">
                             </td>
-                            <td class="py-4 px-6">
+                            <td class="py-3.5 px-5">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600 font-bold text-xs dark:bg-brand-500/15 dark:text-brand-400">
                                         <?= $initial ?>
                                     </div>
                                     <div>
-                                        <span class="font-medium text-gray-800"><?= esc($s['nama_lengkap']) ?></span>
-                                        <span class="block text-xs text-gray-400">NISN: <?= esc($s['nisn']) ?></span>
+                                        <span class="font-semibold text-gray-900 dark:text-gray-100"><?= esc($s['nama_lengkap']) ?></span>
+                                        <span class="block text-[11px] text-gray-400 dark:text-gray-500">NISN: <?= esc($s['nisn']) ?></span>
                                     </div>
                                 </div>
                             </td>
-                            <td class="py-4 px-6 font-mono text-sm"><?= esc($s['no_pendaftaran']) ?></td>
-                            <td class="py-4 px-6"><?= esc($s['nama_sekolah']) ?></td>
-                            <td class="py-4 px-6 text-center">
+                            <td class="py-3.5 px-4 font-mono font-bold text-gray-700 dark:text-gray-300"><?= esc($s['no_pendaftaran']) ?></td>
+                            <td class="py-3.5 px-4 text-gray-600 dark:text-gray-400"><?= esc($s['nama_sekolah']) ?></td>
+                            <td class="py-3.5 px-4 text-center">
                                 <?php if (($s['status_lulus'] ?? '') === 'Lulus') : ?>
-                                    <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs font-medium px-3 py-1 rounded-full">
-                                        <i class="fas fa-check-circle text-xs"></i> Lulus
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">
+                                        <i class="fas fa-check-circle text-[10px]"></i> Lulus
                                     </span>
                                 <?php elseif (($s['status_lulus'] ?? '') === 'Tidak Lulus') : ?>
-                                    <span class="inline-flex items-center gap-1 bg-red-100 text-red-700 text-xs font-medium px-3 py-1 rounded-full">
-                                        <i class="fas fa-times-circle text-xs"></i> Tidak Lulus
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-0.5 text-[11px] font-semibold text-red-700 dark:bg-red-500/15 dark:text-red-400">
+                                        <i class="fas fa-times-circle text-[10px]"></i> Tidak Lulus
                                     </span>
                                 <?php else : ?>
-                                    <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-700 text-xs font-medium px-3 py-1 rounded-full">
-                                        <i class="fas fa-clock text-xs"></i> Pending
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">
+                                        <i class="fas fa-clock text-[10px]"></i> Pending
                                     </span>
                                 <?php endif; ?>
                             </td>
-                            <td class="py-4 px-6 text-center">
+                            <td class="py-3.5 px-5 text-center">
                                 <form action="<?= base_url('admin/kelulusan/update/' . $s['id_siswa']) ?>" method="post"
                                     class="inline-block status-form">
                                     <?= csrf_field() ?>
                                     <select name="status_lulus" onchange="confirmStatusChange(this)"
-                                        class="text-xs border border-gray-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none">
+                                        class="h-8 rounded-lg border border-gray-200 bg-transparent px-2.5 py-1 text-xs text-gray-700 focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:text-gray-300">
                                         <option value="Pending" <?= (($s['status_lulus'] ?? '') === 'Pending' || empty($s['status_lulus'])) ? 'selected' : '' ?>>Pending</option>
                                         <option value="Lulus" <?= ($s['status_lulus'] ?? '') === 'Lulus' ? 'selected' : '' ?>>Lulus</option>
                                         <option value="Tidak Lulus" <?= ($s['status_lulus'] ?? '') === 'Tidak Lulus' ? 'selected' : '' ?>>Tidak Lulus</option>
@@ -157,9 +175,9 @@ $pendingCount = $totalPending ?? 0;
                 <?php else : ?>
                     <tr>
                         <td colspan="6" class="py-12 px-6 text-center">
-                            <div class="flex flex-col items-center gap-2 text-gray-400">
-                                <i class="fas fa-user-graduate text-4xl"></i>
-                                <p class="text-sm">Belum ada data siswa.</p>
+                            <div class="flex flex-col items-center gap-2 text-gray-400 dark:text-gray-500">
+                                <i class="fas fa-user-graduate text-4xl text-gray-300 dark:text-gray-700"></i>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Belum ada data siswa.</p>
                             </div>
                         </td>
                     </tr>
@@ -169,8 +187,8 @@ $pendingCount = $totalPending ?? 0;
     </div>
 
     <?php if (!empty($siswa)) : ?>
-    <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <span class="text-sm text-gray-500">Menampilkan data kelulusan.</span>
+    <div class="border-t border-gray-100 px-5 py-3.5 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <span class="text-xs text-gray-500 dark:text-gray-400">Menampilkan data kelulusan siswa.</span>
         <div class="pagination-wrapper">
             <?= $pager->links() ?>
         </div>
@@ -178,13 +196,14 @@ $pendingCount = $totalPending ?? 0;
     <?php endif; ?>
 </div>
 
+<!-- Bulk Action Floating Bar -->
 <div id="bulkActionBar" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-full px-4 max-w-lg">
-    <div class="bg-gray-900 text-white rounded-xl shadow-2xl px-5 py-3 flex items-center gap-3">
-        <div class="flex items-center gap-2 text-sm min-w-0">
-            <i class="fas fa-check-square text-green-400 shrink-0"></i>
+    <div class="bg-gray-900/90 backdrop-blur-md text-white rounded-2xl shadow-2xl px-5 py-3.5 flex items-center gap-3 border border-gray-700">
+        <div class="flex items-center gap-2 text-xs min-w-0 font-medium">
+            <i class="fas fa-check-square text-brand-400 shrink-0"></i>
             <span><strong id="selectedCount">0</strong> siswa dipilih</span>
         </div>
-        <div class="h-5 w-px bg-gray-600 shrink-0"></div>
+        <div class="h-5 w-px bg-gray-700 shrink-0"></div>
 
         <form action="<?= base_url('admin/kelulusan/bulkUpdate') ?>" method="post" id="bulkForm" class="flex gap-2 flex-1 justify-end">
             <?= csrf_field() ?>
@@ -192,20 +211,69 @@ $pendingCount = $totalPending ?? 0;
             <input type="hidden" name="status_lulus" id="bulkStatus">
 
             <button type="button" onclick="submitBulk('Lulus')"
-                class="bg-green-600 hover:bg-green-500 text-white text-xs font-semibold py-1.5 px-3 rounded-lg transition flex items-center gap-1">
+                class="rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-1.5 px-3 transition flex items-center gap-1 shadow-sm">
                 <i class="fas fa-check text-xs"></i> Lulus
             </button>
             <button type="button" onclick="submitBulk('Tidak Lulus')"
-                class="bg-red-600 hover:bg-red-500 text-white text-xs font-semibold py-1.5 px-3 rounded-lg transition flex items-center gap-1">
+                class="rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-semibold py-1.5 px-3 transition flex items-center gap-1 shadow-sm">
                 <i class="fas fa-times text-xs"></i> Tidak Lulus
             </button>
+            <button type="button" onclick="submitBulk('Pending')"
+                class="rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold py-1.5 px-3 transition flex items-center gap-1 shadow-sm">
+                <i class="fas fa-clock text-xs"></i> Pending
+            </button>
         </form>
-
-        <button onclick="clearSelection()" class="text-gray-400 hover:text-white transition shrink-0 ml-1" title="Batal">
-            <i class="fas fa-times-circle text-lg"></i>
-        </button>
     </div>
 </div>
+
+<?= $this->section('scripts') ?>
+<script>
+    function toggleSelectAll(master) {
+        document.querySelectorAll('.siswa-checkbox').forEach(cb => cb.checked = master.checked);
+        updateBulkBar();
+    }
+
+    function updateBulkBar() {
+        const checked = document.querySelectorAll('.siswa-checkbox:checked');
+        const bar = document.getElementById('bulkActionBar');
+        const count = document.getElementById('selectedCount');
+        const master = document.getElementById('selectAll');
+
+        count.textContent = checked.length;
+        if (checked.length > 0) {
+            bar.classList.remove('hidden');
+        } else {
+            bar.classList.add('hidden');
+            if (master) master.checked = false;
+        }
+    }
+
+    function submitBulk(status) {
+        const checked = document.querySelectorAll('.siswa-checkbox:checked');
+        if (checked.length === 0) return;
+
+        const ids = Array.from(checked).map(cb => cb.value).join(',');
+        document.getElementById('bulkIds').value = ids;
+        document.getElementById('bulkStatus').value = status;
+
+        if (confirm(`Ubah status ${checked.length} siswa menjadi "${status}"?`)) {
+            document.getElementById('bulkForm').submit();
+        }
+    }
+
+    function confirmStatusChange(select) {
+        const status = select.value;
+        if (confirm(`Ubah status kelulusan menjadi "${status}"?`)) {
+            select.form.submit();
+        } else {
+            select.value = select.dataset.prev || 'Pending';
+        }
+    }
+
+    document.querySelectorAll('.status-form select').forEach(s => {
+        s.dataset.prev = s.value;
+    });
+</script>
 
 <style>
     .pagination-wrapper ul.pagination {
@@ -220,18 +288,18 @@ $pendingCount = $totalPending ?? 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.875rem;
-        font-weight: 500;
+        padding: 0.35rem 0.65rem;
+        font-size: 0.75rem;
+        font-weight: 600;
         border-radius: 0.5rem;
         background-color: #ffffff;
         border: 1px solid #e5e7eb;
         color: #4b5563;
-        transition: all 0.2s;
+        transition: all 0.15s;
     }
     .pagination-wrapper ul.pagination li.active span {
-        background-color: #059669;
-        border-color: #059669;
+        background-color: #465fff;
+        border-color: #465fff;
         color: #ffffff;
     }
     .pagination-wrapper ul.pagination li a:hover {
@@ -239,48 +307,6 @@ $pendingCount = $totalPending ?? 0;
         color: #111827;
     }
 </style>
-
-<script>
-    function toggleSelectAll(master) {
-        document.querySelectorAll('.siswa-checkbox').forEach(cb => cb.checked = master.checked);
-        updateBulkBar();
-    }
-
-    function updateBulkBar() {
-        const selected = document.querySelectorAll('.siswa-checkbox:checked');
-        const bar = document.getElementById('bulkActionBar');
-        document.getElementById('selectedCount').innerText = selected.length;
-        bar.classList.toggle('hidden', selected.length === 0);
-    }
-
-    function clearSelection() {
-        document.querySelectorAll('.siswa-checkbox').forEach(cb => cb.checked = false);
-        document.getElementById('selectAll').checked = false;
-        updateBulkBar();
-    }
-
-    function confirmStatusChange(sel) {
-        const label = sel.options[sel.selectedIndex].text;
-        if (!confirm('Ubah status menjadi ' + label + '?')) {
-            sel.value = sel.getAttribute('data-prev') || sel.querySelector('option[selected]')?.value || 'Pending';
-            return;
-        }
-        sel.closest('form').submit();
-    }
-
-    document.querySelectorAll('.status-form select').forEach(sel => {
-        sel.setAttribute('data-prev', sel.value);
-        sel.addEventListener('focus', function() { this.setAttribute('data-prev', this.value); });
-    });
-
-    function submitBulk(status) {
-        const ids = Array.from(document.querySelectorAll('.siswa-checkbox:checked')).map(cb => cb.value);
-        if (ids.length === 0) return;
-        if (!confirm('Set status ' + status + ' untuk ' + ids.length + ' data terpilih?')) return;
-        document.getElementById('bulkIds').value = ids.join(',');
-        document.getElementById('bulkStatus').value = status;
-        document.getElementById('bulkForm').submit();
-    }
-</script>
+<?= $this->endSection() ?>
 
 <?= $this->endSection() ?>

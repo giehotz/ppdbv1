@@ -45,10 +45,10 @@ Events::on('pre_system', static function (): void {
     if (CI_DEBUG && ! is_cli()) {
         Events::on('DBQuery', 'CodeIgniter\Debug\Toolbar\Collectors\Database::collect');
         service('toolbar')->respond();
-        // Hot Reload route - for framework use on the hot reloader.
+        // Hot Reload route - deactivated on PHP CLI server to prevent blocking the single worker thread
         if (ENVIRONMENT === 'development') {
-            service('routes')->get('__hot-reload', static function (): void {
-                (new HotReloader())->run();
+            service('routes')->get('__hot-reload', static function () {
+                return service('response')->setStatusCode(204);
             });
         }
     }

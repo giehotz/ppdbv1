@@ -130,7 +130,7 @@ class Siswa extends BaseController
 
     public function resetPassword($id)
     {
-        $newPassword = $this->request->getPost('new_password');
+        $newPassword = $this->request->getPost('new_password') ?: $this->request->getPost('password_baru');
         if (empty($newPassword)) {
             $newPassword = bin2hex(random_bytes(6));
         }
@@ -139,6 +139,15 @@ class Siswa extends BaseController
         $student = $this->siswaModel->find($id);
 
         if ($student && $this->siswaModel->update($id, ['password' => $hashedPassword])) {
+            session()->set('siswa_pwd_' . $id, $newPassword);
+            
+            // Bersihkan throttle & cache agar siswa bisa langsung login tanpa terkunci
+            try {
+                \Config\Services::cache()->clean();
+            } catch (\Throwable $e) {
+                // ignore
+            }
+
             $printData = [
                 'nama' => $student['nama_lengkap'],
                 'nisn' => $student['nisn'] ?? '-',
@@ -146,13 +155,25 @@ class Siswa extends BaseController
                 'password' => $newPassword,
                 'tanggal' => date('d-m-Y H:i:s')
             ];
-            session()->setFlashdata('success', 'Password siswa berhasil direset. Menyiapkan dokumen cetak...');
+            session()->setFlashdata('success', 'Password siswa berhasil direset ke: <strong>' . esc($newPassword) . '</strong>. Kunci login telah dibuka.');
             session()->setFlashdata('print_password', $printData);
         } else {
             session()->setFlashdata('error', 'Gagal mereset password siswa.');
         }
 
         return redirect()->back();
+    }
+
+    public function resetThrottle()
+    {
+        try {
+            \Config\Services::cache()->clean();
+            session()->setFlashdata('success', 'Batas waktu percobaan login (lockout 15 menit) berhasil direset. Silakan login kembali.');
+        } catch (\Throwable $e) {
+            session()->setFlashdata('error', 'Gagal mereset cache login: ' . $e->getMessage());
+        }
+
+        return redirect()->to(base_url('admin/siswa'));
     }
 
     public function cetak($id)

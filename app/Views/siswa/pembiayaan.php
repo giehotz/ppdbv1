@@ -1,126 +1,127 @@
 <?= $this->extend('layouts/siswa') ?>
 
-<?= $this->section('title') ?>
-Pembiayaan
-<?= $this->endSection() ?>
-
+<?= $this->section('title') ?>Status Pembiayaan<?= $this->endSection() ?>
 <?= $this->section('page_title') ?>
-Status Pembiayaan
+<span class="material-symbols-outlined text-brand-500 mr-1">payments</span> Status Pembiayaan &amp; Tagihan
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-<?php if (session()->getFlashdata('success')) : ?>
-    <div class="bg-emerald-50 border-l-4 border-emerald-500 text-emerald-800 p-4 mb-6 rounded-r-lg shadow-sm flex items-center">
-        <i class="fas fa-check-circle text-emerald-500 mr-3 text-lg"></i>
-        <span class="font-medium"><?= session()->getFlashdata('success') ?></span>
-    </div>
-<?php endif; ?>
+<div class="space-y-6">
 
-<?php if (session()->getFlashdata('error')) : ?>
-    <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 mb-6 rounded-r-lg shadow-sm flex items-center">
-        <i class="fas fa-exclamation-circle text-red-500 mr-3 text-lg"></i>
-        <span class="font-medium"><?= session()->getFlashdata('error') ?></span>
-    </div>
-<?php endif; ?>
-
-<!-- Ringkasan Atas -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-
-    <!-- Info Siswa -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide">Data Siswa</h3>
-        </div>
-        <div class="p-5 space-y-3">
-            <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase">No. Pendaftaran</p>
-                <p class="text-gray-900 font-semibold"><?= esc($siswa['no_pendaftaran']) ?></p>
+    <!-- Top Summary Cards (TailAdmin Grid) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+        
+        <!-- Info Siswa -->
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] space-y-3">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
+                    <span class="material-symbols-outlined text-xl">badge</span>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Identitas Pendaftar</span>
+                    <h4 class="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[180px]">
+                        <?= esc($siswa['nama_lengkap']) ?>
+                    </h4>
+                </div>
             </div>
-            <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase">Nama Lengkap</p>
-                <p class="text-gray-900 font-semibold"><?= esc($siswa['nama_lengkap']) ?></p>
+            <div class="pt-2 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-xs">
+                <span class="text-gray-500 dark:text-gray-400">No. Pendaftaran:</span>
+                <span class="font-mono font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/15 px-2 py-0.5 rounded-md">
+                    <?= esc($siswa['no_pendaftaran']) ?>
+                </span>
             </div>
         </div>
-    </div>
 
-    <!-- Total Tagihan -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide">Tagihan</h3>
-        </div>
-        <div class="p-5">
-            <p class="text-xs font-semibold text-gray-400 uppercase mb-1">Total Tagihan</p>
-            <p class="text-2xl font-bold text-gray-800"><?= format_rupiah($totalTagihan) ?></p>
-            <p class="text-xs font-semibold text-gray-400 uppercase mt-3 mb-1">Sudah Dibayar</p>
-            <p class="text-xl font-bold text-blue-600"><?= format_rupiah($totalLunas) ?></p>
-        </div>
-    </div>
-
-    <!-- Status -->
-    <div class="bg-white rounded-xl shadow-sm border <?= $statusLunas ? 'border-green-200' : 'border-amber-200' ?> overflow-hidden">
-        <div class="px-5 py-4 border-b <?= $statusLunas ? 'border-green-100 bg-green-50/50' : 'border-amber-100 bg-amber-50/50' ?>">
-            <h3 class="text-sm font-bold <?= $statusLunas ? 'text-green-800' : 'text-amber-800' ?> uppercase tracking-wide">Status Pembayaran</h3>
-        </div>
-        <div class="p-5 text-center">
-            <?php if ($statusLunas): ?>
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-3">
-                    <i class="fas fa-check-circle text-3xl text-green-600"></i>
+        <!-- Total Tagihan -->
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] space-y-3">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+                    <span class="material-symbols-outlined text-xl">receipt_long</span>
                 </div>
-                <p class="text-xl font-bold text-green-600">LUNAS</p>
-                <p class="text-xs text-green-500 mt-1">Semua tagihan sudah terbayar</p>
-            <?php else: ?>
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-100 mb-3">
-                    <i class="fas fa-clock text-3xl text-amber-500"></i>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Total Biaya &amp; Terbayar</span>
+                    <h4 class="text-base font-extrabold text-gray-900 dark:text-white">
+                        <?= format_rupiah($totalTagihan) ?>
+                    </h4>
                 </div>
-                <p class="text-xl font-bold text-amber-600">BELUM LUNAS</p>
-                <p class="text-xs text-amber-500 mt-1">Sisa <?= count($unpaidItems) ?> item belum dibayar</p>
-            <?php endif; ?>
+            </div>
+            <div class="pt-2 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-xs">
+                <span class="text-gray-500 dark:text-gray-400">Sudah Dibayar:</span>
+                <span class="font-bold text-emerald-600 dark:text-emerald-400">
+                    <?= format_rupiah($totalLunas) ?>
+                </span>
+            </div>
         </div>
-    </div>
-</div>
 
-<!-- Rincian Tagihan -->
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
-    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-        <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide">Rincian Tagihan</h3>
+        <!-- Status Pembayaran -->
+        <div class="rounded-2xl border sm:col-span-2 lg:col-span-1 p-5 shadow-theme-xs <?= $statusLunas ? 'border-emerald-200 bg-emerald-50/40 dark:border-emerald-900/40 dark:bg-emerald-950/20' : 'border-amber-200 bg-amber-50/40 dark:border-amber-900/40 dark:bg-amber-950/20' ?> space-y-3">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl <?= $statusLunas ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-white' ?>">
+                    <span class="material-symbols-outlined text-xl"><?= $statusLunas ? 'check_circle' : 'pending' ?></span>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider <?= $statusLunas ? 'text-emerald-800 dark:text-emerald-300' : 'text-amber-800 dark:text-amber-300' ?>">Status Tagihan</span>
+                    <h4 class="text-sm font-bold <?= $statusLunas ? 'text-emerald-700 dark:text-emerald-400' : 'text-amber-700 dark:text-amber-400' ?>">
+                        <?= $statusLunas ? 'LUNAS' : 'BELUM LUNAS' ?>
+                    </h4>
+                </div>
+            </div>
+            <div class="pt-2 border-t border-gray-200/60 dark:border-gray-700/60 flex justify-between items-center text-xs">
+                <span class="text-gray-500 dark:text-gray-400">Sisa Tagihan:</span>
+                <span class="font-bold <?= $statusLunas ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400' ?>">
+                    <?= format_rupiah(max(0, $totalTagihan - $totalLunas)) ?>
+                </span>
+            </div>
+        </div>
+
     </div>
-    <div class="p-0">
+
+    <!-- Rincian Tagihan Table (TailAdmin Style) -->
+    <div class="rounded-2xl border border-gray-200 bg-white shadow-theme-xs overflow-hidden dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-100 px-5 py-4 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/40 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-brand-500">list_alt</span>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white">Rincian Item Pembiayaan</h4>
+            </div>
+        </div>
+
         <div class="overflow-x-auto">
-            <table class="min-w-full">
+            <table class="w-full text-left border-collapse text-xs">
                 <thead>
-                    <tr class="bg-gray-50 border-b border-gray-100">
-                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">No</th>
-                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Item</th>
-                        <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase">Harga</th>
-                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase">Status</th>
+                    <tr class="border-b border-gray-100 bg-gray-50/70 text-gray-500 dark:border-gray-800 dark:bg-gray-800/60 dark:text-gray-400">
+                        <th class="py-3 px-4 font-bold uppercase text-[10px] w-12 text-center">No</th>
+                        <th class="py-3 px-4 font-bold uppercase text-[10px]">Nama Komponen Tagihan</th>
+                        <th class="py-3 px-4 font-bold uppercase text-[10px] text-right">Nominal Tagihan</th>
+                        <th class="py-3 px-4 font-bold uppercase text-[10px] text-center w-32">Status Item</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
                     <?php if (empty($tagihan)): ?>
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center">
-                                <i class="fas fa-inbox text-4xl text-gray-300 mb-3 block"></i>
-                                <p class="text-gray-500 font-medium">Belum ada tagihan</p>
-                                <p class="text-xs text-gray-400 mt-1">Tagihan akan muncul setelah admin/verifikator menambahkan</p>
+                            <td colspan="4" class="py-10 px-4 text-center text-gray-400 dark:text-gray-500">
+                                <span class="material-symbols-outlined text-3xl mb-1 block">receipt_long</span>
+                                Belum ada data tagihan pembiayaan yang ditetapkan.
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php $no = 1; foreach ($tagihan as $t): ?>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-6 py-4 text-sm text-gray-500"><?= $no++ ?></td>
-                                <td class="px-6 py-4">
-                                    <p class="text-sm font-semibold text-gray-900"><?= esc($t['nama_item']) ?></p>
+                            <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/40 transition-colors">
+                                <td class="py-3 px-4 text-center text-gray-400 font-mono"><?= $no++ ?></td>
+                                <td class="py-3 px-4 font-bold text-gray-800 dark:text-gray-200">
+                                    <?= esc($t['nama_item']) ?>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-700 text-right font-medium"><?= format_rupiah($t['harga_satuan']) ?></td>
-                                <td class="px-6 py-4 text-center">
-                                    <?php if ($t['status_bayar'] === 'lunas'): ?>
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
-                                            <i class="fas fa-check-circle mr-1.5"></i> Lunas
+                                <td class="py-3 px-4 text-right font-mono font-bold text-gray-900 dark:text-white">
+                                    <?= format_rupiah($t['harga_satuan']) ?>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <?php if (($t['status_bayar'] ?? '') === 'lunas'): ?>
+                                        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">
+                                            <span class="material-symbols-outlined text-xs">check_circle</span> Lunas
                                         </span>
                                     <?php else: ?>
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-500">
-                                            <i class="fas fa-clock mr-1.5"></i> Belum
+                                        <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-[10px] font-bold text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                                            <span class="material-symbols-outlined text-xs">schedule</span> Belum
                                         </span>
                                     <?php endif; ?>
                                 </td>
@@ -129,107 +130,107 @@ Status Pembiayaan
                     <?php endif; ?>
                 </tbody>
                 <?php if (!empty($tagihan)): ?>
-                <tfoot>
-                    <tr class="bg-gray-50 border-t-2 border-gray-200">
-                        <td colspan="2" class="px-6 py-4 text-sm font-bold text-gray-700 text-right">Total Tagihan</td>
-                        <td class="px-6 py-4 text-sm font-bold text-gray-900 text-right"><?= format_rupiah($totalTagihan) ?></td>
-                        <td></td>
-                    </tr>
-                    <tr class="bg-green-50/50">
-                        <td colspan="2" class="px-6 py-4 text-sm font-bold text-green-700 text-right">Sudah Dibayar</td>
-                        <td class="px-6 py-4 text-sm font-bold text-green-700 text-right"><?= format_rupiah($totalLunas) ?></td>
-                        <td></td>
-                    </tr>
-                    <tr class="bg-<?= $statusLunas ? 'green' : 'amber' ?>-50/50 border-t-2 border-<?= $statusLunas ? 'green' : 'amber' ?>-200">
-                        <td colspan="2" class="px-6 py-4 text-sm font-bold text-<?= $statusLunas ? 'green' : 'amber' ?>-700 text-right">Sisa Tagihan</td>
-                        <td class="px-6 py-4 text-sm font-bold text-<?= $statusLunas ? 'green' : 'amber' ?>-700 text-right"><?= format_rupiah(max(0, $totalTagihan - $totalLunas)) ?></td>
-                        <td></td>
-                    </tr>
-                </tfoot>
+                    <tfoot class="border-t-2 border-gray-200 dark:border-gray-700 bg-gray-50/40 dark:bg-gray-850/40 font-bold">
+                        <tr>
+                            <td colspan="2" class="py-3 px-4 text-right text-gray-600 dark:text-gray-400">Total Seluruh Tagihan:</td>
+                            <td class="py-3 px-4 text-right text-sm font-mono text-gray-900 dark:text-white"><?= format_rupiah($totalTagihan) ?></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="py-2.5 px-4 text-right text-emerald-600 dark:text-emerald-400">Total Terbayar:</td>
+                            <td class="py-2.5 px-4 text-right text-sm font-mono text-emerald-600 dark:text-emerald-400"><?= format_rupiah($totalLunas) ?></td>
+                            <td></td>
+                        </tr>
+                        <tr class="<?= $statusLunas ? 'text-emerald-700 dark:text-emerald-300' : 'text-amber-700 dark:text-amber-300' ?>">
+                            <td colspan="2" class="py-2.5 px-4 text-right">Sisa Tagihan yang Harus Dibayar:</td>
+                            <td class="py-2.5 px-4 text-right text-sm font-mono"><?= format_rupiah(max(0, $totalTagihan - $totalLunas)) ?></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
                 <?php endif; ?>
             </table>
         </div>
     </div>
-</div>
 
-<!-- Kuitansi & Riwayat -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Bottom Row: Riwayat Pembayaran & Kuitansi -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-    <!-- Riwayat Pembayaran -->
-    <div class="lg:col-span-2">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide">Riwayat Pembayaran</h3>
+        <!-- Riwayat Pembayaran (2 Cols) -->
+        <div class="lg:col-span-2 rounded-2xl border border-gray-200 bg-white shadow-theme-xs overflow-hidden dark:border-gray-800 dark:bg-white/[0.03]">
+            <div class="border-b border-gray-100 px-5 py-4 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/40 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-brand-500">history_edu</span>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white">Riwayat Transaksi Masuk</h4>
+                </div>
             </div>
-            <div class="p-0">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full">
-                        <thead>
-                            <tr class="bg-gray-50 border-b border-gray-100">
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">No</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Tanggal</th>
-                                <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase">Jumlah</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Metode</th>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-gray-100 bg-gray-50/70 text-gray-500 dark:border-gray-800 dark:bg-gray-800/60 dark:text-gray-400">
+                            <th class="py-2.5 px-4 font-bold uppercase text-[10px] w-12 text-center">No</th>
+                            <th class="py-2.5 px-4 font-bold uppercase text-[10px]">Tanggal Bayar</th>
+                            <th class="py-2.5 px-4 font-bold uppercase text-[10px] text-right">Nominal</th>
+                            <th class="py-2.5 px-4 font-bold uppercase text-[10px]">Metode Pembayaran</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                        <?php if (empty($riwayatBayar)): ?>
+                            <tr>
+                                <td colspan="4" class="py-8 px-4 text-center text-gray-400 dark:text-gray-500">
+                                    <span class="material-symbols-outlined text-3xl mb-1 block">receipt</span>
+                                    Belum ada transaksi pembayaran yang tercatat.
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            <?php if (empty($riwayatBayar)): ?>
-                                <tr>
-                                    <td colspan="4" class="px-6 py-8 text-center">
-                                        <i class="fas fa-receipt text-3xl text-gray-300 mb-2 block"></i>
-                                        <p class="text-gray-500 text-sm">Belum ada riwayat pembayaran</p>
+                        <?php else: ?>
+                            <?php $no = 1; foreach ($riwayatBayar as $bayar): ?>
+                                <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/40 transition-colors">
+                                    <td class="py-2.5 px-4 text-center text-gray-400 font-mono"><?= $no++ ?></td>
+                                    <td class="py-2.5 px-4 text-gray-700 dark:text-gray-300 font-mono">
+                                        <?= date('d/m/Y', strtotime($bayar['tanggal'])) ?>
+                                    </td>
+                                    <td class="py-2.5 px-4 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                                        <?= format_rupiah($bayar['jumlah']) ?>
+                                    </td>
+                                    <td class="py-2.5 px-4 text-gray-600 dark:text-gray-400">
+                                        <?= esc($bayar['metode'] ?? 'Tunai') ?>
                                     </td>
                                 </tr>
-                            <?php else: ?>
-                                <?php $no = 1; foreach ($riwayatBayar as $bayar): ?>
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-3 text-sm text-gray-500"><?= $no++ ?></td>
-                                        <td class="px-6 py-3 text-sm text-gray-700"><?= date('d/m/Y', strtotime($bayar['tanggal'])) ?></td>
-                                        <td class="px-6 py-3 text-sm text-green-600 font-semibold text-right"><?= format_rupiah($bayar['jumlah']) ?></td>
-                                        <td class="px-6 py-3 text-sm text-gray-600"><?= esc($bayar['metode'] ?? '-') ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
+
+        <!-- Kuitansi Card (1 Col) -->
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] text-center flex flex-col items-center justify-center space-y-3">
+            <?php if ($statusLunas): ?>
+                <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 shadow-theme-xs">
+                    <span class="material-symbols-outlined text-3xl">verified</span>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white">Pembayaran Telah Lunas!</h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Kuitansi resmi sudah siap dicetak sebagai bukti pembayaran.</p>
+                </div>
+                <a href="<?= base_url('siswa/pembiayaan/kuitansi') ?>" target="_blank" rel="noopener"
+                   class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3 px-4 text-xs font-bold text-white shadow-theme-xs hover:bg-emerald-700 transition-colors">
+                    <span class="material-symbols-outlined text-base">print</span>
+                    <span>Cetak Kuitansi Resmi</span>
+                </a>
+            <?php else: ?>
+                <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500">
+                    <span class="material-symbols-outlined text-3xl">lock</span>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white">Kuitansi Belum Tersedia</h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Kuitansi digital akan otomatis dapat dicetak setelah seluruh tagihan dilunasi.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+
     </div>
 
-    <!-- Kuitansi -->
-    <div>
-        <?php if ($statusLunas): ?>
-            <div class="bg-white rounded-xl shadow-sm border border-green-200 overflow-hidden">
-                <div class="px-6 py-4 border-b border-green-100 bg-green-50/50">
-                    <h3 class="text-sm font-bold text-green-800 uppercase tracking-wide">Kuitansi</h3>
-                </div>
-                <div class="p-6 text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
-                        <i class="fas fa-file-pdf text-3xl text-green-600"></i>
-                    </div>
-                    <h4 class="text-lg font-bold text-green-800 mb-2">Pembayaran Lunas!</h4>
-                    <p class="text-sm text-green-600 mb-5">Silakan cetak kuitansi sebagai bukti pembayaran.</p>
-                    <a href="<?= base_url('siswa/pembiayaan/kuitansi') ?>" target="_blank" class="inline-flex items-center justify-center w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-sm">
-                        <i class="fas fa-print mr-2"></i> Cetak Kuitansi
-                    </a>
-                </div>
-            </div>
-        <?php else: ?>
-            <div class="bg-white rounded-xl shadow-sm border border-amber-200 overflow-hidden">
-                <div class="px-6 py-4 border-b border-amber-100 bg-amber-50/50">
-                    <h3 class="text-sm font-bold text-amber-800 uppercase tracking-wide">Kuitansi</h3>
-                </div>
-                <div class="p-6 text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-100 mb-4">
-                        <i class="fas fa-lock text-3xl text-amber-400"></i>
-                    </div>
-                    <h4 class="text-lg font-bold text-amber-800 mb-2">Belum Tersedia</h4>
-                    <p class="text-sm text-amber-600">Kuitansi dapat dicetak setelah semua tagihan lunas.</p>
-                </div>
-            </div>
-        <?php endif; ?>
-    </div>
 </div>
 
 <?= $this->endSection() ?>

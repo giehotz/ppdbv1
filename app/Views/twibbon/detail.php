@@ -6,44 +6,53 @@
     <title>Buat Twibbon - <?= esc($campaign['title']) ?> - <?= esc($web['nama_sekolah'] ?? 'PPDB') ?></title>
     <meta name="description" content="<?= esc(strip_tags($campaign['description'] ?: 'Ikut serta dalam kampanye twibbon kami dengan memasang foto profil Anda di bingkai ini.')) ?>">
 
-    <!-- Open Graph / Facebook / WhatsApp / Telegram -->
+    <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="<?= current_url() ?>">
     <meta property="og:title" content="Buat Twibbon - <?= esc($campaign['title']) ?>">
     <meta property="og:description" content="<?= esc(strip_tags($campaign['description'] ?: 'Ikut serta dalam kampanye twibbon kami dengan memasang foto profil Anda di bingkai ini.')) ?>">
     <meta property="og:image" content="<?= base_url($frame['file_path']) ?>">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="<?= esc($frame['width'] ?? '1080') ?>">
-    <meta property="og:image:height" content="<?= esc($frame['height'] ?? '1080') ?>">
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="<?= current_url() ?>">
     <meta name="twitter:title" content="Buat Twibbon - <?= esc($campaign['title']) ?>">
     <meta name="twitter:description" content="<?= esc(strip_tags($campaign['description'] ?: 'Ikut serta dalam kampanye twibbon kami dengan memasang foto profil Anda di bingkai ini.')) ?>">
     <meta name="twitter:image" content="<?= base_url($frame['file_path']) ?>">
 
     <link rel="icon" type="image/png" href="<?= base_url('favicon.png') ?>">
-    <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS (TailAdmin tokens) -->
+    <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
     
     <!-- Cropper.js CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     
     <style>
         body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
             font-family: 'Outfit', sans-serif;
-            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdf4 100%);
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined' !important;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 22px;
+            line-height: 1;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
         }
-        
-        /* Cropper customizations to hide default UI and lay it behind frame */
         .cropper-container {
             width: 100% !important;
             height: 100% !important;
@@ -72,120 +81,155 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between bg-gray-50 text-gray-900 antialiased">
 
     <!-- Top Navbar -->
-    <header class="w-full glass sticky top-0 z-50 shadow-sm transition-all duration-300">
+    <header class="w-full bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200 shadow-theme-xs">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <a href="<?= base_url('twibbon') ?>" class="flex items-center gap-2">
+            <a href="<?= base_url('twibbon') ?>" class="flex items-center gap-2.5">
                 <?php if (!empty($web['logo_sekolah']) && file_exists(FCPATH . 'uploads/logo/' . $web['logo_sekolah'])): ?>
                     <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="h-8 w-auto">
+                <?php else: ?>
+                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 text-white font-bold shadow-theme-xs">
+                        <span class="material-symbols-outlined text-lg">school</span>
+                    </div>
                 <?php endif; ?>
-                <span class="text-xl font-extrabold text-emerald-800 tracking-tight"><?= esc($web['app_name'] ?? 'PPDB Online') ?></span>
+                <div>
+                    <span class="text-sm sm:text-base font-extrabold text-gray-900 tracking-tight block leading-none"><?= esc($web['app_name'] ?? 'PPDB Online') ?></span>
+                    <span class="text-[10px] text-gray-500"><?= esc($web['nama_sekolah'] ?? 'Portal PPDB') ?></span>
+                </div>
             </a>
-            <a href="<?= base_url('twibbon') ?>" class="text-emerald-700 hover:text-emerald-950 font-bold text-sm flex items-center gap-1">
-                <i class="fas fa-arrow-left"></i> Kembali ke Daftar
+            
+            <a href="<?= base_url('twibbon') ?>" 
+               class="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 shadow-theme-xs transition-colors">
+                <span class="material-symbols-outlined text-base">arrow_back</span>
+                <span>Daftar Kampanye</span>
             </a>
         </div>
     </header>
 
     <!-- Main Workspace -->
-    <main class="flex-1 py-10 px-4 max-w-5xl w-full mx-auto">
+    <main class="flex-1 py-8 sm:py-10 px-4 max-w-5xl w-full mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             
             <!-- Column 1: Editor Canvas -->
             <div class="md:col-span-6 flex flex-col items-center">
-                <div class="relative w-full max-w-[420px] bg-checkerboard rounded-2xl shadow-xl overflow-hidden border border-emerald-100" id="editor-container" style="aspect-ratio: <?= (int)($frame['width'] ?? 1) ?> / <?= (int)($frame['height'] ?? 1) ?>">
+                <div class="relative w-full max-w-[420px] bg-checkerboard rounded-2xl shadow-theme-md overflow-hidden border border-gray-200" id="editor-container" style="aspect-ratio: <?= (int)($frame['width'] ?? 1) ?> / <?= (int)($frame['height'] ?? 1) ?>">
                     
                     <!-- User Image Container -->
                     <div id="image-wrapper" class="w-full h-full absolute inset-0">
                         <img id="image-to-crop" src="" class="max-w-full hidden">
                     </div>
 
-                    <!-- Frame PNG Overlay (Stops pointer events so we can drag the cropper underneath) -->
+                    <!-- Frame PNG Overlay -->
                     <img src="<?= base_url($frame['file_path']) ?>" alt="Frame" id="frame-overlay" class="absolute inset-0 w-full h-full object-contain z-20 pointer-events-none">
 
-                    <!-- Empty State Upload Trigger (Placed on top of the frame overlay with a semi-transparent white background) -->
-                    <div id="upload-placeholder" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-all duration-200 hover:bg-white/80" style="background-color: rgba(255, 255, 255, 0.75);" onclick="document.getElementById('photo-input').click()">
-                        <div class="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mb-4 shadow-sm border border-emerald-100">
-                            <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                    <!-- Empty State Upload Trigger -->
+                    <div id="upload-placeholder" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-all duration-200 bg-white/90 hover:bg-white/95 backdrop-blur-xs" onclick="document.getElementById('photo-input').click()">
+                        <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 mb-3 shadow-theme-xs border border-brand-200/60">
+                            <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
                         </div>
-                        <h4 class="text-emerald-900 font-bold text-base">Pilih Foto Terbaik Anda</h4>
-                        <p class="text-xs text-emerald-700 mt-2 max-w-[240px] opacity-80">Klik di sini untuk mengunggah foto wajah (PNG, JPG, JPEG, atau WebP, maks. 5MB).</p>
+                        <h4 class="text-sm font-bold text-gray-900">Pilih Foto Terbaik Anda</h4>
+                        <p class="text-[11px] text-gray-500 mt-1 max-w-[240px]">Klik di sini untuk mengunggah foto wajah (PNG, JPG, WebP maks. 5MB).</p>
                     </div>
                 </div>
 
-                <!-- Control Buttons (Hidden until image selected) -->
-                <div id="editor-controls" class="w-full max-w-[420px] grid grid-cols-4 gap-2 mt-4 hidden">
-                    <button onclick="zoom(0.1)" class="bg-white hover:bg-emerald-50 border border-emerald-100 text-emerald-800 py-2.5 rounded-xl transition duration-150 flex items-center justify-center gap-1 text-sm font-semibold shadow-sm" title="Perbesar">
-                        <i class="fas fa-search-plus"></i>
+                <!-- Control Buttons -->
+                <div id="editor-controls" class="w-full max-w-[420px] grid grid-cols-4 gap-2 mt-3 hidden">
+                    <button type="button" onclick="zoom(0.1)" class="inline-flex items-center justify-center h-10 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 shadow-theme-xs" title="Perbesar">
+                        <span class="material-symbols-outlined text-lg">zoom_in</span>
                     </button>
-                    <button onclick="zoom(-0.1)" class="bg-white hover:bg-emerald-50 border border-emerald-100 text-emerald-800 py-2.5 rounded-xl transition duration-150 flex items-center justify-center gap-1 text-sm font-semibold shadow-sm" title="Perkecil">
-                        <i class="fas fa-search-minus"></i>
+                    <button type="button" onclick="zoom(-0.1)" class="inline-flex items-center justify-center h-10 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 shadow-theme-xs" title="Perkecil">
+                        <span class="material-symbols-outlined text-lg">zoom_out</span>
                     </button>
-                    <button onclick="rotate(-90)" class="bg-white hover:bg-emerald-50 border border-emerald-100 text-emerald-800 py-2.5 rounded-xl transition duration-150 flex items-center justify-center gap-1 text-sm font-semibold shadow-sm" title="Putar Kiri">
-                        <i class="fas fa-undo"></i>
+                    <button type="button" onclick="rotate(-90)" class="inline-flex items-center justify-center h-10 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 shadow-theme-xs" title="Putar Kiri">
+                        <span class="material-symbols-outlined text-lg">rotate_left</span>
                     </button>
-                    <button onclick="rotate(90)" class="bg-white hover:bg-emerald-50 border border-emerald-100 text-emerald-800 py-2.5 rounded-xl transition duration-150 flex items-center justify-center gap-1 text-sm font-semibold shadow-sm" title="Putar Kanan">
-                        <i class="fas fa-redo"></i>
+                    <button type="button" onclick="rotate(90)" class="inline-flex items-center justify-center h-10 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 shadow-theme-xs" title="Putar Kanan">
+                        <span class="material-symbols-outlined text-lg">rotate_right</span>
                     </button>
                 </div>
             </div>
 
             <!-- Column 2: Information & Processing -->
-            <div class="md:col-span-6 space-y-6">
-                <div class="glass rounded-2xl p-6 shadow-md">
-                    <h2 class="text-2xl font-bold text-emerald-950 leading-tight"><?= esc($campaign['title']) ?></h2>
-                    <p class="text-emerald-900 text-sm mt-3 opacity-80 leading-relaxed"><?= nl2br(esc($campaign['description'])) ?></p>
+            <div class="md:col-span-6 space-y-5">
+                
+                <!-- Campaign Description -->
+                <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs space-y-2">
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-900 leading-tight"><?= esc($campaign['title']) ?></h2>
+                    <p class="text-xs sm:text-sm text-gray-500 leading-relaxed"><?= nl2br(esc($campaign['description'])) ?></p>
                 </div>
 
-                <div class="glass rounded-2xl p-6 shadow-md space-y-4">
-                    <h3 class="text-sm font-extrabold uppercase text-emerald-800 tracking-wider">Langkah-langkah:</h3>
-                    <ul class="text-xs text-emerald-900 space-y-2.5 opacity-90">
-                        <li class="flex gap-2.5"><span class="w-5 h-5 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center font-bold text-[10px] shrink-0 text-emerald-800">1</span> <span>Klik area kotak di sebelah kiri atau tombol "Pilih Foto" untuk mengunggah foto Anda.</span></li>
-                        <li class="flex gap-2.5"><span class="w-5 h-5 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center font-bold text-[10px] shrink-0 text-emerald-800">2</span> <span>Gunakan mouse/touch untuk menggeser, memperbesar, atau memutar foto agar posisinya pas dengan lubang bingkai.</span></li>
-                        <li class="flex gap-2.5"><span class="w-5 h-5 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center font-bold text-[10px] shrink-0 text-emerald-800">3</span> <span>Klik tombol "Unduh Twibbon" untuk menyimpan hasilnya di perangkat Anda.</span></li>
-                    </ul>
+                <!-- Steps Guide -->
+                <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-800 pb-2 border-b border-gray-100">
+                        Panduan Penggunaan
+                    </h3>
 
-                    <!-- File input -->
+                    <div class="space-y-3 text-xs text-gray-600">
+                        <div class="flex items-start gap-3">
+                            <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-50 text-brand-600 font-bold text-xs shrink-0">1</span>
+                            <span class="mt-0.5">Klik area bingkai di sebelah kiri atau tombol <b>Pilih Foto</b> untuk mengunggah foto Anda.</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-50 text-brand-600 font-bold text-xs shrink-0">2</span>
+                            <span class="mt-0.5">Geser, perbesar, atau putar foto hingga posisinya pas di dalam lubang bingkai twibbon.</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-50 text-brand-600 font-bold text-xs shrink-0">3</span>
+                            <span class="mt-0.5">Klik tombol <b>Unduh Twibbon</b> untuk memproses dan menyimpan hasil gambar ke perangkat Anda.</span>
+                        </div>
+                    </div>
+
+                    <!-- Hidden File Input -->
                     <input type="file" id="photo-input" accept="image/*" class="hidden" onchange="loadPhoto(event)">
                     
-                    <div class="flex gap-3 mt-6">
-                        <button onclick="document.getElementById('photo-input').click()" class="flex-1 bg-white hover:bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold py-3.5 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-sm text-sm">
-                            <i class="fas fa-image"></i> <span id="btn-select-text">Pilih Foto</span>
+                    <div class="flex gap-2.5 pt-2">
+                        <button type="button" onclick="document.getElementById('photo-input').click()" 
+                                class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-white py-3 text-xs font-bold text-gray-700 hover:bg-gray-50 shadow-theme-xs transition-colors">
+                            <span class="material-symbols-outlined text-base">photo_library</span>
+                            <span id="btn-select-text">Pilih Foto</span>
                         </button>
-                        <button id="btn-download" onclick="processTwibbon()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-md text-sm" disabled>
-                            <i class="fas fa-download"></i> Unduh Twibbon
+                        
+                        <button type="button" id="btn-download" onclick="processTwibbon()" 
+                                class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed text-white py-3 text-xs font-bold shadow-theme-xs transition-colors" disabled>
+                            <span class="material-symbols-outlined text-base">download</span>
+                            <span>Unduh Twibbon</span>
                         </button>
                     </div>
                 </div>
+
             </div>
         </div>
     </main>
 
     <!-- Modal Loading Overlay -->
-    <div id="loading-modal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl flex flex-col items-center text-center">
-            <div class="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-4"></div>
-            <h3 class="font-bold text-emerald-950 text-lg">Memproses Twibbon Anda</h3>
-            <p class="text-xs text-emerald-800 mt-2 opacity-80">Mohon tunggu beberapa detik, server sedang menggabungkan foto Anda dengan bingkai...</p>
+    <div id="loading-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-xs w-full shadow-2xl flex flex-col items-center text-center">
+            <span class="material-symbols-outlined text-4xl animate-spin text-brand-500 mb-2">progress_activity</span>
+            <h3 class="font-bold text-gray-900 text-sm">Memproses Twibbon</h3>
+            <p class="text-[11px] text-gray-400 mt-1">Sedang menggabungkan foto Anda dengan bingkai resmi...</p>
         </div>
     </div>
 
     <!-- Modal Success / Hasil -->
-    <div id="result-modal" class="fixed inset-0 z-50 bg-black bg-opacity-65 flex items-center justify-center hidden">
-        <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl flex flex-col items-center">
-            <h3 class="font-bold text-emerald-950 text-xl text-center mb-4">Twibbon Berhasil Dibuat!</h3>
+    <div id="result-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl flex flex-col items-center">
+            <h3 class="font-bold text-gray-900 text-base text-center mb-3 flex items-center gap-1.5 text-emerald-600">
+                <span class="material-symbols-outlined text-lg">check_circle</span>
+                Twibbon Berhasil Dibuat!
+            </h3>
             
-            <div class="w-full max-w-[280px] aspect-square rounded-xl overflow-hidden border shadow-inner mb-6 relative">
+            <div class="w-full max-w-[260px] aspect-square rounded-xl overflow-hidden border border-gray-200 shadow-inner mb-4 bg-gray-50">
                 <img id="result-preview" src="" alt="Twibbon Result" class="w-full h-full object-cover">
             </div>
 
-            <div class="w-full flex flex-col gap-3">
-                <a id="btn-real-download" href="" download class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl text-center transition duration-200 shadow-md flex items-center justify-center gap-2 text-sm">
-                    <i class="fas fa-cloud-download-alt"></i> Unduh Gambar
+            <div class="w-full flex flex-col gap-2">
+                <a id="btn-real-download" href="" download class="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 text-xs shadow-theme-xs transition-colors">
+                    <span class="material-symbols-outlined text-base">download</span>
+                    <span>Unduh Gambar</span>
                 </a>
-                <button onclick="closeResultModal()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl transition duration-200 text-sm">
+                <button type="button" onclick="closeResultModal()" class="w-full inline-flex items-center justify-center py-2 text-xs font-semibold text-gray-500 hover:text-gray-700">
                     Buat Ulang / Ganti Foto
                 </button>
             </div>
@@ -193,8 +237,8 @@
     </div>
 
     <!-- Footer -->
-    <footer class="w-full glass py-6 border-t mt-12">
-        <div class="max-w-6xl mx-auto px-4 text-center text-xs text-emerald-800 opacity-75">
+    <footer class="w-full bg-white border-t border-gray-200 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-4 text-center text-xs text-gray-500">
             <p>&copy; <?= date('Y') ?> <?= esc($web['nama_sekolah'] ?? 'PPDB Online') ?>. Hak Cipta Dilindungi.</p>
         </div>
     </footer>
@@ -214,7 +258,6 @@
             if (files && files.length > 0) {
                 selectedFile = files[0];
                 
-                // Validate size (5MB)
                 if (selectedFile.size > 5 * 1024 * 1024) {
                     alert('Ukuran file foto terlalu besar. Maksimal 5MB.');
                     return;
@@ -226,31 +269,27 @@
                     img.src = e.target.result;
                     img.classList.remove('hidden');
 
-                    // Hide placeholder and show controls
                     document.getElementById('upload-placeholder').classList.add('hidden');
                     document.getElementById('editor-controls').classList.remove('hidden');
                     document.getElementById('btn-download').removeAttribute('disabled');
                     document.getElementById('btn-select-text').innerText = 'Ganti Foto';
 
-                    // Destroy old cropper if exists
                     if (cropper) {
                         cropper.destroy();
                     }
 
-                    // Initialize Cropper.js
                     cropper = new Cropper(img, {
                         aspectRatio: FRAME_RATIO,
-                        viewMode: 0, // Allow zooming out smaller than crop box
-                        autoCropArea: 1, // Crop box is maximum width/height of container
+                        viewMode: 0,
+                        autoCropArea: 1,
                         background: false,
                         guides: false,
                         center: false,
                         highlight: false,
                         cropBoxMovable: false,
                         cropBoxResizable: false,
-                        dragMode: 'move', // Allow panning the image
+                        dragMode: 'move',
                         zoom: function(event) {
-                            // Prevent zoom out below 10% (0.1 ratio) of the original image
                             if (event.detail.ratio < 0.1) {
                                 event.preventDefault();
                             }
@@ -262,24 +301,19 @@
         }
 
         function zoom(ratio) {
-            if (cropper) {
-                cropper.zoom(ratio);
-            }
+            if (cropper) cropper.zoom(ratio);
         }
 
         function rotate(degree) {
-            if (cropper) {
-                cropper.rotate(degree);
-            }
+            if (cropper) cropper.rotate(degree);
         }
 
         function processTwibbon() {
             if (!cropper || !selectedFile) return;
 
-            // Show loading modal
             document.getElementById('loading-modal').classList.remove('hidden');
 
-            const data = cropper.getData(true); // Get integer crop details
+            const data = cropper.getData(true);
             const formData = new FormData();
             formData.append('photo', selectedFile);
             formData.append('campaign_id', '<?= $campaign['id'] ?>');
@@ -289,7 +323,6 @@
             formData.append('height', data.height);
             formData.append('rotate', data.rotate);
 
-            // Fetch AJAX Request
             fetch('<?= base_url('twibbon/process') ?>', {
                 method: 'POST',
                 body: formData,
@@ -299,21 +332,17 @@
             })
             .then(response => response.json())
             .then(res => {
-                // Hide loading modal
                 document.getElementById('loading-modal').classList.add('hidden');
 
                 if (res.status === 'success') {
-                    // Set up result preview & download link
                     document.getElementById('result-preview').src = res.download_url;
                     
                     const downloadBtn = document.getElementById('btn-real-download');
                     downloadBtn.href = res.download_url;
                     downloadBtn.setAttribute('download', '<?= esc($campaign['slug']) ?>_twibbon.jpg');
 
-                    // Show success modal
                     document.getElementById('result-modal').classList.remove('hidden');
 
-                    // Trigger auto download
                     const link = document.createElement('a');
                     link.href = res.download_url;
                     link.download = 'twibbon_<?= esc($campaign['slug']) ?>.jpg';

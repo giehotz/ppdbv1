@@ -1,8 +1,7 @@
 <?= $this->extend('layouts/siswa_mobile') ?>
 
 <?= $this->section('title') ?>Buat Twibbon<?= $this->endSection() ?>
-
-<?= $this->section('page_title') ?>Buat Twibbon<?= $this->endSection() ?>
+<?= $this->section('page_title') ?>Editor Twibbon<?= $this->endSection() ?>
 
 <?= $this->section('head') ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
@@ -11,166 +10,189 @@
     .cropper-view-box, .cropper-face { border-radius: 0%; outline: none !important; }
     .cropper-line, .cropper-point { display: none !important; }
     .cropper-modal { background-color: rgba(0,0,0,0.1) !important; opacity: 0.8 !important; }
-
-    .scroll-x { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-    .scroll-x::-webkit-scrollbar { display: none; }
 </style>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="pb-4">
 
-    <!-- Campaign Info Glass -->
-    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/20 p-4 mb-4">
-        <h2 class="font-bold text-slate-900 text-sm"><?= esc($campaign['title']) ?></h2>
-        <p class="text-[10px] text-slate-500 mt-1.5 leading-relaxed"><?= nl2br(esc($campaign['description'])) ?></p>
+<div class="space-y-4">
+    <!-- Campaign info -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+        <h3 class="text-xs font-bold text-gray-900 dark:text-white"><?= esc($campaign['title']) ?></h3>
+        <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1 leading-relaxed"><?= nl2br(esc($campaign['description'])) ?></p>
     </div>
 
-    <!-- Editor Canvas Glass -->
-    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/20 overflow-hidden mb-4">
-        <div class="relative w-full editor-box" id="editor-container" style="aspect-ratio: <?= (int)($frame['width'] ?? 1) ?> / <?= (int)($frame['height'] ?? 1) ?>">
+    <!-- Canvas Card -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] space-y-3">
+        <div class="relative w-full rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800" id="editor-container" style="aspect-ratio: <?= (int)($frame['width'] ?? 1) ?> / <?= (int)($frame['height'] ?? 1) ?>">
             <div id="image-wrapper" class="w-full h-full absolute inset-0">
                 <img id="image-to-crop" src="" class="max-w-full hidden">
             </div>
             <img src="<?= base_url($frame['file_path']) ?>" alt="Frame" id="frame-overlay" class="absolute inset-0 w-full h-full object-contain z-20 pointer-events-none">
-            <div id="upload-placeholder" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center bg-white/95 backdrop-blur-sm cursor-pointer active:bg-white/100 transition-all" onclick="document.getElementById('photo-input').click()">
-                <div class="w-14 h-14 bg-emerald-50/80 rounded-full flex items-center justify-center text-emerald-600 mb-3 border border-emerald-200/50">
-                    <i class="fas fa-cloud-upload-alt text-xl"></i>
+            
+            <div id="upload-placeholder" class="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center bg-white/95 dark:bg-gray-900/95 cursor-pointer transition-all" onclick="document.getElementById('photo-input').click()">
+                <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 mb-2 border border-brand-200/60 dark:border-brand-500/20">
+                    <span class="material-symbols-outlined text-2xl">add_photo_alternate</span>
                 </div>
-                <h4 class="text-slate-900 font-bold text-sm">Pilih Foto</h4>
-                <p class="text-[10px] text-slate-500 mt-1 px-4">PNG, JPG, WebP — maks. 5MB</p>
+                <h4 class="text-xs font-bold text-gray-900 dark:text-white">Pilih Foto</h4>
+                <p class="text-[10px] text-gray-400 mt-0.5">PNG / JPG / WebP (maks. 5MB)</p>
             </div>
         </div>
 
-        <!-- Controls Glass -->
-        <div id="editor-controls" class="scroll-x flex gap-2 px-4 py-3 overflow-x-auto hidden bg-slate-50/30 border-t border-slate-200/20">
-            <button onclick="zoom(0.1)" class="shrink-0 bg-white/60 backdrop-blur-sm active:bg-emerald-100/80 text-slate-700 px-4 py-2.5 rounded-xl transition text-[10px] font-semibold flex items-center gap-1.5 border border-slate-200/30 active:scale-95">
-                <i class="fas fa-search-plus"></i> Perbesar
+        <!-- Controls -->
+        <div id="editor-controls" class="grid grid-cols-4 gap-1.5 hidden pt-1">
+            <button type="button" onclick="zoom(0.1)" class="inline-flex items-center justify-center h-9 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 shadow-theme-xs">
+                <span class="material-symbols-outlined text-base">zoom_in</span>
             </button>
-            <button onclick="zoom(-0.1)" class="shrink-0 bg-white/60 backdrop-blur-sm active:bg-emerald-100/80 text-slate-700 px-4 py-2.5 rounded-xl transition text-[10px] font-semibold flex items-center gap-1.5 border border-slate-200/30 active:scale-95">
-                <i class="fas fa-search-minus"></i> Perkecil
+            <button type="button" onclick="zoom(-0.1)" class="inline-flex items-center justify-center h-9 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 shadow-theme-xs">
+                <span class="material-symbols-outlined text-base">zoom_out</span>
             </button>
-            <button onclick="rotate(-90)" class="shrink-0 bg-white/60 backdrop-blur-sm active:bg-emerald-100/80 text-slate-700 px-4 py-2.5 rounded-xl transition text-[10px] font-semibold flex items-center gap-1.5 border border-slate-200/30 active:scale-95">
-                <i class="fas fa-undo"></i> Kiri
+            <button type="button" onclick="rotate(-90)" class="inline-flex items-center justify-center h-9 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 shadow-theme-xs">
+                <span class="material-symbols-outlined text-base">rotate_left</span>
             </button>
-            <button onclick="rotate(90)" class="shrink-0 bg-white/60 backdrop-blur-sm active:bg-emerald-100/80 text-slate-700 px-4 py-2.5 rounded-xl transition text-[10px] font-semibold flex items-center gap-1.5 border border-slate-200/30 active:scale-95">
-                <i class="fas fa-redo"></i> Kanan
+            <button type="button" onclick="rotate(90)" class="inline-flex items-center justify-center h-9 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 shadow-theme-xs">
+                <span class="material-symbols-outlined text-base">rotate_right</span>
             </button>
         </div>
     </div>
 
     <!-- Actions -->
     <input type="file" id="photo-input" accept="image/*" class="hidden" onchange="loadPhoto(event)">
-    <div class="flex gap-3">
-        <button onclick="document.getElementById('photo-input').click()" class="flex-1 bg-white/80 backdrop-blur-md border border-slate-200/50 text-slate-700 font-semibold py-3.5 rounded-xl active:bg-slate-50/80 transition text-xs flex items-center justify-center gap-2 shadow-sm active:scale-[0.97]">
-            <i class="fas fa-image"></i> <span id="btn-select-text">Pilih Foto</span>
+    <div class="flex gap-2">
+        <button type="button" onclick="document.getElementById('photo-input').click()"
+            class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-white py-3 text-xs font-bold text-gray-700 shadow-theme-xs dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+            <span class="material-symbols-outlined text-base">photo_library</span>
+            <span id="btn-select-text">Pilih Foto</span>
         </button>
-        <button id="btn-download" onclick="processTwibbon('<?= $campaign['id'] ?>', '<?= esc($campaign['slug'], 'js') ?>')" disabled class="flex-1 bg-emerald-600 disabled:bg-slate-300/80 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl active:bg-emerald-700 transition text-xs flex items-center justify-center gap-2 shadow-sm active:scale-[0.97]">
-            <i class="fas fa-download"></i> Unduh
+        <button type="button" id="btn-download" onclick="processTwibbon('<?= $campaign['id'] ?>', '<?= esc($campaign['slug'], 'js') ?>')"
+            class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 py-3 text-xs font-bold text-white shadow-theme-xs hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+            <span class="material-symbols-outlined text-base">download</span>
+            <span>Unduh</span>
         </button>
     </div>
 </div>
 
 <!-- Loading Modal -->
-<div id="loading-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden">
-    <div class="bg-white/90 backdrop-blur-xl rounded-2xl p-8 max-w-xs w-full mx-6 shadow-2xl flex flex-col items-center text-center">
-        <div class="w-12 h-12 border-[3px] border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-4"></div>
-        <p class="font-semibold text-slate-900 text-sm">Memproses...</p>
-        <p class="text-[10px] text-slate-500 mt-1">Menggabungkan foto dengan bingkai</p>
+<div id="loading-modal" class="fixed inset-0 z-9999 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-xs w-full shadow-2xl text-center flex flex-col items-center">
+        <span class="material-symbols-outlined text-4xl animate-spin text-brand-500 mb-2">progress_activity</span>
+        <h4 class="text-xs font-bold text-gray-900 dark:text-white">Memproses Twibbon</h4>
+        <p class="text-[10px] text-gray-400 mt-0.5">Sedang menggabungkan foto dengan bingkai...</p>
     </div>
 </div>
 
 <!-- Result Modal -->
-<div id="result-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden px-4">
-    <div class="bg-white/90 backdrop-blur-xl rounded-2xl p-5 max-w-sm w-full shadow-2xl flex flex-col items-center">
-        <h3 class="font-bold text-slate-900 text-sm text-center mb-3">Berhasil Dibuat!</h3>
-        <div class="w-full max-w-[220px] aspect-square rounded-xl overflow-hidden border border-slate-200/50 shadow-inner mb-4">
+<div id="result-modal" class="fixed inset-0 z-9999 bg-black/70 backdrop-blur-sm flex items-center justify-center hidden p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 max-w-xs w-full shadow-2xl flex flex-col items-center">
+        <h4 class="text-xs font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-1 text-emerald-600">
+            <span class="material-symbols-outlined text-base">check_circle</span>
+            Twibbon Siap!
+        </h4>
+        <div class="w-full max-w-[200px] aspect-square rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 mb-4 bg-gray-50 dark:bg-gray-800">
             <img id="result-preview" src="" alt="Result" class="w-full h-full object-contain">
         </div>
-        <a id="btn-real-download" href="" download class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl text-center transition active:bg-emerald-700 shadow-sm flex items-center justify-center gap-2 text-xs mb-2 active:scale-[0.97]">
-            <i class="fas fa-cloud-download-alt"></i> Unduh
-        </a>
-        <button onclick="closeResultModal()" class="w-full bg-slate-100/80 backdrop-blur-sm active:bg-slate-200/80 text-slate-700 font-semibold py-3 rounded-xl transition text-xs active:scale-[0.97]">
-            Buat Ulang
-        </button>
+        <div class="w-full space-y-1.5">
+            <a id="btn-real-download" href="#" download="twibbon-<?= esc($campaign['slug']) ?>.png"
+               class="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white shadow-theme-xs hover:bg-emerald-700">
+                <span class="material-symbols-outlined text-base">download</span>
+                <span>Simpan Gambar</span>
+            </a>
+            <button type="button" onclick="closeResultModal()"
+                    class="w-full inline-flex items-center justify-center py-2 text-xs font-semibold text-gray-500">
+                Tutup
+            </button>
+        </div>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script>
-const FRAME_W = <?= (int)($frame['width'] ?? 1080) ?>;
-const FRAME_H = <?= (int)($frame['height'] ?? 1080) ?>;
-const FRAME_RATIO = FRAME_W / FRAME_H;
-
 let cropper = null;
-let selectedFile = null;
+const frameWidth = <?= (int)($frame['width'] ?? 1080) ?>;
+const frameHeight = <?= (int)($frame['height'] ?? 1080) ?>;
 
 function loadPhoto(event) {
-    const files = event.target.files;
-    if (!files || !files[0]) return;
-    selectedFile = files[0];
-    if (selectedFile.size > 5 * 1024 * 1024) {
-        alert('Ukuran file maksimal 5MB.');
-        return;
-    }
+    const file = event.target.files[0];
+    if (!file) return;
+
     const reader = new FileReader();
     reader.onload = function(e) {
-        const img = document.getElementById('image-to-crop');
-        img.src = e.target.result;
-        img.classList.remove('hidden');
+        const image = document.getElementById('image-to-crop');
+        image.src = e.target.result;
+        image.classList.remove('hidden');
         document.getElementById('upload-placeholder').classList.add('hidden');
         document.getElementById('editor-controls').classList.remove('hidden');
-        document.getElementById('btn-download').removeAttribute('disabled');
-        document.getElementById('btn-select-text').innerText = 'Ganti';
+        document.getElementById('btn-download').disabled = false;
+        document.getElementById('btn-select-text').textContent = 'Ganti Foto';
+
         if (cropper) cropper.destroy();
-        cropper = new Cropper(img, {
-            aspectRatio: FRAME_RATIO, viewMode: 1, autoCropArea: 1,
-            background: false, guides: false, center: false, highlight: false,
-            cropBoxMovable: false, cropBoxResizable: false, dragMode: 'move',
+
+        cropper = new Cropper(image, {
+            aspectRatio: frameWidth / frameHeight,
+            viewMode: 0,
+            dragMode: 'move',
+            autoCropArea: 1,
+            restore: false,
+            guides: false,
+            center: false,
+            highlight: false,
+            cropBoxMovable: false,
+            cropBoxResizable: false,
+            toggleDragModeOnDblclick: false,
         });
     };
-    reader.readAsDataURL(selectedFile);
+    reader.readAsDataURL(file);
 }
-function zoom(r) { if (cropper) cropper.zoom(r); }
-function rotate(d) { if (cropper) cropper.rotate(d); }
+
+function zoom(ratio) { if (cropper) cropper.zoom(ratio); }
+function rotate(degree) { if (cropper) cropper.rotate(degree); }
 
 function processTwibbon(campaignId, slug) {
-    if (!cropper || !selectedFile) return;
+    if (!cropper) return;
     document.getElementById('loading-modal').classList.remove('hidden');
-    const data = cropper.getData(true);
-    const fd = new FormData();
-    fd.append('photo', selectedFile);
-    fd.append('campaign_id', campaignId);
-    fd.append('x', data.x);
-    fd.append('y', data.y);
-    fd.append('width', data.width);
-    fd.append('height', data.height);
-    fd.append('rotate', data.rotate);
+
+    const cropData = cropper.getData(true);
+    const canvas = cropper.getCroppedCanvas({
+        width: frameWidth,
+        height: frameHeight,
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high',
+    });
+
+    const croppedBase64 = canvas.toDataURL('image/png');
+
     fetch('<?= base_url('siswa/twibbon/process') ?>', {
-        method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+        },
+        body: JSON.stringify({
+            campaign_id: campaignId,
+            image_data: croppedBase64
+        })
     })
-    .then(r => r.json())
-    .then(res => {
+    .then(res => res.json())
+    .then(data => {
         document.getElementById('loading-modal').classList.add('hidden');
-        if (res.status === 'success') {
-            document.getElementById('result-preview').src = res.download_url;
-            const btn = document.getElementById('btn-real-download');
-            btn.href = res.download_url;
-            btn.setAttribute('download', slug + '_twibbon.jpg');
+        if (data.success && data.image_url) {
+            document.getElementById('result-preview').src = data.image_url;
+            document.getElementById('btn-real-download').href = data.image_url;
             document.getElementById('result-modal').classList.remove('hidden');
-            const link = document.createElement('a');
-            link.href = res.download_url;
-            link.download = slug + '_twibbon.jpg';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } else alert('Error: ' + res.message);
+        } else {
+            alert(data.message || 'Gagal memproses twibbon.');
+        }
     })
-    .catch(() => {
+    .catch(err => {
         document.getElementById('loading-modal').classList.add('hidden');
-        alert('Koneksi gagal. Coba lagi.');
+        alert('Terjadi kesalahan saat memproses twibbon.');
     });
 }
-function closeResultModal() { document.getElementById('result-modal').classList.add('hidden'); }
+
+function closeResultModal() {
+    document.getElementById('result-modal').classList.add('hidden');
+}
 </script>
+
 <?= $this->endSection() ?>

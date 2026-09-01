@@ -93,6 +93,11 @@ class Settings extends BaseController
             }
         }
 
+        $landingVariant = $this->request->getPost('landing_variant');
+        if (!in_array($landingVariant, ['index', 'index2', 'index3'], true)) {
+            $landingVariant = 'index';
+        }
+
         $data = [
             'app_alias'         => $this->request->getPost('app_alias'),
             'app_name'          => $this->request->getPost('app_name'),
@@ -116,7 +121,7 @@ class Settings extends BaseController
             'format_no_daftar'  => $this->request->getPost('format_no_daftar'),
             'link_grup_wa'      => $this->request->getPost('link_grup_wa'),
             'tampil_grup_wa'    => $this->request->getPost('tampil_grup_wa') ?? 0,
-            'landing_variant'   => $this->request->getPost('landing_variant') ?? 'index',
+            'landing_variant'   => $landingVariant,
             'wajib_biodata_100' => $this->request->getPost('wajib_biodata_100') ?? 1,
             'popup_biodata_welcome' => $this->request->getPost('popup_biodata_welcome'),
             'popup_biodata_warning' => $this->request->getPost('popup_biodata_warning'),
@@ -194,6 +199,12 @@ class Settings extends BaseController
         }
 
         if ($this->tblWebModel->update($id, $data)) {
+            // Hapus cache agar pembaruan langsung aktif seketika
+            $cache = \Config\Services::cache();
+            $cache->delete('app_settings');
+            $cache->delete('web_settings');
+            $cache->delete('home_landing_data');
+
             // Update custom format untuk semua siswa dengan format baru
             if (isset($data['format_no_daftar'])) {
                 $siswaModel = new \App\Models\SiswaModel();
@@ -223,7 +234,8 @@ class Settings extends BaseController
                 }
             }
 
-            session()->setFlashdata('success', 'Pengaturan berhasil diperbarui. Format No. Pendaftaran pada Data Siswa juga ikut disesuaikan!');
+            catat_log('Pengaturan', 'Memperbarui pengaturan sistem & template landing page (' . $landingVariant . ')');
+            session()->setFlashdata('success', 'Pengaturan berhasil diperbarui. Template landing page aktif: ' . strtoupper($landingVariant) . '!');
         } else {
             session()->setFlashdata('error', 'Gagal memperbarui pengaturan.');
         }

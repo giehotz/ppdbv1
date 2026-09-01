@@ -18,28 +18,30 @@ if (!function_exists('catat_log')) {
         $role = 'system';
         $nama_user = 'System';
 
-        // Deteksi role dan nama berdasar session
+        // Deteksi role dan nama berdasar session dengan safe null fallback
         if ($session->get('logged_in')) {
-            // Jika Admin / Verifikator
-            $role = strtolower($session->get('role'));
-            $nama_user = $session->get('nama_lengkap');
+            $userType  = $session->get('user_type') ?? $session->get('role') ?? $session->get('level') ?? 'user';
+            $role      = strtolower((string)$userType);
+            $nama_user = $session->get('nama_lengkap') ?? $session->get('nama') ?? $session->get('username') ?? 'Pengguna';
         } elseif ($session->get('is_siswa')) {
-            // Jika Calon Siswa
-            $role = 'siswa';
-            // Siswa might not have 'nama_lengkap' directly but 'nama_lengkap' from tbl_siswa if registered. Let's try 'nama_lengkap' or 'username' or session ID
-            $nama_user = $session->get('nama_lengkap') ?? ($session->get('username') ?? 'Siswa User');
+            $role      = 'siswa';
+            $nama_user = $session->get('nama_lengkap') ?? $session->get('username') ?? 'Siswa';
         }
 
         $data = [
-            'role'       => $role,
-            'nama_user'  => $nama_user,
+            'role'       => $role ?: 'user',
+            'nama_user'  => $nama_user ?: 'User',
             'tindakan'   => $tindakan,
             'keterangan' => $keterangan,
-            'ip_address' => $request->getIPAddress(),
+            'ip_address' => $request->getIPAddress() ?: '0.0.0.0',
             'user_agent' => substr(preg_replace('/[^\x20-\x7E\s]/', '', (string)$request->getUserAgent()), 0, 128),
             'created_at' => date('Y-m-d H:i:s'),
         ];
 
-        return $db->table('log_aktivitas')->insert($data);
+        try {
+            return $db->table('log_aktivitas')->insert($data);
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 }

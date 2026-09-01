@@ -135,3 +135,11 @@ _modules/*
 # Documentation & Notes
 /docs/
 docs/
+
+#Test
+tests/
+tests/*
+tests_playwright/
+tests_playwright/*
+playwright-report/
+playwright-report/*

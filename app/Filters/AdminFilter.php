@@ -15,13 +15,20 @@ class AdminFilter implements FilterInterface
             return redirect()->to('/login');
         }
 
+        // Determine user type with all possible fallbacks
+        $userType = session()->get('user_type') ?? session()->get('level') ?? session()->get('role');
+
         // Check if user is admin
-        if (session()->get('user_type') !== 'admin') {
-            session()->setFlashdata('error', 'Akses ditolak. Anda tidak memiliki izin untuk mengakses halaman admin.');
-            if (session()->get('user_type') === 'verifikator') {
+        if ($userType !== 'admin') {
+            if ($userType === 'verifikator') {
                 return redirect()->to('/verifikator/dashboard')->withCookies();
             }
-            return redirect()->to('/siswa/dashboard')->withCookies();
+            if ($userType === 'siswa') {
+                return redirect()->to('/siswa/dashboard')->withCookies();
+            }
+            // Sesi korup / tidak valid -> destroy dan kembali ke login
+            session()->destroy();
+            return redirect()->to('/login')->withCookies();
         }
     }
 

@@ -7,6 +7,13 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     $routes->get('settings', 'Admin\Settings::index');
     $routes->post('settings/update', 'Admin\Settings::update');
 
+    // Profile
+    $routes->get('profile', 'Admin\Profile::index');
+    $routes->post('profile/update', 'Admin\Profile::updateProfile');
+    $routes->post('profile/updatePassword', 'Admin\Profile::updatePassword');
+    $routes->post('profile/updateFoto', 'Admin\Profile::updateFoto');
+    $routes->post('profile/deleteFoto', 'Admin\Profile::deleteFoto');
+
     // Users
     $routes->get('users', 'Admin\Users::index');
     $routes->get('users/create', 'Admin\Users::create');
@@ -21,6 +28,8 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     $routes->post('siswa/verify/(:num)', 'Admin\Siswa::verify/$1');
     $routes->post('siswa/delete/(:num)', 'Admin\Siswa::delete/$1');
     $routes->post('siswa/resetPassword/(:num)', 'Admin\Siswa::resetPassword/$1');
+    $routes->get('siswa/reset-throttle', 'Admin\Siswa::resetThrottle');
+    $routes->post('siswa/reset-throttle', 'Admin\Siswa::resetThrottle');
     $routes->get('siswa/cetak/(:num)', 'Admin\Siswa::cetak/$1');
     $routes->get('siswa/cetak-kartu/(:num)', 'Admin\Siswa::cetakKartu/$1');
     $routes->get('siswa/cetak-password', 'Admin\Siswa::cetakPassword');
@@ -115,6 +124,10 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     $routes->post('pembiayaan/siswa/(:num)/tagihan/tambah', 'Admin\Pembiayaan::tambahTagihan/$1');
     $routes->post('pembiayaan/siswa/(:num)/tagihan/tambah-semua', 'Admin\Pembiayaan::tambahSemuaTagihan/$1');
     $routes->post('pembiayaan/siswa/(:num)/tagihan/hapus', 'Admin\Pembiayaan::hapusTagihan/$1');
+    $routes->post('pembiayaan/siswa/(:num)/bayar', 'Admin\Pembiayaan::bayar/$1');
+    $routes->post('pembiayaan/siswa/(:num)/pembayaran/hapus', 'Admin\Pembiayaan::hapusPembayaran/$1');
+    $routes->post('pembiayaan/siswa/(:num)/upload-bukti', 'Admin\Pembiayaan::uploadBukti/$1');
+    $routes->post('pembiayaan/siswa/(:num)/hapus-bukti', 'Admin\Pembiayaan::hapusBukti/$1');
     $routes->post('pembiayaan/siswa/(:num)/update-status', 'Admin\Pembiayaan::updateStatusBayar/$1');
     $routes->get('pembiayaan/siswa/(:num)/kuitansi', 'Admin\Pembiayaan::kuitansi/$1');
 

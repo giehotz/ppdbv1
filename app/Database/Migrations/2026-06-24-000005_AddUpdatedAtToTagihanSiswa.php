@@ -8,12 +8,14 @@ class AddUpdatedAtToTagihanSiswa extends Migration
 {
     public function up()
     {
-        $this->forge->addColumn('tbl_tagihan_siswa', [
-            'updated_at' => [
-                'type' => 'DATETIME',
-                'null' => true,
-            ],
-        ]);
+        if (!$this->db->fieldExists('updated_at', 'tbl_tagihan_siswa')) {
+            $this->forge->addColumn('tbl_tagihan_siswa', [
+                'updated_at' => [
+                    'type' => 'DATETIME',
+                    'null' => true,
+                ],
+            ]);
+        }
     }
 
     public function down()

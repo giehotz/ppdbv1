@@ -60,11 +60,18 @@ class Berkas extends BaseController
         $berkasModel = new BerkasModel();
 
         $idSiswa = session()->get('id_siswa');
-        $jenisBerkas = $this->request->getPost('jenis_berkas');
+        $jenisBerkas = strtolower(trim((string) $this->request->getPost('jenis_berkas')));
         $file = $this->request->getFile('file_berkas');
 
+        // Whitelist allowed document types
+        $allowedDocTypes = ['kk', 'akte', 'ijazah', 'foto', 'ktp_ortu', 'kks', 'pkh', 'kip'];
+        if (!in_array($jenisBerkas, $allowedDocTypes, true)) {
+            session()->setFlashdata('error', 'Jenis berkas tidak valid.');
+            return redirect()->back();
+        }
+
         // Validation
-        if (!$file->isValid()) {
+        if (!$file || !$file->isValid()) {
             session()->setFlashdata('error', 'File tidak valid.');
             return redirect()->back();
         }

@@ -4,276 +4,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $this->renderSection('title') ?> - <?= $app_alias ?? 'PPDB' ?> Siswa</title>
-    <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
+    <title><?= $this->renderSection('title') ?> - Siswa <?= esc($app_alias ?? 'PPDB') ?></title>
+    <link rel="icon" type="image/png" href="<?= base_url('favicon.png') ?>">
+
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- TailAdmin CSS & Tailwind CSS -->
+    <link rel="stylesheet" href="<?= base_url('assets/tailadmin/css/tailadmin.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
+
+    <!-- TailAdmin Bundle JS (Alpine.js, Flatpickr, etc.) -->
+    <script defer src="<?= base_url('assets/tailadmin/js/tailadmin.js') ?>"></script>
+
+    <script>
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <style>
-        /* Sidebar layout transitions */
-        #sidebar {
-            transition: width 0.3s ease, transform 0.3s ease;
+        body { font-family: 'Outfit', 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
         }
-
-        .sidebar-text {
-            transition: opacity 0.2s ease;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 1024px) {
-            #sidebar.minimized {
-                width: 5rem;
-                /* w-20 */
-            }
-
-            #sidebar.minimized .sidebar-text {
-                opacity: 0;
-                width: 0;
-                display: none;
-            }
-
-            #sidebar.minimized #sidebar-brand {
-                display: none;
-            }
-
-            #sidebar:not(.minimized) #sidebar-brand-mini {
-                display: none;
-            }
-
-            #sidebar.minimized .link-item {
-                justify-content: center;
-                padding-left: 0;
-                padding-right: 0;
-            }
-
-            #sidebar.minimized .link-item i {
-                margin: 0 auto;
-                font-size: 1.25rem;
-            }
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
+    <?= $this->renderSection('head') ?>
 </head>
 
-<body class="bg-gray-100">
+<body
+    x-data="{ 
+        page: 'siswa', 
+        loaded: true, 
+        darkMode: localStorage.getItem('darkMode') === 'true', 
+        sidebarToggle: localStorage.getItem('sidebarToggle') === 'true' 
+    }"
+    x-init="
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        $watch('darkMode', val => {
+            localStorage.setItem('darkMode', JSON.stringify(val));
+            if (val) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+        $watch('sidebarToggle', val => localStorage.setItem('sidebarToggle', JSON.stringify(val)));
+    "
+    :class="darkMode ? 'dark bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-800'"
+    class="font-sans antialiased text-sm h-screen overflow-hidden flex flex-col"
+>
 
+    <?php
+    $webData = $web ?? \Config\Services::renderer()->getData()['web'] ?? [];
+    $sekolahName = $webData['nama_sekolah'] ?? 'Sekolah';
+
+    $pesanModel = new \App\Models\PesanModel();
+    $unreadPesan = $pesanModel->countUnreadSiswa(session()->get('id_siswa'));
+
+    $sidebarMenus = [
+        'Menu Utama' => [
+            ['label' => 'Dashboard',           'icon' => 'home',            'url' => 'siswa/dashboard'],
+            ['label' => 'Biodata Siswa',       'icon' => 'user-edit',       'url' => 'siswa/biodata'],
+            ['label' => 'Upload Berkas',       'icon' => 'file-upload',     'url' => 'siswa/berkas'],
+        ],
+        'Tahapan PPDB' => [
+            ['label' => 'Pembiayaan',          'icon' => 'money-bill-wave', 'url' => 'siswa/pembiayaan'],
+            ['label' => 'Status Pendaftaran',  'icon' => 'clipboard-check', 'url' => 'siswa/status'],
+            ['label' => 'Hasil Kelulusan',     'icon' => 'graduation-cap',  'url' => 'siswa/kelulusan'],
+        ],
+        'Informasi & Media' => [
+            ['label' => 'Pengumuman',          'icon' => 'bullhorn',        'url' => 'siswa/pengumuman'],
+            ['label' => 'Twibbon',             'icon' => 'image',           'url' => 'siswa/twibbon'],
+            ['label' => 'Kotak Masuk',         'icon' => 'inbox',           'url' => 'siswa/pesan', 'badge' => $unreadPesan],
+        ],
+    ];
+
+    $nisn = session()->get('nisn');
+    $foto = session()->get('foto');
+    $fotoPath = 'uploads/berkas/' . $nisn . '/' . $foto;
+    $hasFoto = !empty($foto) && file_exists(FCPATH . $fotoPath);
+    $avatarUrl = $hasFoto ? base_url($fotoPath) : null;
+    ?>
+
+    <!-- Main Outer Wrapper -->
     <div class="flex h-screen overflow-hidden">
+        <!-- Small Device Overlay -->
+        <?= $this->include('layouts/components/tailadmin_overlay') ?>
 
-        <!-- Mobile Menu Overlay -->
-        <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden" onclick="toggleMobileMenu()"></div>
+        <!-- Sidebar Navigation -->
+        <?= view('layouts/components/tailadmin_sidebar', [
+            'sidebarMenus' => $sidebarMenus,
+            'app_alias' => $app_alias ?? 'PPDB',
+            'sekolahName' => $sekolahName,
+            'web_logo' => $web_logo ?? null
+        ]) ?>
 
-        <!-- Sidebar -->
-        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 w-64 bg-gradient-to-b from-emerald-600 to-emerald-800 text-white flex-shrink-0 transition-all duration-300 ease-in-out z-40">
-            <div class="p-6">
-                <div class="flex items-center justify-between">
-                    <div id="sidebar-brand">
-                        <h1 class="text-2xl font-bold flex items-center">
-                            <?php if (!empty($web_logo) && file_exists(FCPATH . 'uploads/logo/' . $web_logo)): ?>
-                                <img src="<?= base_url('uploads/logo/' . $web_logo) ?>" alt="Logo" class="h-8 w-auto mr-2">
-                            <?php endif; ?>
-                            <?= $app_alias ?? 'PPDB' ?> Siswa
-                        </h1>
-                        <p class="text-blue-200 text-sm mt-1 sidebar-text">Dashboard Pendaftar</p>
-                    </div>
-                    <span id="sidebar-brand-mini" class="text-2xl font-bold tracking-wider flex items-center justify-center w-full" title="<?= strtoupper($app_alias ?? 'PPDB') ?> SISWA">
-                        <?php if (!empty($web_logo) && file_exists(FCPATH . 'uploads/logo/' . $web_logo)): ?>
-                            <img src="<?= base_url('uploads/logo/' . $web_logo) ?>" alt="Logo" class="h-8 w-auto">
-                        <?php else: ?>
-                            <?= substr(strtoupper($app_alias ?? 'PPDB'), 0, 1) ?>S
-                        <?php endif; ?>
+        <!-- Content Area -->
+        <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
+            
+            <!-- Header Bar -->
+            <header
+              x-data="{ notificationOpen: false, profileOpen: false }"
+              class="sticky top-0 z-999 flex w-full border-b border-gray-200 bg-white/90 backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/90"
+            >
+              <div class="flex grow items-center justify-between px-4 py-3 sm:px-6 lg:py-3.5">
+                <div class="flex items-center gap-3">
+                  <!-- Hamburger Toggle BTN -->
+                  <button
+                    :class="sidebarToggle ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white'"
+                    class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 transition-colors dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    @click.stop="sidebarToggle = !sidebarToggle"
+                    title="Toggle Menu Sidebar"
+                  >
+                    <svg class="fill-current" width="18" height="14" viewBox="0 0 16 12" fill="none">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M0.583252 1C0.583252 0.585788 0.919038 0.25 1.33325 0.25H14.6666C15.0808 0.25 15.4166 0.585786 15.4166 1C15.4166 1.41421 15.0808 1.75 14.6666 1.75L1.33325 1.75C0.919038 1.75 0.583252 1.41422 0.583252 1ZM0.583252 11C0.583252 10.5858 0.919038 10.25 1.33325 10.25L14.6666 10.25C15.0808 10.25 15.4166 10.5858 15.4166 11C15.4166 11.4142 15.0808 11.75 14.6666 11.75L1.33325 11.75C0.919038 11.75 0.583252 11.4142 0.583252 11ZM1.33325 5.25C0.919038 5.25 0.583252 5.58579 0.583252 6C0.583252 6.41421 0.919038 6.75 1.33325 6.75L7.99992 6.75C8.41413 6.75 8.74992 6.41421 8.74992 6C8.74992 5.58579 8.41413 5.25 7.99992 5.25L1.33325 5.25Z" />
+                    </svg>
+                  </button>
+
+                  <!-- App Title on Mobile -->
+                  <div class="flex items-center gap-2 lg:hidden">
+                    <span class="text-base font-bold tracking-tight text-gray-900 dark:text-white">
+                      <?= esc($app_alias ?? 'PPDB') ?> Siswa
                     </span>
-                    <button onclick="toggleMobileMenu()" class="lg:hidden text-white ml-auto">
-                        <i class="fas fa-times text-2xl"></i>
+                  </div>
+                </div>
+
+                <!-- Right Area Action Items -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                  <!-- Dark Mode Toggler -->
+                  <button
+                    class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                    @click.prevent="darkMode = !darkMode"
+                    title="Ganti Tema (Dark / Light Mode)"
+                  >
+                    <!-- Sun Icon (shown in dark mode) -->
+                    <svg class="hidden dark:block h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <!-- Moon Icon (shown in light mode) -->
+                    <svg class="dark:hidden h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                  </button>
+
+                  <!-- Notification Bell (Pengumuman) -->
+                  <div class="relative">
+                    <button
+                      id="notification-button"
+                      onclick="toggleNotificationDropdown()"
+                      class="relative flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                      title="Pengumuman Terbaru"
+                    >
+                      <span class="material-symbols-outlined text-xl">notifications</span>
+                      <span id="notification-badge" class="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white shadow hidden">0</span>
                     </button>
-                </div>
-            </div>
 
-            <nav class="mt-6">
-                <a href="<?= base_url('siswa/dashboard') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-blue-700 transition duration-200 <?= uri_string() == 'siswa/dashboard' ? 'bg-blue-700 border-l-4 border-white' : '' ?>">
-                    <i class="fas fa-home w-6 text-center"></i>
-                    <span class="sidebar-text ml-3">Dashboard</span>
-                </a>
+                    <!-- Notification Dropdown -->
+                    <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900 z-50 overflow-hidden">
+                      <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/40 flex items-center justify-between">
+                        <h3 class="text-xs font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
+                          <span class="material-symbols-outlined text-sm text-brand-500">campaign</span>
+                          <span>Pengumuman Terbaru</span>
+                        </h3>
+                      </div>
+                      <div id="notification-dropdown-content" class="max-h-80 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800 text-xs">
+                        <div class="px-4 py-6 text-center text-gray-400 dark:text-gray-500">
+                          <span class="material-symbols-outlined text-2xl animate-spin mb-1">progress_activity</span>
+                          <p>Memuat pengumuman...</p>
+                        </div>
+                      </div>
+                      <div class="p-2.5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/40 text-center">
+                        <a href="<?= base_url('siswa/pengumuman') ?>" class="text-xs font-bold text-brand-600 hover:text-brand-700 dark:text-brand-400">
+                          Lihat Semua Pengumuman &rarr;
+                        </a>
+                      </div>
+                    </div>
+                  </div>
 
-                <a href="<?= base_url('siswa/biodata') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-blue-700 transition duration-200 <?= strpos(uri_string(), 'siswa/biodata') !== false ? 'bg-blue-700 border-l-4 border-white' : '' ?>">
-                    <i class="fas fa-user-edit w-6 text-center"></i>
-                    <span class="sidebar-text ml-3">Biodata</span>
-                </a>
-
-                <a href="<?= base_url('siswa/berkas') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-blue-700 transition duration-200 <?= strpos(uri_string(), 'siswa/berkas') !== false ? 'bg-blue-700 border-l-4 border-white' : '' ?>">
-                    <i class="fas fa-file-upload w-6 text-center"></i>
-                    <span class="sidebar-text ml-3">Upload Berkas</span>
-                </a>
-
-                <a href="<?= base_url('siswa/pembiayaan') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-blue-700 transition duration-200 <?= strpos(uri_string(), 'siswa/pembiayaan') !== false ? 'bg-blue-700 border-l-4 border-white' : '' ?>">
-                    <i class="fas fa-money-bill-wave w-6 text-center"></i>
-                    <span class="sidebar-text ml-3">Pembiayaan</span>
-                </a>
-
-                <a href="<?= base_url('siswa/status') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-blue-700 transition duration-200 <?= strpos(uri_string(), 'siswa/status') !== false ? 'bg-blue-700 border-l-4 border-white' : '' ?>">
-                    <i class="fas fa-clipboard-check w-6 text-center"></i>
-                    <span class="sidebar-text ml-3">Status Pendaftaran</span>
-                </a>
-
-                <a href="<?= base_url('siswa/kelulusan') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-blue-700 transition duration-200 <?= strpos(uri_string(), 'siswa/kelulusan') !== false ? 'bg-blue-700 border-l-4 border-white' : '' ?>">
-                    <i class="fas fa-graduation-cap w-6 text-center"></i>
-                    <span class="sidebar-text ml-3">Kelulusan</span>
-                </a>
-
-                <a href="<?= base_url('siswa/pengumuman') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-blue-700 transition duration-200 <?= strpos(uri_string(), 'siswa/pengumuman') !== false ? 'bg-blue-700 border-l-4 border-white' : '' ?>">
-                    <i class="fas fa-bullhorn w-6 text-center"></i>
-                    <span class="sidebar-text ml-3">Pengumuman</span>
-                </a>
-
-                <a href="<?= base_url('siswa/twibbon') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-blue-700 transition duration-200 <?= strpos(uri_string(), 'siswa/twibbon') !== false ? 'bg-blue-700 border-l-4 border-white' : '' ?>">
-                    <i class="fas fa-image w-6 text-center"></i>
-                    <span class="sidebar-text ml-3">Twibbon</span>
-                </a>
-
-                <?php 
-                $pesanModel = new \App\Models\PesanModel();
-                $unreadPesan = $pesanModel->countUnreadSiswa(session()->get('id_siswa'));
-                ?>
-                <a href="<?= base_url('siswa/pesan') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-blue-700 transition duration-200 <?= strpos(uri_string(), 'siswa/pesan') !== false ? 'bg-blue-700 border-l-4 border-white' : '' ?>">
-                    <i class="fas fa-inbox w-6 text-center"></i>
-                    <span class="sidebar-text ml-3 flex-1 flex items-center justify-between pointer-events-none pr-4">
-                        Kotak Masuk
-                        <?php if ($unreadPesan > 0): ?>
-                            <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full ml-2"><?= $unreadPesan ?></span>
-                        <?php endif; ?>
+                  <!-- Messages Notification Icon -->
+                  <?php if (!empty($unreadPesan) && $unreadPesan > 0): ?>
+                  <a
+                    href="<?= base_url('siswa/pesan') ?>"
+                    class="relative flex h-10 w-10 items-center justify-center rounded-lg border border-purple-200 bg-purple-50/50 text-purple-600 transition-colors hover:bg-purple-100 dark:border-purple-900/50 dark:bg-purple-950/40 dark:text-purple-400"
+                    title="<?= $unreadPesan ?> Pesan Masuk Belum Dibaca"
+                  >
+                    <span class="material-symbols-outlined text-xl">mail</span>
+                    <span class="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white shadow">
+                      <?= $unreadPesan ?>
                     </span>
-                </a>
+                  </a>
+                  <?php endif; ?>
 
-                <a href="<?= base_url('logout') ?>" class="link-item flex items-center px-6 py-3 text-white hover:bg-red-600 transition duration-200 mt-4">
-                    <i class="fas fa-sign-out-alt w-6 text-center"></i>
-                    <span class="sidebar-text ml-3">Logout</span>
-                </a>
-            </nav>
-        </aside>
+                  <!-- User Profile Dropdown -->
+                  <div
+                    class="relative"
+                    x-data="{ profileOpen: false }"
+                    @click.outside="profileOpen = false"
+                  >
+                    <button
+                      class="flex items-center gap-2.5 rounded-lg p-1.5 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+                      @click.prevent="profileOpen = !profileOpen"
+                    >
+                      <span class="h-9 w-9 overflow-hidden rounded-full ring-2 ring-brand-500/20 bg-brand-50 dark:bg-brand-500/15 flex items-center justify-center font-bold text-brand-600 dark:text-brand-400 text-xs">
+                        <?php if ($avatarUrl): ?>
+                          <img src="<?= $avatarUrl ?>" alt="Avatar" class="h-full w-full object-cover" />
+                        <?php else: ?>
+                          <?= strtoupper(substr(session()->get('nama_lengkap') ?? 'S', 0, 1)) ?>
+                        <?php endif; ?>
+                      </span>
 
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
+                      <div class="hidden text-left md:block">
+                        <span class="block text-xs font-semibold text-gray-800 dark:text-gray-100 max-w-[130px] truncate">
+                          <?= esc(session()->get('nama_lengkap') ?? 'Siswa') ?>
+                        </span>
+                        <span class="block text-[10px] text-gray-400 dark:text-gray-500 font-mono leading-none mt-0.5">
+                          <?= esc(session()->get('no_pendaftaran') ?? 'Calon Siswa') ?>
+                        </span>
+                      </div>
 
-            <!-- Header -->
-            <header class="bg-white shadow-sm relative z-20">
-                <div class="flex items-center justify-between px-4 lg:px-6 py-4">
-                    <div class="flex items-center">
-                        <button onclick="toggleMobileMenu()" class="lg:hidden text-gray-800 mr-4">
-                            <i class="fas fa-bars text-2xl"></i>
-                        </button>
+                      <span class="material-symbols-outlined text-base text-gray-400">expand_more</span>
+                    </button>
 
-                        <!-- Desktop Sidebar Toggle -->
-                        <button class="hidden lg:block text-gray-500 hover:text-gray-700 focus:outline-none transition-transform duration-300 mr-4" id="desktop-toggle-btn">
-                            <i class="fas fa-bars text-xl"></i>
-                        </button>
+                    <!-- Dropdown Menu -->
+                    <div
+                      x-show="profileOpen"
+                      x-transition:enter="transition ease-out duration-150"
+                      x-transition:enter-start="opacity-0 scale-95"
+                      x-transition:enter-end="opacity-100 scale-100"
+                      x-transition:leave="transition ease-in duration-100"
+                      x-transition:leave-start="opacity-100 scale-100"
+                      x-transition:leave-end="opacity-0 scale-95"
+                      class="absolute right-0 mt-2 w-56 rounded-2xl border border-gray-200 bg-white p-2 shadow-xl dark:border-gray-800 dark:bg-gray-900 z-50"
+                      style="display: none;"
+                    >
+                      <div class="border-b border-gray-100 px-3 py-2 dark:border-gray-800">
+                        <p class="text-xs font-bold text-gray-900 dark:text-white truncate"><?= esc(session()->get('nama_lengkap') ?? 'Siswa') ?></p>
+                        <p class="text-[11px] text-gray-400 dark:text-gray-500 font-mono">NISN: <?= esc(session()->get('nisn') ?? '-') ?></p>
+                      </div>
 
-                        <h2 class="text-xl lg:text-2xl font-semibold text-gray-800">
-                            <?= $this->renderSection('page_title') ?>
-                        </h2>
+                      <div class="py-1">
+                        <a
+                          href="<?= base_url('siswa/profile') ?>"
+                          class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white transition-colors"
+                        >
+                          <span class="material-symbols-outlined text-base text-gray-400">person</span>
+                          <span>Profil Saya</span>
+                        </a>
+                        <a
+                          href="<?= base_url('siswa/ubah-password') ?>"
+                          class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white transition-colors"
+                        >
+                          <span class="material-symbols-outlined text-base text-gray-400">lock_reset</span>
+                          <span>Ubah Password</span>
+                        </a>
+                      </div>
+
+                      <div class="border-t border-gray-100 pt-1 dark:border-gray-800">
+                        <a
+                          href="<?= base_url('logout') ?>"
+                          class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40 transition-colors"
+                        >
+                          <span class="material-symbols-outlined text-base text-red-500">logout</span>
+                          <span>Keluar (Logout)</span>
+                        </a>
+                      </div>
                     </div>
-
-                    <div class="flex items-center space-x-2 lg:space-x-4">
-                        <!-- Notification Bell -->
-                        <div class="relative">
-                            <button id="notification-button"
-                                onclick="toggleNotificationDropdown()"
-                                class="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition duration-200">
-                                <i class="fas fa-bell text-xl"></i>
-                                <span id="notification-badge"
-                                    class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full hidden">
-                                    0
-                                </span>
-                            </button>
-
-                            <!-- Notification Dropdown -->
-                            <div id="notification-dropdown"
-                                class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
-                                <!-- Dropdown Header -->
-                                <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-                                    <div class="flex items-center justify-between">
-                                        <h3 class="text-sm font-semibold text-gray-800">
-                                            <i class="fas fa-bell mr-2"></i>Pengumuman Terbaru
-                                        </h3>
-                                    </div>
-                                </div>
-
-                                <!-- Dropdown Content -->
-                                <div id="notification-dropdown-content" class="max-h-96 overflow-y-auto">
-                                    <!-- Will be populated by JavaScript -->
-                                    <div class="px-4 py-8 text-center text-gray-500">
-                                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                                        <p>Memuat...</p>
-                                    </div>
-                                </div>
-
-                                <!-- Dropdown Footer -->
-                                <div class="px-4 py-3 border-t border-gray-200 bg-gray-50 rounded-b-lg">
-                                    <a href="<?= base_url('siswa/pengumuman') ?>"
-                                        class="block text-center text-sm font-medium text-blue-600 hover:text-blue-800 transition">
-                                        Lihat Semua Pengumuman →
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- User Profile Dropdown -->
-                        <div class="relative">
-                            <button id="profile-button"
-                                onclick="toggleProfileDropdown()"
-                                class="flex items-center space-x-2 lg:space-x-3 hover:bg-gray-100 rounded-lg p-2 transition duration-200">
-                                <div class="text-right hidden sm:block">
-                                    <p class="text-sm font-medium text-gray-800"><?= session()->get('nama_lengkap') ?? 'Siswa' ?></p>
-                                    <p class="text-xs text-gray-500"><?= session()->get('no_pendaftaran') ?? '' ?></p>
-                                </div>
-                                <?php
-                                // Get user photo or show initials
-                                $nisn = session()->get('nisn');
-                                $foto = session()->get('foto');
-                                $fotoPath = 'uploads/berkas/' . $nisn . '/' . $foto;
-                                $hasFoto = !empty($foto) && file_exists(FCPATH . $fotoPath);
-                                ?>
-
-                                <?php if ($hasFoto): ?>
-                                    <img src="<?= base_url($fotoPath) ?>"
-                                        alt="Avatar"
-                                        class="w-10 h-10 rounded-full object-cover border-2 border-blue-600">
-                                <?php else: ?>
-                                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                                        <?= strtoupper(substr(session()->get('nama_lengkap') ?? 'S', 0, 1)) ?>
-                                    </div>
-                                <?php endif; ?>
-                                <i class="fas fa-chevron-down text-gray-600 text-xs hidden sm:block"></i>
-                            </button>
-
-                            <!-- Profile Dropdown Menu -->
-                            <div id="profile-dropdown"
-                                class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
-                                <div class="py-2">
-                                    <a href="<?= base_url('siswa/profile') ?>"
-                                        class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
-                                        <i class="fas fa-user-circle mr-3 text-blue-600"></i>
-                                        <span>Profil Saya</span>
-                                    </a>
-                                    <a href="<?= base_url('siswa/ubah-password') ?>"
-                                        class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
-                                        <i class="fas fa-key mr-3 text-blue-600"></i>
-                                        <span>Ubah Password</span>
-                                    </a>
-                                    <hr class="my-2 border-gray-200">
-                                    <a href="<?= base_url('logout') ?>"
-                                        class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">
-                                        <i class="fas fa-sign-out-alt mr-3"></i>
-                                        <span>Logout</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                  </div>
                 </div>
+              </div>
             </header>
 
-            <!-- Content Area -->
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 lg:p-6 flex flex-col relative z-10">
+            <!-- Page Title Bar (if defined) -->
+            <?php if ($pageTitle = $this->renderSection('page_title')): ?>
+            <div class="border-b border-gray-200/80 bg-white px-4 py-3 dark:border-gray-800 dark:bg-gray-900 sm:px-6">
+                <h1 class="text-lg font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
+                    <?= $pageTitle ?>
+                </h1>
+            </div>
+            <?php endif; ?>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 md:p-6 lg:p-8">
+                <!-- Flash Alerts (Auto-dismiss & Closable with Alpine.js) -->
+                <?php if (session()->getFlashdata('success')): ?>
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4500)" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50/90 p-4 text-emerald-800 shadow-sm dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-lg text-emerald-600 dark:text-emerald-400 shrink-0">check_circle</span>
+                        <div class="flex-1 text-xs sm:text-sm font-medium">
+                            <?= session()->getFlashdata('success') ?>
+                        </div>
+                    </div>
+                    <button @click="show = false" class="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-200 shrink-0 p-1">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </button>
+                </div>
+                <?php endif; ?>
+
+                <?php if (session()->getFlashdata('error')): ?>
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 6000)" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50/90 p-4 text-red-800 shadow-sm dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-lg text-red-600 dark:text-red-400 shrink-0">error</span>
+                        <div class="flex-1 text-xs sm:text-sm font-medium">
+                            <?= session()->getFlashdata('error') ?>
+                        </div>
+                    </div>
+                    <button @click="show = false" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 shrink-0 p-1">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </button>
+                </div>
+                <?php endif; ?>
+
+                <?php if (session()->getFlashdata('warning')): ?>
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50/90 p-4 text-amber-800 shadow-sm dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-lg text-amber-600 dark:text-amber-400 shrink-0">warning</span>
+                        <div class="flex-1 text-xs sm:text-sm font-medium">
+                            <?= session()->getFlashdata('warning') ?>
+                        </div>
+                    </div>
+                    <button @click="show = false" class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200 shrink-0 p-1">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </button>
+                </div>
+                <?php endif; ?>
+
+                <!-- Page Content Section -->
                 <?= $this->renderSection('content') ?>
             </main>
 
+            <!-- Global Footer -->
             <?= $this->include('layouts/components/footer') ?>
         </div>
     </div>
@@ -281,62 +354,8 @@
     <!-- Notification System JavaScript -->
     <script src="<?= base_url('js/notifications.js') ?>"></script>
 
-    <script>
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('mobile-menu-overlay');
-
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        }
-
-        // Profile Dropdown
-        let isProfileDropdownOpen = false;
-
-        function toggleProfileDropdown() {
-            const dropdown = document.getElementById('profile-dropdown');
-            isProfileDropdownOpen = !isProfileDropdownOpen;
-
-            if (isProfileDropdownOpen) {
-                dropdown.classList.remove('hidden');
-            } else {
-                dropdown.classList.add('hidden');
-            }
-        }
-
-        // Close profile dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const profileButton = document.getElementById('profile-button');
-            const profileDropdown = document.getElementById('profile-dropdown');
-
-            if (!profileButton?.contains(event.target) && !profileDropdown?.contains(event.target)) {
-                if (isProfileDropdownOpen) {
-                    profileDropdown?.classList.add('hidden');
-                    isProfileDropdownOpen = false;
-                }
-            }
-        });
-
-        const desktopToggleBtn = document.getElementById('desktop-toggle-btn');
-        const sidebarMain = document.getElementById('sidebar');
-
-        // Check LocalStorage for sidebar preference
-        if (localStorage.getItem('siswa_sidebar_minimized') === 'true') {
-            if (window.innerWidth >= 1024) { // only apply if desktop
-                sidebarMain.classList.add('minimized');
-            }
-        }
-
-        if (desktopToggleBtn) {
-            desktopToggleBtn.addEventListener('click', () => {
-                sidebarMain.classList.toggle('minimized');
-                localStorage.setItem('siswa_sidebar_minimized', sidebarMain.classList.contains('minimized'));
-            });
-        }
-    </script>
-
+    <!-- Scripts Section -->
     <?= $this->renderSection('scripts') ?>
-
     <?= view('partials/sweetalert') ?>
 </body>
 

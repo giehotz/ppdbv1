@@ -1,120 +1,110 @@
 <?= $this->extend('layouts/siswa') ?>
 
-<?= $this->section('title') ?>
-Pengumuman
-<?= $this->endSection() ?>
-
+<?= $this->section('title') ?>Pengumuman<?= $this->endSection() ?>
 <?= $this->section('page_title') ?>
-Pengumuman
+<span class="material-symbols-outlined text-brand-500 mr-1">campaign</span> Pengumuman &amp; Informasi
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-<div class="max-w-5xl mx-auto pb-12 px-4">
-    <!-- Header Section: Serasi dengan halaman sebelumnya -->
-    <div class="bg-gradient-to-br from-emerald-500 via-green-600 to-green-700 text-white p-8 rounded-2xl shadow-xl mb-8 relative overflow-hidden">
-        <div class="relative z-10">
-            <h2 class="text-3xl font-extrabold mb-2 flex items-center">
-                <span class="bg-white/20 p-2 rounded-lg mr-3">
-                    <i class="fas fa-bullhorn"></i>
-                </span>
-                Pusat Informasi
-            </h2>
-            <p class="text-emerald-50 opacity-90 font-medium">Dapatkan informasi terbaru mengenai proses pendaftaran dan kegiatan sekolah.</p>
+<div class="space-y-6">
+    <!-- Header Banner -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 md:p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="flex items-center gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 shrink-0 border border-brand-200/60 dark:border-brand-500/20">
+                <span class="material-symbols-outlined text-2xl">campaign</span>
+            </div>
+            <div>
+                <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Pusat Informasi &amp; Pengumuman</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Dapatkan informasi resmi terbaru seputar tahapan seleksi, berkas, dan pengumuman madrasah.</p>
+            </div>
         </div>
-        <!-- Dekorasi Lingkaran -->
-        <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
-        <div class="absolute right-20 bottom-0 w-20 h-20 bg-emerald-400/20 rounded-full blur-xl"></div>
     </div>
 
     <?php if (empty($announcements)): ?>
-        <!-- Empty State: Didesain lebih bersih -->
-        <div class="bg-white rounded-2xl shadow-lg border border-emerald-50 p-16 text-center">
-            <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-comment-slash text-gray-300 text-5xl"></i>
+        <!-- Empty State -->
+        <div class="rounded-2xl border border-gray-200 bg-white p-12 text-center shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+            <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-400 mx-auto mb-4">
+                <span class="material-symbols-outlined text-3xl">notifications_off</span>
             </div>
-            <h3 class="text-2xl font-bold text-gray-700 mb-2">Belum Ada Pengumuman</h3>
-            <p class="text-gray-500 max-w-sm mx-auto">Saat ini belum ada informasi atau pengumuman yang dibagikan oleh panitia.</p>
+            <h4 class="text-sm font-bold text-gray-900 dark:text-white">Belum Ada Pengumuman</h4>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm mx-auto">Saat ini belum ada pengumuman yang dipublikasikan oleh panitia. Silakan periksa kembali secara berkala.</p>
         </div>
     <?php else: ?>
         <!-- Announcements List -->
-        <div class="grid grid-cols-1 gap-6">
+        <div class="grid grid-cols-1 gap-4 md:gap-5">
             <?php foreach ($announcements as $announcement): ?>
                 <?php
-                    $typeColors = [
-                        'general' => 'blue',
-                        'ujian' => 'amber',
-                        'kelulusan' => 'emerald'
-                    ];
-                    $typeIcons = [
-                        'general' => 'fa-info-circle',
-                        'ujian' => 'fa-file-alt',
-                        'kelulusan' => 'fa-graduation-cap'
-                    ];
-                    $color = $typeColors[$announcement['tipe']] ?? 'gray';
-                    $icon = $typeIcons[$announcement['tipe']] ?? 'fa-bullhorn';
+                $typeMap = [
+                    'general' => [
+                        'label' => 'Informasi Umum',
+                        'icon' => 'info',
+                        'pill' => 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/15 dark:text-blue-400 dark:border-blue-800/40',
+                        'border' => 'border-l-blue-500',
+                    ],
+                    'ujian' => [
+                        'label' => 'Jadwal / Ujian',
+                        'icon' => 'assignment',
+                        'pill' => 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-800/40',
+                        'border' => 'border-l-amber-500',
+                    ],
+                    'kelulusan' => [
+                        'label' => 'Kelulusan',
+                        'icon' => 'school',
+                        'pill' => 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-800/40',
+                        'border' => 'border-l-emerald-500',
+                    ],
+                ];
+                $typeConfig = $typeMap[$announcement['tipe']] ?? [
+                    'label' => ucfirst($announcement['tipe']),
+                    'icon' => 'campaign',
+                    'pill' => 'bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700',
+                    'border' => 'border-l-brand-500',
+                ];
                 ?>
-                <div class="group bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 border border-emerald-50 overflow-hidden flex flex-col md:flex-row">
-                    <!-- Penanda Warna Samping (Desktop) -->
-                    <div class="w-2 md:w-3 bg-<?= $color ?>-500"></div>
-                    
-                    <div class="flex-1 p-6 md:p-8">
-                        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                            <div class="flex-1">
-                                <!-- Badge Tipe -->
-                                <div class="mb-4">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-<?= $color ?>-50 text-<?= $color ?>-700 border border-<?= $color ?>-100">
-                                        <i class="fas <?= $icon ?> mr-2"></i>
-                                        <?= ucfirst($announcement['tipe']) ?>
-                                    </span>
-                                </div>
 
-                                <h3 class="text-2xl font-bold text-gray-800 mb-3 group-hover:text-emerald-700 transition-colors">
-                                    <?= esc($announcement['judul']) ?>
-                                </h3>
-                                
-                                <div class="flex items-center text-sm text-gray-400 mb-6 bg-gray-50 w-fit px-3 py-1 rounded-full">
-                                    <i class="far fa-calendar-alt mr-2"></i>
-                                    <?= date('d F Y', strtotime($announcement['publish_date'])) ?>
-                                </div>
-
-                                <!-- Content Isi Pengumuman -->
-                                <div class="prose max-w-none text-gray-600 leading-relaxed italic border-l-4 border-gray-100 pl-4 mb-6">
-                                    <?php
-                                    $content = (string)($announcement['isi_pengumuman'] ?? '');
-                                    echo nl2br(esc($content));
-                                    ?>
-                                </div>
-                            </div>
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 md:p-6 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] border-l-4 <?= $typeConfig['border'] ?>">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border <?= $typeConfig['pill'] ?>">
+                                <span class="material-symbols-outlined text-[12px]"><?= $typeConfig['icon'] ?></span>
+                                <?= esc($typeConfig['label']) ?>
+                            </span>
                         </div>
 
-                        <?php if (!empty($announcement['lampiran'])): ?>
-                            <!-- Attachment Section -->
-                            <div class="mt-4 pt-6 border-t border-gray-100 flex items-center justify-between">
-                                <p class="text-sm text-gray-400 hidden sm:block">
-                                    <i class="fas fa-paperclip mr-1"></i> Lampiran tersedia
-                                </p>
-                                <a href="<?= base_url('uploads/pengumuman/' . $announcement['lampiran']) ?>"
-                                    target="_blank"
-                                    class="flex items-center justify-center space-x-2 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white px-6 py-2.5 rounded-xl font-bold transition-all duration-300 shadow-sm">
-                                    <i class="fas fa-file-download"></i>
-                                    <span>Unduh Lampiran</span>
-                                </a>
-                            </div>
-                        <?php endif; ?>
+                        <span class="inline-flex items-center gap-1 text-[11px] font-medium text-gray-400 dark:text-gray-500">
+                            <span class="material-symbols-outlined text-xs">calendar_today</span>
+                            <?= date('d F Y', strtotime($announcement['publish_date'])) ?>
+                        </span>
                     </div>
+
+                    <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-3">
+                        <?= esc($announcement['judul']) ?>
+                    </h3>
+
+                    <!-- Content -->
+                    <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed space-y-2 bg-gray-50/60 dark:bg-gray-800/40 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
+                        <?= nl2br(esc($announcement['isi_pengumuman'] ?? '')) ?>
+                    </div>
+
+                    <?php if (!empty($announcement['lampiran'])): ?>
+                        <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                            <span class="text-xs text-gray-400 dark:text-gray-500 inline-flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">attachment</span>
+                                Lampiran berkas tersedia
+                            </span>
+                            <a href="<?= base_url('uploads/pengumuman/' . $announcement['lampiran']) ?>"
+                               target="_blank" rel="noopener"
+                               class="inline-flex items-center gap-1.5 rounded-xl bg-brand-50 px-3.5 py-2 text-xs font-bold text-brand-600 hover:bg-brand-100 dark:bg-brand-500/15 dark:text-brand-400 dark:hover:bg-brand-500/25 transition-colors shadow-theme-xs">
+                                <span class="material-symbols-outlined text-sm">download</span>
+                                <span>Unduh Lampiran</span>
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
 </div>
-
-<style>
-    /* Custom Scrollbar atau style tambahan jika diperlukan */
-    .prose {
-        color: #4b5563;
-        font-size: 1.05rem;
-    }
-</style>
 
 <?= $this->endSection() ?>

@@ -5,28 +5,14 @@ Pengaturan Sistem
 <?= $this->endSection() ?>
 
 <?= $this->section('page_title') ?>
-Pengaturan Sistem
+<span class="material-symbols-outlined text-brand-500 mr-1">settings</span> Pengaturan Sistem
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-<?php if (session()->getFlashdata('success')) : ?>
-    <div class="flex items-center gap-3 bg-primary-container/30 text-on-primary-container border border-primary/20 px-5 py-4 rounded-xl mb-6 shadow-sm" role="alert">
-        <span class="material-symbols-outlined text-primary text-2xl">check_circle</span>
-        <span class="font-semibold text-sm"><?= session()->getFlashdata('success') ?></span>
-    </div>
-<?php endif; ?>
-
-<?php if (session()->getFlashdata('error')) : ?>
-    <div class="flex items-center gap-3 bg-error-container/30 text-on-error-container border border-error/20 px-5 py-4 rounded-xl mb-6 shadow-sm" role="alert">
-        <span class="material-symbols-outlined text-error text-2xl">error</span>
-        <span class="font-semibold text-sm"><?= session()->getFlashdata('error') ?></span>
-    </div>
-<?php endif; ?>
-
-<!-- Tab Navigation -->
+<!-- Tab Navigation (TailAdmin Pill Style) -->
 <div class="mb-8">
-    <div class="flex flex-wrap gap-1 p-1.5 bg-surface-container-high rounded-xl" id="settings-tabs" role="tablist">
+    <div class="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-gray-800 rounded-xl" id="settings-tabs" role="tablist">
         <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="sistem-tab-btn" data-target="tab-sistem" type="button" role="tab">
             <span class="material-symbols-outlined text-lg">settings</span>
             <span>Sistem PPDB</span>
@@ -75,8 +61,8 @@ Pengaturan Sistem
         </div>
 
         <!-- Submit Button -->
-        <div class="flex justify-end pt-6 border-t border-surface-variant">
-            <button type="submit" class="inline-flex items-center gap-2 bg-primary hover:bg-primary text-white font-bold py-3 px-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.97]">
+        <div class="flex justify-end pt-6 border-t border-gray-200 dark:border-gray-800">
+            <button type="submit" class="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-xl shadow-theme-xs hover:shadow-theme-md transition-all duration-200 active:scale-[0.97]">
                 <span class="material-symbols-outlined text-lg">save</span>
                 Simpan Perubahan
             </button>
@@ -91,12 +77,12 @@ Pengaturan Sistem
 
         function setActiveTab(targetId) {
             tabLinks.forEach(link => {
-                link.classList.remove('bg-surface', 'text-primary', 'shadow-sm');
-                link.classList.add('text-on-surface-variant');
+                link.classList.remove('bg-white', 'dark:bg-gray-900', 'text-brand-500', 'shadow-sm');
+                link.classList.add('text-gray-500', 'dark:text-gray-400');
 
                 if (link.getAttribute('data-target') === targetId) {
-                    link.classList.remove('text-on-surface-variant');
-                    link.classList.add('bg-surface', 'text-primary', 'shadow-sm');
+                    link.classList.remove('text-gray-500', 'dark:text-gray-400');
+                    link.classList.add('bg-white', 'dark:bg-gray-900', 'text-brand-500', 'shadow-sm');
                 }
             });
 

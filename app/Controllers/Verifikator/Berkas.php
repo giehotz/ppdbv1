@@ -47,11 +47,45 @@ class Berkas extends BaseController
 
         if ($this->berkasModel->update($id, $data)) {
             session()->setFlashdata('success', 'Status berkas berhasil diperbarui.');
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Status berkas berhasil diperbarui menjadi ' . ucfirst((string)$status) . '.'
+                ]);
+            }
         } else {
             session()->setFlashdata('error', 'Gagal memperbarui status berkas.');
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui status berkas.'
+                ]);
+            }
         }
 
         return redirect()->to('/verifikator/berkas');
+    }
+
+
+    private function resolveBerkasPath(array $berkas): ?string
+    {
+        $baseDir = realpath(FCPATH . 'uploads/berkas/') ?: FCPATH . 'uploads/berkas/';
+
+        if (!empty($berkas['path_file'])) {
+            $filePath = realpath(FCPATH . $berkas['path_file']);
+        } else {
+            $siswaModel = new \App\Models\SiswaModel();
+            $siswa = $siswaModel->find($berkas['id_siswa']);
+            $nisn = $siswa['nisn'] ?? '';
+            $cleanNisn = preg_replace('/[^a-zA-Z0-9_-]/', '', $nisn);
+            $filePath = realpath(FCPATH . 'uploads/berkas/' . $cleanNisn . '/' . basename($berkas['nama_file']));
+        }
+
+        if ($filePath === false || strpos($filePath, $baseDir) !== 0) {
+            return null;
+        }
+
+        return $filePath;
     }
 
     public function download($id)
@@ -63,22 +97,16 @@ class Berkas extends BaseController
             return redirect()->to('/verifikator/berkas');
         }
 
-        // Build file path using path_file or fallback to NISN subfolder
-        if (!empty($berkas['path_file'])) {
-            $filePath = FCPATH . $berkas['path_file'];
-        } else {
-            $siswaModel = new \App\Models\SiswaModel();
-            $siswa = $siswaModel->find($berkas['id_siswa']);
-            $filePath = FCPATH . 'uploads/berkas/' . ($siswa['nisn'] ?? '') . '/' . $berkas['nama_file'];
-        }
+        $filePath = $this->resolveBerkasPath($berkas);
 
-        if (!file_exists($filePath)) {
+        if ($filePath === null || !file_exists($filePath)) {
             session()->setFlashdata('error', 'File tidak ditemukan di server.');
             return redirect()->to('/verifikator/berkas');
         }
 
         return $this->response->download($filePath, null);
     }
+
 
     public function bulkUpdateStatus()
     {

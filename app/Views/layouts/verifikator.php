@@ -5,224 +5,181 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $this->renderSection('title') ?> - Verifikator <?= esc($app_alias ?? 'PPDB') ?></title>
+    <link rel="icon" type="image/png" href="<?= base_url('favicon.png') ?>">
 
-    <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
-
-    <!-- Font Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
+    <!-- TailAdmin CSS & Tailwind CSS -->
+    <link rel="stylesheet" href="<?= base_url('assets/tailadmin/css/tailadmin.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
+
+    <!-- TailAdmin Bundle JS (Alpine.js, Flatpickr, etc.) -->
+    <script defer src="<?= base_url('assets/tailadmin/js/tailadmin.js') ?>"></script>
+
+    <script>
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
         }
+    </script>
+    <style>
+        body { font-family: 'Outfit', 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
     <?= $this->renderSection('head') ?>
 </head>
 
-<body class="bg-gray-100 font-sans leading-normal tracking-normal flex h-screen overflow-hidden">
+<body
+    x-data="{ 
+        page: 'verifikator', 
+        loaded: true, 
+        darkMode: localStorage.getItem('darkMode') === 'true', 
+        sidebarToggle: localStorage.getItem('sidebarToggle') === 'true' 
+    }"
+    x-init="
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        $watch('darkMode', val => {
+            localStorage.setItem('darkMode', JSON.stringify(val));
+            if (val) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+        $watch('sidebarToggle', val => localStorage.setItem('sidebarToggle', JSON.stringify(val)));
+    "
+    :class="darkMode ? 'dark bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-800'"
+    class="font-sans antialiased text-sm h-screen overflow-hidden flex flex-col"
+>
 
     <?php
-    // Define common classes for sidebar links to keep HTML clean
-    $linkClass = "flex items-center px-6 py-3 text-gray-300 hover:bg-blue-700 hover:text-white transition-colors duration-200";
-    $activeClass = "bg-blue-700 text-white";
+    $unlockModel = new \App\Models\UnlockRequestModel();
+    $pendingUnlockCount = $unlockModel->getPendingCount();
+
+    $webData = $web ?? \Config\Services::renderer()->getData()['web'] ?? [];
+    $sekolahName = $webData['nama_sekolah'] ?? 'Sekolah';
+
+    $sidebarMenus = [
+        'Dashboard' => [
+            ['label' => 'Dashboard',          'icon' => 'tachometer-alt', 'url' => 'verifikator/dashboard'],
+        ],
+        'Verifikasi Data' => [
+            ['label' => 'Data Siswa',         'icon' => 'users',          'url' => 'verifikator/siswa'],
+            ['label' => 'Daftarkan Siswa',    'icon' => 'user-plus',      'url' => 'verifikator/siswa/create'],
+            ['label' => 'Verifikasi Berkas',  'icon' => 'file-signature', 'url' => 'verifikator/berkas'],
+            ['label' => 'Antrean Buka Kunci', 'icon' => 'unlock-alt',     'url' => 'verifikator/unlockrequest', 'badge' => $pendingUnlockCount],
+        ],
+        'Keuangan' => [
+            ['label' => 'Pembiayaan Siswa',   'icon' => 'money-bill-wave','url' => 'verifikator/pembiayaan'],
+        ],
+        'Komunikasi' => [
+            ['label' => 'Pesan Pribadi',      'icon' => 'envelope',       'url' => 'verifikator/pesan'],
+        ],
+    ];
     ?>
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-blue-800 text-white flex-shrink-0 hidden md:flex flex-col shadow-xl">
-        <div class="p-6 flex items-center justify-center border-b border-blue-700">
-            <span class="text-2xl font-bold tracking-wider flex items-center">
-                <?php if (!empty($web_logo) && file_exists(FCPATH . 'uploads/logo/' . $web_logo)): ?>
-                    <img src="<?= base_url('uploads/logo/' . esc($web_logo, 'url')) ?>" alt="Logo" class="h-8 w-auto mr-2">
-                <?php endif; ?>
-                VERIFIKATOR
-            </span>
-        </div>
+    <!-- Main Outer Wrapper -->
+    <div class="flex h-screen overflow-hidden">
+        <!-- Small Device Overlay -->
+        <?= $this->include('layouts/components/tailadmin_overlay') ?>
 
-        <nav class="flex-1 overflow-y-auto py-4">
-            <ul>
-                <li>
-                    <a href="<?= base_url('verifikator/dashboard') ?>" class="<?= $linkClass ?> <?= uri_string() == 'verifikator/dashboard' ? $activeClass : '' ?>">
-                        <i class="fas fa-tachometer-alt w-6"></i>
-                        <span class="ml-2">Dashboard</span>
-                    </a>
-                </li>
+        <!-- Sidebar Navigation -->
+        <?= view('layouts/components/tailadmin_sidebar', [
+            'sidebarMenus' => $sidebarMenus,
+            'app_alias' => $app_alias ?? 'PPDB',
+            'sekolahName' => $sekolahName,
+            'web_logo' => $web_logo ?? null
+        ]) ?>
 
-                <li class="px-6 py-2 text-xs font-semibold text-blue-300 uppercase tracking-wider mt-4">
-                    Verifikasi Data
-                </li>
+        <!-- Content Area -->
+        <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
+            <!-- Header Bar -->
+            <?= view('layouts/components/tailadmin_header', [
+                'pendingUnlockCount' => $pendingUnlockCount,
+                'app_alias' => $app_alias ?? 'PPDB',
+                'sekolahName' => $sekolahName
+            ]) ?>
 
-                <li>
-                    <a href="<?= base_url('verifikator/siswa') ?>" class="<?= $linkClass ?> <?= (uri_string() == 'verifikator/siswa' || (strpos(uri_string(), 'verifikator/siswa/') === 0 && strpos(uri_string(), 'verifikator/siswa/create') === false)) ? $activeClass : '' ?>">
-                        <i class="fas fa-users w-6"></i>
-                        <span class="ml-2">Data Siswa</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= base_url('verifikator/siswa/create') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/siswa/create') === 0 ? $activeClass : '' ?>">
-                        <i class="fas fa-user-plus w-6"></i>
-                        <span class="ml-2">Daftarkan Siswa</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="<?= base_url('verifikator/berkas') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/berkas') === 0 ? $activeClass : '' ?>">
-                        <i class="fas fa-file-signature w-6"></i>
-                        <span class="ml-2">Verifikasi Berkas</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="<?= base_url('verifikator/unlockrequest') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/unlockrequest') === 0 ? $activeClass : '' ?>">
-                        <i class="fas fa-unlock-alt w-6"></i>
-                        <span class="ml-2">Antrean Buka Kunci</span>
-                    </a>
-                </li>
-
-                <li class="px-6 py-2 text-xs font-semibold text-blue-300 uppercase tracking-wider mt-4">
-                    Keuangan
-                </li>
-
-                <li>
-                    <a href="<?= base_url('verifikator/pembiayaan') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/pembiayaan') === 0 ? $activeClass : '' ?>">
-                        <i class="fas fa-money-bill-wave w-6"></i>
-                        <span class="ml-2">Pembiayaan</span>
-                    </a>
-                </li>
-
-                <li class="px-6 py-2 text-xs font-semibold text-blue-300 uppercase tracking-wider mt-4">
-                    Komunikasi
-                </li>
-
-                <li>
-                    <a href="<?= base_url('verifikator/pesan') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/pesan') === 0 ? $activeClass : '' ?>">
-                        <i class="fas fa-envelope w-6"></i>
-                        <span class="ml-2">Pesan Pribadi</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <div class="p-4 border-t border-blue-700">
-            <a href="<?= base_url('logout') ?>" class="flex items-center text-blue-300 hover:text-white transition duration-200">
-                <i class="fas fa-sign-out-alt w-6"></i>
-                <span class="ml-2">Logout</span>
-            </a>
-        </div>
-    </aside>
-
-    <!-- Main Content Wrapper -->
-    <div class="flex-1 flex flex-col h-screen overflow-hidden">
-
-        <!-- Top Navbar -->
-        <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6 z-10">
-            <!-- Mobile Menu Button -->
-            <button class="md:hidden text-gray-600 focus:outline-none" id="mobile-menu-btn">
-                <i class="fas fa-bars text-2xl"></i>
-            </button>
-
-            <div class="font-semibold text-lg text-gray-700">
-                <?= $this->renderSection('page_title') ?>
+            <!-- Page Title Bar (if defined) -->
+            <?php if ($pageTitle = $this->renderSection('page_title')): ?>
+            <div class="border-b border-gray-200/80 bg-white px-4 py-3 dark:border-gray-800 dark:bg-gray-900 sm:px-6">
+                <h1 class="text-lg font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
+                    <?= $pageTitle ?>
+                </h1>
             </div>
+            <?php endif; ?>
 
-            <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-600 hidden md:inline-block">Halo, <strong><?= esc(session()->get('nama_lengkap')) ?></strong></span>
-                <div class="relative">
-                    <img class="h-8 w-8 rounded-full object-cover border border-gray-300"
-                        src="https://ui-avatars.com/api/?name=<?= urlencode(session()->get('nama_lengkap')) ?>&background=1d4ed8&color=fff"
-                        alt="Avatar">
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 md:p-6 lg:p-8">
+                <!-- Flash Alerts (Auto-dismiss & Closable with Alpine.js) -->
+                <?php if (session()->getFlashdata('success')): ?>
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4500)" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50/90 p-4 text-emerald-800 shadow-sm dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-lg text-emerald-600 dark:text-emerald-400 shrink-0">check_circle</span>
+                        <div class="flex-1 text-xs sm:text-sm font-medium">
+                            <?= session()->getFlashdata('success') ?>
+                        </div>
+                    </div>
+                    <button @click="show = false" class="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-200 shrink-0 p-1">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </button>
                 </div>
-            </div>
-        </header>
+                <?php endif; ?>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
-            <?= $this->renderSection('content') ?>
-        </main>
+                <?php if (session()->getFlashdata('error')): ?>
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 6000)" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50/90 p-4 text-red-800 shadow-sm dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-lg text-red-600 dark:text-red-400 shrink-0">error</span>
+                        <div class="flex-1 text-xs sm:text-sm font-medium">
+                            <?= session()->getFlashdata('error') ?>
+                        </div>
+                    </div>
+                    <button @click="show = false" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 shrink-0 p-1">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </button>
+                </div>
+                <?php endif; ?>
 
-        <!-- Footer -->
-        <?= $this->include('layouts/components/footer') ?>
+                <?php if (session()->getFlashdata('warning')): ?>
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50/90 p-4 text-amber-800 shadow-sm dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-lg text-amber-600 dark:text-amber-400 shrink-0">warning</span>
+                        <div class="flex-1 text-xs sm:text-sm font-medium">
+                            <?= session()->getFlashdata('warning') ?>
+                        </div>
+                    </div>
+                    <button @click="show = false" class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200 shrink-0 p-1">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </button>
+                </div>
+                <?php endif; ?>
+
+                <!-- Page Content Section -->
+                <?= $this->renderSection('content') ?>
+            </main>
+
+            <!-- Global Footer -->
+            <?= $this->include('layouts/components/footer') ?>
+        </div>
     </div>
 
-    <!-- Mobile Sidebar Backdrop (Hidden by default) -->
-    <div class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden" id="mobile-backdrop"></div>
-
-    <!-- Mobile Sidebar (Hidden by default) -->
-    <nav class="fixed inset-y-0 left-0 w-64 bg-blue-800 text-white z-30 transform -translate-x-full transition-transform duration-300 md:hidden flex flex-col" id="mobile-sidebar">
-        <!-- Close Button -->
-        <div class="p-4 flex justify-between items-center border-b border-blue-700">
-            <span class="font-bold text-xl">MENU</span>
-            <button class="text-white focus:outline-none" id="close-sidebar-btn">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
-        <!-- Same links as desktop sidebar -->
-        <div class="flex-1 overflow-y-auto py-4">
-            <ul>
-                <li>
-                    <a href="<?= base_url('verifikator/dashboard') ?>" class="<?= $linkClass ?> <?= uri_string() == 'verifikator/dashboard' ? $activeClass : '' ?>">
-                        <i class="fas fa-tachometer-alt w-6"></i>
-                        <span class="ml-2">Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= base_url('verifikator/siswa') ?>" class="<?= $linkClass ?> <?= (uri_string() == 'verifikator/siswa' || (strpos(uri_string(), 'verifikator/siswa/') === 0 && strpos(uri_string(), 'verifikator/siswa/create') === false)) ? $activeClass : '' ?>">
-                        <i class="fas fa-users w-6"></i>
-                        <span class="ml-2">Data Siswa</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= base_url('verifikator/siswa/create') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/siswa/create') === 0 ? $activeClass : '' ?>">
-                        <i class="fas fa-user-plus w-6"></i>
-                        <span class="ml-2">Daftarkan Siswa</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= base_url('verifikator/berkas') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/berkas') === 0 ? $activeClass : '' ?>">
-                        <i class="fas fa-file-signature w-6"></i>
-                        <span class="ml-2">Verifikasi Berkas</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= base_url('verifikator/unlockrequest') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/unlockrequest') === 0 ? $activeClass : '' ?>">
-                        <i class="fas fa-unlock-alt w-6"></i>
-                        <span class="ml-2">Antrean Buka Kunci</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= base_url('verifikator/pembiayaan') ?>" class="<?= $linkClass ?> <?= strpos(uri_string(), 'verifikator/pembiayaan') === 0 ? $activeClass : '' ?>">
-                        <i class="fas fa-money-bill-wave w-6"></i>
-                        <span class="ml-2">Pembiayaan</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="p-4 border-t border-blue-700">
-            <a href="<?= base_url('logout') ?>" class="flex items-center text-blue-300 hover:text-white transition duration-200">
-                <i class="fas fa-sign-out-alt w-6"></i>
-                <span class="ml-2">Logout</span>
-            </a>
-        </div>
-    </nav>
-
-    <script>
-        const mobileBtn = document.getElementById('mobile-menu-btn');
-        const mobileSidebar = document.getElementById('mobile-sidebar');
-        const mobileBackdrop = document.getElementById('mobile-backdrop');
-        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
-
-        function toggleSidebar() {
-            mobileSidebar.classList.toggle('-translate-x-full');
-            mobileBackdrop.classList.toggle('hidden');
-        }
-
-        mobileBtn.addEventListener('click', toggleSidebar);
-        closeSidebarBtn.addEventListener('click', toggleSidebar);
-        mobileBackdrop.addEventListener('click', toggleSidebar);
-    </script>
+    <!-- Scripts Section -->
     <?= $this->renderSection('scripts') ?>
     <?= view('partials/sweetalert') ?>
 </body>

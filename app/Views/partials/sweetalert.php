@@ -1,6 +1,12 @@
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<style>
+.swal2-container {
+    z-index: 1000000 !important;
+}
+</style>
+
 <script>
 // ========================
 // 1. Flashdata → SweetAlert2

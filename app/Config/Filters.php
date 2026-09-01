@@ -55,11 +55,11 @@ class Filters extends BaseFilters
      */
     public array $required = [
         'before' => [
-            'forcehttps', // Force Global Secure Requests
-            'pagecache',  // Web Page Caching
+            // 'forcehttps' hanya aktif di production (bukan development/testing)
+            // karena di local dev menggunakan http:// — jika diaktifkan akan menyebabkan redirect loop
+            ...(ENVIRONMENT === 'production' ? ['forcehttps'] : []),
         ],
         'after' => [
-            'pagecache',   // Web Page Caching
             'performance', // Performance Metrics
             'toolbar',     // Debug Toolbar
         ],
@@ -75,15 +75,8 @@ class Filters extends BaseFilters
      * }
      */
     public array $globals = [
-        'before' => [
-            // 'honeypot',
-            // 'csrf',
-            // 'invalidchars',
-        ],
-        'after' => [
-            // 'honeypot',
-            // 'secureheaders',
-        ],
+        'before' => [],
+        'after'  => [],
     ];
 
     /**

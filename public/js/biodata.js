@@ -8,6 +8,7 @@
 const tabs = ['dataDiri', 'alamat', 'orangTua', 'kesejahteraan', 'sekolah', 'berkas'];
 let currentTabIndex = 0;
 let isFinal = false; // Will be set from PHP
+let isVerifikator = false;
 
 // This will be set from PHP
 let savedValues = {
@@ -28,10 +29,13 @@ let currentPercentage = 0;
 
 function setPercentage(pct) {
     currentPercentage = parseInt(pct) || 0;
-    updateFinalizeButtonState();
+    if (!isVerifikator) {
+        updateFinalizeButtonState();
+    }
 }
 
 function updateFinalizeButtonState() {
+    if (isVerifikator) return;
     const btnFinalize = document.getElementById('btnFinalize');
     if (!btnFinalize) return;
 
@@ -63,9 +67,12 @@ function showTab(tabName) {
 
     // Remove active state from all tabs
     const buttons = document.querySelectorAll('.tab-button');
+    const activeClasses = ['bg-white', 'text-brand-600', 'shadow-theme-xs', 'border', 'border-brand-200', 'dark:bg-brand-500/15', 'dark:text-brand-400', 'dark:border-brand-500/30', 'font-bold'];
+    const inactiveClasses = ['text-gray-500', 'dark:text-gray-400', 'font-semibold'];
+
     buttons.forEach(button => {
-        button.classList.remove('border-blue-600', 'text-blue-600');
-        button.classList.add('border-transparent', 'text-gray-500');
+        button.classList.remove(...activeClasses, 'border-blue-600', 'text-blue-600');
+        button.classList.add(...inactiveClasses);
     });
 
     // Show selected tab content
@@ -75,8 +82,8 @@ function showTab(tabName) {
     // Set active state on selected tab
     const activeButton = document.getElementById('tab-' + tabName);
     if (activeButton) {
-        activeButton.classList.remove('border-transparent', 'text-gray-500');
-        activeButton.classList.add('border-blue-600', 'text-blue-600');
+        activeButton.classList.remove(...inactiveClasses);
+        activeButton.classList.add(...activeClasses);
 
         // Scroll active tab into view on mobile
         if (window.innerWidth < 768) {
@@ -105,6 +112,7 @@ function navigateTab(direction) {
 function updateNavigationButtons(tabId) {
     const btnPrev = document.getElementById('btnPrev');
     const btnNext = document.getElementById('btnNext');
+    const actionRow = document.getElementById('actionRow');
     const btnSubmit = document.getElementById('btnSubmit');
     const btnFinalize = document.getElementById('btnFinalize');
 
@@ -113,24 +121,47 @@ function updateNavigationButtons(tabId) {
     // Handle Previous Button
     if (currentTabIndex === 0) {
         btnPrev.disabled = true;
-        btnPrev.classList.add('opacity-50', 'cursor-not-allowed');
+        btnPrev.classList.add('opacity-30', 'cursor-not-allowed');
     } else {
         btnPrev.disabled = false;
-        btnPrev.classList.remove('opacity-50', 'cursor-not-allowed');
+        btnPrev.classList.remove('opacity-30', 'cursor-not-allowed');
     }
 
-    // Handle Next & Action Buttons (Submit/Finalize)
+    // Handle Next & Action Buttons
     if (tabId === 'berkas') {
         btnNext.classList.add('hidden');
-        if (btnSubmit && !isFinal) btnSubmit.classList.remove('hidden');
-        if (btnFinalize && !isFinal) {
-            btnFinalize.classList.remove('hidden');
-            updateFinalizeButtonState();
+        btnNext.style.display = 'none';
+        btnPrev.classList.add('w-full');
+        // Mobile layout: toggle the action row container
+        if (actionRow && (!isFinal || isVerifikator)) {
+            actionRow.classList.remove('hidden');
+            actionRow.classList.add('flex');
+            actionRow.style.display = 'flex';
+            if (!isVerifikator) updateFinalizeButtonState();
+        }
+        // Desktop layout: toggle individual buttons (when actionRow doesn't exist)
+        if (!actionRow) {
+            if (btnSubmit && (!isFinal || isVerifikator)) {
+                btnSubmit.classList.remove('hidden');
+            }
+            if (btnFinalize && (!isFinal || isVerifikator)) {
+                btnFinalize.classList.remove('hidden');
+                if (!isVerifikator) updateFinalizeButtonState();
+            }
         }
     } else {
         btnNext.classList.remove('hidden');
-        if (btnSubmit) btnSubmit.classList.add('hidden');
-        if (btnFinalize) btnFinalize.classList.add('hidden');
+        btnNext.style.display = '';
+        btnPrev.classList.remove('w-full');
+        if (actionRow) {
+            actionRow.classList.add('hidden');
+            actionRow.classList.remove('flex');
+            actionRow.style.display = 'none';
+        }
+        if (!actionRow) {
+            if (btnSubmit) btnSubmit.classList.add('hidden');
+            if (btnFinalize) btnFinalize.classList.add('hidden');
+        }
     }
 }
 
@@ -144,8 +175,9 @@ function setSavedValues(values) {
 
 // Function to set status final from PHP
 function setIsFinal(status, verifikatorMode = false) {
-    isFinal = status;
-    if (isFinal && !verifikatorMode) {
+    isVerifikator = !!verifikatorMode;
+    isFinal = isVerifikator ? false : !!status;
+    if (status && !verifikatorMode) {
         // Disable all inputs automatically using JS if status is Final to avoid tampering
         // Skip when verifikator is editing — they need to modify data
         setTimeout(() => {

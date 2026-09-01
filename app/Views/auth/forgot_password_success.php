@@ -1,56 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id" class="scroll-smooth">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Permintaan Reset Password - <?= $app_alias ?? 'PPDB' ?> Online</title>
-    <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
+    <?php $page_title = 'Reset Password'; ?>
+    <?= view('partials/_auth_head', ['page_title' => $page_title]) ?>
 </head>
 
-<body class="bg-gray-100 h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md text-center">
-        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-            <i class="fas fa-check-circle text-green-600 text-3xl"></i>
+<body class="bg-gray-50 dark:bg-gray-950 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+
+    <!-- Background Glow -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute -top-[10%] -left-[10%] w-[50vw] h-[50vw] max-w-[500px] max-h-[500px] bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl p-8 sm:p-10 rounded-3xl border border-gray-200/80 dark:border-gray-800 shadow-theme-md w-full max-w-md text-center relative z-10">
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400 mb-5 border border-emerald-200/50 dark:border-emerald-500/20 shadow-theme-xs">
+            <span class="material-symbols-outlined text-3xl">verified</span>
         </div>
 
-        <h1 class="text-xl font-bold text-gray-800 mb-2">Permintaan Terkirim!</h1>
-        <p class="text-gray-500 text-sm mb-6">Permintaan reset password Anda sedang menunggu persetujuan admin. Silakan konfirmasi melalui WhatsApp agar prosesnya lebih cepat.</p>
+        <h1 class="heading-font text-2xl font-bold text-gray-900 dark:text-white mb-2">Permohonan Terkirim!</h1>
+        <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-6 leading-relaxed">
+            Permintaan reset password Anda telah berhasil dicatat dan sedang menunggu verifikasi panitia/admin.
+        </p>
 
-        <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left text-sm">
-            <div class="flex justify-between mb-1">
-                <span class="text-gray-500">Nama:</span>
-                <span class="font-semibold text-gray-800"><?= esc($nama) ?></span>
+        <div class="bg-gray-50 dark:bg-gray-800/60 rounded-2xl p-4 mb-6 text-left text-xs border border-gray-200/80 dark:border-gray-700 space-y-2">
+            <div class="flex justify-between items-center">
+                <span class="text-gray-400 uppercase font-bold text-[10px]">Nama Siswa:</span>
+                <span class="font-bold text-gray-900 dark:text-white"><?= esc($nama) ?></span>
             </div>
-            <div class="flex justify-between">
-                <span class="text-gray-500">NIK:</span>
-                <span class="font-semibold text-gray-800"><?= esc($nik) ?></span>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-400 uppercase font-bold text-[10px]">NIK:</span>
+                <span class="font-bold font-mono text-gray-900 dark:text-white"><?= esc($nik) ?></span>
             </div>
         </div>
 
         <?php if (!empty($wa_admin_number)): ?>
             <?php
-                $pesan_wa = "Halo Admin, saya ingin mengonfirmasi permintaan reset password.\n\n"
-                    . "Nama: " . $nama . "\n"
-                    . "NIK: " . $nik . "\n\n"
-                    . "Mohon bantuannya untuk mereset password akun saya. Terima kasih.";
-                $wa_url = "https://wa.me/" . $wa_admin_number . "?text=" . urlencode($pesan_wa);
+            $pesan_wa = "Halo Admin, saya ingin mengonfirmasi permintaan reset password.\n\n"
+                . "Nama: " . $nama . "\n"
+                . "NIK: " . $nik . "\n\n"
+                . "Mohon bantuannya untuk mereset password akun saya. Terima kasih.";
+            $wa_url = "https://wa.me/" . $wa_admin_number . "?text=" . urlencode($pesan_wa);
             ?>
-            <a href="<?= $wa_url ?>" target="_blank" class="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition shadow-md w-full mb-3">
-                <i class="fab fa-whatsapp text-xl"></i>
-                Konfirmasi via WhatsApp
+            <a href="<?= $wa_url ?>" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-theme-xs w-full mb-3 text-xs active:scale-[0.97]">
+                <span class="material-symbols-outlined text-base">chat</span>
+                <span>Konfirmasi via WhatsApp</span>
             </a>
         <?php endif; ?>
 
-        <a href="<?= base_url('/login') ?>" class="inline-block text-sm text-green-600 hover:text-green-800 font-medium">
-            <i class="fas fa-arrow-left mr-1"></i> Kembali ke halaman Login
+        <a href="<?= base_url('/login') ?>"
+           class="inline-flex items-center justify-center gap-1.5 text-xs text-brand-600 dark:text-brand-400 hover:underline font-bold mt-2">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            <span>Kembali ke Halaman Login</span>
         </a>
     </div>
+
 </body>
 
 </html>

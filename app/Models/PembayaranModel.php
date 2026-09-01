@@ -41,4 +41,17 @@ class PembayaranModel extends Model
         $row = $builder->get()->getRow();
         return $row ? (int) $row->jumlah : 0;
     }
+
+    /**
+     * Check if a duplicate payment was recently inserted within $windowSeconds seconds
+     */
+    public function isDuplicatePayment($siswaId, $jumlah, $tanggal, $windowSeconds = 10)
+    {
+        $since = date('Y-m-d H:i:s', time() - $windowSeconds);
+        return $this->where('siswa_id', $siswaId)
+            ->where('jumlah', $jumlah)
+            ->where('tanggal', $tanggal)
+            ->where('created_at >=', $since)
+            ->countAllResults() > 0;
+    }
 }

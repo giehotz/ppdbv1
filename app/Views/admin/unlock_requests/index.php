@@ -1,73 +1,58 @@
 <?= $this->extend('layouts/admin') ?>
 
-<?= $this->section('title') ?>
-Antrean Buka Kunci
-<?= $this->endSection() ?>
-
-<?= $this->section('page_title') ?>
-Antrean Permohonan Buka Kunci
-<?= $this->endSection() ?>
+<?= $this->section('title') ?>Antrean Buka Kunci<?= $this->endSection() ?>
+<?= $this->section('page_title') ?>Antrean Permohonan Buka Kunci<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-<?php if (session()->getFlashdata('success')) : ?>
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"><?= session()->getFlashdata('success') ?></span>
-    </div>
-<?php endif; ?>
-
-<?php if (session()->getFlashdata('error')) : ?>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"><?= session()->getFlashdata('error') ?></span>
-    </div>
-<?php endif; ?>
-
-<div class="bg-white rounded-lg shadow overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-medium text-gray-900">Daftar Permohonan Buka Kunci (Tertunda)</h3>
-        <p class="text-sm text-gray-500 mt-1">Siswa di bawah ini memohon perbaikan biodata dan meminta Anda membuka kembali Form mereka yang sudah Final.</p>
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="border-b border-gray-100 px-5 py-4 dark:border-gray-800 md:px-6">
+        <h3 class="text-sm font-bold text-gray-800 dark:text-white">Daftar Permohonan Buka Kunci (Tertunda)</h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Siswa memohon perbaikan biodata dan meminta Anda membuka kembali formulir pendaftaran yang sudah difinalisasi.</p>
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
+        <table class="w-full text-left">
             <thead>
-                <tr class="bg-gray-100 text-gray-600 uppercase text-xs leading-normal">
-                    <th class="py-3 px-6">Waktu Pengajuan</th>
-                    <th class="py-3 px-6">Identitas Siswa</th>
-                    <th class="py-3 px-6 w-1/3">Alasan / Pesan Siswa</th>
-                    <th class="py-3 px-6 text-center">Aksi (Eksekusi)</th>
+                <tr class="border-b border-gray-100 text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:border-gray-800 dark:text-gray-500 bg-gray-50/50 dark:bg-gray-800/30">
+                    <th class="py-3.5 px-5">Waktu Pengajuan</th>
+                    <th class="py-3.5 px-5">Identitas Siswa</th>
+                    <th class="py-3.5 px-5 w-1/3">Alasan / Pesan Siswa</th>
+                    <th class="py-3.5 px-5 text-center">Aksi (Eksekusi)</th>
                 </tr>
             </thead>
-            <tbody class="text-gray-600 font-light text-sm">
+            <tbody class="divide-y divide-gray-100 text-xs dark:divide-gray-800">
                 <?php if (!empty($requests)) : ?>
                     <?php foreach ($requests as $r) : ?>
-                        <tr class="border-b border-gray-200 hover:bg-gray-50">
-                            <td class="py-3 px-6 whitespace-nowrap">
-                                <div class="font-medium"><?= date('d M Y', strtotime($r['created_at'])) ?></div>
-                                <div class="text-xs text-gray-400"><?= date('H:i:s', strtotime($r['created_at'])) ?></div>
+                        <tr class="hover:bg-gray-50/50 transition-colors dark:hover:bg-white/[0.02]">
+                            <td class="py-3.5 px-5 whitespace-nowrap">
+                                <div class="font-semibold text-gray-800 dark:text-gray-200"><?= date('d M Y', strtotime($r['created_at'])) ?></div>
+                                <div class="text-[11px] text-gray-400 dark:text-gray-500"><?= date('H:i:s', strtotime($r['created_at'])) ?> WIB</div>
                             </td>
-                            <td class="py-3 px-6">
-                                <span class="font-semibold text-gray-800 block"><?= $r['nama_lengkap'] ?></span>
-                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded mt-1 inline-block"><?= $r['no_pendaftaran'] ?></span>
+                            <td class="py-3.5 px-5">
+                                <span class="font-bold text-gray-900 dark:text-white block"><?= esc($r['nama_lengkap']) ?></span>
+                                <span class="inline-flex rounded-md bg-blue-50 px-2 py-0.5 font-mono text-[11px] font-bold text-blue-700 dark:bg-blue-500/15 dark:text-blue-400 mt-1">
+                                    <?= esc($r['no_pendaftaran']) ?>
+                                </span>
                             </td>
-                            <td class="py-3 px-6">
-                                <div class="bg-gray-50 p-3 rounded text-sm italic border-l-4 border-yellow-400 text-gray-700">
-                                    "<?= htmlspecialchars($r['alasan']) ?>"
+                            <td class="py-3.5 px-5">
+                                <div class="rounded-xl border border-amber-200 bg-amber-50/60 p-3 text-xs italic text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200">
+                                    "<?= esc($r['alasan']) ?>"
                                 </div>
                             </td>
-                            <td class="py-3 px-6 text-center">
-                                <div class="flex item-center justify-center gap-2">
+                            <td class="py-3.5 px-5 text-center">
+                                <div class="flex items-center justify-center gap-2">
                                     <form action="<?= base_url('admin/unlockrequest/approve/' . $r['id_request']) ?>" method="post" class="inline" data-confirm="Apakah Anda yakin menyetujui dan MEMBUKA KEMBALI form siswa ini?">
                                         <?= csrf_field() ?>
-                                        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1.5 px-3 rounded shadow-sm transition text-xs flex items-center">
-                                            <i class="fas fa-check mr-1"></i> Terima & Buka
+                                        <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-theme-xs transition-colors hover:bg-emerald-700">
+                                            <i class="fas fa-check"></i> Terima & Buka
                                         </button>
                                     </form>
 
                                     <form action="<?= base_url('admin/unlockrequest/reject/' . $r['id_request']) ?>" method="post" class="inline" data-confirm="Tolak permohonan ini? (Data siswa akan tetap TERKUNCI FINAL)">
                                         <?= csrf_field() ?>
-                                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1.5 px-3 rounded shadow-sm transition text-xs flex items-center">
-                                            <i class="fas fa-times mr-1"></i> Tolak
+                                        <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg bg-red-500 px-3 py-1.5 text-xs font-semibold text-white shadow-theme-xs transition-colors hover:bg-red-600">
+                                            <i class="fas fa-times"></i> Tolak
                                         </button>
                                     </form>
                                 </div>
@@ -76,9 +61,9 @@ Antrean Permohonan Buka Kunci
                     <?php endforeach; ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="4" class="py-8 px-6 text-center text-gray-500 flex-col items-center">
-                            <i class="fas fa-inbox text-4xl text-gray-300 mb-3 block"></i>
-                            <p>Keren! Belum ada satupun antrean permohonan perbaikan biodata saat ini.</p>
+                        <td colspan="4" class="py-12 px-5 text-center text-gray-400 dark:text-gray-500">
+                            <i class="fas fa-check-circle text-4xl text-emerald-400/50 mb-3 block"></i>
+                            <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Tidak ada antrean permohonan buka kunci.</p>
                         </td>
                     </tr>
                 <?php endif; ?>

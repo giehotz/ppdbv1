@@ -69,6 +69,23 @@ class TagihanSiswaModel extends Model
             ->findAll();
     }
 
+    public function hasItem($siswaId, $itemId)
+    {
+        return $this->where('siswa_id', $siswaId)
+            ->where('item_id', $itemId)
+            ->countAllResults() > 0;
+    }
+
+    public function getPaidItems($siswaId)
+    {
+        return $this->select('tbl_tagihan_siswa.*, tbl_item_pembiayaan.nama as nama_item')
+            ->join('tbl_item_pembiayaan', 'tbl_item_pembiayaan.id_item = tbl_tagihan_siswa.item_id')
+            ->where('tbl_tagihan_siswa.siswa_id', $siswaId)
+            ->where('tbl_tagihan_siswa.status_bayar', 'lunas')
+            ->orderBy('tbl_tagihan_siswa.created_at', 'ASC')
+            ->findAll();
+    }
+
     public function markAsLunas($idTagihan)
     {
         return $this->update($idTagihan, ['status_bayar' => 'lunas']);

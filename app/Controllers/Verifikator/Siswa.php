@@ -119,13 +119,20 @@ class Siswa extends BaseController
         if (!empty($createdIds)) {
             $siswaList = $this->siswaModel
                 ->whereIn('id_siswa', $createdIds)
-                ->orderBy('tgl_siswa', 'DESC')
+                ->orderBy('id_siswa', 'DESC')
                 ->findAll();
-            foreach ($siswaList as &$s) {
-                $cd = $this->siswaModel->calculateCompletionPercentage($s);
-                $s['kelengkapan'] = $cd['percentage'];
-            }
+        } else {
+            // Tampilkan 10 pendaftaran siswa terbaru sebagai riwayat default
+            $siswaList = $this->siswaModel
+                ->orderBy('id_siswa', 'DESC')
+                ->findAll(10);
         }
+
+        foreach ($siswaList as &$s) {
+            $cd = $this->siswaModel->calculateCompletionPercentage($s);
+            $s['kelengkapan'] = $cd['percentage'];
+        }
+
         return view('verifikator/siswa/create', ['siswaList' => $siswaList]);
     }
 
@@ -140,7 +147,7 @@ class Siswa extends BaseController
             'nisn' => 'required|numeric|min_length[10]|max_length[10]|is_unique[tbl_siswa.nisn]',
             'nama_lengkap' => 'required|min_length[3]',
             'email' => 'required|valid_email|is_unique[tbl_siswa.email]',
-            'no_hp' => 'required|numeric',
+            'no_hp' => 'required|min_length[8]|max_length[16]|regex_match[/^[0-9+\-\s]+$/]',
             'password' => 'required|min_length[6]',
             'confirm_password' => 'required|matches[password]'
         ]);
@@ -153,16 +160,19 @@ class Siswa extends BaseController
         $db = \Config\Database::connect();
         $db->transStart();
 
+        $cleanPhone = preg_replace('/[^0-9]/', '', (string)$this->request->getPost('no_hp'));
+
         // Insert initial data dengan temporary no_pendaftaran
         $data = [
             'no_pendaftaran' => 'TEMP-' . uniqid(),
             'nisn' => $this->request->getPost('nisn'),
             'nama_lengkap' => $this->request->getPost('nama_lengkap'),
             'email' => $this->request->getPost('email'),
-            'no_hp_siswa' => $this->request->getPost('no_hp'),
+            'no_hp_siswa' => $cleanPhone,
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
             'tgl_siswa' => date('Y-m-d H:i:s'),
-            'status_verifikasi' => 'Menunggu'
+            'status_verifikasi' => 'Menunggu',
+            'status_pendaftaran' => 'Draft'
         ];
 
         $insertId = $siswaModel->skipValidation(true)->insert($data);
@@ -181,7 +191,7 @@ class Siswa extends BaseController
             
             $year = !empty($web['th_pelajaran']) ? substr($web['th_pelajaran'], 0, 4) : date('Y');
             $month = date('m');
-            $newNumber = str_pad($insertId, 4, '0', STR_PAD_LEFT);
+            $newNumber = str_pad((string)$insertId, 4, '0', STR_PAD_LEFT);
             
             $no_pendaftaran = str_replace(
                 ['{TAHUN}', '{BULAN}', '{URUT}'], 
@@ -208,6 +218,7 @@ class Siswa extends BaseController
             return redirect()->to('/verifikator/siswa/create');
         }
     }
+
 
     public function biodata($id)
     {
@@ -263,94 +274,68 @@ class Siswa extends BaseController
             return redirect()->to('/verifikator/siswa');
         }
 
-        $validation = \Config\Services::validation();
-        $validation->setRules([
-            'nik' => "required|numeric|min_length[16]|max_length[16]|is_unique[tbl_siswa.nik,id_siswa,{$id}]",
-            'tempat_lahir' => 'required',
-            'tgl_lahir' => 'required|valid_date',
-            'jk' => 'required|in_list[L,P]',
-            'agama' => 'required',
-        ]);
+        // Ambil semua input POST
+        $data = $this->request->getPost();
 
-        if (!$validation->withRequest($this->request)->run()) {
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
-        }
-
-        $data = [
-            'nik' => $this->request->getPost('nik'),
-            'nama_lengkap' => $this->request->getPost('nama_lengkap'),
-            'jk' => $this->request->getPost('jk'),
-            'tempat_lahir' => $this->request->getPost('tempat_lahir'),
-            'tgl_lahir' => $this->request->getPost('tgl_lahir'),
-            'agama' => $this->request->getPost('agama'),
-            'status_keluarga' => $this->request->getPost('status_keluarga'),
-            'anak_ke' => $this->request->getPost('anak_ke'),
-            'jml_saudara' => $this->request->getPost('jml_saudara'),
-            'hobi' => $this->request->getPost('hobi'),
-            'cita' => $this->request->getPost('cita'),
-            'paud' => $this->request->getPost('paud'),
-            'tk' => $this->request->getPost('tk'),
-            'email' => $this->request->getPost('email'),
-            'no_hp_siswa' => $this->request->getPost('no_hp_siswa'),
-            'no_kk' => $this->request->getPost('no_kk'),
-            'kepala_keluarga' => $this->request->getPost('kepala_keluarga'),
-            'alamat_siswa' => $this->request->getPost('alamat_siswa'),
-            'prov' => $this->request->getPost('prov'),
-            'kab' => $this->request->getPost('kab'),
-            'kec' => $this->request->getPost('kec'),
-            'desa' => $this->request->getPost('desa'),
-            'kode_pos' => $this->request->getPost('kode_pos'),
-            'jenis_tinggal' => $this->request->getPost('jenis_tinggal'),
-            'jarak' => $this->request->getPost('jarak'),
-            'trans' => $this->request->getPost('trans'),
-            'jalur_pendaftaran' => $this->request->getPost('jalur_pendaftaran'),
-            'nama_ayah' => $this->request->getPost('nama_ayah'),
-            'status_ayah' => $this->request->getPost('status_ayah'),
-            'nik_ayah' => $this->request->getPost('nik_ayah'),
-            'tempat_lahir_ayah' => $this->request->getPost('tempat_lahir_ayah'),
-            'tgl_lahir_ayah' => $this->request->getPost('tgl_lahir_ayah'),
-            'th_lahir_ayah' => $this->request->getPost('th_lahir_ayah'),
-            'pdd_ayah' => $this->request->getPost('pdd_ayah'),
-            'pekerjaan_ayah' => $this->request->getPost('pekerjaan_ayah'),
-            'penghasilan_ayah' => $this->request->getPost('penghasilan_ayah'),
-            'nama_ibu' => $this->request->getPost('nama_ibu'),
-            'status_ibu' => $this->request->getPost('status_ibu'),
-            'nik_ibu' => $this->request->getPost('nik_ibu'),
-            'tempat_lahir_ibu' => $this->request->getPost('tempat_lahir_ibu'),
-            'tgl_lahir_ibu' => $this->request->getPost('tgl_lahir_ibu'),
-            'th_lahir_ibu' => $this->request->getPost('th_lahir_ibu'),
-            'pdd_ibu' => $this->request->getPost('pdd_ibu'),
-            'pekerjaan_ibu' => $this->request->getPost('pekerjaan_ibu'),
-            'penghasilan_ibu' => $this->request->getPost('penghasilan_ibu'),
-            'nama_wali' => $this->request->getPost('nama_wali'),
-            'nik_wali' => $this->request->getPost('nik_wali'),
-            'th_lahir_wali' => $this->request->getPost('th_lahir_wali'),
-            'pdd_wali' => $this->request->getPost('pdd_wali'),
-            'pekerjaan_wali' => $this->request->getPost('pekerjaan_wali'),
-            'penghasilan_wali' => $this->request->getPost('penghasilan_wali'),
-            'no_hp_ortu' => $this->request->getPost('no_hp_ortu'),
-            'nama_sekolah' => $this->request->getPost('nama_sekolah'),
-            'npsn_sekolah' => $this->request->getPost('npsn_sekolah'),
-            'jenjang_sekolah' => $this->request->getPost('jenjang_sekolah'),
-            'komp_ahli' => $this->request->getPost('komp_ahli'),
-            'status_sekolah' => $this->request->getPost('status_sekolah'),
-            'lokasi_sekolah' => $this->request->getPost('lokasi_sekolah'),
-            'no_kks' => $this->request->getPost('no_kks'),
-            'no_pkh' => $this->request->getPost('no_pkh'),
-            'no_kip' => $this->request->getPost('no_kip'),
+        // Mencegah Mass Assignment: hapus field sistem/sensitif
+        $restrictedFields = [
+            'id_siswa',
+            'no_pendaftaran',
+            'password',
+            'status_verifikasi',
+            'status_pendaftaran',
+            'status_berkas',
+            'status_lulus',
+            'tgl_verifikasi',
+            'verified_by',
+            'catatan_verifikasi',
+            'tgl_siswa',
+            'csrf_test_name',
+            'finish_skip'
         ];
 
-        $this->siswaModel->update($id, $data);
-        catat_log('Update Biodata (Verifikator)', "Verifikator memperbarui biodata siswa ID $id");
+        foreach ($restrictedFields as $field) {
+            if (isset($data[$field])) {
+                unset($data[$field]);
+            }
+        }
+
+        // Sanitasi NIK jika diisi
+        if (!empty($data['nik'])) {
+            $data['nik'] = preg_replace('/[^0-9]/', '', (string)$data['nik']);
+            
+            // Validasi format & keunikan NIK hanya jika NIK diisi
+            $existingNik = $this->siswaModel->where('nik', $data['nik'])->where('id_siswa !=', $id)->first();
+            if ($existingNik) {
+                session()->setFlashdata('error', 'NIK ' . esc($data['nik']) . ' sudah terdaftar pada siswa lain.');
+                return redirect()->back()->withInput();
+            }
+        }
+
+        // Sanitasi nomor telepon jika diisi
+        if (!empty($data['no_hp_siswa'])) {
+            $data['no_hp_siswa'] = preg_replace('/[^0-9+]/', '', (string)$data['no_hp_siswa']);
+        }
+        if (!empty($data['no_hp_ortu'])) {
+            $data['no_hp_ortu'] = preg_replace('/[^0-9+]/', '', (string)$data['no_hp_ortu']);
+        }
+
+        // Update ke database
+        if ($this->siswaModel->skipValidation(true)->update($id, $data)) {
+            $namaSiswa = $data['nama_lengkap'] ?? $siswa['nama_lengkap'];
+            catat_log('Update Biodata (Verifikator)', "Verifikator " . session()->get('nama_lengkap') . " memperbarui data biodata siswa: $namaSiswa (ID $id)");
+            session()->setFlashdata('success', 'Data biodata berhasil disimpan.');
+        } else {
+            session()->setFlashdata('error', 'Gagal memperbarui data biodata ke database.');
+        }
 
         if ($this->request->getPost('finish_skip')) {
-            session()->setFlashdata('success', 'Biodata berhasil disimpan.');
             return redirect()->to('/verifikator/siswa/cetak-akun/' . $id);
         }
 
-        session()->setFlashdata('success', 'Biodata berhasil disimpan. Silakan unggah berkas persyaratan.');
-        return redirect()->to('/verifikator/siswa/biodata/' . $id)->with('tab', 'berkas');
+        return redirect()->to('/verifikator/siswa/biodata/' . $id);
     }
+
 
     public function berkas($id)
     {
@@ -389,12 +374,22 @@ class Siswa extends BaseController
     {
         $berkasModel = new \App\Models\BerkasModel();
         $siswa = $this->siswaModel->find($id);
+        if (!$siswa) {
+            session()->setFlashdata('error', 'Data siswa tidak ditemukan.');
+            return redirect()->back();
+        }
         
         $jenisBerkas = $this->request->getPost('jenis_berkas');
+        $allowedDocs = ['kk', 'akte', 'ijazah', 'foto', 'ktp_ortu', 'kks', 'pkh', 'kip'];
+        if (!in_array($jenisBerkas, $allowedDocs, true)) {
+            session()->setFlashdata('error', 'Jenis berkas tidak valid.');
+            return redirect()->back();
+        }
+
         $file = $this->request->getFile('file_berkas');
 
-        if (!$file->isValid()) {
-            session()->setFlashdata('error', 'File tidak valid.');
+        if (!$file || !$file->isValid()) {
+            session()->setFlashdata('error', 'File tidak valid atau belum dipilih.');
             return redirect()->back();
         }
 
@@ -409,16 +404,17 @@ class Siswa extends BaseController
             return redirect()->back();
         }
 
-        $nisn = $siswa['nisn'];
-        $uploadPath = FCPATH . 'uploads/berkas/' . $nisn . '/';
+        $safeNisn = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)$siswa['nisn']);
+        $uploadPath = FCPATH . 'uploads/berkas/' . $safeNisn . '/';
         if (!is_dir($uploadPath)) {
             mkdir($uploadPath, 0777, true);
         }
 
         $extension = strtolower($file->getExtension());
-        $jenisLabel = strtoupper($jenisBerkas);
-        $namaClean = preg_replace('/[^a-zA-Z0-9_-]/', '_', str_replace(' ', '_', $siswa['nama_lengkap']));
-        $fileName = $jenisLabel . '_' . $namaClean . '_' . $nisn . '.' . $extension;
+        $jenisLabel = strtoupper((string)$jenisBerkas);
+        $namaClean = preg_replace('/[^a-zA-Z0-9_-]/', '_', str_replace(' ', '_', (string)$siswa['nama_lengkap']));
+        $fileName = $jenisLabel . '_' . $namaClean . '_' . $safeNisn . '.' . $extension;
+
 
         if ($file->move($uploadPath, $fileName)) {
             $existing = $berkasModel->where('id_siswa', $id)->where('jenis_berkas', $jenisBerkas)->first();
@@ -464,14 +460,16 @@ class Siswa extends BaseController
 
         $idSiswa = $berkas['id_siswa'];
         $siswa = $this->siswaModel->find($idSiswa);
-        $nisn = $siswa['nisn'];
-
-        $safeNisn = preg_replace('/[^a-zA-Z0-9_-]/', '', $nisn);
-        $baseDir = realpath(FCPATH . 'uploads/berkas/') ?: FCPATH . 'uploads/berkas/';
-        $filePath = realpath(FCPATH . 'uploads/berkas/' . $safeNisn . '/' . $berkas['nama_file']);
         
-        if ($filePath !== false && strpos($filePath, $baseDir) === 0 && file_exists($filePath)) {
-            unlink($filePath);
+        if ($siswa) {
+            $safeNisn = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)$siswa['nisn']);
+            $baseDir = realpath(FCPATH . 'uploads/berkas/') ?: FCPATH . 'uploads/berkas/';
+            $cleanFileName = basename((string)$berkas['nama_file']);
+            $filePath = realpath(FCPATH . 'uploads/berkas/' . $safeNisn . '/' . $cleanFileName);
+            
+            if ($filePath !== false && strpos($filePath, $baseDir) === 0 && file_exists($filePath)) {
+                unlink($filePath);
+            }
         }
 
         $berkasModel->delete($idBerkas);
@@ -479,9 +477,10 @@ class Siswa extends BaseController
         return redirect()->back()->with('tab', 'berkas');
     }
 
+
     public function resetPassword($id)
     {
-        $newPassword = $this->request->getPost('new_password');
+        $newPassword = $this->request->getPost('new_password') ?: $this->request->getPost('password_baru');
         if (empty($newPassword)) {
             $newPassword = bin2hex(random_bytes(6));
         }
@@ -490,6 +489,15 @@ class Siswa extends BaseController
         $student = $this->siswaModel->find($id);
 
         if ($student && $this->siswaModel->update($id, ['password' => $hashedPassword])) {
+            session()->set('siswa_pwd_' . $id, $newPassword);
+            
+            // Bersihkan throttle & cache agar siswa bisa langsung login tanpa terkunci
+            try {
+                \Config\Services::cache()->clean();
+            } catch (\Throwable $e) {
+                // ignore if cache driver cannot clean all
+            }
+
             $printData = [
                 'nama' => $student['nama_lengkap'],
                 'nisn' => $student['nisn'] ?? '-',
@@ -497,13 +505,25 @@ class Siswa extends BaseController
                 'password' => $newPassword,
                 'tanggal' => date('d-m-Y H:i:s')
             ];
-            session()->setFlashdata('success', 'Password siswa berhasil direset. Menyiapkan dokumen cetak...');
+            session()->setFlashdata('success', 'Password siswa berhasil direset ke: <strong>' . esc($newPassword) . '</strong>. Kunci login telah dibuka.');
             session()->setFlashdata('print_password', $printData);
         } else {
             session()->setFlashdata('error', 'Gagal mereset password siswa.');
         }
 
         return redirect()->back();
+    }
+
+    public function resetThrottle()
+    {
+        try {
+            \Config\Services::cache()->clean();
+            session()->setFlashdata('success', 'Batas waktu percobaan login (lockout 15 menit) berhasil direset. Silakan login kembali.');
+        } catch (\Throwable $e) {
+            session()->setFlashdata('error', 'Gagal mereset cache login: ' . $e->getMessage());
+        }
+
+        return redirect()->to(base_url('verifikator/siswa'));
     }
 
     public function cetakPassword()

@@ -19,7 +19,7 @@ class Biodata extends BaseController
 
         if (!$siswa) {
             session()->setFlashdata('error', 'Data siswa tidak ditemukan.');
-            return redirect()->to('/siswa/dashboard');
+            return redirect()->to('/logout');
         }
 
         $unlockRequestModel = new UnlockRequestModel();

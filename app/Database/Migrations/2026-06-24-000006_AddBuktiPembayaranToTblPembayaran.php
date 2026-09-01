@@ -8,13 +8,15 @@ class AddBuktiPembayaranToTblPembayaran extends Migration
 {
     public function up()
     {
-        $this->forge->addColumn('tbl_pembayaran', [
-            'bukti_pembayaran' => [
-                'type' => 'TEXT',
-                'null' => true,
-                'comment' => 'JSON array of file paths',
-            ],
-        ]);
+        if (!$this->db->fieldExists('bukti_pembayaran', 'tbl_pembayaran')) {
+            $this->forge->addColumn('tbl_pembayaran', [
+                'bukti_pembayaran' => [
+                    'type' => 'TEXT',
+                    'null' => true,
+                    'comment' => 'JSON array of file paths',
+                ],
+            ]);
+        }
     }
 
     public function down()

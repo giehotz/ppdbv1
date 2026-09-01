@@ -5,71 +5,65 @@ Landing Content Management
 <?= $this->endSection() ?>
 
 <?= $this->section('page_title') ?>
-Landing Content Management
+<span class="material-symbols-outlined text-brand-500 mr-1">web</span> Landing Content Management
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-<?php if (session()->getFlashdata('success')) : ?>
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"><?= session()->getFlashdata('success') ?></span>
-    </div>
-<?php endif; ?>
-
-<?php if (session()->getFlashdata('error')) : ?>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"><?= session()->getFlashdata('error') ?></span>
-    </div>
-<?php endif; ?>
-
-<div class="bg-white rounded-lg shadow overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-        <h3 class="text-lg font-medium text-gray-900">Edit Landing Page</h3>
-        <a href="<?= base_url('/') ?>" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200">
-            <i class="fas fa-eye mr-2"></i> Preview Landing Page
+<!-- Main Card -->
+<div class="rounded-2xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+    <!-- Card Header -->
+    <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div>
+            <h3 class="text-base font-bold text-gray-900 dark:text-white">Edit Landing Page</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Kelola konten halaman utama website PPDB Anda</p>
+        </div>
+        <a href="<?= base_url('/') ?>" target="_blank" class="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2.5 px-5 rounded-xl shadow-theme-xs transition-all duration-200 text-sm active:scale-[0.97]">
+            <span class="material-symbols-outlined text-lg">visibility</span>
+            Preview Landing Page
         </a>
     </div>
 
-    <!-- Tabs -->
-    <div class="border-b border-gray-200">
-        <nav class="flex -mb-px flex-wrap" aria-label="Tabs">
-            <button onclick="switchTab('navbar')" id="tab-navbar" class="tab-button border-b-2 border-green-500 text-green-600 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-compass mr-1"></i> Navbar
+    <!-- Tab Navigation (TailAdmin Pill Style) -->
+    <div class="px-5 pt-5 pb-0">
+        <div class="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-gray-800 rounded-xl" role="tablist">
+            <button onclick="switchTab('navbar')" id="tab-navbar" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-compass text-xs"></i> Navbar
             </button>
-            <button onclick="switchTab('hero')" id="tab-hero" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-star mr-1"></i> Hero
+            <button onclick="switchTab('hero')" id="tab-hero" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-star text-xs"></i> Hero
             </button>
-            <button onclick="switchTab('jadwal')" id="tab-jadwal" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-calendar-alt mr-1"></i> Jadwal
+            <button onclick="switchTab('jadwal')" id="tab-jadwal" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-calendar-alt text-xs"></i> Jadwal
             </button>
-            <button onclick="switchTab('syarat')" id="tab-syarat" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-clipboard-list mr-1"></i> Syarat
+            <button onclick="switchTab('syarat')" id="tab-syarat" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-clipboard-list text-xs"></i> Syarat
             </button>
-            <button onclick="switchTab('kontak')" id="tab-kontak" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-phone-alt mr-1"></i> Kontak
+            <button onclick="switchTab('kontak')" id="tab-kontak" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-phone-alt text-xs"></i> Kontak
             </button>
-            <button onclick="switchTab('footer')" id="tab-footer" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-shoe-prints mr-1"></i> Footer
+            <button onclick="switchTab('footer')" id="tab-footer" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-shoe-prints text-xs"></i> Footer
             </button>
-            <button onclick="switchTab('fitur')" id="tab-fitur" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-star mr-1"></i> Keunggulan
+            <button onclick="switchTab('fitur')" id="tab-fitur" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-star text-xs"></i> Keunggulan
             </button>
-            <button onclick="switchTab('galeri')" id="tab-galeri" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-images mr-1"></i> Galeri
+            <button onclick="switchTab('galeri')" id="tab-galeri" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-images text-xs"></i> Galeri
             </button>
-            <button onclick="switchTab('testimoni')" id="tab-testimoni" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-comments mr-1"></i> Testimoni
+            <button onclick="switchTab('testimoni')" id="tab-testimoni" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-comments text-xs"></i> Testimoni
             </button>
-            <button onclick="switchTab('faq')" id="tab-faq" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-question-circle mr-1"></i> FAQ
+            <button onclick="switchTab('faq')" id="tab-faq" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-question-circle text-xs"></i> FAQ
             </button>
-            <button onclick="switchTab('pendaftar')" id="tab-pendaftar" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-users mr-1"></i> Data Pendaftar
+            <button onclick="switchTab('pendaftar')" id="tab-pendaftar" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-users text-xs"></i> Pendaftar
             </button>
-            <button onclick="switchTab('favicon')" id="tab-favicon" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-6 text-sm font-medium">
-                <i class="fas fa-image mr-1"></i> Favicon
+            <button onclick="switchTab('favicon')" id="tab-favicon" class="tab-button flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200" type="button" role="tab">
+                <i class="fas fa-image text-xs"></i> Favicon
             </button>
-        </nav>
+        </div>
     </div>
 
     <!-- ===================== NAVBAR ===================== -->
@@ -122,10 +116,10 @@ Landing Content Management
             content.classList.add('hidden');
         });
 
-        // Remove active state from all tabs
+        // Remove active state from all tabs (TailAdmin pill style)
         document.querySelectorAll('.tab-button').forEach(button => {
-            button.classList.remove('border-green-500', 'text-green-600');
-            button.classList.add('border-transparent', 'text-gray-500');
+            button.classList.remove('bg-white', 'dark:bg-gray-900', 'text-brand-500', 'shadow-sm');
+            button.classList.add('text-gray-500', 'dark:text-gray-400');
         });
 
         // Show selected content
@@ -134,11 +128,11 @@ Landing Content Management
             targetContent.classList.remove('hidden');
         }
 
-        // Activate selected tab
+        // Activate selected tab (TailAdmin pill style)
         const activeTab = document.getElementById('tab-' + tabName);
         if (activeTab) {
-            activeTab.classList.remove('border-transparent', 'text-gray-500');
-            activeTab.classList.add('border-green-500', 'text-green-600');
+            activeTab.classList.remove('text-gray-500', 'dark:text-gray-400');
+            activeTab.classList.add('bg-white', 'dark:bg-gray-900', 'text-brand-500', 'shadow-sm');
         }
     }
 

@@ -1,85 +1,94 @@
 <?= $this->extend('layouts/admin') ?>
 
-<?= $this->section('title') ?>Manajemen Twibbon<?= $this->endSection() ?>
+<?= $this->section('title') ?>
+Manajemen Twibbon
+<?= $this->endSection() ?>
 
-<?= $this->section('page_title') ?>Kampanye Twibbon<?= $this->endSection() ?>
+<?= $this->section('page_title') ?>
+<span class="material-symbols-outlined text-brand-500 mr-1">wallpaper</span> Kampanye Twibbon
+<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="bg-white rounded-lg shadow-md p-6">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <div>
-            <h2 class="text-xl font-bold text-gray-800">Daftar Kampanye Twibbon</h2>
-            <p class="text-sm text-gray-500">Kelola bingkai promosi dan lihat statistik penggunaannya.</p>
-        </div>
-        <div class="flex items-center gap-2">
-            <a href="<?= base_url('admin/twibbon/setting') ?>" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2 text-sm">
-                <i class="fas fa-cog"></i> Pengaturan
-            </a>
-            <a href="<?= base_url('admin/twibbon/create') ?>" class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2">
-                <i class="fas fa-plus"></i> Tambah Kampanye
-            </a>
-        </div>
+
+<!-- Action Header -->
+<div class="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+        <h3 class="text-base font-bold text-gray-900 dark:text-white">Daftar Kampanye Twibbon</h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Kelola bingkai promosi media sosial dan pantau statistik unduhan calon siswa</p>
     </div>
 
-    <!-- Alert Success / Error -->
-    <?php if (session()->getFlashdata('success')): ?>
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <span class="block sm:inline"><?= session()->getFlashdata('success') ?></span>
-        </div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <span class="block sm:inline"><?= session()->getFlashdata('error') ?></span>
-        </div>
-    <?php endif; ?>
+    <div class="flex items-center gap-2.5">
+        <a href="<?= base_url('admin/twibbon/setting') ?>"
+           class="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3.5 py-2.5 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-theme-xs hover:bg-gray-50 dark:hover:bg-gray-700 transition active:scale-[0.97]">
+            <span class="material-symbols-outlined text-base">settings</span>
+            <span>Pengaturan</span>
+        </a>
+        <a href="<?= base_url('admin/twibbon/create') ?>"
+           class="inline-flex items-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 px-4 py-2.5 text-xs font-bold text-white shadow-theme-xs transition active:scale-[0.97]">
+            <span class="material-symbols-outlined text-base">add</span>
+            <span>Tambah Kampanye</span>
+        </a>
+    </div>
+</div>
 
+<!-- Table Card -->
+<div class="rounded-2xl border border-gray-200 bg-white p-5 md:p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
     <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bingkai</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kampanye</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Periode</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unduhan</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-gray-100 dark:border-gray-800 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                    <th class="py-3.5 px-4">Bingkai</th>
+                    <th class="py-3.5 px-4">Nama Kampanye</th>
+                    <th class="py-3.5 px-4">Periode Tayang</th>
+                    <th class="py-3.5 px-4 text-center">Status</th>
+                    <th class="py-3.5 px-4 text-center">Total Unduhan</th>
+                    <th class="py-3.5 px-4 text-center">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-xs md:text-sm">
                 <?php if (empty($campaigns)): ?>
                     <tr>
-                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">Belum ada kampanye twibbon yang dibuat.</td>
+                        <td colspan="6" class="py-12 text-center text-gray-400 dark:text-gray-500">
+                            <span class="material-symbols-outlined text-4xl block mb-2">wallpaper</span>
+                            <p class="text-xs">Belum ada kampanye twibbon yang dibuat.</p>
+                        </td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($campaigns as $c): ?>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                        <tr class="hover:bg-gray-50/60 dark:hover:bg-gray-800/30 transition-colors">
+                            <td class="py-4 px-4 whitespace-nowrap">
                                 <?php if (!empty($c['frame']['file_path'])): ?>
-                                    <img src="<?= base_url($c['frame']['file_path']) ?>" alt="Frame" class="w-16 h-16 object-cover border rounded shadow-sm hover:scale-105 transition-transform duration-200">
+                                    <div class="h-14 w-14 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden bg-gray-50 dark:bg-gray-800 shadow-theme-xs">
+                                        <img src="<?= base_url($c['frame']['file_path']) ?>" alt="Frame" class="h-full w-full object-cover hover:scale-105 transition-transform duration-200">
+                                    </div>
                                 <?php else: ?>
-                                    <div class="w-16 h-16 bg-gray-100 border rounded flex items-center justify-center text-gray-400">
-                                        <i class="far fa-image text-2xl"></i>
+                                    <div class="h-14 w-14 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center text-gray-400">
+                                        <span class="material-symbols-outlined text-2xl">image</span>
                                     </div>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-semibold text-gray-900"><?= esc($c['title']) ?></div>
-                                <div class="text-xs text-gray-500 mt-1 max-w-xs truncate"><?= strip_tags($c['description'] ?: 'Tidak ada deskripsi') ?></div>
-                                <div class="text-xs text-green-600 mt-1">
-                                    <a href="<?= base_url('twibbon/' . $c['slug']) ?>" target="_blank" class="hover:underline flex items-center gap-1">
-                                        <i class="fas fa-external-link-alt text-[10px]"></i> Lihat Halaman Publik
+                            <td class="py-4 px-4 max-w-xs md:max-w-sm">
+                                <div class="font-bold text-gray-900 dark:text-white truncate"><?= esc($c['title']) ?></div>
+                                <div class="text-[11px] text-gray-400 dark:text-gray-500 truncate mt-0.5"><?= strip_tags($c['description'] ?: 'Tidak ada deskripsi') ?></div>
+                                <div class="mt-1">
+                                    <a href="<?= base_url('twibbon/' . $c['slug']) ?>" target="_blank"
+                                       class="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+                                        <span>Lihat Halaman Publik</span>
+                                        <span class="material-symbols-outlined text-xs">open_in_new</span>
                                     </a>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td class="py-4 px-4 whitespace-nowrap text-xs text-gray-600 dark:text-gray-400">
                                 <?php if ($c['start_date'] || $c['end_date']): ?>
-                                    <div>Mulai: <?= $c['start_date'] ? date('d M Y', strtotime($c['start_date'])) : '-' ?></div>
-                                    <div class="mt-1">Selesai: <?= $c['end_date'] ? date('d M Y', strtotime($c['end_date'])) : '-' ?></div>
+                                    <div><span class="text-gray-400">Mulai:</span> <?= $c['start_date'] ? date('d M Y', strtotime($c['start_date'])) : '-' ?></div>
+                                    <div class="mt-0.5"><span class="text-gray-400">Selesai:</span> <?= $c['end_date'] ? date('d M Y', strtotime($c['end_date'])) : '-' ?></div>
                                 <?php else: ?>
-                                    <span>Selamanya</span>
+                                    <span class="inline-flex items-center gap-1 text-gray-500">
+                                        <span class="material-symbols-outlined text-xs">all_inclusive</span> Selamanya
+                                    </span>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="py-4 px-4 text-center whitespace-nowrap">
                                 <?php
                                 $today = date('Y-m-d');
                                 $activeDate = true;
@@ -87,26 +96,36 @@
                                 if ($c['end_date'] && $c['end_date'] < $today) $activeDate = false;
 
                                 if ($c['is_active'] && $activeDate): ?>
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-500/20">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Aktif
+                                    </span>
                                 <?php else: ?>
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Non-Aktif</span>
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-500 dark:bg-gray-800 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
+                                        Nonaktif
+                                    </span>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                                <?= number_format($c['total_downloads']) ?> kali
+                            <td class="py-4 px-4 text-center whitespace-nowrap font-mono font-bold text-gray-900 dark:text-white">
+                                <?= number_format($c['total_downloads']) ?> <span class="text-xs font-normal text-gray-400">kali</span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex items-center gap-2">
-                                    <a href="<?= base_url('admin/twibbon/stats/' . $c['id']) ?>" class="text-blue-600 hover:text-blue-900" title="Statistik">
-                                        <i class="fas fa-chart-line text-lg"></i>
+                            <td class="py-4 px-4 text-center whitespace-nowrap">
+                                <div class="flex items-center justify-center gap-1.5">
+                                    <a href="<?= base_url('admin/twibbon/stats/' . $c['id']) ?>"
+                                       class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 transition"
+                                       title="Statistik Kampanye">
+                                        <span class="material-symbols-outlined text-base">monitoring</span>
                                     </a>
-                                    <a href="<?= base_url('admin/twibbon/edit/' . $c['id']) ?>" class="text-yellow-600 hover:text-yellow-900" title="Edit">
-                                        <i class="fas fa-edit text-lg"></i>
+                                    <a href="<?= base_url('admin/twibbon/edit/' . $c['id']) ?>"
+                                       class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-amber-500/15 dark:text-amber-400 dark:hover:bg-amber-500/25 transition"
+                                       title="Edit">
+                                        <span class="material-symbols-outlined text-base">edit</span>
                                     </a>
                                     <form action="<?= base_url('admin/twibbon/delete/' . $c['id']) ?>" method="post" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kampanye ini?');" class="inline">
                                         <?= csrf_field() ?>
-                                        <button type="submit" class="text-red-600 hover:text-red-900" title="Hapus">
-                                            <i class="fas fa-trash-alt text-lg"></i>
+                                        <button type="submit"
+                                                class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 transition"
+                                                title="Hapus">
+                                            <span class="material-symbols-outlined text-base">delete</span>
                                         </button>
                                     </form>
                                 </div>
@@ -118,4 +137,5 @@
         </table>
     </div>
 </div>
+
 <?= $this->endSection() ?>

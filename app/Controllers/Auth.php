@@ -17,13 +17,15 @@ class Auth extends BaseController
     public function index()
     {
         if (session()->get('logged_in')) {
-            $userType = session()->get('user_type');
+            $userType = session()->get('user_type') ?? session()->get('level') ?? session()->get('role');
             if ($userType === 'verifikator') {
-                return redirect()->to('/verifikator/dashboard');
+                return redirect()->to('/verifikator/dashboard')->withCookies();
             } elseif ($userType === 'admin') {
-                return redirect()->to('/admin/dashboard');
+                return redirect()->to('/admin/dashboard')->withCookies();
+            } elseif ($userType === 'siswa') {
+                return redirect()->to('/siswa/dashboard')->withCookies();
             } else {
-                return redirect()->to('/siswa/dashboard');
+                session()->destroy();
             }
         }
         return view('auth/login');
@@ -104,8 +106,11 @@ class Auth extends BaseController
                 $ses_data = [
                     'id_user'       => $admin['id_user'],
                     'username'      => $admin['username'],
+                    'nama'          => $admin['nama_lengkap'] ?? $admin['username'],
                     'nama_lengkap'  => $admin['nama_lengkap'],
                     'level'         => $admin['level'],
+                    'role'          => $admin['level'],
+                    'foto'          => $admin['foto'] ?? null,
                     'logged_in'     => TRUE,
                     'user_type'     => $admin['level']
                 ];
@@ -126,12 +131,15 @@ class Auth extends BaseController
             }
         }
 
-        // Try student login
+        // Try student login — gunakan query terpisah agar index nisn/email/nik digunakan
         $siswaModel = new \App\Models\SiswaModel();
-        $siswa = $siswaModel->where('nisn', $identifier)
-            ->orWhere('email', $identifier)
-            ->orWhere('nik', $identifier)
-            ->first();
+        $siswa = $siswaModel->where('nisn', $identifier)->first();
+        if (!$siswa) {
+            $siswa = $siswaModel->where('email', $identifier)->first();
+        }
+        if (!$siswa) {
+            $siswa = $siswaModel->where('nik', $identifier)->first();
+        }
 
         if ($siswa) {
             $verify_pass = password_verify($password, $siswa['password']);
@@ -170,25 +178,38 @@ class Auth extends BaseController
     {
         $session = session();
         
-        // Catat log sebelum session dihapus
+        // Catat log aktivitas sebelum session dibersihkan
         if ($session->get('logged_in')) {
-            catat_log('Logout', 'Berhasil keluar dari sistem');
+            try {
+                catat_log('Logout', 'Berhasil keluar dari sistem');
+            } catch (\Throwable $e) {
+                // Abaikan jika database log tidak dapat diakses saat logout
+            }
         }
 
+        // Hapus seluruh variabel session
         $session->destroy();
-        return redirect()->to('/login');
+
+        // Cegah caching halaman terautentikasi di browser
+        $response = service('response');
+        $response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        $response->setHeader('Pragma', 'no-cache');
+
+        return redirect()->to('/login')->withCookies();
     }
 
     public function register()
     {
         if (session()->get('logged_in')) {
-            $userType = session()->get('user_type');
+            $userType = session()->get('user_type') ?? session()->get('level') ?? session()->get('role');
             if ($userType === 'verifikator') {
-                return redirect()->to('/verifikator/dashboard');
+                return redirect()->to('/verifikator/dashboard')->withCookies();
             } elseif ($userType === 'admin') {
-                return redirect()->to('/admin/dashboard');
+                return redirect()->to('/admin/dashboard')->withCookies();
+            } elseif ($userType === 'siswa') {
+                return redirect()->to('/siswa/dashboard')->withCookies();
             } else {
-                return redirect()->to('/siswa/dashboard');
+                session()->destroy();
             }
         }
 

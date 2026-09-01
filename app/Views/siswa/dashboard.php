@@ -1,198 +1,206 @@
 <?= $this->extend('layouts/siswa') ?>
 
-<?= $this->section('title') ?> Dashboard <?= $this->endSection() ?>
-
-<?= $this->section('page_title') ?> Dashboard <?= $this->endSection() ?>
+<?= $this->section('title') ?>Dashboard Siswa<?= $this->endSection() ?>
+<?= $this->section('page_title') ?>
+<span class="material-symbols-outlined text-brand-500 mr-1">dashboard</span> Dashboard Siswa
+<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-    <div class="relative bg-slate-900 rounded-2xl shadow-2xl mb-8 group">
-        <!-- Background decorative blobs in an isolated hidden layer -->
-        <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
-            <div class="absolute top-0 right-0 -mt-20 -mr-20 w-64 h-64 bg-blue-500 rounded-full opacity-10 blur-3xl transition-transform duration-700 group-hover:scale-110"></div>
-            <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-48 h-48 bg-indigo-500 rounded-full opacity-10 blur-3xl"></div>
-        </div>
+<?php
+$nisnSiswa = $siswa['nisn'] ?? session()->get('nisn');
+$fotoSiswa = $siswa['foto'] ?? session()->get('foto');
+$pathFoto = 'uploads/berkas/' . $nisnSiswa . '/' . $fotoSiswa;
+$adaFoto = !empty($fotoSiswa) && file_exists(FCPATH . $pathFoto);
+$inisial = mb_substr(trim($siswa['nama_lengkap'] ?? 'S'), 0, 1);
+?>
 
-        <!-- Main Banner Content -->
-        <div class="relative z-10 p-8 md:p-10 flex flex-col md:flex-row justify-between md:items-center gap-8 min-h-max">
-            
-            <!-- Left Side: Avatar & Information -->
-            <div class="flex items-start gap-6 w-full md:w-auto flex-1">
-                <!-- Avatar -->
-                <?php
-                $nisnSiswa = $siswa['nisn'] ?? session()->get('nisn');
-                $fotoSiswa = $siswa['foto'] ?? session()->get('foto');
-                $pathFoto = 'uploads/berkas/' . $nisnSiswa . '/' . $fotoSiswa;
-                $adaFoto = !empty($fotoSiswa) && file_exists(FCPATH . $pathFoto);
-                ?>
-                <div class="hidden sm:flex h-20 w-20 items-center justify-center rounded-2xl overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-3xl font-bold shadow-lg" style="flex-shrink: 0; margin-top: 4px;">
-                    <?php if ($adaFoto) : ?>
-                        <img src="<?= base_url($pathFoto) ?>" alt="Foto Profil" class="w-full h-full object-cover">
-                    <?php else : ?>
-                        <?= esc(substr($siswa['nama_lengkap'], 0, 1)) ?>
-                    <?php endif; ?>
-                </div>
-                
-                <!-- Text Group -->
-                <div class="flex-1 w-full min-w-0 pb-1">
-                    <h3 class="text-2xl md:text-3xl font-extrabold text-white mb-3">
-                        Halo, <?= esc($siswa['nama_lengkap']) ?>! 👋
-                    </h3>
-                    
-                    <div class="flex flex-wrap gap-3 text-slate-300 text-sm mb-4">
-                        <span class="flex items-center gap-1.5 bg-slate-800 px-3 py-1 rounded-full border border-slate-700 shadow-sm">
-                            <i class="fas fa-id-badge text-blue-400"></i> <?= esc($siswa['no_pendaftaran']) ?>
-                        </span>
-                        <span class="flex items-center gap-1.5 bg-slate-800 px-3 py-1 rounded-full border border-slate-700 shadow-sm">
-                            <i class="fas fa-fingerprint text-blue-400"></i> NISN: <?= esc($siswa['nisn']) ?>
-                        </span>
-                    </div>
-                    
-                    <?php if (isset($web['tampil_grup_wa']) && $web['tampil_grup_wa'] == 1 && !empty($web['link_grup_wa'])) : ?>
-                        <div class="mt-5">
-                            <p class="text-slate-400 text-xs mb-2 italic">Untuk mengetahui info lebih lanjut silahkan bergabung di grup WhatsApp:</p>
-                            <a href="<?= esc($web['link_grup_wa']) ?>" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-green-500/30 transform hover:-translate-y-0.5">
-                                <i class="fab fa-whatsapp text-lg"></i> Bergabung Grup WA
-                            </a>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <!-- Right Side: Hasil Seleksi -->
-            <div class="w-full md:w-auto shrink-0 flex flex-col justify-center items-center mt-4 md:mt-0">
-                <div class="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl text-center w-full min-w-[200px]">
-                    <p class="text-xs text-slate-400 uppercase tracking-[0.2em] font-bold mb-3">Hasil Seleksi</p>
-                    <?php if ($siswa['status_lulus'] == 'Lulus') : ?>
-                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 font-bold text-lg mb-3 border border-emerald-500/30">
-                            <i class="fas fa-check-circle"></i> LULUS
-                        </div>
-                        <a href="<?= base_url('siswa/kelulusan/cetak') ?>" target="_blank" rel="noopener" class="block w-full py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm font-bold transition-all transform hover:scale-105 active:scale-95">
-                            <i class="fas fa-print mr-2"></i>Cetak Pengumuman
-                        </a>
-                    <?php elseif ($siswa['status_lulus'] == 'Tidak Lulus') : ?>
-                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-500/20 text-rose-400 font-bold text-lg border border-rose-500/30">
-                            <i class="fas fa-times-circle"></i> TIDAK LULUS
-                        </span>
-                    <?php else : ?>
-                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-lg border border-amber-500/30">
-                            <i class="fas fa-clock"></i> PROSES SELEKSI
-                        </span>
-                    <?php endif; ?>
-                </div>
-            </div>
-            
-        </div>
-    </div>
-
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="flex items-center gap-4">
-            <div class="p-4 bg-amber-50 text-amber-600 rounded-2xl">
-                <i class="fas fa-shield-alt text-2xl"></i>
-            </div>
-            <div>
-                <p class="text-sm font-medium text-slate-500">Status Verifikasi</p>
-                <div class="mt-1">
-                    <?php if ($siswa['status_verifikasi'] == 'Terverifikasi') : ?>
-                        <span class="text-emerald-600 font-bold flex items-center gap-1.5"><i class="fas fa-check-circle"></i> Terverifikasi</span>
-                    <?php elseif ($siswa['status_verifikasi'] == 'Ditolak') : ?>
-                        <span class="text-rose-600 font-bold flex items-center gap-1.5"><i class="fas fa-times-circle"></i> Data Ditolak</span>
-                    <?php else : ?>
-                        <span class="text-amber-600 font-bold flex items-center gap-1.5"><i class="fas fa-hourglass-half"></i> Menunggu Antrean</span>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative group z-10 hover:z-30">
-        <div class="flex items-center gap-4 mb-4">
-            <div class="p-4 bg-blue-50 text-blue-600 rounded-2xl">
-                <i class="fas fa-chart-pie text-2xl"></i>
-            </div>
-            <div class="flex-1">
-                <p class="text-sm font-medium text-slate-500">Kelengkapan Data</p>
-                <p class="text-xl font-black text-slate-800"><?= (int) $completionPercentage ?>%</p>
-            </div>
-        </div>
-        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-            <div class="bg-blue-600 h-full rounded-full transition-all duration-1000" style="width: <?= (int) $completionPercentage ?>%"></div>
-        </div>
-
-        <!-- Tooltip kelengkapan data -->
-        <div class="absolute left-0 right-0 top-full pt-3 z-30 opacity-0 translate-y-1 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200">
-            <div class="relative bg-slate-800 text-white text-xs p-4 rounded-xl shadow-xl border border-slate-700">
-                <div class="absolute -top-1.5 left-8 w-3 h-3 bg-slate-800 border-l border-t border-slate-700 rotate-45"></div>
-                <?php if (!empty($incompleteFields)) : ?>
-                    <p class="font-bold text-amber-400 mb-2">Perlu dilengkapi:</p>
-                    <ul class="grid grid-cols-1 gap-1.5">
-                        <?php foreach ($incompleteFields as $field) : ?>
-                            <li class="flex items-center gap-2 opacity-90 uppercase text-[10px] tracking-wide">
-                                <span class="w-1 h-1 bg-amber-400 rounded-full flex-shrink-0"></span> <?= esc($field) ?>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
+<!-- Welcome Banner (TailAdmin Card Style) -->
+<div class="mb-6 rounded-2xl border border-gray-200 bg-white p-6 md:p-8 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-6">
+        
+        <!-- Left Side: Profile & Details -->
+        <div class="flex items-start sm:items-center gap-4 sm:gap-5 flex-1">
+            <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl overflow-hidden bg-brand-50 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-2xl sm:text-3xl shrink-0 border border-brand-200/60 dark:border-brand-500/20 shadow-theme-xs">
+                <?php if ($adaFoto) : ?>
+                    <img src="<?= base_url($pathFoto) ?>" alt="Foto Profil" class="w-full h-full object-cover">
                 <?php else : ?>
-                    <p class="flex items-center gap-2 font-bold text-emerald-400">
-                        <i class="fas fa-check-double"></i> Data sudah sempurna!
-                    </p>
+                    <?= esc($inisial) ?>
+                <?php endif; ?>
+            </div>
+
+            <div class="space-y-2 flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 px-3 py-0.5 text-xs font-semibold text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 border border-brand-200 dark:border-brand-800/50 font-mono">
+                        <span class="material-symbols-outlined text-xs">badge</span>
+                        <?= esc($siswa['no_pendaftaran']) ?>
+                    </span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-0.5 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-300 font-mono">
+                        <span class="material-symbols-outlined text-xs">fingerprint</span>
+                        NISN: <?= esc($siswa['nisn'] ?? '-') ?>
+                    </span>
+                </div>
+
+                <h2 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl lg:text-3xl dark:text-white truncate">
+                    Halo, <?= esc($siswa['nama_lengkap']) ?>! 👋
+                </h2>
+                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed">
+                    Selamat datang di portal Penerimaan Peserta Didik Baru. Lengkapi biodata, upload berkas persyaratan, dan pantau status kelulusan Anda di sini.
+                </p>
+
+                <?php if (isset($web['tampil_grup_wa']) && $web['tampil_grup_wa'] == 1 && !empty($web['link_grup_wa'])) : ?>
+                    <div class="pt-2">
+                        <a href="<?= esc($web['link_grup_wa']) ?>" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-theme-xs hover:bg-emerald-700 transition-all duration-200 active:scale-[0.97]">
+                            <i class="fab fa-whatsapp text-sm"></i>
+                            <span>Bergabung ke Grup WhatsApp Siswa</span>
+                        </a>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
+
+        <!-- Right Side: Hasil Seleksi Widget -->
+        <div class="shrink-0 flex flex-col items-center justify-center p-5 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/40 text-center min-w-[220px]">
+            <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">Hasil Seleksi</span>
+            
+            <?php if (($siswa['status_lulus'] ?? '') === 'Lulus') : ?>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-4 py-1.5 text-sm font-bold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 mb-3">
+                    <span class="material-symbols-outlined text-base text-emerald-600 dark:text-emerald-400">check_circle</span>
+                    <span>LULUS SELEKSI</span>
+                </span>
+                <a href="<?= base_url('siswa/kelulusan/cetak') ?>" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-1.5 w-full rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-theme-xs hover:bg-emerald-700 transition-all active:scale-[0.97]">
+                    <span class="material-symbols-outlined text-sm">print</span>
+                    <span>Cetak Surat Kelulusan</span>
+                </a>
+            <?php elseif (($siswa['status_lulus'] ?? '') === 'Tidak Lulus') : ?>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-4 py-1.5 text-sm font-bold text-red-700 dark:bg-red-500/15 dark:text-red-400 border border-red-200 dark:border-red-800/50">
+                    <span class="material-symbols-outlined text-base text-red-600 dark:text-red-400">cancel</span>
+                    <span>TIDAK LULUS</span>
+                </span>
+            <?php else : ?>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-4 py-1.5 text-xs font-bold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
+                    <span class="material-symbols-outlined text-base text-amber-600 dark:text-amber-400">hourglass_top</span>
+                    <span>PROSES SELEKSI</span>
+                </span>
+                <span class="text-[11px] text-gray-400 dark:text-gray-500 mt-2">Menunggu Pengumuman</span>
+            <?php endif; ?>
+        </div>
+
+    </div>
+</div>
+
+<!-- 3 Status Metric Cards (TailAdmin Cards) -->
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-6 mb-6">
+    <!-- Status Verifikasi -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <div class="flex items-center justify-between">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">
+                <span class="material-symbols-outlined text-2xl">verified_user</span>
+            </div>
+            <span class="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">
+                Verifikasi Berkas
+            </span>
+        </div>
+        <div class="mt-4 flex items-end justify-between">
+            <div>
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Status Validasi</span>
+                <div class="mt-1">
+                    <?php if (($siswa['status_verifikasi'] ?? '') === 'Terverifikasi') : ?>
+                        <span class="text-base font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-base">check_circle</span> Terverifikasi
+                        </span>
+                    <?php elseif (($siswa['status_verifikasi'] ?? '') === 'Ditolak') : ?>
+                        <span class="text-base font-bold text-red-600 dark:text-red-400 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-base">cancel</span> Berkas Ditolak
+                        </span>
+                    <?php else : ?>
+                        <span class="text-base font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-base">hourglass_top</span> Menunggu Review
+                        </span>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <a href="<?= base_url('siswa/status') ?>" class="text-[11px] font-semibold text-brand-600 hover:underline dark:text-brand-400">
+                Detail &rarr;
+            </a>
+        </div>
     </div>
 
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-0.5 transition-all">
-        <div class="flex items-center gap-4">
-            <div class="p-4 bg-emerald-50 text-emerald-600 rounded-2xl">
-                <i class="fas fa-calendar-check text-2xl"></i>
+    <!-- Kelengkapan Biodata -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] md:p-6 relative group">
+        <div class="flex items-center justify-between">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+                <span class="material-symbols-outlined text-2xl">pie_chart</span>
             </div>
+            <span class="text-lg font-mono font-extrabold text-brand-600 dark:text-brand-400"><?= (int) ($completionPercentage ?? 0) ?>%</span>
+        </div>
+        <div class="mt-4">
+            <div class="flex items-center justify-between text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
+                <span>Kelengkapan Biodata</span>
+                <span class="text-[11px] font-bold <?= ($completionPercentage ?? 0) == 100 ? 'text-emerald-600' : 'text-amber-600' ?>">
+                    <?= ($completionPercentage ?? 0) == 100 ? 'Lengkap' : 'Belum Lengkap' ?>
+                </span>
+            </div>
+            <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
+                <div class="h-2 rounded-full transition-all duration-700 <?= ($completionPercentage ?? 0) == 100 ? 'bg-emerald-500' : 'bg-brand-500' ?>" style="width: <?= (int) ($completionPercentage ?? 0) ?>%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tanggal Registrasi -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] md:p-6 sm:col-span-2 lg:col-span-1">
+        <div class="flex items-center justify-between">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
+                <span class="material-symbols-outlined text-2xl">event_available</span>
+            </div>
+            <span class="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">
+                Tercatat
+            </span>
+        </div>
+        <div class="mt-4 flex items-end justify-between">
             <div>
-                <p class="text-sm font-medium text-slate-500">Terdaftar Pada</p>
-                <p class="text-lg font-bold text-slate-800">
-                    <?= $siswa['tgl_siswa'] ? date('d M Y', strtotime($siswa['tgl_siswa'])) : '-' ?>
-                </p>
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Tanggal Registrasi</span>
+                <h4 class="mt-1 text-base font-bold text-gray-900 dark:text-white">
+                    <?= !empty($siswa['tgl_siswa']) && strtotime($siswa['tgl_siswa']) ? date('d F Y', strtotime($siswa['tgl_siswa'])) : '-' ?>
+                </h4>
             </div>
+            <p class="text-[11px] text-gray-400 dark:text-gray-500">Sesi Aktif</p>
         </div>
     </div>
 </div>
 
-<div class="mb-8">
-    <h4 class="text-slate-800 font-extrabold text-lg mb-4 flex items-center gap-2">
-        <span class="w-1.5 h-6 bg-blue-600 rounded-full"></span>
-        Menu Utama
-    </h4>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+<!-- Menu Utama (TailAdmin Grid Cards) -->
+<div class="mb-6">
+    <div class="flex items-center gap-2 mb-4">
+        <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
+            <span class="material-symbols-outlined text-base">apps</span>
+        </div>
+        <h3 class="text-sm font-bold text-gray-900 dark:text-white">Menu Utama Pendaftaran</h3>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 md:gap-4">
         <?php
-        // PENTING: kelas warna ditulis literal (bukan dirakit dari PHP string) supaya
-        // Tailwind compiler bisa men-deteksinya. Class hasil concatenation runtime
-        // (mis. "bg-{$warna}-50") TIDAK akan pernah masuk ke CSS hasil build.
         $menus = [
             [
-                'url' => 'siswa/biodata', 'icon' => 'fa-user-edit', 'label' => 'Biodata',
-                'bg' => 'bg-blue-50', 'text' => 'text-blue-600',
-                'hover_bg' => 'group-hover:bg-blue-600', 'hover_title' => 'group-hover:text-blue-600',
+                'url' => 'siswa/biodata', 'icon' => 'edit_note', 'label' => 'Biodata Siswa',
+                'bg' => 'bg-blue-50 dark:bg-blue-500/15', 'text' => 'text-blue-600 dark:text-blue-400',
             ],
             [
-                'url' => 'siswa/berkas', 'icon' => 'fa-file-upload', 'label' => 'Berkas',
-                'bg' => 'bg-emerald-50', 'text' => 'text-emerald-600',
-                'hover_bg' => 'group-hover:bg-emerald-600', 'hover_title' => 'group-hover:text-emerald-600',
+                'url' => 'siswa/berkas', 'icon' => 'upload_file', 'label' => 'Upload Berkas',
+                'bg' => 'bg-emerald-50 dark:bg-emerald-500/15', 'text' => 'text-emerald-600 dark:text-emerald-400',
             ],
             [
-                'url' => 'siswa/cetak-formulir', 'icon' => 'fa-file-pdf', 'label' => 'Cetak PDF',
-                'bg' => 'bg-rose-50', 'text' => 'text-rose-600',
-                'hover_bg' => 'group-hover:bg-rose-600', 'hover_title' => 'group-hover:text-rose-600',
+                'url' => 'siswa/cetak-formulir', 'icon' => 'picture_as_pdf', 'label' => 'Cetak Formulir',
+                'bg' => 'bg-rose-50 dark:bg-rose-500/15', 'text' => 'text-rose-600 dark:text-rose-400',
                 'is_cetak' => true,
             ],
             [
-                'url' => 'siswa/status', 'icon' => 'fa-clipboard-check', 'label' => 'Cek Status',
-                'bg' => 'bg-amber-50', 'text' => 'text-amber-600',
-                'hover_bg' => 'group-hover:bg-amber-600', 'hover_title' => 'group-hover:text-amber-600',
+                'url' => 'siswa/status', 'icon' => 'rule', 'label' => 'Status Pendaftaran',
+                'bg' => 'bg-amber-50 dark:bg-amber-500/15', 'text' => 'text-amber-600 dark:text-amber-400',
             ],
             [
-                'url' => 'siswa/pengumuman', 'icon' => 'fa-bullhorn', 'label' => 'Info',
-                'bg' => 'bg-violet-50', 'text' => 'text-violet-600',
-                'hover_bg' => 'group-hover:bg-violet-600', 'hover_title' => 'group-hover:text-violet-600',
+                'url' => 'siswa/pengumuman', 'icon' => 'campaign', 'label' => 'Pengumuman',
+                'bg' => 'bg-purple-50 dark:bg-purple-500/15', 'text' => 'text-purple-600 dark:text-purple-400',
             ],
         ];
 
@@ -202,46 +210,55 @@
 
             $url    = $isLocked ? '#' : base_url($menu['url']);
             $target = ($isCetak && !$isLocked) ? 'target="_blank" rel="noopener"' : '';
-            $onClick = $isLocked ? 'onclick="alert(\'Silahkan lengkapi biodata untuk mencetak\'); return false;"' : '';
+            $onClick = $isLocked ? 'onclick="alert(\'Silahkan lengkapi biodata 100% untuk mencetak formulir pendaftaran.\'); return false;"' : '';
         ?>
-        <a href="<?= $url ?>"
-           <?= $target ?> <?= $onClick ?>
-           class="group bg-white border border-slate-100 p-5 rounded-2xl shadow-sm transition-all duration-300
-                  <?= $isLocked ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-md hover:-translate-y-1' ?>">
-            <div class="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl <?= $menu['bg'] ?> <?= $menu['text'] ?> transition-colors duration-300
-                        <?= $isLocked ? '' : $menu['hover_bg'] . ' group-hover:text-white' ?>">
-                <i class="fas <?= $menu['icon'] ?> text-xl"></i>
-            </div>
-            <p class="font-bold text-slate-700 transition-colors <?= $isLocked ? '' : $menu['hover_title'] ?>">
-                <?= esc($menu['label']) ?>
-                <?php if ($isLocked) : ?>
-                    <i class="fas fa-lock text-[10px] text-slate-400 ml-1"></i>
-                <?php endif; ?>
-            </p>
-        </a>
+            <a href="<?= $url ?>"
+               <?= $target ?> <?= $onClick ?>
+               class="group rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all duration-200 dark:border-gray-800 dark:bg-white/[0.03] text-center flex flex-col items-center justify-center
+                      <?= $isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-theme-md hover:-translate-y-0.5 hover:border-brand-500/40' ?>">
+                <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-xl <?= $menu['bg'] ?> <?= $menu['text'] ?> group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-2xl"><?= $menu['icon'] ?></span>
+                </div>
+                <span class="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors flex items-center justify-center gap-1">
+                    <?= esc($menu['label']) ?>
+                    <?php if ($isLocked) : ?>
+                        <span class="material-symbols-outlined text-[12px] text-gray-400">lock</span>
+                    <?php endif; ?>
+                </span>
+            </a>
         <?php endforeach; ?>
     </div>
 </div>
 
-<div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-    <div class="p-5 border-b border-slate-50 bg-slate-50/50">
-        <h3 class="font-bold text-slate-800 flex items-center gap-2">
-            <i class="fas fa-lightbulb text-amber-500"></i> Informasi Penting
-        </h3>
+<!-- Informasi Penting Card -->
+<div class="rounded-2xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] overflow-hidden">
+    <div class="border-b border-gray-100 px-5 py-4 dark:border-gray-800 flex items-center gap-2.5 bg-gray-50/50 dark:bg-gray-800/30">
+        <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">
+            <span class="material-symbols-outlined text-base">lightbulb</span>
+        </div>
+        <h3 class="text-sm font-bold text-gray-900 dark:text-white">Petunjuk &amp; Informasi Penting</h3>
     </div>
-    <div class="p-6">
-        <div class="grid md:grid-cols-3 gap-6">
-            <div class="flex gap-4 items-start p-4 rounded-xl bg-blue-50/50">
-                <div class="text-blue-600"><i class="fas fa-info-circle text-lg"></i></div>
-                <p class="text-sm text-slate-600 leading-relaxed">Pastikan data biodata Anda sudah <strong>lengkap dan benar</strong> sebelum divalidasi oleh admin.</p>
+    <div class="p-5 md:p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex items-start gap-3 p-4 rounded-xl border border-blue-100 bg-blue-50/50 dark:border-blue-900/30 dark:bg-blue-950/20">
+                <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-xl shrink-0 mt-0.5">info</span>
+                <p class="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+                    Pastikan seluruh isian formulir biodata sudah <strong>lengkap dan benar</strong> sebelum divalidasi oleh petugas verifikator.
+                </p>
             </div>
-            <div class="flex gap-4 items-start p-4 rounded-xl bg-blue-50/50">
-                <div class="text-blue-600"><i class="fas fa-info-circle text-lg"></i></div>
-                <p class="text-sm text-slate-600 leading-relaxed">Upload berkas wajib menggunakan format <strong>PDF/JPG</strong> dengan ukuran maksimal 2MB.</p>
+            
+            <div class="flex items-start gap-3 p-4 rounded-xl border border-emerald-100 bg-emerald-50/50 dark:border-emerald-900/30 dark:bg-emerald-950/20">
+                <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-xl shrink-0 mt-0.5">cloud_upload</span>
+                <p class="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+                    Upload berkas dokumen fisik dalam format <strong>PDF, JPG, atau PNG</strong> dengan ukuran maksimal 2MB per file.
+                </p>
             </div>
-            <div class="flex gap-4 items-start p-4 rounded-xl bg-blue-50/50">
-                <div class="text-blue-600"><i class="fas fa-info-circle text-lg"></i></div>
-                <p class="text-sm text-slate-600 leading-relaxed">Cek status verifikasi dan pengumuman secara berkala di halaman dashboard ini.</p>
+            
+            <div class="flex items-start gap-3 p-4 rounded-xl border border-purple-100 bg-purple-50/50 dark:border-purple-900/30 dark:bg-purple-950/20">
+                <span class="material-symbols-outlined text-purple-600 dark:text-purple-400 text-xl shrink-0 mt-0.5">notifications_active</span>
+                <p class="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+                    Pantau status verifikasi dan informasi pengumuman seleksi secara berkala melalui dashboard ini.
+                </p>
             </div>
         </div>
     </div>

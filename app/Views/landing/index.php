@@ -11,11 +11,19 @@
     ?>
     <?= view('partials/_seo_meta', ['page_title' => $page_title]) ?>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'" />
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    </noscript>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js" defer></script>
 
     <style>
         .material-symbols-outlined {
@@ -232,7 +240,7 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-8">
             <div class="text-center mb-16">
                 <span class="inline-block bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4">Timeline</span>
-                <h2 class="text-3xl md:text-4xl font-bold font-headline text-primary mb-4"><?= esc($content['jadwal']['title'] ?? 'Jadwal Pelaksanaan PPDB') ?></h2>
+                <h2 class="text-3xl md:text-4xl font-bold font-headline text-primary mb-4"><?= $content['jadwal']['title'] ?? 'Jadwal Pelaksanaan PPDB' ?></h2>
                 <div class="h-1 w-24 bg-secondary mx-auto mb-4"></div>
                 <p class="text-on-surface-variant text-lg">Pastikan Anda tidak melewatkan setiap tahapan penting proses pendaftaran kami.</p>
             </div>
@@ -297,7 +305,7 @@
     <section class="py-24 px-4 sm:px-8 max-w-7xl mx-auto scroll-mt-20" id="requirements">
         <div class="grid md:grid-cols-2 gap-16 items-center">
             <div>
-                <h2 class="text-3xl md:text-4xl font-bold font-headline text-primary mb-6"><?= esc($content['syarat']['title'] ?? 'Persyaratan Dokumen') ?></h2>
+                <h2 class="text-3xl md:text-4xl font-bold font-headline text-primary mb-6"><?= $content['syarat']['title'] ?? 'Persyaratan Dokumen' ?></h2>
                 <p class="text-on-surface-variant mb-8 text-lg">Siapkan dokumen digital atau berkas fisik berikut sebelum memulai pengisian formulir pendaftaran online.</p>
                 <div class="space-y-4">
                     <?php

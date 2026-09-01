@@ -12,489 +12,1045 @@
     ?>
     <?= view('partials/_seo_meta', ['page_title' => $page_title]) ?>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'" />
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    </noscript>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js" defer></script>
 
     <style>
-        #mobile-menu {
-            transition: all 0.3s ease-in-out;
-            transform-origin: top;
-            max-height: 0;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            overflow: hidden;
-            display: block;
-        }
-        #mobile-menu.open {
-            max-height: 500px;
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
+        :root {
+            --neo-black: #000000;
+            --neo-yellow: #FFE600;
+            --neo-cyan: #00D2FF;
+            --neo-lime: #A3E635;
+            --neo-pink: #FF6B8B;
+            --neo-purple: #C084FC;
+            --neo-orange: #FF9F1C;
+            --neo-bg: #FFFDF5;
         }
 
-        .hero-parallax {
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--neo-bg);
         }
 
-        @media (max-width: 768px) {
-            .hero-parallax {
-                background-attachment: scroll;
-            }
+        .font-heading {
+            font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* Marquee Animation for Testimonial */
+        /* Neo-Brutalist Shadow Utilities */
+        .neo-box {
+            border: 3px solid #000000;
+            box-shadow: 5px 5px 0px 0px #000000;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .neo-box-sm {
+            border: 2px solid #000000;
+            box-shadow: 3px 3px 0px 0px #000000;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .neo-box-lg {
+            border: 4px solid #000000;
+            box-shadow: 8px 8px 0px 0px #000000;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .neo-btn {
+            border: 3px solid #000000;
+            box-shadow: 4px 4px 0px 0px #000000;
+            font-weight: 800;
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #000000;
+        }
+
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #000000;
+        }
+
+        .neo-card-hover:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0px 0px #000000;
+        }
+
+        /* Retro Dot Grid Background */
+        .bg-neo-dots {
+            background-image: radial-gradient(#000000 1.2px, transparent 1.2px);
+            background-size: 24px 24px;
+        }
+
+        .bg-neo-grid {
+            background-image: 
+                linear-gradient(to right, rgba(0, 0, 0, 0.07) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        /* Marquee Animation */
         .marquee-container {
             overflow: hidden;
             width: 100%;
             position: relative;
-            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
         }
 
         .marquee-content {
             display: flex;
             width: max-content;
-            animation: scroll-left 40s linear infinite;
+            animation: neo-scroll-left 35s linear infinite;
         }
 
         .marquee-content:hover {
             animation-play-state: paused;
         }
 
-        .marquee-item {
-            width: 380px;
-            flex-shrink: 0;
-            padding: 0 1rem;
+        .marquee-ticker {
+            display: flex;
+            width: max-content;
+            animation: neo-scroll-ticker 25s linear infinite;
         }
 
-        @keyframes scroll-left {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
+        @keyframes neo-scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
 
-        @media (max-width: 768px) {
-            .marquee-item {
-                width: 320px;
-            }
+        @keyframes neo-scroll-ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Mobile Menu */
+        #mobile-menu {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: top;
+            max-height: 0;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        #mobile-menu.open {
+            max-height: 600px;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 10px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #FFE600;
+            border-left: 2px solid #000;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #10b981;
-            border-radius: 4px;
+            background: #000000;
+            border: 2px solid #FFE600;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #059669;
+            background: #FF6B8B;
+        }
+
+        /* ==========================================================================
+           DEVICE-SPECIFIC MEDIA QUERIES (Neo-Brutalist Responsive System)
+           ========================================================================== */
+
+        /* 1. ALL MOBILE (<= 639.98px) — Unified mobile-first overrides */
+        @media (max-width: 639.98px) {
+            /* -- Navbar Mobile Compact -- */
+            #navbar .container {
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+                padding-top: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+            }
+            .navbar-brand-text .school-name {
+                font-size: 0.8rem !important;
+                max-width: 120px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                display: block;
+            }
+            .navbar-brand-text .school-sub {
+                font-size: 8px !important;
+                letter-spacing: 0.05em !important;
+            }
+            .navbar-logo {
+                width: 2.25rem !important;
+                height: 2.25rem !important;
+            }
+            .navbar-cta-register {
+                font-size: 0.7rem !important;
+                padding: 0.4rem 0.75rem !important;
+                border-width: 2px !important;
+                box-shadow: 2px 2px 0px 0px #000 !important;
+            }
+            #menu-btn {
+                width: 2.25rem !important;
+                height: 2.25rem !important;
+                padding: 0 !important;
+                border-width: 2px !important;
+                box-shadow: 2px 2px 0px 0px #000 !important;
+            }
+            #menu-btn i {
+                font-size: 0.85rem !important;
+            }
+
+            /* -- Hero Mobile -- */
+            #beranda {
+                padding-top: 2rem !important;
+                padding-bottom: 2rem !important;
+            }
+            #beranda .badge-pill {
+                font-size: 0.6rem !important;
+                padding: 0.35rem 0.75rem !important;
+                margin-bottom: 1rem !important;
+                border-width: 2px !important;
+                box-shadow: 2px 2px 0px 0px #000 !important;
+            }
+            #beranda h1 {
+                font-size: 1.6rem !important;
+                line-height: 1.2 !important;
+                margin-bottom: 1rem !important;
+            }
+            #beranda .hero-subheadline {
+                padding: 1rem !important;
+                border-width: 2px !important;
+                box-shadow: 3px 3px 0px 0px #000 !important;
+                margin-bottom: 1.5rem !important;
+            }
+            #beranda .hero-subheadline p {
+                font-size: 0.8rem !important;
+                line-height: 1.5 !important;
+            }
+            .hero-cta-group {
+                gap: 0.75rem !important;
+            }
+            .hero-cta-group .neo-btn {
+                padding: 0.75rem 1rem !important;
+                font-size: 0.85rem !important;
+                border-width: 2px !important;
+                box-shadow: 3px 3px 0px 0px #000 !important;
+                border-radius: 0.75rem !important;
+            }
+            .hero-stats-grid {
+                gap: 0.5rem !important;
+                margin-top: 1.5rem !important;
+            }
+            .hero-stats-grid > div {
+                padding: 0.5rem !important;
+                border-radius: 0.625rem !important;
+                border-width: 2px !important;
+                box-shadow: 2px 2px 0px 0px #000 !important;
+            }
+            .hero-stats-grid .font-heading {
+                font-size: 1.25rem !important;
+            }
+            .hero-stats-grid .text-xs {
+                font-size: 0.6rem !important;
+            }
+
+            /* -- Section Spacing Mobile -- */
+            section {
+                padding-top: 2.5rem !important;
+                padding-bottom: 2.5rem !important;
+            }
+            section .container {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            /* -- Section Headers Mobile -- */
+            .section-header {
+                margin-bottom: 2rem !important;
+            }
+            .section-header h2 {
+                font-size: 1.5rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            .section-header p {
+                font-size: 0.85rem !important;
+            }
+
+            /* -- Neo elements smaller -- */
+            .neo-box, [class*='rounded-3xl'][class*='border-'] {
+                border-width: 2px !important;
+                box-shadow: 3px 3px 0px 0px #000 !important;
+                border-radius: 1rem !important;
+            }
+            .neo-box-lg {
+                border-width: 2.5px !important;
+                box-shadow: 4px 4px 0px 0px #000 !important;
+            }
+            .neo-btn {
+                border-width: 2px !important;
+                box-shadow: 3px 3px 0px 0px #000 !important;
+                min-height: 44px;
+            }
+            .neo-btn:hover {
+                transform: none !important;
+                box-shadow: 3px 3px 0px 0px #000 !important;
+            }
+            .neo-btn:active {
+                transform: translate(1.5px, 1.5px) !important;
+                box-shadow: 0px 0px 0px 0px #000 !important;
+            }
+            .neo-card-hover:hover {
+                transform: none !important;
+            }
+
+            /* -- Feature Cards Mobile -- */
+            #fitur .grid > div {
+                padding: 1.25rem !important;
+            }
+            #fitur .grid > div .w-16 {
+                width: 2.75rem !important;
+                height: 2.75rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+            #fitur .grid > div h3 {
+                font-size: 1.1rem !important;
+            }
+
+            /* -- Jadwal Cards Mobile -- */
+            #jadwal .grid > div {
+                padding: 1.25rem !important;
+            }
+            #jadwal .grid > div h3 {
+                font-size: 1.1rem !important;
+            }
+
+            /* -- Syarat Section Mobile -- */
+            #syarat h2 {
+                font-size: 1.5rem !important;
+            }
+            #syarat .space-y-4 > div {
+                padding: 1rem !important;
+            }
+            #syarat .space-y-4 > div .w-10 {
+                width: 2rem !important;
+                height: 2rem !important;
+                font-size: 0.75rem !important;
+            }
+            #syarat .space-y-4 > div h4 {
+                font-size: 0.9rem !important;
+            }
+
+            /* -- Galeri Mobile -- */
+            #galeri .grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.75rem !important;
+            }
+            #galeri .grid > div {
+                padding: 0.4rem !important;
+                padding-bottom: 0.6rem !important;
+            }
+            #galeri .grid > div h4 {
+                font-size: 0.75rem !important;
+            }
+
+            /* -- Kontak Mobile -- */
+            #kontak .max-w-6xl {
+                border-width: 2.5px !important;
+                box-shadow: 4px 4px 0px 0px #000 !important;
+                border-radius: 1.25rem !important;
+            }
+            #kontak .lg\:col-span-6:first-child {
+                padding: 1.25rem !important;
+            }
+            #kontak h3 {
+                font-size: 1.4rem !important;
+            }
+
+            /* -- FAQ Mobile -- */
+            #faq .faq-btn {
+                padding: 0.875rem 1rem !important;
+                font-size: 0.85rem !important;
+            }
+            #faq .faq-btn .w-8 {
+                width: 1.5rem !important;
+                height: 1.5rem !important;
+            }
+
+            /* -- Testimonial Mobile -- */
+            #testimoni .marquee-content > div {
+                width: 280px !important;
+                padding: 1.25rem !important;
+            }
+
+            /* -- Footer Mobile -- */
+            footer {
+                padding-top: 2rem !important;
+                padding-bottom: 1.5rem !important;
+            }
+            footer h3 {
+                font-size: 1.25rem !important;
+            }
+
+            /* -- Lightbox Mobile -- */
+            #lightbox > div {
+                padding: 0.75rem !important;
+                border-width: 2.5px !important;
+                box-shadow: 5px 5px 0px 0px #000 !important;
+            }
+
+            /* -- Typography Global -- */
+            .font-heading {
+                word-break: break-word;
+            }
+            .marquee-ticker {
+                animation-duration: 18s !important;
+            }
+
+            /* -- Back to Top Mobile -- */
+            #backToTopBtn {
+                width: 2.5rem !important;
+                height: 2.5rem !important;
+                bottom: 1rem !important;
+                right: 1rem !important;
+                border-width: 2px !important;
+                box-shadow: 2px 2px 0px 0px #000 !important;
+            }
+        }
+
+        /* 1b. EXTRA SMALL PHONES (< 380px, e.g. Galaxy Fold, iPhone 5/SE/Mini) */
+        @media (max-width: 379.98px) {
+            .navbar-brand-text .school-name {
+                max-width: 90px !important;
+                font-size: 0.7rem !important;
+            }
+            .navbar-cta-register {
+                font-size: 0.65rem !important;
+                padding: 0.35rem 0.6rem !important;
+            }
+            #beranda h1 {
+                font-size: 1.35rem !important;
+            }
+            h2 {
+                font-size: 1.25rem !important;
+            }
+            #galeri .grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        /* 2. STANDARD MOBILE (Phones 380px - 639.98px) — additional tweaks */
+        @media (min-width: 380px) and (max-width: 639.98px) {
+            .navbar-brand-text .school-name {
+                max-width: 140px !important;
+                font-size: 0.85rem !important;
+            }
+            #beranda h1 {
+                font-size: 1.75rem !important;
+            }
+            .marquee-ticker {
+                animation-duration: 22s !important;
+            }
+        }
+
+        /* 3. TABLETS (640px - 1023.98px) */
+        @media (min-width: 640px) and (max-width: 1023.98px) {
+            .neo-box {
+                border-width: 3px;
+                box-shadow: 5px 5px 0px 0px #000000;
+            }
+            .neo-box-lg {
+                border-width: 3.5px;
+                box-shadow: 6px 6px 0px 0px #000000;
+            }
+            .neo-btn {
+                border-width: 3px;
+                box-shadow: 4px 4px 0px 0px #000000;
+            }
+            .marquee-content {
+                animation-duration: 30s !important;
+            }
+        }
+
+        /* 4. LAPTOPS & STANDARD DESKTOP (1024px - 1279.98px) */
+        @media (min-width: 1024px) and (max-width: 1279.98px) {
+            .neo-box {
+                border-width: 3px;
+                box-shadow: 5px 5px 0px 0px #000000;
+            }
+            .neo-box-lg {
+                border-width: 4px;
+                box-shadow: 7px 7px 0px 0px #000000;
+            }
+            .neo-card-hover:hover {
+                transform: translate(-3px, -3px);
+                box-shadow: 7px 7px 0px 0px #000000;
+            }
+        }
+
+        /* 5. LARGE SCREENS & 4K (>= 1280px) */
+        @media (min-width: 1280px) {
+            .neo-box {
+                border-width: 3.5px;
+                box-shadow: 6px 6px 0px 0px #000000;
+            }
+            .neo-box-lg {
+                border-width: 4px;
+                box-shadow: 8px 8px 0px 0px #000000;
+            }
+            .neo-card-hover:hover {
+                transform: translate(-4px, -4px);
+                box-shadow: 10px 10px 0px 0px #000000;
+            }
+            .container {
+                max-width: 1280px !important;
+            }
+        }
+
+        @media (min-width: 1536px) {
+            .container {
+                max-width: 1400px !important;
+            }
+        }
+
+        /* 6. TOUCH DEVICES (Hover optimization) */
+        @media (hover: none) and (pointer: coarse) {
+            .neo-card-hover:hover {
+                transform: none !important;
+                box-shadow: 5px 5px 0px 0px #000000 !important;
+            }
+            .neo-btn:hover {
+                transform: none !important;
+                box-shadow: 4px 4px 0px 0px #000000 !important;
+            }
+            .neo-btn:active {
+                transform: translate(2px, 2px) !important;
+                box-shadow: 0px 0px 0px 0px #000000 !important;
+            }
+        }
+
+        /* 7. PREFERS REDUCED MOTION (Accessibility) */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .marquee-content, .marquee-ticker {
+                animation: none !important;
+            }
+        }
+
+        /* 8. PRINT STYLESHEET */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .marquee-ticker, #navbar, #mobile-menu, .neo-btn, #floating-cta, #back-to-top, footer {
+                display: none !important;
+            }
+            .neo-box, .neo-box-lg, .neo-box-sm {
+                border: 1px solid black !important;
+                box-shadow: none !important;
+            }
         }
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+<body class="bg-[#FFFDF5] text-black antialiased selection:bg-[#FFE600] selection:text-black">
+
+    <!-- TOP TICKER BAR -->
+    <div class="bg-[#FFE600] border-b-2 border-black py-1.5 overflow-hidden font-extrabold text-xs tracking-wider uppercase select-none">
+        <div class="marquee-ticker whitespace-nowrap">
+            <span class="inline-flex items-center gap-4 mx-4">
+                <span>⚡ PORTAL PENERIMAAN PESERTA DIDIK BARU (PPDB) ONLINE</span>
+                <span>★</span>
+                <span>TAHUN PELAJARAN <?= date('Y') ?>/<?= date('Y') + 1 ?></span>
+                <span>★</span>
+                <span>PENDAFTARAN RESMI DIBUKA</span>
+                <span>★</span>
+                <span><?= esc($content['navbar']['nama_sekolah'] ?? 'MIN 2 TANGGAMUS') ?></span>
+                <span>★</span>
+                <span>TERAKREDITASI & BERKUALITAS</span>
+                <span>★</span>
+            </span>
+            <span class="inline-flex items-center gap-4 mx-4" aria-hidden="true">
+                <span>⚡ PORTAL PENERIMAAN PESERTA DIDIK BARU (PPDB) ONLINE</span>
+                <span>★</span>
+                <span>TAHUN PELAJARAN <?= date('Y') ?>/<?= date('Y') + 1 ?></span>
+                <span>★</span>
+                <span>PENDAFTARAN RESMI DIBUKA</span>
+                <span>★</span>
+                <span><?= esc($content['navbar']['nama_sekolah'] ?? 'MIN 2 TANGGAMUS') ?></span>
+                <span>★</span>
+                <span>TERAKREDITASI & BERKUALITAS</span>
+                <span>★</span>
+            </span>
+        </div>
+    </div>
 
     <!-- NAVBAR -->
-    <nav id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100">
-        <div class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+    <nav id="navbar" class="sticky top-0 z-50 bg-white border-b-[3px] border-black transition-all duration-200">
+        <div class="container mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
 
-            <!-- Logo -->
-            <a href="#" class="flex items-center space-x-3 group">
+            <!-- Logo & Brand -->
+            <a href="#" class="flex items-center gap-2 md:gap-3 group min-w-0 shrink-0 whitespace-nowrap">
                 <?php if (!empty($web['logo_sekolah'])): ?>
-                    <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="w-10 h-10 md:w-11 md:h-11 object-contain transform group-hover:scale-105 transition duration-300">
+                    <div class="navbar-logo w-9 h-9 md:w-11 md:h-11 bg-[#FFE600] rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] p-1 flex items-center justify-center group-hover:rotate-6 transition-transform shrink-0">
+                        <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="w-full h-full object-contain">
+                    </div>
                 <?php else: ?>
-                    <div class="w-10 h-10 md:w-11 md:h-11 bg-madrasah rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md transform group-hover:scale-105 transition duration-300">
+                    <div class="navbar-logo w-9 h-9 md:w-11 md:h-11 bg-[#FFE600] rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] flex items-center justify-center text-black font-black text-lg md:text-xl group-hover:rotate-6 transition-transform shrink-0">
                         <?= mb_substr(esc($content['navbar']['nama_sekolah'] ?? 'M'), 0, 1) ?>
                     </div>
                 <?php endif; ?>
-                <span class="font-bold text-base md:text-xl tracking-tight text-gray-900 line-clamp-1 group-hover:text-emerald-700 transition-colors">
-                    <?= esc($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus') ?>
-                </span>
+                <div class="flex flex-col min-w-0 navbar-brand-text">
+                    <span class="school-name font-heading font-black text-sm md:text-xl tracking-tight text-black line-clamp-1 group-hover:text-[#FF6B8B] transition-colors">
+                        <?= esc($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus') ?>
+                    </span>
+                    <span class="school-sub text-[9px] md:text-[10px] font-extrabold uppercase tracking-widest text-gray-600">PPDB Official Portal</span>
+                </div>
             </a>
 
-            <!-- Desktop Menu -->
-            <div class="hidden lg:flex items-center space-x-8 font-medium text-gray-600">
-                <a href="#beranda" class="hover:text-emerald-600 transition">Beranda</a>
-                <a href="#jadwal" class="hover:text-emerald-600 transition">Jadwal</a>
-                <a href="#syarat" class="hover:text-emerald-600 transition">Syarat</a>
-                <a href="#kontak" class="hover:text-emerald-600 transition">Kontak</a>
+            <!-- Desktop Menu (Pills with Neo Hover) -->
+            <div class="hidden lg:flex items-center space-x-1 font-bold text-sm">
+                <a href="#beranda" class="px-4 py-2 rounded-lg border-2 border-transparent hover:border-black hover:bg-[#FFE600] hover:shadow-[2px_2px_0px_0px_#000] transition-all">Beranda</a>
+                <a href="#fitur" class="px-4 py-2 rounded-lg border-2 border-transparent hover:border-black hover:bg-[#00D2FF] hover:shadow-[2px_2px_0px_0px_#000] transition-all">Keunggulan</a>
+                <a href="#jadwal" class="px-4 py-2 rounded-lg border-2 border-transparent hover:border-black hover:bg-[#A3E635] hover:shadow-[2px_2px_0px_0px_#000] transition-all">Jadwal</a>
+                <a href="#syarat" class="px-4 py-2 rounded-lg border-2 border-transparent hover:border-black hover:bg-[#FF6B8B] hover:shadow-[2px_2px_0px_0px_#000] transition-all">Syarat</a>
+                <?php if (!empty($galeri)): ?>
+                    <a href="#galeri" class="px-4 py-2 rounded-lg border-2 border-transparent hover:border-black hover:bg-[#C084FC] hover:shadow-[2px_2px_0px_0px_#000] transition-all">Galeri</a>
+                <?php endif; ?>
+                <a href="#kontak" class="px-4 py-2 rounded-lg border-2 border-transparent hover:border-black hover:bg-[#FF9F1C] hover:shadow-[2px_2px_0px_0px_#000] transition-all">Kontak</a>
                 <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
-                    <a href="<?= base_url('pendaftar') ?>" class="hover:text-emerald-600 transition">Data Pendaftar</a>
+                    <a href="<?= base_url('pendaftar') ?>" class="px-4 py-2 rounded-lg border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:bg-[#FFE600] transition-all flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Data Pendaftar</span>
+                    </a>
                 <?php endif; ?>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex items-center space-x-3">
-                <a href="<?= base_url('login') ?>" class="hidden sm:inline-flex items-center justify-center bg-white text-gray-700 font-bold py-2 px-5 rounded-full border border-gray-200 hover:bg-gray-50 hover:text-emerald-600 transition duration-300 text-sm shadow-sm">
-                    Login
+            <div class="flex items-center gap-2 md:gap-3 shrink-0">
+                <a href="<?= base_url('login') ?>" class="hidden md:inline-flex neo-btn bg-white hover:bg-gray-100 text-black py-2 px-5 rounded-xl text-sm">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Login
                 </a>
-                <a href="<?= base_url('auth/register') ?>" class="hidden sm:inline-flex items-center justify-center bg-emerald-600 text-white font-bold py-2 px-6 rounded-full hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-500/30 transform hover:-translate-y-0.5 transition duration-300 text-sm">
-                    Daftar PPDB
+                <a href="<?= base_url('auth/register') ?>" class="navbar-cta-register neo-btn bg-[#FFE600] hover:bg-[#FFE600] text-black py-2 px-4 md:px-6 rounded-xl text-xs md:text-sm">
+                    <i class="fas fa-rocket mr-1 md:mr-2"></i> Daftar
                 </a>
 
                 <!-- Mobile Menu Toggle -->
-                <button class="lg:hidden text-gray-600 p-2 focus:outline-none rounded-lg hover:bg-gray-100 transition" id="menu-btn">
-                    <i class="fas fa-bars text-xl w-6"></i>
+                <button class="lg:hidden p-2 md:p-2.5 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:bg-[#FFE600] transition-all" id="menu-btn" aria-label="Toggle Menu">
+                    <i class="fas fa-bars text-base md:text-lg w-5 text-center"></i>
                 </button>
             </div>
         </div>
 
         <!-- Mobile Menu Dropdown -->
-        <div id="mobile-menu" class="lg:hidden border-t border-gray-100 bg-white shadow-xl absolute w-full left-0">
-            <div class="px-4 py-4 space-y-1">
-                <a href="#beranda" class="block py-3 px-4 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 font-semibold text-gray-700 transition">Beranda</a>
-                <a href="#jadwal" class="block py-3 px-4 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 font-semibold text-gray-700 transition">Jadwal</a>
-                <a href="#syarat" class="block py-3 px-4 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 font-semibold text-gray-700 transition">Syarat</a>
-                <a href="#kontak" class="block py-3 px-4 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 font-semibold text-gray-700 transition">Kontak</a>
+        <div id="mobile-menu" class="lg:hidden border-t-[3px] border-black bg-[#FFFDF5] px-4 py-5 shadow-2xl">
+            <div class="space-y-2 font-bold text-sm">
+                <a href="#beranda" class="block py-2.5 px-4 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:bg-[#FFE600] transition">🏠 Beranda</a>
+                <a href="#fitur" class="block py-2.5 px-4 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:bg-[#00D2FF] transition">⭐ Keunggulan</a>
+                <a href="#jadwal" class="block py-2.5 px-4 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:bg-[#A3E635] transition">📅 Jadwal PPDB</a>
+                <a href="#syarat" class="block py-2.5 px-4 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:bg-[#FF6B8B] transition">📋 Persyaratan</a>
+                <?php if (!empty($galeri)): ?>
+                    <a href="#galeri" class="block py-2.5 px-4 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:bg-[#C084FC] transition">📸 Galeri Foto</a>
+                <?php endif; ?>
+                <a href="#kontak" class="block py-2.5 px-4 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:bg-[#FF9F1C] transition">📞 Kontak</a>
                 <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
-                    <a href="<?= base_url('pendaftar') ?>" class="block py-3 px-4 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 font-semibold text-gray-700 transition">Data Pendaftar</a>
+                    <a href="<?= base_url('pendaftar') ?>" class="block py-2.5 px-4 rounded-xl border-2 border-black bg-[#FFE600] shadow-[2px_2px_0px_0px_#000] transition font-black">📊 Cek Data Pendaftar</a>
                 <?php endif; ?>
 
-                <div class="border-t border-gray-100 pt-4 mt-2 grid grid-cols-2 gap-3 sm:hidden px-2">
-                    <a href="<?= base_url('login') ?>" class="flex items-center justify-center bg-gray-100 text-gray-700 font-bold py-2.5 rounded-xl hover:bg-gray-200 transition">Login</a>
-                    <a href="<?= base_url('auth/register') ?>" class="flex items-center justify-center bg-emerald-600 text-white font-bold py-2.5 rounded-xl hover:bg-emerald-700 transition shadow-md shadow-emerald-500/20">Daftar</a>
+                <div class="pt-3 border-t-2 border-black grid grid-cols-2 gap-3">
+                    <a href="<?= base_url('login') ?>" class="neo-btn bg-white text-black py-2.5 rounded-xl text-center">Login</a>
+                    <a href="<?= base_url('auth/register') ?>" class="neo-btn bg-[#FFE600] text-black py-2.5 rounded-xl text-center">Daftar</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- HERO SECTION -->
-    <?php
-    $heroBg = $content['hero']['background_image'] ?? '';
-    $heroStyle = '';
-    $heroClass = 'relative bg-emerald-900 text-white overflow-hidden min-h-screen flex items-center justify-center pt-20';
-    if (!empty($heroBg)) {
-        $heroStyle = "background-image: url('" . base_url($heroBg) . "');";
-        $heroClass .= ' hero-parallax';
-    }
-    ?>
-    <header id="beranda" class="<?= $heroClass ?>" style="<?= $heroStyle ?>">
-        <!-- Overlay Gradient -->
-        <div class="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-madrasah/80 to-slate-900/90 mix-blend-multiply"></div>
-
-        <!-- Animated Background Shapes -->
-        <div class="absolute top-1/4 right-0 w-96 h-96 bg-emerald-500 rounded-full mix-blend-screen filter blur-[100px] opacity-30 animate-pulse"></div>
-        <div class="absolute bottom-1/4 left-0 w-96 h-96 bg-yellow-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20"></div>
-
-        <div class="container mx-auto px-4 relative z-10 text-center flex flex-col items-center justify-center">
-            <span class="inline-block py-1.5 px-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-100 font-semibold tracking-wider text-xs md:text-sm mb-6 uppercase shadow-lg">
-                <i class="fas fa-graduation-cap mr-2"></i>Tahun Pelajaran <?= date('Y') ?>/<?= date('Y') + 1 ?>
+    <header id="beranda" class="relative bg-neo-grid py-10 md:py-24 border-b-[3px] border-black overflow-hidden">
+        <!-- Floating Neo Stickers -->
+        <div class="hidden lg:block absolute top-12 left-10 -rotate-6 z-0">
+            <span class="inline-block px-4 py-2 bg-[#FF6B8B] text-white font-black text-xs uppercase tracking-wider rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000]">
+                ✨ 100% Online & Praktis
             </span>
-            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight max-w-4xl text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-50 to-emerald-200 drop-shadow-sm">
-                <?= $content['hero']['headline'] ?? 'Penerimaan Peserta Didik Baru (PPDB)' ?>
-            </h1>
-            <p class="text-lg md:text-xl lg:text-2xl text-emerald-100/90 mb-10 max-w-2xl font-medium leading-relaxed">
-                <?= $content['hero']['subheadline'] ?? 'Mari bergabung bersama kami membentuk generasi mandiri, berprestasi, dan berakhlak mulia.' ?>
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4 w-full sm:w-auto">
-                <a href="<?= esc($content['hero']['cta_link'] ?? base_url('auth/register'), 'attr') ?>"
-                    class="bg-yellow-500 hover:bg-yellow-400 text-yellow-950 font-bold py-4 px-10 rounded-full transition-all duration-300 shadow-[0_0_20px_rgba(234,179,8,0.4)] hover:shadow-[0_0_30px_rgba(234,179,8,0.6)] transform hover:-translate-y-1 text-lg flex items-center justify-center group">
-                    <?= esc($content['hero']['cta_text'] ?? 'Daftar Sekarang') ?>
-                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-                </a>
-                <a href="#syarat"
-                    class="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 text-lg flex items-center justify-center">
-                    Cek Persyaratan
-                </a>
-            </div>
+        </div>
+        <div class="hidden lg:block absolute top-20 right-12 rotate-6 z-0">
+            <span class="inline-block px-4 py-2 bg-[#00D2FF] text-black font-black text-xs uppercase tracking-wider rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000]">
+                🎓 Kuota Terbatas!
+            </span>
+        </div>
+        <div class="hidden lg:block absolute bottom-12 left-16 rotate-3 z-0">
+            <span class="inline-block px-4 py-2 bg-[#A3E635] text-black font-black text-xs uppercase tracking-wider rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000]">
+                🚀 Akreditasi Unggul
+            </span>
         </div>
 
-        <!-- Scroll Indicator -->
-        <a href="#fitur" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/50 hover:text-white transition animate-bounce">
-            <i class="fas fa-chevron-down text-2xl"></i>
-        </a>
-    </header>
+        <div class="container mx-auto px-4 md:px-6 relative z-10">
+            <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
 
-    <!-- FITUR / KEUNGGULAN -->
-    <?php if (!empty($fitur)): ?>
-        <section id="fitur" class="py-24 bg-white relative z-20 -mt-6 rounded-t-[2.5rem] shadow-xl">
-            <div class="container mx-auto px-4 md:px-6">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Mengapa Memilih Kami?</h2>
-                    <div class="w-20 h-1.5 bg-emerald-500 mx-auto rounded-full mb-4"></div>
-                    <p class="text-gray-500 max-w-2xl mx-auto text-lg">Keunggulan dan fasilitas yang kami tawarkan untuk menunjang pendidikan karakter dan prestasi siswa.</p>
+                <!-- Badge Pill -->
+                <div class="badge-pill inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-1.5 md:py-2 rounded-full bg-[#FFE600] border-2 border-black shadow-[4px_4px_0px_0px_#000] mb-4 md:mb-8 font-black text-[10px] md:text-sm tracking-wider uppercase transform hover:scale-105 transition-transform">
+                    <i class="fas fa-sparkles text-black"></i>
+                    <span>Tahun Ajaran <?= date('Y') ?>/<?= date('Y') + 1 ?> &bull; PPDB RESMI</span>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <?php foreach ($fitur as $f): ?>
-                        <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 hover:bg-white hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-2 transition-all duration-400 group relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transform scale-150 transition-all duration-500">
-                                <i class="<?= esc($f['ikon'] ?? 'fas fa-star') ?> text-8xl text-emerald-500"></i>
+                <!-- Main Headline -->
+                <h1 class="font-heading font-black text-2xl sm:text-4xl md:text-5xl lg:text-7xl leading-[1.15] tracking-tight text-black mb-4 md:mb-8">
+                    <?= $content['hero']['headline'] ?? 'Penerimaan Peserta Didik Baru (PPDB)' ?>
+                </h1>
+
+                <!-- Subheadline on Neo Card (hidden if empty) -->
+                <?php
+                $subheadline = $content['hero']['subheadline'] ?? 'Mari bergabung bersama kami membentuk generasi mandiri, berprestasi, dan berakhlak mulia.';
+                if (!empty(trim($subheadline))):
+                ?>
+                <div class="hero-subheadline bg-white p-4 md:p-8 rounded-2xl border-[3px] border-black shadow-[6px_6px_0px_0px_#000] mb-6 md:mb-10 max-w-2xl text-center">
+                    <p class="text-sm md:text-xl font-bold text-gray-800 leading-relaxed">
+                        <?= $subheadline ?>
+                    </p>
+                </div>
+                <?php endif; ?>
+
+                <!-- CTA Buttons -->
+                <div class="hero-cta-group flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto justify-center items-center">
+                    <a href="<?= esc($content['hero']['cta_link'] ?? base_url('auth/register'), 'attr') ?>"
+                       class="neo-btn bg-[#FFE600] hover:bg-[#FFE600] text-black py-3 md:py-4 px-6 md:px-10 rounded-xl md:rounded-2xl text-base md:text-xl w-full sm:w-auto group">
+                        <span><?= esc($content['hero']['cta_text'] ?? 'Daftar Sekarang') ?></span>
+                        <i class="fas fa-arrow-right ml-2 md:ml-3 group-hover:translate-x-1.5 transition-transform"></i>
+                    </a>
+                    <a href="#syarat"
+                       class="neo-btn bg-white hover:bg-gray-50 text-black py-3 md:py-4 px-6 md:px-8 rounded-xl md:rounded-2xl text-base md:text-xl w-full sm:w-auto">
+                        <i class="fas fa-clipboard-check mr-2 text-[#FF6B8B]"></i>
+                        <span>Cek Persyaratan</span>
+                    </a>
+                </div>
+
+                <!-- Quick Stats Badges -->
+                <div class="hero-stats-grid grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4 mt-8 md:mt-14 w-full max-w-3xl">
+                    <div class="bg-[#BAE6FD] p-3 md:p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] text-center">
+                        <div class="font-heading font-black text-xl md:text-3xl text-black">A</div>
+                        <div class="text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1">Akreditasi</div>
+                    </div>
+                    <div class="bg-[#BBF7D0] p-3 md:p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] text-center">
+                        <div class="font-heading font-black text-xl md:text-3xl text-black">100%</div>
+                        <div class="text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1">Digital & Cepat</div>
+                    </div>
+                    <div class="bg-[#FED7AA] p-3 md:p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] text-center">
+                        <div class="font-heading font-black text-xl md:text-3xl text-black">Gratis</div>
+                        <div class="text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1">Biaya Formulir</div>
+                    </div>
+                    <div class="bg-[#FBCFE8] p-3 md:p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] text-center">
+                        <div class="font-heading font-black text-xl md:text-3xl text-black">24/7</div>
+                        <div class="text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1">Layanan Bantuan</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- FITUR / KEUNGGULAN SECTION -->
+    <?php if (!empty($fitur)): ?>
+        <section id="fitur" class="py-12 md:py-20 bg-[#FFFDF5] border-b-[3px] border-black relative">
+            <div class="container mx-auto px-4 md:px-6">
+
+                <!-- Section Header -->
+                <div class="section-header text-center mb-10 md:mb-16 max-w-2xl mx-auto">
+                    <span class="inline-block px-3 md:px-4 py-1 md:py-1.5 bg-[#A3E635] text-black font-black text-[10px] md:text-xs uppercase tracking-widest rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_#000] mb-3 md:mb-4">
+                        ✨ KEUNGGULAN KAMI
+                    </span>
+                    <h2 class="font-heading font-black text-2xl md:text-5xl text-black mb-2 md:mb-4">Mengapa Memilih Kami?</h2>
+                    <p class="text-sm md:text-lg font-bold text-gray-700">Fasilitas terbaik dan program unggulan untuk menunjang prestasi serta pembentukan karakter generasi berakhlak mulia.</p>
+                </div>
+
+                <!-- Cards Grid -->
+                <?php
+                $pastelColors = ['bg-[#FEF08A]', 'bg-[#BAE6FD]', 'bg-[#BBF7D0]', 'bg-[#FBCFE8]', 'bg-[#DDD6FE]', 'bg-[#FED7AA]'];
+                ?>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+                    <?php foreach ($fitur as $idx => $f):
+                        $cardBg = $pastelColors[$idx % count($pastelColors)];
+                    ?>
+                        <div class="<?= $cardBg ?> p-8 rounded-3xl border-[3px] border-black shadow-[6px_6px_0px_0px_#000] neo-card-hover transition-all flex flex-col justify-between relative group">
+                            <div>
+                                <!-- Icon Box -->
+                                <div class="w-16 h-16 bg-white rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_#000] flex items-center justify-center text-black text-2xl mb-6 group-hover:rotate-6 transition-transform">
+                                    <i class="<?= esc($f['ikon'] ?? 'fas fa-star') ?>"></i>
+                                </div>
+                                <h3 class="font-heading font-black text-2xl text-black mb-3 leading-snug"><?= esc($f['judul']) ?></h3>
+                                <p class="font-medium text-gray-800 leading-relaxed text-sm md:text-base"><?= esc($f['deskripsi']) ?></p>
                             </div>
-                            <div class="w-16 h-16 bg-white shadow-sm rounded-2xl flex items-center justify-center text-emerald-600 mb-6 text-2xl group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-400 relative z-10 border border-emerald-50">
-                                <i class="<?= esc($f['ikon'] ?? 'fas fa-star') ?>"></i>
+                            <div class="mt-6 pt-4 border-t-2 border-black/20 flex items-center justify-between text-xs font-black uppercase text-black">
+                                <span>Keunggulan #<?= $idx + 1 ?></span>
+                                <i class="fas fa-check-circle text-black text-base"></i>
                             </div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800 relative z-10"><?= esc($f['judul']) ?></h3>
-                            <p class="text-gray-500 leading-relaxed relative z-10"><?= esc($f['deskripsi']) ?></p>
                         </div>
                     <?php endforeach; ?>
                 </div>
+
             </div>
         </section>
     <?php endif; ?>
 
-    <!-- JADWAL PELAKSANAAN -->
-    <section id="jadwal" class="py-24 bg-slate-50 relative overflow-hidden border-y border-slate-200/60">
-        <!-- Decoration -->
-        <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
-            <div class="absolute -top-24 -right-24 w-96 h-96 bg-emerald-200/30 rounded-full blur-3xl"></div>
-            <div class="absolute bottom-0 left-0 w-80 h-80 bg-blue-200/30 rounded-full blur-3xl"></div>
-        </div>
+    <!-- JADWAL PELAKSANAAN SECTION -->
+    <section id="jadwal" class="py-12 md:py-20 bg-[#FFE600] border-b-[3px] border-black relative bg-neo-dots">
+        <div class="container mx-auto px-4 md:px-6">
 
-        <div class="container mx-auto px-4 md:px-6 relative z-10">
-            <div class="text-center mb-20">
-                <span class="inline-block py-1 px-3 rounded-full bg-emerald-100 text-emerald-700 font-bold tracking-wider text-xs mb-3 uppercase shadow-sm">Timeline PPDB</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4"><?= esc($content['jadwal']['title'] ?? 'Jadwal Pelaksanaan') ?></h2>
-                <div class="w-20 h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600 mx-auto rounded-full mb-4"></div>
-                <p class="text-gray-500 max-w-2xl mx-auto">Catat tanggal penting berikut agar Anda tidak tertinggal setiap tahapan proses pendaftaran.</p>
+            <!-- Header -->
+            <div class="section-header text-center mb-10 md:mb-16 max-w-2xl mx-auto">
+                <span class="inline-block px-3 md:px-4 py-1 md:py-1.5 bg-white text-black font-black text-[10px] md:text-xs uppercase tracking-widest rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_#000] mb-3 md:mb-4">
+                    📅 TIMELINE RESMI
+                </span>
+                <h2 class="font-heading font-black text-2xl md:text-5xl text-black mb-2 md:mb-4">
+                    <?= $content['jadwal']['title'] ?? 'Jadwal Pelaksanaan' ?>
+                </h2>
+                <p class="text-sm md:text-lg font-bold text-black">Catat tanggal-tanggal krusial berikut agar Ananda tidak tertinggal setiap tahapan seleksi.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-8 relative max-w-6xl mx-auto">
-                <!-- Connecting Line (Desktop only) -->
-                <div class="hidden md:block absolute top-[45%] left-10 right-10 h-0.5 bg-emerald-200 z-0"></div>
+            <!-- Steps Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto">
 
-                <!-- Tahap 1 -->
-                <div class="relative z-10 bg-white p-8 lg:p-10 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-400 group flex flex-col h-full">
-                    <div class="absolute -top-6 -right-6 text-9xl text-gray-50 opacity-5 font-black group-hover:text-emerald-50 transition-colors">1</div>
-                    <div class="bg-emerald-100 w-16 h-16 rounded-2xl flex items-center justify-center text-emerald-600 text-2xl font-bold mb-6 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 group-hover:bg-emerald-600 group-hover:text-white shadow-sm border border-emerald-50">
-                        <i class="fas fa-laptop"></i>
+                <!-- Step 1 -->
+                <div class="bg-white p-8 rounded-3xl border-[3px] border-black shadow-[6px_6px_0px_0px_#000] neo-card-hover flex flex-col justify-between relative">
+                    <div class="absolute -top-4 -right-3 bg-[#00D2FF] text-black font-black text-xs px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_#000] rotate-3">
+                        TAHAP 01
                     </div>
-                    <div class="flex-grow flex flex-col">
-                        <div class="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-2">Tahap 1</div>
-                        <h3 class="text-2xl font-bold mb-4 text-gray-800 line-clamp-2"><?= esc($content['jadwal']['tahap1_judul'] ?? 'Pendaftaran Online') ?></h3>
-
-                        <div class="mt-auto pt-6 border-t border-gray-100">
-                            <div class="flex items-center space-x-3 mb-2 text-gray-600">
-                                <i class="far fa-calendar-alt text-emerald-500 w-5"></i>
-                                <span class="font-semibold text-gray-800"><?= esc($content['jadwal']['tahap1_tanggal'] ?? '01 Mei - 15 Mei 2024') ?></span>
-                            </div>
-                            <div class="flex items-start space-x-3 text-gray-500">
-                                <i class="fas fa-info-circle text-emerald-500 w-5 mt-1"></i>
-                                <span class="text-sm leading-relaxed"><?= esc($content['jadwal']['tahap1_keterangan'] ?? 'Melalui website resmi PPDB') ?></span>
-                            </div>
+                    <div>
+                        <div class="w-14 h-14 bg-[#BAE6FD] rounded-2xl border-2 border-black shadow-[3px_3px_0px_0px_#000] flex items-center justify-center text-black text-2xl mb-6">
+                            <i class="fas fa-laptop-code"></i>
                         </div>
+                        <h3 class="font-heading font-black text-2xl text-black mb-3"><?= esc($content['jadwal']['tahap1_judul'] ?? 'Pendaftaran Online') ?></h3>
+                        <p class="text-sm font-medium text-gray-700 leading-relaxed mb-6"><?= esc($content['jadwal']['tahap1_keterangan'] ?? 'Pengisian formulir biodata mandiri melalui website resmi.') ?></p>
+                    </div>
+                    <div class="bg-[#BAE6FD] p-4 rounded-2xl border-2 border-black font-bold text-xs text-black flex items-center gap-2">
+                        <i class="far fa-calendar-alt text-base"></i>
+                        <span><?= esc($content['jadwal']['tahap1_tanggal'] ?? '01 Mei - 15 Mei 2024') ?></span>
                     </div>
                 </div>
 
-                <!-- Tahap 2 -->
-                <div class="relative z-10 bg-white p-8 lg:p-10 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-400 group md:mt-12 flex flex-col h-full">
-                    <div class="absolute -top-6 -right-6 text-9xl text-gray-50 opacity-5 font-black group-hover:text-yellow-50 transition-colors">2</div>
-                    <div class="bg-yellow-100 w-16 h-16 rounded-2xl flex items-center justify-center text-yellow-600 text-2xl font-bold mb-6 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300 group-hover:bg-yellow-500 group-hover:text-white shadow-sm border border-yellow-50">
-                        <i class="fas fa-file-signature"></i>
+                <!-- Step 2 -->
+                <div class="bg-white p-8 rounded-3xl border-[3px] border-black shadow-[6px_6px_0px_0px_#000] neo-card-hover flex flex-col justify-between relative md:-translate-y-2">
+                    <div class="absolute -top-4 -right-3 bg-[#FF6B8B] text-white font-black text-xs px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_#000] -rotate-3">
+                        TAHAP 02
                     </div>
-                    <div class="flex-grow flex flex-col">
-                        <div class="text-xs font-bold text-yellow-600 uppercase tracking-widest mb-2">Tahap 2</div>
-                        <h3 class="text-2xl font-bold mb-4 text-gray-800 line-clamp-2"><?= esc($content['jadwal']['tahap2_judul'] ?? 'Verifikasi Berkas') ?></h3>
-
-                        <div class="mt-auto pt-6 border-t border-gray-100">
-                            <div class="flex items-center space-x-3 mb-2 text-gray-600">
-                                <i class="far fa-calendar-alt text-yellow-500 w-5"></i>
-                                <span class="font-semibold text-gray-800"><?= esc($content['jadwal']['tahap2_tanggal'] ?? '17 Mei - 20 Mei 2024') ?></span>
-                            </div>
-                            <div class="flex items-start space-x-3 text-gray-500">
-                                <i class="fas fa-info-circle text-yellow-500 w-5 mt-1"></i>
-                                <span class="text-sm leading-relaxed"><?= esc($content['jadwal']['tahap2_keterangan'] ?? 'Datang langsung ke Madrasah membawa berkas asli') ?></span>
-                            </div>
+                    <div>
+                        <div class="w-14 h-14 bg-[#FBCFE8] rounded-2xl border-2 border-black shadow-[3px_3px_0px_0px_#000] flex items-center justify-center text-black text-2xl mb-6">
+                            <i class="fas fa-file-signature"></i>
                         </div>
+                        <h3 class="font-heading font-black text-2xl text-black mb-3"><?= esc($content['jadwal']['tahap2_judul'] ?? 'Verifikasi Berkas') ?></h3>
+                        <p class="text-sm font-medium text-gray-700 leading-relaxed mb-6"><?= esc($content['jadwal']['tahap2_keterangan'] ?? 'Penyerahan berkas fisik asli & fotokopi langsung ke madrasah.') ?></p>
+                    </div>
+                    <div class="bg-[#FBCFE8] p-4 rounded-2xl border-2 border-black font-bold text-xs text-black flex items-center gap-2">
+                        <i class="far fa-calendar-alt text-base"></i>
+                        <span><?= esc($content['jadwal']['tahap2_tanggal'] ?? '17 Mei - 20 Mei 2024') ?></span>
                     </div>
                 </div>
 
-                <!-- Tahap 3 -->
-                <div class="relative z-10 bg-white p-8 lg:p-10 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-400 group flex flex-col h-full">
-                    <div class="absolute -top-6 -right-6 text-9xl text-gray-50 opacity-5 font-black group-hover:text-blue-50 transition-colors">3</div>
-                    <div class="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center text-blue-600 text-2xl font-bold mb-6 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 group-hover:bg-blue-600 group-hover:text-white shadow-sm border border-blue-50">
-                        <i class="fas fa-bullhorn"></i>
+                <!-- Step 3 -->
+                <div class="bg-white p-8 rounded-3xl border-[3px] border-black shadow-[6px_6px_0px_0px_#000] neo-card-hover flex flex-col justify-between relative">
+                    <div class="absolute -top-4 -right-3 bg-[#A3E635] text-black font-black text-xs px-3 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_#000] rotate-3">
+                        TAHAP 03
                     </div>
-                    <div class="flex-grow flex flex-col">
-                        <div class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">Tahap 3</div>
-                        <h3 class="text-2xl font-bold mb-4 text-gray-800 line-clamp-2"><?= esc($content['jadwal']['tahap3_judul'] ?? 'Pengumuman Hasil') ?></h3>
-
-                        <div class="mt-auto pt-6 border-t border-gray-100">
-                            <div class="flex items-center space-x-3 mb-2 text-gray-600">
-                                <i class="far fa-calendar-alt text-blue-500 w-5"></i>
-                                <span class="font-semibold text-gray-800"><?= esc($content['jadwal']['tahap3_tanggal'] ?? '25 Mei 2024') ?></span>
-                            </div>
-                            <div class="flex items-start space-x-3 text-gray-500">
-                                <i class="fas fa-info-circle text-blue-500 w-5 mt-1"></i>
-                                <span class="text-sm leading-relaxed"><?= esc($content['jadwal']['tahap3_keterangan'] ?? 'Dilihat melalui website atau papan pengumuman') ?></span>
-                            </div>
+                    <div>
+                        <div class="w-14 h-14 bg-[#BBF7D0] rounded-2xl border-2 border-black shadow-[3px_3px_0px_0px_#000] flex items-center justify-center text-black text-2xl mb-6">
+                            <i class="fas fa-bullhorn"></i>
                         </div>
+                        <h3 class="font-heading font-black text-2xl text-black mb-3"><?= esc($content['jadwal']['tahap3_judul'] ?? 'Pengumuman Hasil') ?></h3>
+                        <p class="text-sm font-medium text-gray-700 leading-relaxed mb-6"><?= esc($content['jadwal']['tahap3_keterangan'] ?? 'Hasil kelulusan dapat dicek secara transparan via akun pendaftar.') ?></p>
+                    </div>
+                    <div class="bg-[#BBF7D0] p-4 rounded-2xl border-2 border-black font-bold text-xs text-black flex items-center gap-2">
+                        <i class="far fa-calendar-alt text-base"></i>
+                        <span><?= esc($content['jadwal']['tahap3_tanggal'] ?? '25 Mei 2024') ?></span>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- PERSYARATAN -->
-    <section id="syarat" class="py-24 bg-white relative">
-        <div class="container mx-auto px-4 md:px-6 relative z-10">
-            <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <!-- PERSYARATAN SECTION -->
+    <section id="syarat" class="py-12 md:py-20 bg-[#FFFDF5] border-b-[3px] border-black relative">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="flex flex-col lg:flex-row gap-8 md:gap-12 items-start">
 
-                <!-- Left Title Area -->
-                <div class="w-full lg:w-1/3 lg:sticky lg:top-32">
-                    <span class="inline-block py-1 px-3 rounded-full bg-emerald-100 text-emerald-700 font-bold tracking-wider text-xs mb-3 uppercase shadow-sm">Information</span>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 leading-tight"><?= esc($content['syarat']['title'] ?? 'Persyaratan Pendaftaran') ?></h2>
-                    <p class="text-gray-500 mb-8 text-lg">Harap persiapkan dokumen-dokumen berikut untuk memperlancar proses pendaftaran Ananda tercinta.</p>
+                <!-- Left Column: Title & Info Box -->
+                <div class="w-full lg:w-5/12 sticky top-24">
+                    <span class="inline-block px-3 md:px-4 py-1 md:py-1.5 bg-[#FF6B8B] text-white font-black text-[10px] md:text-xs uppercase tracking-widest rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_#000] mb-3 md:mb-4">
+                        📋 DOKUMEN WAJIB
+                    </span>
+                    <h2 class="font-heading font-black text-2xl md:text-5xl text-black mb-4 md:mb-6 leading-tight">
+                        <?= $content['syarat']['title'] ?? 'Persyaratan Pendaftaran' ?>
+                    </h2>
+                    <p class="text-sm md:text-lg font-bold text-gray-700 mb-6 md:mb-8">
+                        Persiapkan berkas berikut dalam bentuk scan/foto jelas untuk upload sistem, serta dokumen fisik asli saat verifikasi.
+                    </p>
 
-                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-8 relative overflow-hidden">
-                        <div class="absolute -right-4 -bottom-4 text-amber-100 text-6xl opacity-50"><i class="fas fa-exclamation-triangle"></i></div>
-                        <h4 class="font-bold text-amber-800 mb-2 relative z-10 flex items-center">
-                            <i class="fas fa-info-circle mr-2"></i> Perhatian Penting!
-                        </h4>
-                        <p class="text-sm text-amber-700 relative z-10">Semua berkas fisik wajib dibawa di dalam stopmap saat proses <span class="font-bold">Verifikasi Berkas (Tahap 2)</span> ke madrasah.</p>
+                    <!-- Important Notice Box (Neo-Brutal) -->
+                    <div class="bg-[#FEF08A] p-6 rounded-2xl border-[3px] border-black shadow-[5px_5px_0px_0px_#000] mb-6">
+                        <div class="flex items-center gap-3 font-heading font-black text-lg text-black mb-2">
+                            <span class="text-2xl">⚠️</span>
+                            <span>Catatan Penting!</span>
+                        </div>
+                        <p class="text-sm font-bold text-gray-800 leading-relaxed">
+                            Seluruh berkas fisik wajib dimasukkan ke dalam map snelhechter/folder plastik saat verifikasi langsung ke madrasah.
+                        </p>
                     </div>
 
                     <?php if (isset($content['pendaftar']['is_visible']) && $content['pendaftar']['is_visible'] === '1'): ?>
-                        <a href="<?= base_url('pendaftar') ?>" class="inline-flex items-center justify-center bg-gray-900 hover:bg-emerald-600 text-white font-semibold py-3.5 px-6 rounded-xl shadow-md transition-all duration-300 group w-full sm:w-auto">
+                        <a href="<?= base_url('pendaftar') ?>" class="neo-btn bg-[#00D2FF] text-black py-3.5 px-6 rounded-xl w-full text-center">
                             <i class="fas fa-search mr-2"></i>
                             <span>Cek Data Pendaftar Publik</span>
-                            <i class="fas fa-arrow-right ml-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all"></i>
                         </a>
                     <?php endif; ?>
                 </div>
 
-                <!-- Right Grid Area -->
-                <div class="w-full lg:w-2/3">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Right Column: Requirements Checklist -->
+                <div class="w-full lg:w-7/12">
+                    <div class="space-y-4">
                         <?php
                         $defaultSyarat = [
-                            'Berusia minimal 6 tahun pada bulan Juli 2024.',
-                            'Fotocopy Akta Kelahiran (2 lembar).',
-                            'Fotocopy Kartu Keluarga (KK) (2 lembar).',
-                            'Fotocopy Ijazah TK/RA (jika ada).',
-                            'Pas Foto ukuran 3x4 latar belakang merah (4 lembar).',
-                            'Membawa map folder plastik kancing.'
+                            'Berusia minimal 6 tahun pada awal tahun pelajaran berjalan.',
+                            'Fotokopi Akta Kelahiran calon peserta didik (2 lembar).',
+                            'Fotokopi Kartu Keluarga (KK) yang masih berlaku (2 lembar).',
+                            'Fotokopi KTP kedua orang tua/wali siswa.',
+                            'Fotokopi Ijazah / Surat Keterangan Lulus TK/RA (jika ada).',
+                            'Pas foto terbaru ukuran 3x4 berwarna (4 lembar).'
                         ];
 
-                        $icons = ['fa-child', 'fa-file-signature', 'fa-users', 'fa-graduation-cap', 'fa-camera-retro', 'fa-folder-open'];
+                        $badgeColors = ['bg-[#FFE600]', 'bg-[#00D2FF]', 'bg-[#A3E635]', 'bg-[#FF6B8B]', 'bg-[#C084FC]', 'bg-[#FF9F1C]'];
 
-                        $idx = 0;
                         for ($i = 1; $i <= 6; $i++):
                             $syaratText = $content['syarat']["item{$i}"] ?? ($defaultSyarat[$i - 1] ?? '');
                             if (empty($syaratText)) continue;
-                            $iconClass = $icons[$idx % count($icons)];
+                            $bColor = $badgeColors[($i - 1) % count($badgeColors)];
                         ?>
-                            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_4px_15px_rgb(0,0,0,0.02)] hover:shadow-lg hover:border-emerald-100 transition-all duration-300 flex items-start group">
-                                <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors flex-shrink-0 mr-4">
-                                    <i class="fas <?= $iconClass ?> text-xl"></i>
+                            <div class="bg-white p-5 md:p-6 rounded-2xl border-[3px] border-black shadow-[4px_4px_0px_0px_#000] neo-card-hover flex items-start gap-4">
+                                <div class="<?= $bColor ?> w-12 h-12 flex items-center justify-center shrink-0 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000] font-black text-black text-base mt-0.5">
+                                    0<?= $i ?>
                                 </div>
-                                <div class="pt-1">
-                                    <h4 class="text-gray-900 font-bold mb-1">Syarat <?= $idx + 1 ?></h4>
-                                    <p class="text-gray-500 text-sm leading-relaxed"><?= esc($syaratText) ?></p>
+                                <div>
+                                    <h4 class="font-heading font-black text-lg text-black mb-1">Persyaratan Dokumen #<?= $i ?></h4>
+                                    <p class="font-semibold text-gray-700 text-sm md:text-base leading-relaxed"><?= esc($syaratText) ?></p>
                                 </div>
                             </div>
-                        <?php
-                            $idx++;
-                        endfor;
-                        ?>
+                        <?php endfor; ?>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- GALERI -->
+    <!-- GALERI FOTO SECTION -->
     <?php if (!empty($galeri)): ?>
-        <section id="galeri" class="py-24 bg-slate-900 relative">
-            <div class="container mx-auto px-4 md:px-6">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-12">
-                    <div class="max-w-2xl text-left">
-                        <span class="inline-block py-1 px-3 rounded-full bg-white/10 text-emerald-400 font-bold tracking-wider text-xs mb-3 uppercase">Dokumentasi</span>
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4">Galeri Kegiatan</h2>
-                        <p class="text-gray-400">Intip berbagai keseruan dan kegiatan positif di lingkungan madrasah kami.</p>
+        <section id="galeri" class="bg-[#000000] text-white border-b-[3px] border-black relative">
+            <div class="max-w-7xl mx-auto px-4 py-16">
+
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-14 gap-4">
+                    <div>
+                        <span class="inline-block px-4 py-1.5 bg-[#FFE600] text-black font-black text-xs uppercase tracking-widest rounded-lg border-2 border-white shadow-[3px_3px_0px_0px_#FFF] mb-3">
+                            📸 DOKUMENTASI KEGIATAN
+                        </span>
+                        <h2 class="font-heading font-black text-3xl md:text-5xl text-white">Galeri Madrasah</h2>
                     </div>
+                    <p class="text-gray-400 font-bold max-w-md">Kumpulan momen inspiratif, kegiatan belajar, serta prestasi para santri di lingkungan madrasah.</p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <?php foreach ($galeri as $index => $g): ?>
+                <!-- Gallery Polaroid Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <?php foreach ($galeri as $g): ?>
                         <div onclick="openLightbox('<?= base_url($g['gambar']) ?>', '<?= esc(addslashes($g['judul'])) ?>', '<?= esc(addslashes($g['deskripsi'] ?? '')) ?>')"
-                            class="group relative overflow-hidden rounded-2xl cursor-pointer aspect-square bg-slate-800">
-                            <img src="<?= base_url($g['gambar']) ?>" alt="<?= esc($g['judul']) ?>" class="w-full h-full object-cover transform group-hover:scale-110 group-hover:rotate-1 transition duration-700 ease-out opacity-80 group-hover:opacity-100">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-80 group-hover:opacity-90 transition duration-300"></div>
-
-                            <!-- Search Icon Overlay -->
-                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition duration-300 scale-50 group-hover:scale-100">
-                                <i class="fas fa-search-plus text-xl"></i>
+                             class="bg-white text-black p-3 pb-5 rounded-2xl border-[3px] border-white shadow-[5px_5px_0px_0px_#FFE600] hover:shadow-[7px_7px_0px_0px_#00D2FF] hover:-translate-y-2 transition-all cursor-pointer group">
+                            <div class="aspect-square rounded-xl overflow-hidden border-2 border-black mb-3 bg-gray-100">
+                                <img src="<?= base_url($g['gambar']) ?>" alt="<?= esc($g['judul']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             </div>
-
-                            <div class="absolute bottom-0 left-0 w-full p-5 translate-y-4 group-hover:translate-y-0 transition duration-300">
-                                <h3 class="text-white font-bold text-lg leading-tight drop-shadow-md"><?= esc($g['judul']) ?></h3>
-                                <?php if (!empty($g['deskripsi'])): ?>
-                                    <p class="text-gray-300 text-sm mt-1 opacity-0 group-hover:opacity-100 transition duration-300 delay-100 line-clamp-1"><?= esc($g['deskripsi']) ?></p>
-                                <?php endif; ?>
-                            </div>
+                            <h4 class="font-heading font-black text-base text-black line-clamp-1 group-hover:text-[#FF6B8B] transition-colors"><?= esc($g['judul']) ?></h4>
+                            <?php if (!empty($g['deskripsi'])): ?>
+                                <p class="text-xs font-semibold text-gray-600 line-clamp-1 mt-1"><?= esc($g['deskripsi']) ?></p>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
+
             </div>
         </section>
     <?php endif; ?>
 
     <!-- LIGHTBOX MODAL -->
-    <div id="lightbox" class="fixed inset-0 z-[60] hidden bg-slate-900/95 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity" onclick="closeLightbox()">
-        <button class="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-red-500 rounded-full text-white flex items-center justify-center transition-colors z-10">
-            <i class="fas fa-times text-xl"></i>
-        </button>
-        <div class="max-w-5xl w-full relative flex flex-col items-center" onclick="event.stopPropagation()">
-            <img id="lightbox-img" src="" alt="Gallery Image" class="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl border border-white/10">
-            <div class="bg-black/50 backdrop-blur-md px-6 py-4 rounded-2xl mt-4 border border-white/10 text-center max-w-2xl w-full">
-                <p id="lightbox-caption" class="text-white text-xl font-bold mb-1"></p>
-                <p id="lightbox-desc" class="text-gray-300 text-sm"></p>
+    <div id="lightbox" class="fixed inset-0 z-[9999] hidden bg-black/80 backdrop-blur-sm items-center justify-center p-4" onclick="closeLightbox()">
+        <div class="bg-white p-6 rounded-3xl border-[4px] border-black shadow-[10px_10px_0px_0px_#000] max-w-3xl w-full relative" onclick="event.stopPropagation()">
+            <button onclick="closeLightbox()" class="absolute -top-4 -right-4 w-10 h-10 bg-[#FF6B8B] text-white rounded-full border-2 border-black shadow-[3px_3px_0px_0px_#000] flex items-center justify-center font-black hover:scale-110 transition-transform">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="rounded-2xl border-2 border-black overflow-hidden mb-4 max-h-[60vh]">
+                <img id="lightbox-img" src="" alt="Gallery Image" class="w-full h-full object-contain bg-gray-100">
             </div>
+            <h3 id="lightbox-caption" class="font-heading font-black text-2xl text-black mb-1"></h3>
+            <p id="lightbox-desc" class="text-sm font-semibold text-gray-700"></p>
         </div>
     </div>
 
-    <!-- TESTIMONI -->
+    <!-- TESTIMONI SECTION -->
     <?php if (!empty($testimoni)): ?>
-        <section id="testimoni" class="py-24 bg-white border-t border-gray-100 overflow-hidden relative">
-            <div class="container mx-auto px-4 md:px-6 mb-12 relative z-10">
-                <div class="text-center">
-                    <span class="inline-block py-1 px-3 rounded-full bg-emerald-100 text-emerald-700 font-bold tracking-wider text-xs mb-3 uppercase">Testimonials</span>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Apa Kata Mereka?</h2>
-                    <div class="w-20 h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600 mx-auto rounded-full"></div>
-                </div>
+        <section id="testimoni" class="py-20 bg-[#BAE6FD] border-b-[3px] border-black relative overflow-hidden bg-neo-dots">
+            <div class="container mx-auto px-4 md:px-6 mb-12 text-center">
+                <span class="inline-block px-4 py-1.5 bg-white text-black font-black text-xs uppercase tracking-widest rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_#000] mb-4">
+                    💬 KATA WALI MURID
+                </span>
+                <h2 class="font-heading font-black text-3xl md:text-5xl text-black">Apa Kata Mereka?</h2>
             </div>
 
-            <div class="marquee-container relative z-10">
-                <div class="marquee-content py-4 items-stretch">
+            <!-- Marquee Testimonial Row -->
+            <div class="marquee-container">
+                <div class="marquee-content py-4 gap-6 items-stretch">
                     <?php
-                    // Duplicate for infinite scroll
                     $scrollTestimoni = array_merge($testimoni, $testimoni, $testimoni);
                     foreach ($scrollTestimoni as $t):
                     ?>
-                        <div class="marquee-item flex">
-                            <div class="bg-slate-50 p-8 rounded-[2rem] hover:bg-white border border-slate-100 hover:border-emerald-100 hover:shadow-xl transition-all duration-300 flex flex-col justify-between w-full relative group">
-                                <i class="fas fa-quote-right text-6xl text-gray-100 absolute top-6 right-6 group-hover:text-emerald-50 transition-colors"></i>
-                                <div class="relative z-10">
-                                    <div class="mb-5 text-amber-400 text-sm">
-                                        <?php for ($i = 0; $i < $t['rating']; $i++) echo '<i class="fas fa-star mr-1"></i>'; ?>
-                                        <?php for ($i = $t['rating']; $i < 5; $i++) echo '<i class="far fa-star text-gray-300 mr-1"></i>'; ?>
-                                    </div>
-                                    <p class="text-gray-600 leading-relaxed font-medium mb-8">"<?= esc($t['isi']) ?>"</p>
+                        <div class="w-[340px] md:w-[400px] shrink-0 bg-white p-7 rounded-3xl border-[3px] border-black shadow-[6px_6px_0px_0px_#000] flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-1 text-[#FF9F1C] text-sm mb-4">
+                                    <?php for ($i = 0; $i < $t['rating']; $i++): ?>
+                                        <i class="fas fa-star"></i>
+                                    <?php endfor; ?>
                                 </div>
-                                <div class="flex items-center mt-auto border-t border-gray-200/60 pt-6 relative z-10">
-                                    <img src="<?= !empty($t['avatar']) ? base_url($t['avatar']) : 'https://ui-avatars.com/api/?name=' . urlencode($t['nama']) . '&background=10b981&color=fff' ?>" alt="<?= esc($t['nama']) ?>" class="w-12 h-12 rounded-full object-cover">
-                                    <div class="ml-4">
-                                        <h4 class="font-bold text-gray-900 text-sm"><?= esc($t['nama']) ?></h4>
-                                        <p class="text-xs text-emerald-600 font-semibold uppercase tracking-wider mt-0.5"><?= esc($t['peran']) ?></p>
-                                    </div>
+                                <p class="font-bold text-gray-900 text-sm md:text-base leading-relaxed mb-6">
+                                    "<?= esc($t['isi']) ?>"
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-3 pt-4 border-t-2 border-black">
+                                <img src="<?= !empty($t['avatar']) ? base_url($t['avatar']) : 'https://ui-avatars.com/api/?name=' . urlencode($t['nama']) . '&background=FFE600&color=000&bold=true' ?>" 
+                                     alt="<?= esc($t['nama']) ?>" 
+                                     class="w-12 h-12 rounded-xl border-2 border-black object-cover">
+                                <div>
+                                    <h4 class="font-heading font-black text-black text-base"><?= esc($t['nama']) ?></h4>
+                                    <span class="text-xs font-extrabold uppercase px-2 py-0.5 rounded-md bg-[#FFE600] border border-black inline-block mt-0.5">
+                                        <?= esc($t['peran']) ?>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -504,230 +1060,240 @@
         </section>
     <?php endif; ?>
 
-    <!-- KONTAK -->
-    <section id="kontak" class="py-24 bg-slate-50 relative overflow-hidden border-t border-slate-200/60">
-        <!-- Decor -->
-        <div class="absolute inset-0 pointer-events-none opacity-40 mix-blend-multiply" style="background-image: radial-gradient(#10b981 1px, transparent 1px); background-size: 32px 32px;"></div>
+    <!-- KONTAK & LOKASI SECTION -->
+    <section id="kontak" class="py-20 bg-[#FFFDF5] border-b-[3px] border-black relative">
+        <div class="container mx-auto px-4 md:px-6">
 
-        <div class="container mx-auto px-4 md:px-6 relative z-10">
-            <div class="max-w-6xl mx-auto bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden flex flex-col lg:flex-row">
+            <div class="max-w-6xl mx-auto bg-white rounded-3xl border-[4px] border-black shadow-[8px_8px_0px_0px_#000] overflow-hidden grid grid-cols-1 lg:grid-cols-12">
 
-                <!-- Left: Contact Info -->
-                <div class="w-full lg:w-5/12 bg-emerald-900 p-10 lg:p-14 text-white relative overflow-hidden flex flex-col justify-between">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-600 rounded-full mix-blend-screen filter blur-[80px] opacity-50 translate-x-1/2 -translate-y-1/2"></div>
-                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-600 rounded-full mix-blend-screen filter blur-[80px] opacity-30 -translate-x-1/2 translate-y-1/2"></div>
+                <!-- Left: Info Column -->
+                <div class="lg:col-span-6 p-8 md:p-12 bg-[#FFDE59] border-b-[3px] lg:border-b-0 lg:border-r-[3px] border-black flex flex-col justify-between">
+                    <div>
+                        <span class="inline-block px-3 py-1 bg-black text-white font-black text-xs uppercase tracking-widest rounded-lg mb-4">
+                            📍 KONTAK PANITIA
+                        </span>
+                        <h3 class="font-heading font-black text-3xl md:text-4xl text-black mb-4">Butuh Bantuan?</h3>
+                        <p class="font-bold text-gray-800 text-sm md:text-base mb-8 leading-relaxed">
+                            Hubungi panitia PPDB kami untuk pertanyaan seputar syarat, pembayaran, atau kendala pendaftaran online.
+                        </p>
 
-                    <div class="relative z-10">
-                        <span class="inline-block py-1 px-3 rounded-full bg-white/10 text-emerald-100 font-bold tracking-wider text-xs mb-4 uppercase">Hubungi Kami</span>
-                        <h3 class="text-3xl font-bold mb-6">Informasi Kontak</h3>
-                        <p class="text-emerald-100/80 mb-12 leading-relaxed text-sm">Tim kami siap membantu Anda menjawab segala pertanyaan seputar proses pendaftaran peserta didik baru.</p>
-
-                        <div class="space-y-8">
-                            <div class="flex items-start group">
-                                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 mr-4 group-hover:bg-white group-hover:text-emerald-800 transition-colors">
-                                    <i class="fas fa-map-marker-alt text-xl"></i>
+                        <div class="space-y-4">
+                            <!-- Alamat -->
+                            <div class="bg-white p-4 rounded-2xl border-2 border-black shadow-[3px_3px_0px_0px_#000] flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-[#00D2FF] border-2 border-black flex items-center justify-center shrink-0">
+                                    <i class="fas fa-map-marked-alt text-black"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-semibold text-emerald-200 text-xs uppercase tracking-wider mb-1">Alamat Madrasah</h4>
-                                    <p class="text-white font-medium leading-relaxed"><?= esc($content['kontak']['alamat'] ?? 'Jl. Raya No. 123, Kab. Tanggamus, Lampung') ?></p>
+                                    <div class="text-[10px] font-black uppercase text-gray-500">Alamat Madrasah</div>
+                                    <div class="text-sm font-bold text-black"><?= esc($content['kontak']['alamat'] ?? 'Jl. Raya No. 123, Kab. Tanggamus, Lampung') ?></div>
                                 </div>
                             </div>
 
-                            <div class="flex items-start group">
-                                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 mr-4 group-hover:bg-white group-hover:text-emerald-800 transition-colors">
-                                    <i class="fab fa-whatsapp text-2xl"></i>
+                            <!-- WhatsApp -->
+                            <div class="bg-white p-4 rounded-2xl border-2 border-black shadow-[3px_3px_0px_0px_#000] flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-[#A3E635] border-2 border-black flex items-center justify-center shrink-0">
+                                    <i class="fab fa-whatsapp text-black text-lg"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-semibold text-emerald-200 text-xs uppercase tracking-wider mb-1">WhatsApp Panitia</h4>
-                                    <p class="text-white font-medium text-lg leading-relaxed"><?= esc($content['kontak']['whatsapp_nama'] ?? '+62 812-3456-7890 (Bpk. Ahmad)') ?></p>
+                                    <div class="text-[10px] font-black uppercase text-gray-500">Kontak Person</div>
+                                    <div class="text-sm font-bold text-black"><?= esc($content['kontak']['whatsapp_nama'] ?? '+62 812-3456-7890 (Panitia PPDB)') ?></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Right: CTA Area -->
-                <div class="w-full lg:w-7/12 p-10 lg:p-16 flex items-center justify-center">
-                    <div class="text-center w-full max-w-md mx-auto">
-                        <div class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-emerald-100 relative">
-                            <div class="absolute inset-0 rounded-full border-4 border-emerald-500 border-dashed animate-[spin_10s_linear_infinite]"></div>
-                            <i class="fab fa-whatsapp text-4xl text-emerald-600 relative z-10"></i>
-                        </div>
-                        <h3 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4">Butuh Bantuan Cepat?</h3>
-                        <p class="text-gray-500 mb-10 leading-relaxed">Klik tombol di bawah ini untuk terhubung langsung dengan admin kami via WhatsApp tanpa harus menyimpan nomor.</p>
-
-                        <?php $waNumber = $content['kontak']['whatsapp_number'] ?? '6281234567890'; ?>
+                    <?php $waNumber = $content['kontak']['whatsapp_number'] ?? '6281234567890'; ?>
+                    <div class="mt-8">
                         <a href="https://wa.me/<?= esc($waNumber) ?>" target="_blank"
-                            class="inline-flex items-center justify-center w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-8 rounded-2xl transition-all hover:shadow-lg hover:shadow-emerald-500/30 transform hover:-translate-y-1 space-x-3 text-lg group">
-                            <i class="fab fa-whatsapp text-2xl group-hover:rotate-12 transition-transform"></i>
-                            <span>Chat via WhatsApp</span>
+                           class="neo-btn bg-[#22C55E] hover:bg-[#16A34A] text-white py-3.5 px-6 rounded-2xl w-full text-center text-base">
+                            <i class="fab fa-whatsapp text-xl mr-2"></i>
+                            <span>Chat Langsung via WhatsApp</span>
                         </a>
                     </div>
                 </div>
-            </div>
 
-            <!-- Google Maps Area -->
-            <?php if (!empty($content['kontak']['google_maps'])): ?>
-                <div class="max-w-6xl mx-auto mt-12 bg-white rounded-[2.5rem] p-3 md:p-4 shadow-xl border border-gray-100 overflow-hidden relative">
-                    <div class="absolute top-6 left-6 md:top-8 md:left-8 z-20 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-white/20 flex items-center gap-2 pointer-events-none">
-                        <span class="relative flex h-3 w-3">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                        </span>
-                        <span class="text-xs font-bold text-gray-800 tracking-wider">LOKASI KAMI</span>
+                <!-- Right: Google Maps -->
+                <div class="lg:col-span-6 p-6 md:p-8 bg-white flex flex-col justify-center">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="font-heading font-black text-xl text-black">Peta Lokasi</span>
+                        <span class="text-xs font-black uppercase px-2.5 py-1 bg-[#A3E635] border border-black rounded-lg">📍 Google Maps</span>
                     </div>
-                    <!-- Arbitrary Tailwind variants used to style the inner iframe regardless of user input -->
-                    <div class="w-full h-[350px] md:h-[450px] rounded-[2rem] overflow-hidden">
-                        <?php
-                        $mapsHtml = $content['kontak']['google_maps'] ?? '';
-                        if (preg_match('/<iframe[^>]+src=["\'](https?:\/\/[^"\']+\.google\.[^"\']+maps[^"\']*)["\'][^>]*><\/iframe>/i', $mapsHtml, $m)) {
-                            echo '<iframe src="' . esc($m[1]) . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
-                        } else {
-                            echo esc($mapsHtml);
-                        }
-                        ?>
+
+                    <div class="w-full h-[320px] md:h-[380px] rounded-2xl border-[3px] border-black shadow-[4px_4px_0px_0px_#000] overflow-hidden bg-gray-100">
+                        <?php if (!empty($content['kontak']['google_maps'])): ?>
+                            <?php
+                            $mapsHtml = $content['kontak']['google_maps'] ?? '';
+                            if (preg_match('/<iframe[^>]+src=["\'](https?:\/\/[^"\']+\.google\.[^"\']+maps[^"\']*)["\'][^>]*><\/iframe>/i', $mapsHtml, $m)) {
+                                echo '<iframe src="' . esc($m[1]) . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
+                            } else {
+                                echo esc($mapsHtml);
+                            }
+                            ?>
+                        <?php else: ?>
+                            <div class="w-full h-full flex items-center justify-center font-bold text-gray-500">
+                                Peta lokasi madrasah
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
-            <?php endif; ?>
+
+            </div>
 
         </div>
     </section>
 
     <!-- FAQ SECTION -->
     <?php if (!empty($faqs)): ?>
-    <section id="faq" class="py-24 bg-white relative overflow-hidden border-t border-slate-200/60">
-        <div class="container mx-auto px-4 md:px-6 relative z-10">
-            <div class="text-center mb-16">
-                <span class="inline-block py-1 px-3 rounded-full bg-emerald-100 text-emerald-700 font-bold tracking-wider text-xs mb-3 uppercase shadow-sm">Bantuan Singkat</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Pusat Bantuan Umum (FAQ)</h2>
-                <div class="w-20 h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600 mx-auto rounded-full"></div>
-            </div>
+        <section id="faq" class="py-12 md:py-20 bg-[#FFFDF5] border-b-[3px] border-black">
+            <div class="container mx-auto px-4 md:px-6">
 
-            <div class="max-w-4xl mx-auto space-y-4">
-                <?php foreach ($faqs as $index => $faq): ?>
-                <div class="faq-item bg-slate-50 rounded-[1.5rem] border border-slate-100 overflow-hidden hover:shadow-lg transition-all duration-300">
-                    <button class="faq-btn w-full px-8 py-6 text-left flex justify-between items-center focus:outline-none focus:bg-white transition-colors group">
-                        <span class="font-bold text-lg text-gray-800 group-hover:text-emerald-600 transition-colors"><?= esc((string)$faq['pertanyaan']) ?></span>
-                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-colors shrink-0">
-                            <i class="fas fa-chevron-down transition-transform duration-300 faq-icon"></i>
-                        </div>
-                    </button>
-                    <div class="faq-content hidden px-8 pb-8 text-gray-600 leading-relaxed text-md bg-white border-t border-slate-100 pt-5">
-                        <?= nl2br(esc((string)$faq['jawaban'])) ?>
-                    </div>
+                <div class="section-header text-center mb-8 md:mb-14 max-w-2xl mx-auto">
+                    <span class="inline-block px-3 md:px-4 py-1 md:py-1.5 bg-[#C084FC] text-black font-black text-[10px] md:text-xs uppercase tracking-widest rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_#000] mb-3 md:mb-4">
+                        ❓ TANYA JAWAB
+                    </span>
+                    <h2 class="font-heading font-black text-2xl md:text-5xl text-black">Pertanyaan Umum (FAQ)</h2>
                 </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const faqItems = document.querySelectorAll('.faq-item');
-            
-            faqItems.forEach(item => {
-                const btn = item.querySelector('.faq-btn');
-                const content = item.querySelector('.faq-content');
-                const icon = item.querySelector('.faq-icon');
-                
-                btn.addEventListener('click', () => {
-                    const isHidden = content.classList.contains('hidden');
-                    
-                    if (isHidden) {
-                        content.classList.remove('hidden');
-                        icon.style.transform = 'rotate(180deg)';
-                        btn.classList.add('bg-white');
-                    } else {
-                        content.classList.add('hidden');
-                        icon.style.transform = 'rotate(0deg)';
-                        btn.classList.remove('bg-white');
-                    }
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <?php foreach ($faqs as $idx => $faq): ?>
+                        <div class="faq-item bg-white rounded-2xl border-[3px] border-black shadow-[4px_4px_0px_0px_#000] overflow-hidden transition-all">
+                            <button class="faq-btn w-full px-6 py-5 text-left flex justify-between items-center font-heading font-black text-base md:text-lg text-black hover:bg-[#FEF08A] transition-colors gap-4">
+                                <span><?= esc((string)$faq['pertanyaan']) ?></span>
+                                <div class="w-8 h-8 rounded-lg border-2 border-black bg-[#FFE600] flex items-center justify-center font-black text-sm shrink-0 faq-icon transition-transform">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </button>
+                            <div class="faq-content hidden px-6 pb-6 pt-2 font-medium text-gray-800 leading-relaxed text-sm md:text-base border-t-2 border-black bg-gray-50">
+                                <?= nl2br(esc((string)$faq['jawaban'])) ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+            </div>
+        </section>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const faqItems = document.querySelectorAll('.faq-item');
+                faqItems.forEach(item => {
+                    const btn = item.querySelector('.faq-btn');
+                    const content = item.querySelector('.faq-content');
+                    const icon = item.querySelector('.faq-icon i');
+
+                    btn.addEventListener('click', () => {
+                        const isHidden = content.classList.contains('hidden');
+                        if (isHidden) {
+                            content.classList.remove('hidden');
+                            icon.classList.replace('fa-plus', 'fa-minus');
+                            btn.classList.add('bg-[#FEF08A]');
+                        } else {
+                            content.classList.add('hidden');
+                            icon.classList.replace('fa-minus', 'fa-plus');
+                            btn.classList.remove('bg-[#FEF08A]');
+                        }
+                    });
                 });
             });
-        });
-    </script>
+        </script>
     <?php endif; ?>
 
-    <!-- FOOTER -->
-    <footer class="bg-slate-900 text-white pt-16 pb-8 border-t-[6px] border-emerald-500">
+    <!-- FOOTER SECTION -->
+    <footer class="bg-black text-white pt-16 pb-10 border-t-[4px] border-black">
         <div class="container mx-auto px-4 md:px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-10 pb-10 border-b border-white/10">
-                <div class="mb-8 md:mb-0 text-center md:text-left flex flex-col items-center md:items-start">
-                    <!-- Footer Logo -->
-                    <div class="flex items-center space-x-3 mb-4">
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b-2 border-white/20">
+
+                <!-- Left: Branding -->
+                <div class="md:col-span-6 flex flex-col items-start">
+                    <div class="flex items-center gap-3 mb-4">
                         <?php if (!empty($web['logo_sekolah'])): ?>
-                            <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="w-10 h-10 object-contain bg-white rounded-lg p-1">
+                            <div class="w-12 h-12 bg-[#FFE600] rounded-xl border-2 border-white p-1 flex items-center justify-center shadow-[3px_3px_0px_0px_#FFF]">
+                                <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="w-full h-full object-contain">
+                            </div>
                         <?php endif; ?>
-                        <h3 class="text-2xl font-bold tracking-tight"><?= esc($content['footer']['nama_sekolah'] ?? ($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus')) ?></h3>
+                        <div>
+                            <h3 class="font-heading font-black text-2xl text-white tracking-tight">
+                                <?= esc($content['footer']['nama_sekolah'] ?? ($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus')) ?>
+                            </h3>
+                            <span class="text-xs font-bold text-[#FFE600] tracking-wider uppercase">Mandiri, Berprestasi, Berakhlak Mulia</span>
+                        </div>
                     </div>
-                    <p class="text-gray-400 font-medium">Mandiri, Berprestasi, Berakhlak Mulia</p>
+                    <p class="text-gray-400 font-semibold text-sm max-w-md leading-relaxed mb-6">
+                        Penerimaan Peserta Didik Baru Terpadu berbasis digital untuk kemudahan, kecepatan, dan transparansi pendaftaran madrasah.
+                    </p>
                 </div>
 
-                <div class="text-center md:text-right">
-                    <h4 class="font-semibold text-gray-400 mb-4 uppercase tracking-wider text-xs">Temukan Kami di</h4>
-                    <div class="flex space-x-3 justify-center md:justify-end">
-                        <a href="<?= isset($content['kontak']['whatsapp_number']) && !empty($content['kontak']['whatsapp_number']) ? 'https://wa.me/' . esc($content['kontak']['whatsapp_number']) : '#' ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-emerald-500 flex items-center justify-center transition-colors">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                        <?php if (!empty($content['footer']['facebook_link'])): ?>
-                            <a href="<?= esc($content['footer']['facebook_link'], 'attr') ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 flex items-center justify-center transition-colors">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if (!empty($content['footer']['instagram_link'])): ?>
-                            <a href="<?= esc($content['footer']['instagram_link'], 'attr') ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-pink-600 flex items-center justify-center transition-colors">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if (!empty($content['footer']['tiktok_link'])): ?>
-                            <a href="<?= esc($content['footer']['tiktok_link'], 'attr') ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-black flex items-center justify-center transition-colors">
-                                <i class="fab fa-tiktok"></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if (!empty($content['footer']['youtube_link'])): ?>
-                            <a href="<?= esc($content['footer']['youtube_link'], 'attr') ?>" target="_blank" class="w-10 h-10 rounded-full bg-white/10 hover:bg-red-600 flex items-center justify-center transition-colors">
-                                <i class="fab fa-youtube"></i>
-                            </a>
-                        <?php endif; ?>
+                <!-- Right: Social Links & Quick Actions -->
+                <div class="md:col-span-6 flex flex-col md:items-end justify-between">
+                    <div>
+                        <h4 class="font-heading font-black text-sm uppercase tracking-widest text-[#FFE600] mb-4">Ikuti Kami</h4>
+                        <div class="flex flex-wrap gap-2 md:justify-end">
+                            <?php if (!empty($content['kontak']['whatsapp_number'])): ?>
+                                <a href="https://wa.me/<?= esc($content['kontak']['whatsapp_number']) ?>" target="_blank" class="w-10 h-10 rounded-xl bg-white text-black border-2 border-black hover:bg-[#22C55E] hover:text-white shadow-[2px_2px_0px_0px_#FFF] flex items-center justify-center transition-all">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (!empty($content['footer']['facebook_link'])): ?>
+                                <a href="<?= esc($content['footer']['facebook_link'], 'attr') ?>" target="_blank" class="w-10 h-10 rounded-xl bg-white text-black border-2 border-black hover:bg-[#3B82F6] hover:text-white shadow-[2px_2px_0px_0px_#FFF] flex items-center justify-center transition-all">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (!empty($content['footer']['instagram_link'])): ?>
+                                <a href="<?= esc($content['footer']['instagram_link'], 'attr') ?>" target="_blank" class="w-10 h-10 rounded-xl bg-white text-black border-2 border-black hover:bg-[#EC4899] hover:text-white shadow-[2px_2px_0px_0px_#FFF] flex items-center justify-center transition-all">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (!empty($content['footer']['youtube_link'])): ?>
+                                <a href="<?= esc($content['footer']['youtube_link'], 'attr') ?>" target="_blank" class="w-10 h-10 rounded-xl bg-white text-black border-2 border-black hover:bg-[#EF4444] hover:text-white shadow-[2px_2px_0px_0px_#FFF] flex items-center justify-center transition-all">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
-            <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+            <!-- Bottom Copyright -->
+            <div class="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs font-bold text-gray-400 gap-4">
                 <p>&copy; <?= date('Y') ?> <?= esc($web['nama_sekolah'] ?? '') ?>. <?= esc($content['footer']['copyright'] ?? 'Official Website PPDB. All rights reserved.') ?></p>
-                <!-- <div class="mt-4 md:mt-0 space-x-4">
-                    <a href="<?= base_url('login') ?>" class="hover:text-emerald-400 transition">Admin Login</a>
-                </div> -->
+                <div class="flex items-center gap-4">
+                    <a href="<?= base_url('login') ?>" class="text-[#FFE600] hover:underline font-black">Portal Petugas</a>
+                </div>
             </div>
+
         </div>
     </footer>
 
     <!-- BACK TO TOP BUTTON -->
-    <button id="backToTopBtn" class="fixed bottom-6 right-6 bg-emerald-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-lg hover:bg-emerald-700 hover:shadow-emerald-500/40 hover:-translate-y-1 transition-all duration-300 z-50 opacity-0 invisible scale-75">
-        <i class="fas fa-arrow-up"></i>
+    <button id="backToTopBtn" class="fixed bottom-6 right-6 z-40 bg-[#FFE600] text-black w-12 h-12 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#000] flex items-center justify-center text-lg hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[0px_0px_0px_0px_#000] transition-all opacity-0 invisible" aria-label="Kembali ke atas">
+        <i class="fas fa-arrow-up font-black"></i>
     </button>
 
-    <!-- Announcement Popup Logic -->
+    <!-- ANNOUNCEMENT POPUP MODAL (Neo-Brutal) -->
     <?php if (!empty($popups)) : ?>
-    <div id="announcement-popup" class="fixed inset-0 z-[9999] hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-300 scale-100 border border-gray-100">
-            <div class="relative p-6 md:p-8">
-                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                    <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                        <i class="fas fa-bullhorn text-xl"></i>
+    <div id="announcement-popup" class="fixed inset-0 z-[9999] hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl border-[4px] border-black shadow-[10px_10px_0px_0px_#000] max-w-lg w-full overflow-hidden">
+            <div class="p-6 md:p-8">
+                <div class="flex items-center justify-between gap-3 mb-6 pb-4 border-b-2 border-black">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-[#FFE600] border-2 border-black shadow-[2px_2px_0px_0px_#000] flex items-center justify-center text-black font-black">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h3 id="popup-title" class="font-heading font-black text-xl text-black line-clamp-1">Pengumuman Penting</h3>
                     </div>
-                    <h3 id="popup-title" class="text-xl font-bold text-gray-900 line-clamp-2">Pengumuman Penting</h3>
                 </div>
                 
-                <div id="popup-content" class="max-h-[60vh] overflow-y-auto custom-scrollbar text-gray-600 space-y-4">
-                    <!-- Content will be injected by JS -->
+                <div id="popup-content" class="max-h-[50vh] overflow-y-auto font-medium text-gray-800 space-y-4 pr-1">
+                    <!-- Injected by JS -->
                 </div>
                 
-                <div class="mt-8 flex justify-end">
-                    <button id="close-popup-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-xl transition duration-300 shadow hover:shadow-lg flex items-center gap-2 group">
+                <div class="mt-8 pt-4 border-t-2 border-black flex justify-end">
+                    <button id="close-popup-btn" class="neo-btn bg-[#FFE600] text-black py-3 px-8 rounded-xl text-sm">
                         <span>Tutup Dialog</span>
                         <span id="popup-countdown-text"></span>
-                        <i class="fas fa-times group-hover:rotate-90 transition-transform duration-300"></i>
+                        <i class="fas fa-times ml-2"></i>
                     </button>
                 </div>
             </div>
@@ -752,9 +1318,9 @@
             
             let html = '';
             if (popup.lampiran && (popup.lampiran.match(/\.(jpg|jpeg|png|gif)$/i))) {
-                html += `<img src="<?= base_url('uploads/pengumuman/') ?>${popup.lampiran}" class="w-full rounded-lg mb-4 shadow-sm border border-gray-200">`;
+                html += `<img src="<?= base_url('uploads/pengumuman/') ?>${popup.lampiran}" class="w-full rounded-xl mb-4 border-2 border-black shadow-[3px_3px_0px_0px_#000]">`;
             }
-            html += `<div class="prose prose-sm prose-emerald max-w-none text-gray-600">${DOMPurify.sanitize(popup.isi_pengumuman)}</div>`;
+            html += `<div class="prose prose-sm max-w-none text-gray-800 font-medium leading-relaxed">${DOMPurify.sanitize(popup.isi_pengumuman)}</div>`;
             
             contentContainer.innerHTML = html;
             modal.classList.remove('hidden');
@@ -765,7 +1331,7 @@
             
             if (countdown > 0) {
                 closeBtn.disabled = true;
-                closeBtn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+                closeBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 countdownSpan.innerText = ` (${countdown})`;
                 
                 const timer = setInterval(() => {
@@ -773,7 +1339,7 @@
                     if (countdown <= 0) {
                         clearInterval(timer);
                         closeBtn.disabled = false;
-                        closeBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+                        closeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                         countdownSpan.innerText = '';
                     } else {
                         countdownSpan.innerText = ` (${countdown})`;
@@ -781,7 +1347,7 @@
                 }, 1000);
             } else {
                 closeBtn.disabled = false;
-                closeBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+                closeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 countdownSpan.innerText = '';
             }
 
@@ -797,58 +1363,39 @@
             };
         }
 
-        window.addEventListener('load', () => { setTimeout(() => showPopup(0), 1000); });
+        window.addEventListener('load', () => { setTimeout(() => showPopup(0), 800); });
     </script>
     <?php endif; ?>
 
+    <!-- GLOBAL SCRIPTS -->
     <script>
-        // Navbar scroll effect
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 20) {
-                navbar.classList.add('shadow-md', 'bg-white/95');
-                navbar.classList.remove('bg-white/90', 'shadow-sm');
-            } else {
-                navbar.classList.add('bg-white/90', 'shadow-sm');
-                navbar.classList.remove('shadow-md', 'bg-white/95');
-            }
-        });
-
         // Mobile Menu Toggle
-        const btn = document.getElementById('menu-btn');
+        const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        const menuIcon = btn.querySelector('i');
+        const menuIcon = menuBtn.querySelector('i');
 
-        btn.addEventListener('click', () => {
+        menuBtn.addEventListener('click', () => {
             if (!mobileMenu.classList.contains('open')) {
                 mobileMenu.classList.add('open');
-                menuIcon.classList.remove('fa-bars');
-                menuIcon.classList.add('fa-times');
+                menuIcon.classList.replace('fa-bars', 'fa-times');
             } else {
                 mobileMenu.classList.remove('open');
-                menuIcon.classList.remove('fa-times');
-                menuIcon.classList.add('fa-bars');
+                menuIcon.classList.replace('fa-times', 'fa-bars');
             }
         });
 
-        // Smooth scroll & close menu
+        // Smooth Scroll & auto close mobile menu
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
-                e.preventDefault();
                 const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
+                if (targetId === '#' || targetId === '') return;
 
                 const target = document.querySelector(targetId);
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-
-                    // Close mobile menu
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     mobileMenu.classList.remove('open');
-                    menuIcon.classList.remove('fa-times');
-                    menuIcon.classList.add('fa-bars');
+                    menuIcon.classList.replace('fa-times', 'fa-bars');
                 }
             });
         });
@@ -865,45 +1412,35 @@
             lightboxDesc.innerText = desc;
 
             lightbox.classList.remove('hidden');
-            // Small delay to allow display:block to apply before animating opacity
-            setTimeout(() => {
-                lightbox.classList.add('opacity-100');
-            }, 10);
-
+            lightbox.classList.add('flex');
             document.body.style.overflow = 'hidden';
         }
 
         function closeLightbox() {
             const lightbox = document.getElementById('lightbox');
-            lightbox.classList.remove('opacity-100');
-
-            setTimeout(() => {
-                lightbox.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }, 300); // Wait for transition
+            lightbox.classList.add('hidden');
+            lightbox.classList.remove('flex');
+            document.body.style.overflow = 'auto';
         }
 
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape") closeLightbox();
         });
 
-        // Back to Top functionality
+        // Back to Top Button
         const backToTopBtn = document.getElementById('backToTopBtn');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 400) {
-                backToTopBtn.classList.remove('opacity-0', 'invisible', 'scale-75');
-                backToTopBtn.classList.add('opacity-100', 'visible', 'scale-100');
+                backToTopBtn.classList.remove('opacity-0', 'invisible');
+                backToTopBtn.classList.add('opacity-100', 'visible');
             } else {
-                backToTopBtn.classList.remove('opacity-100', 'visible', 'scale-100');
-                backToTopBtn.classList.add('opacity-0', 'invisible', 'scale-75');
+                backToTopBtn.classList.remove('opacity-100', 'visible');
+                backToTopBtn.classList.add('opacity-0', 'invisible');
             }
         });
 
         backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     </script>
 </body>

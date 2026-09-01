@@ -12,10 +12,17 @@
     ?>
     <?= view('partials/_seo_meta', ['page_title' => $page_title]) ?>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'" />
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    </noscript>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js" defer></script>
 
     <style>
         :root {
@@ -630,7 +637,7 @@
                 <span class="section-label"><i class="fas fa-calendar-check"></i> Timeline PPDB</span>
                 <div class="section-divider mx-auto mt-4"></div>
                 <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-900 mt-2">
-                    <?= esc($content['jadwal']['title'] ?? 'Jadwal Pelaksanaan') ?>
+                    <?= $content['jadwal']['title'] ?? 'Jadwal Pelaksanaan' ?>
                 </h2>
             </div>
 
@@ -714,7 +721,7 @@
                     <span class="section-label reveal"><i class="fas fa-clipboard-list"></i> Persyaratan</span>
                     <div class="section-divider mt-4 reveal"></div>
                     <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-tight reveal">
-                        <?= esc($content['syarat']['title'] ?? 'Persyaratan Pendaftaran') ?>
+                        <?= $content['syarat']['title'] ?? 'Persyaratan Pendaftaran' ?>
                     </h2>
                     <p class="text-gray-500 mt-5 text-base leading-relaxed reveal">
                         Harap persiapkan dokumen-dokumen berikut untuk memperlancar proses pendaftaran.

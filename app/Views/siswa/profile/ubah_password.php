@@ -1,149 +1,101 @@
 <?= $this->extend('layouts/siswa') ?>
 
-<?= $this->section('title') ?>
-Ubah Password
-<?= $this->endSection() ?>
-
+<?= $this->section('title') ?>Ubah Password<?= $this->endSection() ?>
 <?= $this->section('page_title') ?>
-Ubah Password
+<span class="material-symbols-outlined text-brand-500 mr-1">lock_reset</span> Ubah Password Akun
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-<!-- Alert Messages -->
-<?php if (session()->getFlashdata('error')): ?>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-        <?= session()->getFlashdata('error') ?>
-    </div>
-<?php endif; ?>
-
-<?php if (session()->has('errors')): ?>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-        <ul class="list-disc list-inside">
-            <?php foreach (session('errors') as $error): ?>
-                <li><?= esc($error) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-<?php endif; ?>
-
-<div class="max-w-2xl mx-auto">
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <div class="mb-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">
-                <i class="fas fa-key mr-2 text-blue-600"></i>Ubah Password
-            </h3>
-            <p class="text-sm text-gray-600">Pastikan password baru Anda kuat dan mudah diingat</p>
+<div class="max-w-xl mx-auto">
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="mb-6 border-b border-gray-100 dark:border-gray-800 pb-4">
+            <h3 class="text-base font-bold text-gray-900 dark:text-white">Ganti Kata Sandi</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Pastikan password baru Anda minimal 6 karakter dan mudah Anda ingat.</p>
         </div>
 
-        <form action="<?= base_url('siswa/profile/update-password') ?>" method="POST">
+        <form action="<?= base_url('siswa/profile/update-password') ?>" method="POST" class="space-y-4">
             <?= csrf_field() ?>
 
             <!-- Password Lama -->
-            <div class="mb-4">
-                <label for="password_lama" class="block text-sm font-medium text-gray-700 mb-2">
-                    Password Lama <span class="text-red-600">*</span>
+            <div>
+                <label for="password_lama" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                    Password Lama Saat Ini <span class="text-red-500">*</span>
                 </label>
                 <div class="relative">
-                    <input type="password"
-                        id="password_lama"
-                        name="password_lama"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        required>
-                    <button type="button"
-                        onclick="togglePassword('password_lama')"
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-eye" id="password_lama-icon"></i>
+                    <input type="password" id="password_lama" name="password_lama" required
+                        class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 pr-10 pl-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                        placeholder="Masukkan password lama">
+                    <button type="button" onclick="togglePassword('password_lama')"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                        <span class="material-symbols-outlined text-base" id="password_lama-icon">visibility</span>
                     </button>
                 </div>
             </div>
 
             <!-- Password Baru -->
-            <div class="mb-4">
-                <label for="password_baru" class="block text-sm font-medium text-gray-700 mb-2">
-                    Password Baru <span class="text-red-600">*</span>
+            <div>
+                <label for="password_baru" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                    Password Baru <span class="text-red-500">*</span>
                 </label>
                 <div class="relative">
-                    <input type="password"
-                        id="password_baru"
-                        name="password_baru"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        minlength="6"
-                        required>
-                    <button type="button"
-                        onclick="togglePassword('password_baru')"
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-eye" id="password_baru-icon"></i>
+                    <input type="password" id="password_baru" name="password_baru" minlength="6" required
+                        class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 pr-10 pl-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 font-mono"
+                        placeholder="Minimal 6 karakter">
+                    <button type="button" onclick="togglePassword('password_baru')"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                        <span class="material-symbols-outlined text-base" id="password_baru-icon">visibility</span>
                     </button>
                 </div>
-                <p class="text-xs text-gray-500 mt-1">Minimal 6 karakter</p>
             </div>
 
             <!-- Konfirmasi Password -->
-            <div class="mb-6">
-                <label for="konfirmasi_password" class="block text-sm font-medium text-gray-700 mb-2">
-                    Konfirmasi Password Baru <span class="text-red-600">*</span>
+            <div>
+                <label for="konfirmasi_password" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                    Ulangi Password Baru <span class="text-red-500">*</span>
                 </label>
                 <div class="relative">
-                    <input type="password"
-                        id="konfirmasi_password"
-                        name="konfirmasi_password"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        minlength="6"
-                        required>
-                    <button type="button"
-                        onclick="togglePassword('konfirmasi_password')"
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-eye" id="konfirmasi_password-icon"></i>
+                    <input type="password" id="konfirmasi_password" name="konfirmasi_password" minlength="6" required
+                        class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 pr-10 pl-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 font-mono"
+                        placeholder="Ketik ulang password baru">
+                    <button type="button" onclick="togglePassword('konfirmasi_password')"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                        <span class="material-symbols-outlined text-base" id="konfirmasi_password-icon">visibility</span>
                     </button>
                 </div>
             </div>
 
             <!-- Buttons -->
-            <div class="flex gap-4">
-                <button type="submit"
-                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
-                    <i class="fas fa-save mr-2"></i>Simpan Password
-                </button>
+            <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-gray-100 dark:border-gray-800">
                 <a href="<?= base_url('siswa/profile') ?>"
-                    class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg text-center transition duration-200">
-                    <i class="fas fa-times mr-2"></i>Batal
+                   class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-xs font-semibold text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 transition-colors">
+                    <span class="material-symbols-outlined text-base">arrow_back</span>
+                    <span>Kembali</span>
                 </a>
+
+                <button type="submit"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 px-6 py-2.5 text-xs font-bold text-white shadow-theme-xs hover:bg-brand-600 transition-colors">
+                    <span class="material-symbols-outlined text-base">save</span>
+                    <span>Simpan Password Baru</span>
+                </button>
             </div>
         </form>
     </div>
-
-    <!-- Tips Section -->
-    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-        <h4 class="font-semibold text-blue-800 mb-2">
-            <i class="fas fa-lightbulb mr-2"></i>Tips Password Aman:
-        </h4>
-        <ul class="text-sm text-blue-700 space-y-1">
-            <li><i class="fas fa-check mr-2"></i>Gunakan kombinasi huruf besar, kecil, dan angka</li>
-            <li><i class="fas fa-check mr-2"></i>Minimal 6 karakter (lebih panjang lebih baik)</li>
-            <li><i class="fas fa-check mr-2"></i>Jangan gunakan informasi pribadi seperti tanggal lahir</li>
-            <li><i class="fas fa-check mr-2"></i>Ganti password secara berkala</li>
-        </ul>
-    </div>
 </div>
 
-<?= $this->endSection() ?>
-
-<?= $this->section('scripts') ?>
 <script>
-    function togglePassword(fieldId) {
-        const field = document.getElementById(fieldId);
-        const icon = document.getElementById(fieldId + '-icon');
+function togglePassword(fieldId) {
+    const input = document.getElementById(fieldId);
+    const icon = document.getElementById(fieldId + '-icon');
 
-        if (field.type === 'password') {
-            field.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            field.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility_off';
+    } else {
+        input.type = 'password';
+        icon.textContent = 'visibility';
     }
+}
 </script>
+
 <?= $this->endSection() ?>

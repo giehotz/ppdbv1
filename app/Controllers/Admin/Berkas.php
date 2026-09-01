@@ -47,12 +47,25 @@ class Berkas extends BaseController
 
         if ($this->berkasModel->update($id, $data)) {
             session()->setFlashdata('success', 'Status berkas berhasil diperbarui.');
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Status berkas berhasil diperbarui menjadi ' . ucfirst((string)$status) . '.'
+                ]);
+            }
         } else {
             session()->setFlashdata('error', 'Gagal memperbarui status berkas.');
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui status berkas.'
+                ]);
+            }
         }
 
         return redirect()->to('/admin/berkas');
     }
+
 
     private function resolveBerkasPath(array $berkas): ?string
     {

@@ -18,6 +18,8 @@ $routes->group('verifikator', ['filter' => ['verifikator', 'csrf']], function ($
     $routes->post('siswa/verify/(:num)', 'Verifikator\Siswa::verify/$1');
     $routes->get('siswa/cetak/(:num)', 'Verifikator\Siswa::cetak/$1');
     $routes->post('siswa/resetPassword/(:num)', 'Verifikator\Siswa::resetPassword/$1');
+    $routes->get('siswa/reset-throttle', 'Verifikator\Siswa::resetThrottle');
+    $routes->post('siswa/reset-throttle', 'Verifikator\Siswa::resetThrottle');
     $routes->post('siswa/delete/(:num)', 'Verifikator\Siswa::delete/$1');
 
     // Berkas (Documents)
@@ -39,6 +41,7 @@ $routes->group('verifikator', ['filter' => ['verifikator', 'csrf']], function ($
     $routes->post('pembiayaan/siswa/(:num)/tagihan/tambah-semua', 'Verifikator\Pembiayaan::tambahSemuaTagihan/$1');
     $routes->post('pembiayaan/siswa/(:num)/tagihan/hapus', 'Verifikator\Pembiayaan::hapusTagihan/$1');
     $routes->post('pembiayaan/siswa/(:num)/bayar', 'Verifikator\Pembiayaan::bayar/$1');
+    $routes->post('pembiayaan/siswa/(:num)/pembayaran/hapus', 'Verifikator\Pembiayaan::hapusPembayaran/$1');
     $routes->post('pembiayaan/siswa/(:num)/upload-bukti', 'Verifikator\Pembiayaan::uploadBukti/$1');
     $routes->post('pembiayaan/siswa/(:num)/hapus-bukti', 'Verifikator\Pembiayaan::hapusBukti/$1');
     $routes->post('pembiayaan/siswa/(:num)/update-status', 'Verifikator\Pembiayaan::updateStatusBayar/$1');

@@ -1,13 +1,19 @@
-        <!-- Tab: Preview Kartu -->
-        <div id="preview" class="tab-content hidden h-[800px]">
-            <div class="flex justify-between items-center mb-4 pb-2 border-b">
-                <h3 class="text-lg font-semibold text-gray-800">Pratinjau Hasil Cetak Kartu</h3>
-                <a href="<?= base_url('admin/setting-kartu/preview') ?>" target="_blank" class="text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-3 rounded transition flex items-center gap-1">
-                    <i class="fas fa-external-link-alt"></i> Buka di Tab Baru
-                </a>
+<!-- Tab: Preview Kartu -->
+<div id="preview" class="tab-content hidden">
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6 pb-4 border-b border-gray-100 dark:border-gray-800">
+            <div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white">Pratinjau Hasil Cetak Kartu</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Lihat hasil rendering kartu dengan data dan layout saat ini</p>
             </div>
-
-            <div class="bg-gray-200 border border-gray-300 rounded-lg w-full h-full overflow-hidden relative">
-                <iframe src="<?= base_url('admin/setting-kartu/preview') ?>" class="w-full h-full border-0 absolute inset-0"></iframe>
-            </div>
+            <a href="<?= base_url('admin/setting-kartu/preview') ?>" target="_blank" class="inline-flex items-center gap-1.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-xs py-2 px-4 shadow-theme-xs transition active:scale-[0.97]">
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                <span>Buka di Tab Baru</span>
+            </a>
         </div>
+
+        <div class="bg-gray-100 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 w-full overflow-hidden relative shadow-inner" style="height: 750px;">
+            <iframe src="<?= base_url('admin/setting-kartu/preview') ?>" class="w-full h-full border-0 absolute inset-0"></iframe>
+        </div>
+    </div>
+</div>

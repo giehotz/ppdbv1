@@ -43,7 +43,7 @@ class App extends BaseConfig
      *
      * @var list<string>
      */
-    public array $allowedHostnames = ['ppdb.min2tanggamus.sch.id'];
+    public array $allowedHostnames = ['ppdb.min2tanggamus.sch.id', 'localhost', 'localhost:8080', '127.0.0.1', '127.0.0.1:8080'];
 
     /**
      * --------------------------------------------------------------------------
@@ -54,7 +54,7 @@ class App extends BaseConfig
      * something else. If you have configured your web server to remove this file
      * from your site URIs, set this variable to an empty string.
      */
-    public string $indexPage = 'index.php';
+    public string $indexPage = '';
 
     /**
      * --------------------------------------------------------------------------

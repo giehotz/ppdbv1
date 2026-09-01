@@ -1,198 +1,143 @@
 <?= $this->extend('layouts/admin') ?>
 
-<?= $this->section('title') ?>Pengaturan Twibbon<?= $this->endSection() ?>
+<?= $this->section('title') ?>
+Pengaturan Twibbon
+<?= $this->endSection() ?>
 
-<?= $this->section('page_title') ?>Pengaturan Twibbon<?= $this->endSection() ?>
-
-<?= $this->section('head') ?>
-<style>
-    .toggle-switch {
-        position: relative;
-        width: 48px;
-        height: 26px;
-        flex-shrink: 0;
-    }
-    .toggle-switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-    .toggle-slider {
-        position: absolute;
-        inset: 0;
-        background: #d1d5db;
-        border-radius: 26px;
-        cursor: pointer;
-        transition: background 0.2s ease;
-    }
-    .toggle-slider::before {
-        content: '';
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        left: 3px;
-        bottom: 3px;
-        background: #fff;
-        border-radius: 50%;
-        transition: transform 0.2s ease;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-    }
-    .toggle-switch input:checked + .toggle-slider {
-        background: #16a34a;
-    }
-    .toggle-switch input:checked + .toggle-slider::before {
-        transform: translateX(22px);
-    }
-    .stat-card {
-        transition: all 0.2s ease;
-    }
-    .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
-</style>
+<?= $this->section('page_title') ?>
+<span class="material-symbols-outlined text-brand-500 mr-1">settings</span> Pengaturan Twibbon
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 <div class="max-w-4xl mx-auto space-y-6">
 
-    <!-- Header -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                <i class="fas fa-cog text-xl"></i>
+    <!-- Header Card -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
+                <span class="material-symbols-outlined text-2xl">auto_delete</span>
             </div>
             <div>
-                <h1 class="text-xl font-bold text-gray-900">Pengaturan Twibbon</h1>
-                <p class="text-sm text-gray-500 mt-0.5">Atur pembersihan otomatis file hasil twibbon.</p>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white">Pengaturan Otomasi Twibbon</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Kelola siklus hidup file cache, retensi file sementara, dan pembersihan terjadwal</p>
             </div>
         </div>
-        <a href="<?= base_url('admin/twibbon') ?>" class="text-gray-500 hover:text-gray-700 flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-            <i class="fas fa-arrow-left"></i> Kembali
+        <a href="<?= base_url('admin/twibbon') ?>"
+           class="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3.5 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-theme-xs hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            <span>Kembali</span>
         </a>
     </div>
 
-    <!-- Alerts -->
-    <?php if (session()->getFlashdata('success')): ?>
-        <div class="bg-green-50 border border-green-200 text-green-700 px-5 py-3.5 rounded-xl flex items-start gap-3">
-            <i class="fas fa-check-circle mt-0.5"></i>
-            <span><?= session()->getFlashdata('success') ?></span>
-        </div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="bg-red-50 border border-red-200 text-red-700 px-5 py-3.5 rounded-xl flex items-start gap-3">
-            <i class="fas fa-exclamation-circle mt-0.5"></i>
-            <span><?= session()->getFlashdata('error') ?></span>
-        </div>
-    <?php endif; ?>
     <?php $errors = session('errors') ?? []; ?>
 
     <!-- Form Settings -->
     <form action="<?= base_url('admin/twibbon/saveSetting') ?>" method="post">
         <?= csrf_field() ?>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-base font-bold text-gray-800 mb-1 flex items-center gap-2">
-                <i class="fas fa-clock text-emerald-600"></i> Jadwal Pembersihan Otomatis
-            </h3>
-            <p class="text-xs text-gray-400 mb-6">File hasil twibbon dan file sementara akan dihapus otomatis berdasarkan durasi di bawah ini.</p>
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+            <div class="border-b border-gray-100 dark:border-gray-800 pb-4 mb-5 flex items-center gap-2">
+                <span class="material-symbols-outlined text-brand-500 text-lg">schedule</span>
+                <h4 class="text-sm font-bold text-gray-900 dark:text-white">Jadwal & Retensi Pembersihan Otomatis</h4>
+            </div>
 
             <div class="space-y-6">
 
-                <!-- Toggle -->
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                <!-- Toggle Pembersihan -->
+                <div class="flex items-center justify-between p-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30">
                     <div>
-                        <p class="text-sm font-semibold text-gray-800">Pembersihan Otomatis</p>
-                        <p class="text-xs text-gray-500 mt-0.5">Aktifkan atau nonaktifkan fungsi pembersihan file kadaluarsa.</p>
+                        <p class="text-xs font-bold text-gray-900 dark:text-white">Pembersihan Otomatis (Background Cleanup)</p>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Hapus file twibbon yang sudah kadaluarsa secara berkala di latar belakang.</p>
                     </div>
-                    <label class="toggle-switch">
+                    <label class="relative inline-flex items-center cursor-pointer">
                         <input type="hidden" name="cleanup_enabled" value="0">
-                        <input type="checkbox" name="cleanup_enabled" value="1" <?= ($settings['cleanup_enabled'] ?? 1) ? 'checked' : '' ?>>
-                        <span class="toggle-slider"></span>
+                        <input type="checkbox" name="cleanup_enabled" value="1" <?= ($settings['cleanup_enabled'] ?? 1) ? 'checked' : '' ?> class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-500"></div>
                     </label>
                 </div>
 
                 <!-- Durasi Hasil -->
                 <div>
-                    <label for="results_ttl_hours" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                        Durasi File Hasil <span class="text-red-500">*</span>
+                    <label for="results_ttl_hours" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        Retensi File Hasil Unduhan <span class="text-red-500">*</span>
                     </label>
-                    <p class="text-xs text-gray-400 mb-2">File hasil twibbon (folder <code>results/</code>) yang lebih tua dari durasi ini akan otomatis dihapus.</p>
+                    <p class="text-xs text-gray-400 mb-2">File hasil generate twibbon (folder <code>results/</code>) yang lebih lama dari durasi ini akan otomatis dihapus.</p>
                     <div class="relative max-w-xs">
-                        <input type="number" name="results_ttl_hours" id="results_ttl_hours"
-                            class="w-full border border-gray-300 rounded-lg pl-4 pr-12 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow <?= isset($errors['results_ttl_hours']) ? 'border-red-400 ring-1 ring-red-400' : '' ?>"
-                            value="<?= old('results_ttl_hours', $settings['results_ttl_hours'] ?? 12) ?>" min="1" max="8759" required>
-                        <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium pointer-events-none">Jam</span>
+                        <input type="number" name="results_ttl_hours" id="results_ttl_hours" min="1" max="8759" required
+                               value="<?= old('results_ttl_hours', $settings['results_ttl_hours'] ?? 12) ?>"
+                               class="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white pl-4 pr-12 py-2.5 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500 outline-none">
+                        <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold pointer-events-none">Jam</span>
                     </div>
                     <?php if (isset($errors['results_ttl_hours'])): ?>
-                        <p class="text-red-500 text-xs mt-1 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i> <?= $errors['results_ttl_hours'] ?></p>
+                        <p class="text-red-500 text-xs mt-1"><?= $errors['results_ttl_hours'] ?></p>
                     <?php endif; ?>
                 </div>
 
                 <!-- Durasi Temp -->
                 <div>
-                    <label for="temp_ttl_hours" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                        Durasi File Sementara <span class="text-red-500">*</span>
+                    <label for="temp_ttl_hours" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        Retensi File Foto Sementara <span class="text-red-500">*</span>
                     </label>
-                    <p class="text-xs text-gray-400 mb-2">File foto sementara (folder <code>temp/</code>) yang lebih tua dari durasi ini akan otomatis dihapus.</p>
+                    <p class="text-xs text-gray-400 mb-2">File foto sementara pengguna (folder <code>temp/</code>) yang lebih lama dari durasi ini akan dihapus.</p>
                     <div class="relative max-w-xs">
-                        <input type="number" name="temp_ttl_hours" id="temp_ttl_hours"
-                            class="w-full border border-gray-300 rounded-lg pl-4 pr-12 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow <?= isset($errors['temp_ttl_hours']) ? 'border-red-400 ring-1 ring-red-400' : '' ?>"
-                            value="<?= old('temp_ttl_hours', $settings['temp_ttl_hours'] ?? 1) ?>" min="1" max="8759" required>
-                        <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium pointer-events-none">Jam</span>
+                        <input type="number" name="temp_ttl_hours" id="temp_ttl_hours" min="1" max="8759" required
+                               value="<?= old('temp_ttl_hours', $settings['temp_ttl_hours'] ?? 1) ?>"
+                               class="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white pl-4 pr-12 py-2.5 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500 outline-none">
+                        <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold pointer-events-none">Jam</span>
                     </div>
                     <?php if (isset($errors['temp_ttl_hours'])): ?>
-                        <p class="text-red-500 text-xs mt-1 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i> <?= $errors['temp_ttl_hours'] ?></p>
+                        <p class="text-red-500 text-xs mt-1"><?= $errors['temp_ttl_hours'] ?></p>
                     <?php endif; ?>
                 </div>
 
             </div>
-        </div>
 
-        <!-- Tombol Simpan -->
-        <div class="flex justify-end mt-6">
-            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors shadow-sm text-sm flex items-center gap-2">
-                <i class="fas fa-save"></i> Simpan Pengaturan
-            </button>
+            <div class="mt-6 pt-5 border-t border-gray-100 dark:border-gray-800 flex justify-end">
+                <button type="submit"
+                        class="inline-flex items-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 px-6 py-2.5 text-xs font-bold text-white shadow-theme-xs transition active:scale-[0.97]">
+                    <span class="material-symbols-outlined text-base">save</span>
+                    <span>Simpan Pengaturan</span>
+                </button>
+            </div>
         </div>
     </form>
 
     <!-- Aksi Manual -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-base font-bold text-gray-800 mb-1 flex items-center gap-2">
-            <i class="fas fa-tools text-emerald-600"></i> Aksi Manual
-        </h3>
-        <p class="text-xs text-gray-400 mb-5">Jalankan pembersihan atau unduh semua file hasil twibbon secara langsung.</p>
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-100 dark:border-gray-800 pb-4 mb-5 flex items-center gap-2">
+            <span class="material-symbols-outlined text-brand-500 text-lg">build</span>
+            <h4 class="text-sm font-bold text-gray-900 dark:text-white">Tindakan Pembersihan & Arsip Manual</h4>
+        </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <form action="<?= base_url('admin/twibbon/cleanup') ?>" method="post">
                 <?= csrf_field() ?>
-                <button type="submit" onclick="return confirm('Hapus semua file yang sudah kadaluarsa?')"
-                    class="w-full border border-orange-300 bg-orange-50 hover:bg-orange-100 text-orange-700 font-semibold px-5 py-3.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2">
-                    <i class="fas fa-broom"></i> Hapus File Kadaluarsa Sekarang
+                <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus semua file kadaluarsa sekarang?')"
+                        class="w-full rounded-2xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/70 hover:bg-amber-100 dark:bg-amber-500/10 dark:hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 font-bold px-5 py-4 transition text-xs flex items-center justify-center gap-2 shadow-theme-xs">
+                    <span class="material-symbols-outlined text-lg">cleaning_services</span>
+                    <span>Hapus File Kadaluarsa Sekarang</span>
                 </button>
             </form>
             <a href="<?= base_url('admin/twibbon/download-zip') ?>"
-                class="w-full border border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold px-5 py-3.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2">
-                <i class="fas fa-file-archive"></i> Download Semua File Hasil (ZIP)
+               class="w-full rounded-2xl border border-blue-200 dark:border-blue-500/20 bg-blue-50/70 hover:bg-blue-100 dark:bg-blue-500/10 dark:hover:bg-blue-500/20 text-blue-800 dark:text-blue-300 font-bold px-5 py-4 transition text-xs flex items-center justify-center gap-2 shadow-theme-xs">
+                <span class="material-symbols-outlined text-lg">folder_zip</span>
+                <span>Download Seluruh Arsip Hasil (ZIP)</span>
             </a>
         </div>
     </div>
 
-    <!-- Info Box -->
-    <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+    <!-- Info Cron Box -->
+    <div class="rounded-2xl border border-blue-200/80 bg-blue-50/50 dark:border-blue-500/20 dark:bg-blue-500/10 p-5 shadow-theme-xs">
         <div class="flex items-start gap-3">
-            <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
-            <div class="text-sm text-blue-800 space-y-2">
-                <p class="font-semibold">Informasi Cron Job</p>
-                <p class="text-xs leading-relaxed">
-                    Untuk hosting tanpa akses cron panel, gunakan layanan gratis seperti
-                    <a href="https://cron-job.org" target="_blank" class="underline font-medium">cron-job.org</a>
-                    untuk menjadwalkan URL berikut setiap jam:
+            <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-xl shrink-0 mt-0.5">terminal</span>
+            <div class="text-xs text-blue-900 dark:text-blue-300 space-y-2">
+                <p class="font-bold text-sm">Informasi Penjadwalan Cron Job</p>
+                <p class="leading-relaxed">
+                    Untuk server produksi tanpa cPanel cron langsung, jadwalkan perintah spark berikut pada sistem operasi atau layanan cron eksternal setiap jam:
                 </p>
-                <pre class="bg-blue-100 rounded-lg px-3 py-2 text-xs font-mono overflow-x-auto whitespace-pre-wrap">php <?= ROOTPATH ?>spark twibbon:cleanup</pre>
-                <p class="text-xs leading-relaxed">
-                    Pembersihan juga berjalan secara otomatis (~5% kemungkinan) setiap kali ada pengunjung yang berhasil mengunduh twibbon.
+                <pre class="bg-white/80 dark:bg-gray-900/80 rounded-xl p-3 text-xs font-mono border border-blue-200 dark:border-blue-500/30 overflow-x-auto text-gray-800 dark:text-gray-200">php <?= ROOTPATH ?>spark twibbon:cleanup</pre>
+                <p class="text-[11px] opacity-80 leading-relaxed">
+                    Pembersihan otomatis juga berjalan secara adaptif (~5% sampling probability) pada setiap unduhan twibbon yang berhasil.
                 </p>
             </div>
         </div>

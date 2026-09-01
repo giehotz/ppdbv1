@@ -15,15 +15,20 @@ class VerifikatorFilter implements FilterInterface
             return redirect()->to('/login');
         }
 
+        // Determine user type with all possible fallbacks
+        $userType = session()->get('user_type') ?? session()->get('level') ?? session()->get('role');
+
         // Check if user is verifikator
-        if (session()->get('user_type') !== 'verifikator') {
-            session()->setFlashdata('error', 'Akses ditolak. Anda tidak memiliki izin untuk mengakses halaman verifikator.');
-            // Redirect based on their actual role
-            if (session()->get('user_type') === 'admin') {
+        if ($userType !== 'verifikator') {
+            if ($userType === 'admin') {
                 return redirect()->to('/admin/dashboard')->withCookies();
-            } else {
+            }
+            if ($userType === 'siswa') {
                 return redirect()->to('/siswa/dashboard')->withCookies();
             }
+            // Sesi korup / tidak valid -> destroy dan kembali ke login
+            session()->destroy();
+            return redirect()->to('/login')->withCookies();
         }
     }
 

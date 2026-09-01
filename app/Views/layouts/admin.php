@@ -4,274 +4,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $this->renderSection('title') ?> - Admin <?= $app_alias ?? 'PPDB' ?></title>
+    <title><?= $this->renderSection('title') ?> - Admin <?= esc($app_alias ?? 'PPDB') ?></title>
     <link rel="icon" type="image/png" href="<?= base_url('favicon.png') ?>">
 
-    <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
-
-    <!-- Font Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- TailAdmin CSS & Project Tailwind CSS -->
+    <link rel="stylesheet" href="<?= base_url('assets/tailadmin/css/tailadmin.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
+
+    <!-- TailAdmin Bundle JS (Alpine.js, Flatpickr, etc.) -->
+    <script defer src="<?= base_url('assets/tailadmin/js/tailadmin.js') ?>"></script>
+
+    <script>
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Outfit', 'Inter', sans-serif; }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
         }
-        #desktop-sidebar { transition: width 0.3s ease; }
-        .sidebar-text { transition: opacity 0.2s ease; overflow: hidden; white-space: nowrap; }
-        #desktop-sidebar.minimized { width: 5rem; }
-        #desktop-sidebar.minimized .sidebar-text { opacity: 0; width: 0; display: none; }
-        #desktop-sidebar.minimized .sidebar-header { display: none; }
-        #desktop-sidebar.minimized #sidebar-brand { display: none; }
-        #desktop-sidebar:not(.minimized) #sidebar-brand-mini { display: none; }
-        #desktop-sidebar.minimized .link-item { justify-content: center; padding-left: 0; padding-right: 0; }
-        #desktop-sidebar.minimized .link-item i { margin: 0 auto; font-size: 1.25rem; }
-        #desktop-sidebar.minimized .badge-count { display: none; }
-        #desktop-sidebar.minimized .menu-group-list { display: block !important; }
+        /* Custom scrollbar for clean UI */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
     <?= $this->renderSection('head') ?>
 </head>
 
-<body class="bg-gray-100 font-sans leading-normal tracking-normal flex h-screen overflow-hidden">
+<body
+    x-data="{ 
+        page: 'admin', 
+        loaded: true, 
+        darkMode: localStorage.getItem('darkMode') === 'true', 
+        sidebarToggle: localStorage.getItem('sidebarToggle') === 'true' 
+    }"
+    x-init="
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        $watch('darkMode', val => {
+            localStorage.setItem('darkMode', JSON.stringify(val));
+            if (val) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+        $watch('sidebarToggle', val => localStorage.setItem('sidebarToggle', JSON.stringify(val)));
+    "
+    :class="darkMode ? 'dark bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-800'"
+    class="font-sans antialiased text-sm h-screen overflow-hidden flex flex-col"
+>
 
     <?php
-    // Preferred classes
-    $linkClass   = "link-item flex items-center px-6 py-3 text-gray-300 hover:bg-green-700 hover:text-white transition-colors duration-200";
-    $activeClass = "bg-green-700 text-white";
-
     $unlockModel = new \App\Models\UnlockRequestModel();
     $pendingUnlockCount = $unlockModel->getPendingCount();
 
     $webData = $web ?? \Config\Services::renderer()->getData()['web'] ?? [];
     $sekolahName = $webData['nama_sekolah'] ?? 'Sekolah';
 
-    // Sidebar menu definition — single source of truth
+    // Single source of truth for admin sidebar navigation
     $sidebarMenus = [
         'Dashboard' => [
-            ['label' => 'Dashboard',       'icon' => 'tachometer-alt', 'url' => 'admin/dashboard'],
+            ['label' => 'Dashboard',          'icon' => 'tachometer-alt', 'url' => 'admin/dashboard'],
         ],
         'Manajemen' => [
-            ['label' => 'Pengguna',        'icon' => 'users-cog',      'url' => 'admin/users'],
-            ['label' => 'Calon Siswa',     'icon' => 'user-graduate',  'url' => 'admin/siswa'],
-            ['label' => 'Buka Kunci',      'icon' => 'unlock-alt',     'url' => 'admin/unlockrequest', 'badge' => $pendingUnlockCount],
-            ['label' => 'Reset Password',  'icon' => 'key',            'url' => 'admin/reset-password'],
-            ['label' => 'Berkas',          'icon' => 'file-alt',       'url' => 'admin/berkas'],
-            ['label' => 'Kelulusan',       'icon' => 'graduation-cap', 'url' => 'admin/kelulusan'],
-            ['label' => 'Laporan & Analisis', 'icon' => 'chart-pie',   'url' => 'admin/laporan'],
-            ['label' => 'Pembiayaan',      'icon' => 'money-bill-wave', 'url' => 'admin/pembiayaan'],
-            ['label' => 'Log Aktivitas',   'icon' => 'history',        'url' => 'admin/log_aktivitas'],
+            ['label' => 'Pengguna',           'icon' => 'users-cog',      'url' => 'admin/users'],
+            ['label' => 'Calon Siswa',        'icon' => 'user-graduate',  'url' => 'admin/siswa'],
+            ['label' => 'Buka Kunci',         'icon' => 'unlock-alt',     'url' => 'admin/unlockrequest', 'badge' => $pendingUnlockCount],
+            ['label' => 'Reset Password',     'icon' => 'key',            'url' => 'admin/reset-password'],
+            ['label' => 'Berkas Siswa',       'icon' => 'file-alt',       'url' => 'admin/berkas'],
+            ['label' => 'Kelulusan',          'icon' => 'graduation-cap', 'url' => 'admin/kelulusan'],
+            ['label' => 'Laporan & Analisis', 'icon' => 'chart-pie',      'url' => 'admin/laporan'],
+            ['label' => 'Pembiayaan',         'icon' => 'money-bill-wave','url' => 'admin/pembiayaan'],
+            ['label' => 'Log Aktivitas',      'icon' => 'history',        'url' => 'admin/log_aktivitas'],
         ],
         'Pengaturan Kartu' => [
-            ['label' => 'Desain Cetak Kartu', 'icon' => 'print',       'url' => 'admin/setting-kartu'],
+            ['label' => 'Desain Cetak Kartu', 'icon' => 'print',          'url' => 'admin/setting-kartu'],
         ],
         'Konten & Pengaturan' => [
-            ['label' => 'Pesan Pribadi',   'icon' => 'envelope',       'url' => 'admin/pesan'],
-            ['label' => 'Pengumuman',      'icon' => 'bullhorn',       'url' => 'admin/pengumuman'],
-            ['label' => 'Landing Content', 'icon' => 'laptop-code',    'url' => 'admin/landing-content'],
-            ['label' => 'Kampanye Twibbon', 'icon' => 'image',         'url' => 'admin/twibbon'],
-            ['label' => 'Pengaturan Sistem','icon' => 'cogs',          'url' => 'admin/settings'],
-            ['label' => 'Pengaturan SEO',  'icon' => 'search',         'url' => 'admin/seo'],
+            ['label' => 'Pesan Pribadi',      'icon' => 'envelope',       'url' => 'admin/pesan'],
+            ['label' => 'Pengumuman',         'icon' => 'bullhorn',       'url' => 'admin/pengumuman'],
+            ['label' => 'Landing Content',    'icon' => 'laptop-code',    'url' => 'admin/landing-content'],
+            ['label' => 'Kampanye Twibbon',   'icon' => 'image',          'url' => 'admin/twibbon'],
+            ['label' => 'Pengaturan Sistem',  'icon' => 'cogs',           'url' => 'admin/settings'],
+            ['label' => 'Pengaturan SEO',     'icon' => 'search',         'url' => 'admin/seo'],
         ],
     ];
-
-    $currentUri = uri_string();
-
-    function isActive($url, $currentUri) {
-        return strpos($currentUri, $url) === 0 ? true : false;
-    }
-
-    function renderMenu($menus, $linkClass, $activeClass, $currentUri, $prefix = 'menu') {
-        $output = '';
-        $groupId = 0;
-        foreach ($menus as $groupLabel => $items) {
-            $groupId++;
-            
-            $isGroupActive = false;
-            foreach ($items as $item) {
-                if (isActive($item['url'], $currentUri)) {
-                    $isGroupActive = true;
-                    break;
-                }
-            }
-
-            if ($groupLabel !== 'Dashboard') {
-                $output .= '<li class="sidebar-group">';
-                $output .= '<button type="button" class="sidebar-header w-full flex justify-between items-center px-6 py-2 text-xs font-semibold text-green-300 uppercase tracking-wider mt-4 focus:outline-none hover:text-white transition-colors" onclick="toggleMenu(\'' . $prefix . '-' . $groupId . '\', this)">';
-                $output .= '<span class="sidebar-text">' . esc($groupLabel) . '</span>';
-                $output .= '<i class="fas fa-chevron-' . ($isGroupActive ? 'down' : 'right') . ' sidebar-text transition-transform duration-200"></i>';
-                $output .= '</button>';
-                $output .= '<ul id="' . $prefix . '-' . $groupId . '" class="menu-group-list ' . ($isGroupActive ? 'block' : 'hidden') . '">';
-            }
-            
-            foreach ($items as $item) {
-                $active = isActive($item['url'], $currentUri);
-                $cls = $linkClass . ($active ? ' ' . $activeClass : '');
-                $output .= '<li><a href="' . base_url($item['url']) . '" class="' . $cls . '">';
-                $output .= '<i class="fas fa-' . $item['icon'] . ' w-6 flex-shrink-0 text-center"></i>';
-                $output .= '<span class="sidebar-text ml-2">' . esc($item['label']) . '</span>';
-                if (!empty($item['badge']) && $item['badge'] > 0) {
-                    $output .= '<span class="badge-count ml-auto bg-yellow-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">' . $item['badge'] . '</span>';
-                }
-                $output .= '</a></li>';
-            }
-
-            if ($groupLabel !== 'Dashboard') {
-                $output .= '</ul></li>';
-            }
-        }
-        return $output;
-    }
     ?>
 
-    <!-- Desktop Sidebar -->
-    <aside id="desktop-sidebar" class="w-64 bg-gray-800 text-white flex-shrink-0 hidden md:flex flex-col shadow-xl z-20">
-        <div class="h-16 flex items-center justify-center border-b border-green-700 overflow-hidden shrink-0">
-            <span id="sidebar-brand" class="text-2xl font-bold tracking-wider flex items-center">
-                <?php if (!empty($web_logo) && file_exists(FCPATH . 'uploads/logo/' . $web_logo)): ?>
-                    <img src="<?= base_url('uploads/logo/' . $web_logo) ?>" alt="Logo" class="h-8 w-auto mr-2">
-                <?php endif; ?>
-                <?= strtoupper($app_alias ?? 'PPDB') ?> ADMIN
-            </span>
-            <span id="sidebar-brand-mini" class="text-2xl font-bold tracking-wider flex items-center justify-center" title="<?= strtoupper($app_alias ?? 'PPDB') ?> ADMIN">
-                <?php if (!empty($web_logo) && file_exists(FCPATH . 'uploads/logo/' . $web_logo)): ?>
-                    <img src="<?= base_url('uploads/logo/' . $web_logo) ?>" alt="Logo" class="h-8 w-auto">
-                <?php else: ?>
-                    <?= substr(strtoupper($app_alias ?? 'PPDB'), 0, 1) ?>A
-                <?php endif; ?>
-            </span>
-        </div>
+    <!-- Main Outer Wrapper -->
+    <div class="flex h-screen overflow-hidden">
+        <!-- Overlay for small screens -->
+        <?= $this->include('layouts/components/tailadmin_overlay') ?>
 
-        <nav class="flex-1 overflow-y-auto py-4">
-            <ul>
-                <?= renderMenu($sidebarMenus, $linkClass, $activeClass, $currentUri, 'desktop') ?>
-            </ul>
-        </nav>
+        <!-- Sidebar Navigation -->
+        <?= view('layouts/components/tailadmin_sidebar', [
+            'sidebarMenus' => $sidebarMenus,
+            'app_alias' => $app_alias ?? 'PPDB',
+            'sekolahName' => $sekolahName,
+            'web_logo' => $web_logo ?? null
+        ]) ?>
 
-        <div class="p-4 border-t border-green-700">
-            <a href="<?= base_url('logout') ?>" class="link-item flex items-center text-green-300 hover:text-white transition duration-200">
-                <i class="fas fa-sign-out-alt w-6 text-center"></i>
-                <span class="sidebar-text ml-2">Logout</span>
-            </a>
-        </div>
-    </aside>
+        <!-- Content Area -->
+        <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
+            <!-- Header Bar -->
+            <?= view('layouts/components/tailadmin_header', [
+                'pendingUnlockCount' => $pendingUnlockCount,
+                'app_alias' => $app_alias ?? 'PPDB',
+                'sekolahName' => $sekolahName
+            ]) ?>
 
-    <!-- Main Content Wrapper -->
-    <div class="flex-1 flex flex-col h-screen overflow-hidden">
-
-        <!-- Top Navbar -->
-        <header class="bg-white shadow-sm h-16 flex items-center justify-between px-4 md:px-6 z-10 shrink-0">
-            <div class="flex items-center gap-4">
-                <button class="md:hidden text-gray-600 focus:outline-none hover:text-gray-800" id="mobile-menu-btn">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
-
-                <button class="hidden md:block text-gray-500 hover:text-gray-700 focus:outline-none transition-transform duration-300" id="desktop-toggle-btn">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-
-                <div class="font-semibold text-lg text-gray-700 truncate max-w-[200px] md:max-w-none">
-                    <?= $this->renderSection('page_title') ?>
-                </div>
+            <!-- Page Title Bar (if defined) -->
+            <?php if ($pageTitle = $this->renderSection('page_title')): ?>
+            <div class="border-b border-gray-200/80 bg-white px-4 py-3 dark:border-gray-800 dark:bg-gray-900 sm:px-6">
+                <h1 class="text-lg font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
+                    <?= $pageTitle ?>
+                </h1>
             </div>
+            <?php endif; ?>
 
-            <div class="flex items-center space-x-3 md:space-x-4">
-                <span class="text-sm text-gray-600 hidden md:inline-block">Halo, <strong><?= session()->get('nama_lengkap') ?></strong></span>
-                <div class="relative shrink-0">
-                    <img class="h-8 w-8 rounded-full object-cover border border-gray-300"
-                        src="https://ui-avatars.com/api/?name=<?= urlencode(session()->get('nama_lengkap')) ?>&background=random"
-                        alt="Avatar">
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 md:p-6 lg:p-8">
+                <!-- Flash Alerts (Auto-dismiss & Closable with Alpine.js) -->
+                <?php if (session()->getFlashdata('success')): ?>
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4500)" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50/90 p-4 text-emerald-800 shadow-sm dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-lg text-emerald-600 dark:text-emerald-400 shrink-0">check_circle</span>
+                        <div class="flex-1 text-xs sm:text-sm font-medium">
+                            <?= session()->getFlashdata('success') ?>
+                        </div>
+                    </div>
+                    <button @click="show = false" class="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-200 shrink-0 p-1">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </button>
                 </div>
-            </div>
-        </header>
+                <?php endif; ?>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 md:p-6">
-            <?= $this->renderSection('content') ?>
-        </main>
+                <?php if (session()->getFlashdata('error')): ?>
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 6000)" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50/90 p-4 text-red-800 shadow-sm dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-lg text-red-600 dark:text-red-400 shrink-0">error</span>
+                        <div class="flex-1 text-xs sm:text-sm font-medium">
+                            <?= session()->getFlashdata('error') ?>
+                        </div>
+                    </div>
+                    <button @click="show = false" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 shrink-0 p-1">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </button>
+                </div>
+                <?php endif; ?>
 
-        <!-- Footer -->
-        <?= $this->include('layouts/components/footer') ?>
+                <?php if (session()->getFlashdata('warning')): ?>
+                <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50/90 p-4 text-amber-800 shadow-sm dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-lg text-amber-600 dark:text-amber-400 shrink-0">warning</span>
+                        <div class="flex-1 text-xs sm:text-sm font-medium">
+                            <?= session()->getFlashdata('warning') ?>
+                        </div>
+                    </div>
+                    <button @click="show = false" class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200 shrink-0 p-1">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </button>
+                </div>
+                <?php endif; ?>
+
+                <!-- Page Content Section -->
+                <?= $this->renderSection('content') ?>
+            </main>
+
+            <!-- Global Footer -->
+            <?= $this->include('layouts/components/footer') ?>
+        </div>
     </div>
 
-    <!-- Mobile Backdrop -->
-    <div class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden" id="mobile-backdrop"></div>
-
-    <!-- Mobile Sidebar -->
-    <nav class="fixed inset-y-0 left-0 w-64 bg-green-800 text-white z-30 transform -translate-x-full transition-transform duration-300 md:hidden flex flex-col" id="mobile-sidebar">
-        <div class="p-4 flex justify-between items-center border-b border-green-700">
-            <span class="font-bold text-xl">MENU</span>
-            <button class="text-white focus:outline-none hover:text-green-200" id="close-sidebar-btn">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
-        <div class="flex-1 overflow-y-auto py-4">
-            <ul>
-                <?= renderMenu($sidebarMenus, $linkClass, $activeClass, $currentUri, 'mobile') ?>
-            </ul>
-        </div>
-        <div class="p-4 border-t border-green-700">
-            <a href="<?= base_url('logout') ?>" class="flex items-center text-green-300 hover:text-white transition duration-200">
-                <i class="fas fa-sign-out-alt w-6"></i>
-                <span class="sidebar-text ml-2">Logout</span>
-            </a>
-        </div>
-    </nav>
-
-    <script>
-        const mobileBtn = document.getElementById('mobile-menu-btn');
-        const mobileSidebar = document.getElementById('mobile-sidebar');
-        const mobileBackdrop = document.getElementById('mobile-backdrop');
-        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
-
-        function toggleSidebar() {
-            mobileSidebar.classList.toggle('-translate-x-full');
-            mobileBackdrop.classList.toggle('hidden');
-        }
-
-        function toggleMenu(id, btn) {
-            const el = document.getElementById(id);
-            const icon = btn.querySelector('i.fa-chevron-down, i.fa-chevron-right');
-            
-            if (el.classList.contains('hidden')) {
-                el.classList.remove('hidden');
-                el.classList.add('block');
-                if (icon) {
-                    icon.classList.remove('fa-chevron-right');
-                    icon.classList.add('fa-chevron-down');
-                }
-            } else {
-                el.classList.remove('block');
-                el.classList.add('hidden');
-                if (icon) {
-                    icon.classList.remove('fa-chevron-down');
-                    icon.classList.add('fa-chevron-right');
-                }
-            }
-        }
-
-        mobileBtn.addEventListener('click', toggleSidebar);
-        closeSidebarBtn.addEventListener('click', toggleSidebar);
-        mobileBackdrop.addEventListener('click', toggleSidebar);
-
-        const desktopToggleBtn = document.getElementById('desktop-toggle-btn');
-        const desktopSidebar = document.getElementById('desktop-sidebar');
-
-        if (localStorage.getItem('admin_sidebar_minimized') === 'true') {
-            desktopSidebar.classList.add('minimized');
-        }
-
-        if (desktopToggleBtn) {
-            desktopToggleBtn.addEventListener('click', () => {
-                desktopSidebar.classList.toggle('minimized');
-                localStorage.setItem('admin_sidebar_minimized', desktopSidebar.classList.contains('minimized'));
-            });
-        }
-    </script>
+    <!-- Scripts Section -->
     <?= $this->renderSection('scripts') ?>
     <?= view('partials/sweetalert') ?>
 </body>

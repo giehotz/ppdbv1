@@ -1,170 +1,174 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi - PPDB</title>
-
-    <?php
-    $page_title = 'Registrasi - PPDB';
-    ?>
-    <?= view('partials/_seo_meta', ['page_title' => $page_title]) ?>
-    <link rel="stylesheet" href="<?= base_url('css/app.css') ?>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <?php $page_title = 'Registrasi'; ?>
+    <?= view('partials/_auth_head', ['page_title' => $page_title]) ?>
 </head>
 
-<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-50 dark:bg-gray-950 min-h-screen flex items-center justify-center relative overflow-x-hidden selection:bg-brand-500/20 selection:text-brand-600 px-4 py-10">
 
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
-        <div class="bg-green-600 text-white p-6 rounded-t-lg">
-            <h2 class="text-2xl font-bold text-center">Registrasi PPDB</h2>
-            <p class="text-center text-green-100 mt-1">Daftar sebagai calon siswa baru</p>
+    <!-- Decorative Gradient Background Glows -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute -top-[10%] -left-[10%] w-[50vw] h-[50vw] max-w-[500px] max-h-[500px] bg-brand-500/10 dark:bg-brand-500/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-[10%] -right-[10%] w-[45vw] h-[45vw] max-w-[450px] max-h-[450px] bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-3xl"></div>
+    </div>
+
+    <?php
+    $schoolLogo = $web_logo ?? null;
+    $hasLogo    = !empty($schoolLogo) && is_file(FCPATH . 'uploads/logo/' . $schoolLogo);
+    ?>
+
+    <!-- Main Register Card -->
+    <div class="w-full max-w-lg bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-3xl border border-gray-200/80 dark:border-gray-800 p-8 sm:p-10 shadow-theme-md relative z-10">
+
+        <!-- Header & Logo -->
+        <div class="text-center mb-8">
+            <?php if ($hasLogo): ?>
+                <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white dark:bg-gray-800 p-2 mb-4 shadow-theme-xs border border-gray-200/80 dark:border-gray-700">
+                    <img src="<?= base_url('uploads/logo/' . esc($schoolLogo, 'url')) ?>" alt="Logo Sekolah" class="h-full w-full object-contain" width="64" height="64" loading="eager">
+                </div>
+            <?php else: ?>
+                <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 mb-4 shadow-theme-xs border border-brand-200/40 dark:border-brand-500/20">
+                    <span class="material-symbols-outlined text-3xl">person_add</span>
+                </div>
+            <?php endif; ?>
+            <h1 class="heading-font text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                Registrasi Calon Siswa
+            </h1>
+            <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mt-1.5 font-medium">
+                Buat akun pendaftaran peserta didik baru di <?= esc($app_alias ?? 'PPDB') ?>
+            </p>
         </div>
 
-        <div class="p-6">
-            <?php if (session()->getFlashdata('errors')) : ?>
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <ul class="list-disc list-inside">
-                        <?php foreach (session()->getFlashdata('errors') as $error) : ?>
-                            <li><?= esc($error) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
+        <?php if (session()->getFlashdata('errors')): ?>
+            <div class="bg-red-50 border border-red-200 text-red-700 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400 px-4 py-3 rounded-2xl mb-5 text-xs" role="alert">
+                <p class="font-bold mb-1">Terdapat kesalahan pengisian:</p>
+                <ul class="list-disc list-inside space-y-0.5">
+                    <?php foreach (session()->getFlashdata('errors') as $error): ?>
+                        <li><?= esc($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="bg-red-50 border border-red-200 text-red-700 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400 px-4 py-3 rounded-2xl mb-5 text-xs" role="alert">
+                <?= session()->getFlashdata('error') ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Register Form -->
+        <form action="<?= base_url('auth/doRegister') ?>" method="post" class="space-y-4" autocomplete="on">
+            <?= csrf_field() ?>
+
+            <!-- NISN -->
+            <div>
+                <label class="block text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider mb-2" for="nisn">
+                    NISN (Nomor Induk Siswa Nasional) <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">badge</span>
+                    <input type="text" id="nisn" name="nisn" value="<?= old('nisn') ?>" required maxlength="10" inputmode="numeric" pattern="[0-9]{10}" placeholder="10 digit nomor NISN"
+                           class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/60 text-gray-900 dark:text-white text-sm font-mono focus:outline-none focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-gray-400 shadow-theme-xs">
                 </div>
-            <?php endif; ?>
-
-            <?php if (session()->getFlashdata('error')) : ?>
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <span class="block sm:inline"><?= session()->getFlashdata('error') ?></span>
+                <div class="flex items-center justify-between mt-2">
+                    <p class="text-[11px] text-gray-400">NISN berupa 10 digit angka valid.</p>
+                    <a href="https://nisn.data.kemendikdasmen.go.id/" target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center gap-1 text-xs text-brand-600 dark:text-brand-400 hover:underline font-semibold">
+                        <span>Cari NISN</span>
+                        <span class="material-symbols-outlined text-xs">open_in_new</span>
+                    </a>
                 </div>
-            <?php endif; ?>
+            </div>
 
-            <form action="<?= base_url('auth/doRegister') ?>" method="post" class="space-y-4">
-                <?= csrf_field() ?>
+            <!-- Nama Lengkap -->
+            <div>
+                <label class="block text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider mb-2" for="nama_lengkap">
+                    Nama Lengkap Siswa <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">person</span>
+                    <input type="text" id="nama_lengkap" name="nama_lengkap" value="<?= old('nama_lengkap') ?>" required placeholder="Sesuai akta kelahiran / ijazah"
+                           class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/60 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-gray-400 shadow-theme-xs">
+                </div>
+            </div>
 
+            <!-- Email & No HP Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2">
-                        <i class="fas fa-id-card text-green-600 mr-2"></i>NISN <span class="text-red-500">*</span>
+                    <label class="block text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider mb-2" for="email">
+                        Email Aktif <span class="text-red-500">*</span>
                     </label>
-                    <input type="text"
-                        name="nisn"
-                        value="<?= old('nisn') ?>"
-                        required
-                        maxlength="10"
-                        placeholder="Masukkan NISN 10 digit"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                    <div class="flex items-center justify-between mt-2">
-                        <p class="text-xs text-gray-500">NISN terdiri dari 10 digit angka. <br class="sm:hidden"> Jika tidak tahu, silakan klik tombol Cari NISN di samping.</p>
-                        <a href="https://nisn.data.kemdikbud.go.id/index.php/Cindex/formcaribynama" target="_blank" rel="noopener noreferrer" class="text-xs bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 hover:text-blue-700 py-1.5 px-3 rounded-md transition-colors flex items-center shadow-sm whitespace-nowrap ml-2">
-                            <i class="fas fa-search mr-1.5"></i> Cari NISN
-                        </a>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">mail</span>
+                        <input type="email" id="email" name="email" value="<?= old('email') ?>" required placeholder="contoh@gmail.com"
+                               class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/60 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-gray-400 shadow-theme-xs">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2">
-                        <i class="fas fa-user text-green-600 mr-2"></i>Nama Lengkap <span class="text-red-500">*</span>
+                    <label class="block text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider mb-2" for="no_hp">
+                        No. HP / WhatsApp <span class="text-red-500">*</span>
                     </label>
-                    <input type="text"
-                        name="nama_lengkap"
-                        value="<?= old('nama_lengkap') ?>"
-                        required
-                        placeholder="Masukkan nama lengkap"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">call</span>
+                        <input type="tel" id="no_hp" name="no_hp" value="<?= old('no_hp') ?>" required inputmode="numeric" placeholder="08xxxxxxxxxx"
+                               class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/60 text-gray-900 dark:text-white text-sm font-mono focus:outline-none focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-gray-400 shadow-theme-xs">
+                    </div>
                 </div>
-
-                <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2">
-                        <i class="fas fa-envelope text-green-600 mr-2"></i>Email <span class="text-red-500">*</span>
-                    </label>
-                    <input type="email"
-                        name="email"
-                        value="<?= old('email') ?>"
-                        required
-                        placeholder="contoh@email.com"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2">
-                        <i class="fas fa-phone text-green-600 mr-2"></i>No. HP <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text"
-                        name="no_hp"
-                        value="<?= old('no_hp') ?>"
-                        required
-                        placeholder="08xxxxxxxxxx"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2">
-                        <i class="fas fa-lock text-green-600 mr-2"></i>Password <span class="text-red-500">*</span>
-                    </label>
-                    <input type="password"
-                        name="password"
-                        required
-                        minlength="6"
-                        placeholder="Minimal 6 karakter"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2">
-                        <i class="fas fa-lock text-green-600 mr-2"></i>Konfirmasi Password <span class="text-red-500">*</span>
-                    </label>
-                    <input type="password"
-                        name="confirm_password"
-                        required
-                        minlength="6"
-                        placeholder="Ulangi password"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                </div>
-
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
-                    <i class="fas fa-user-plus mr-2"></i> Daftar
-                </button>
-            </form>
-
-            <div class="mt-6 text-center">
-                <p class="text-gray-600">
-                    Sudah punya akun?
-                    <a href="<?= base_url('login') ?>" class="text-green-600 hover:text-green-700 font-semibold">
-                        Login di sini
-                    </a>
-                </p>
             </div>
 
-            <div class="mt-4 text-center">
-                <a href="<?= base_url('/') ?>" class="text-gray-500 hover:text-gray-700 text-sm">
-                    <i class="fas fa-arrow-left mr-1"></i> Kembali ke Beranda
+            <!-- Password & Confirm Password Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider mb-2" for="password">
+                        Password <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">lock</span>
+                        <input type="password" id="password" name="password" required minlength="6" placeholder="Min. 6 karakter"
+                               class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/60 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-gray-400 shadow-theme-xs">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider mb-2" for="confirm_password">
+                        Ulangi Password <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">lock_reset</span>
+                        <input type="password" id="confirm_password" name="confirm_password" required minlength="6" placeholder="Ulangi password"
+                               class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/60 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-gray-400 shadow-theme-xs">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 shadow-md shadow-brand-500/25 active:scale-[0.98] flex items-center justify-center gap-2 text-sm mt-4 cursor-pointer">
+                <span>Daftar Calon Siswa Sekarang</span>
+                <span class="material-symbols-outlined text-base">arrow_forward</span>
+            </button>
+        </form>
+
+        <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800 text-center">
+            <p class="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
+                Sudah memiliki akun terdaftar?
+                <a href="<?= base_url('/login') ?>" class="text-brand-500 hover:text-brand-600 dark:text-brand-400 font-bold transition-colors">
+                    Login di sini
                 </a>
-            </div>
+            </p>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="<?= base_url('/') ?>" class="inline-flex items-center justify-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 font-semibold transition-colors bg-gray-50 dark:bg-gray-800 px-3.5 py-2 rounded-xl border border-gray-200 dark:border-gray-700">
+                <span class="material-symbols-outlined text-sm">home</span>
+                <span>Kembali ke Beranda</span>
+            </a>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            <?php if (session()->getFlashdata('errors')): ?>
-                let errorList = <?= json_encode(session()->getFlashdata('errors')) ?>;
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Terdapat Kesalahan',
-                    html: '<ul style="text-align:left;list-style:disc;padding-left:1.5rem;">' + errorList.map(e => '<li>' + e + '</li>').join('') + '</ul>',
-                    confirmButtonColor: '#ef4444'
-                });
-            <?php endif; ?>
-            <?php if (session()->getFlashdata('error')): ?>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    html: <?= json_encode(session()->getFlashdata('error')) ?>,
-                    confirmButtonColor: '#ef4444'
-                });
-            <?php endif; ?>
-        });
-    </script>
 
+    <?= view('partials/sweetalert') ?>
 </body>
 
 </html>

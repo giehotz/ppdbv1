@@ -1,145 +1,126 @@
 <?= $this->extend('layouts/siswa_mobile') ?>
 
-<?= $this->section('title') ?>
-Profil Saya
-<?= $this->endSection() ?>
-
-<?= $this->section('page_title') ?>
-Profil Saya
-<?= $this->endSection() ?>
+<?= $this->section('title') ?>Profil Saya<?= $this->endSection() ?>
+<?= $this->section('page_title') ?>Profil Calon Siswa<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-<?php if (session()->getFlashdata('success')): ?>
-    <div class="flex items-center p-3 mb-4 text-emerald-800 bg-emerald-50/80 backdrop-blur-sm border border-emerald-200/50 rounded-xl text-xs font-bold">
-        <i class="fas fa-check-circle mr-2 text-emerald-500"></i>
-        <?= session()->getFlashdata('success') ?>
-    </div>
-<?php endif; ?>
+<div class="space-y-4">
+    
+    <!-- Profile Card (TailAdmin Mobile) -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] text-center space-y-3">
+        <?php
+        $nisn = $siswa['nisn'] ?? session()->get('nisn');
+        $foto = $siswa['foto'] ?? session()->get('foto');
+        $fotoPath = 'uploads/berkas/' . $nisn . '/' . $foto;
+        $hasFoto = !empty($foto) && file_exists(FCPATH . $fotoPath);
+        $avatarUrl = $hasFoto ? base_url($fotoPath) : null;
+        $inisial = mb_substr(trim($siswa['nama_lengkap'] ?? 'S'), 0, 1);
+        ?>
 
-<?php if (session()->getFlashdata('error')): ?>
-    <div class="flex items-center p-3 mb-4 text-rose-800 bg-rose-50/80 backdrop-blur-sm border border-rose-200/50 rounded-xl text-xs font-bold">
-        <i class="fas fa-exclamation-triangle mr-2 text-rose-500"></i>
-        <?= session()->getFlashdata('error') ?>
-    </div>
-<?php endif; ?>
-
-<!-- Profile Header Glass -->
-<div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/20 mb-4 overflow-hidden">
-    <div class="h-20 bg-gradient-to-r from-emerald-500 to-green-600"></div>
-    <div class="px-5 pb-5 pt-0 flex flex-col items-center -mt-10">
-        <div class="relative mb-3">
-            <?php
-            $fotoPath = 'uploads/berkas/' . $siswa['nisn'] . '/' . ($siswa['foto'] ?? '');
-            $displayFoto = (isset($siswa['foto']) && file_exists(FCPATH . $fotoPath))
-                ? base_url($fotoPath)
-                : base_url('assets/img/default-avatar.png');
-            ?>
-            <div class="w-20 h-20 rounded-full overflow-hidden border-[3px] border-white/90 shadow-md bg-white">
-                <img src="<?= $displayFoto ?>" alt="Avatar" class="w-full h-full object-cover">
+        <div class="relative inline-block mx-auto">
+            <div class="h-20 w-20 rounded-2xl overflow-hidden bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 flex items-center justify-center font-bold text-2xl border border-brand-200 dark:border-brand-500/30 shadow-theme-xs">
+                <?php if ($avatarUrl): ?>
+                    <img src="<?= $avatarUrl ?>" alt="Foto" class="h-full w-full object-cover">
+                <?php else: ?>
+                    <?= esc($inisial) ?>
+                <?php endif; ?>
             </div>
-            
-            <button onclick="document.getElementById('foto-input').click()" class="absolute bottom-0 right-0 bg-emerald-600 text-white w-7 h-7 rounded-full flex items-center justify-center border-2 border-white shadow-sm active:scale-90 transition">
-                <i class="fas fa-camera text-[10px]"></i>
+            <button onclick="document.getElementById('foto-input').click()"
+                class="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-xl bg-brand-500 text-white shadow-theme-xs"
+                title="Ganti Foto">
+                <span class="material-symbols-outlined text-sm">photo_camera</span>
             </button>
         </div>
 
-        <h2 class="text-base font-bold text-slate-800 text-center leading-tight mb-1"><?= esc($siswa['nama_lengkap']) ?></h2>
-        <p class="text-[10px] font-semibold text-slate-500 mb-4 bg-slate-100/80 px-3 py-1 rounded-full"><i class="fas fa-id-card mr-1.5 opacity-70"></i><?= esc($siswa['nisn']) ?></p>
+        <div>
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white"><?= esc($siswa['nama_lengkap']) ?></h3>
+            <p class="text-xs font-mono text-gray-400 mt-0.5">NISN: <?= esc($siswa['nisn'] ?? '-') ?></p>
+        </div>
 
-        <div class="grid grid-cols-2 gap-3 w-full">
-            <div class="bg-blue-50/80 backdrop-blur-sm rounded-xl p-3 border border-blue-200/30 text-center">
-                <p class="text-[10px] uppercase tracking-wide text-blue-600 font-bold mb-1">No. Daftar</p>
-                <p class="text-sm font-black text-slate-800 font-mono"><?= esc($siswa['no_pendaftaran']) ?></p>
+        <div class="grid grid-cols-2 gap-2 pt-1 text-left">
+            <div class="rounded-xl border border-gray-100 bg-gray-50/70 p-2.5 dark:border-gray-800 dark:bg-gray-850/40">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-gray-400 block">No. Pendaftaran</span>
+                <span class="text-xs font-bold font-mono text-brand-600 dark:text-brand-400"><?= esc($siswa['no_pendaftaran'] ?? '-') ?></span>
             </div>
-            
-            <?php
-            $statusMap = ['0' => 'Menunggu', '1' => 'Terverifikasi', '2' => 'Ditolak'];
-            $stVal = $siswa['status_verifikasi'] ?? '0';
-            $statusText = $statusMap[$stVal] ?? $stVal;
-            if (!isset($statusMap[$stVal])) $statusText = $stVal ?: 'Menunggu';
-            
-            $bg = 'bg-amber-50/80'; $border = 'border-amber-200/30'; $tc = 'text-amber-600'; $icon = 'fa-clock';
-            if(strtolower($statusText) == 'terverifikasi') { $bg = 'bg-emerald-50/80'; $border = 'border-emerald-200/30'; $tc = 'text-emerald-600'; $icon = 'fa-check-circle'; }
-            if(strtolower($statusText) == 'ditolak') { $bg = 'bg-rose-50/80'; $border = 'border-rose-200/30'; $tc = 'text-rose-600'; $icon = 'fa-times-circle'; }
-            ?>
-            
-            <div class="<?= $bg ?> backdrop-blur-sm rounded-xl p-3 border <?= $border ?> text-center">
-                <p class="text-[10px] uppercase tracking-wide <?= $tc ?> font-bold mb-1">Verifikasi</p>
-                <p class="text-xs font-bold text-slate-800 flex items-center justify-center gap-1.5"><i class="fas <?= $icon ?> <?= $tc ?>"></i><?= esc($statusText) ?></p>
+
+            <div class="rounded-xl border border-gray-100 bg-gray-50/70 p-2.5 dark:border-gray-800 dark:bg-gray-850/40">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-gray-400 block">Status Verifikasi</span>
+                <?php
+                $statusVerif = $siswa['status_verifikasi'] ?? 'Menunggu';
+                if ($statusVerif === 'Terverifikasi') {
+                    $color = 'text-emerald-600 dark:text-emerald-400';
+                } elseif ($statusVerif === 'Ditolak') {
+                    $color = 'text-red-600 dark:text-red-400';
+                } else {
+                    $color = 'text-amber-600 dark:text-amber-400';
+                }
+                ?>
+                <span class="text-xs font-bold <?= $color ?>"><?= esc($statusVerif) ?></span>
             </div>
         </div>
 
-        <?php if (!empty($siswa['foto'])): ?>
-            <button onclick="confirmDelete()" class="mt-4 w-full bg-rose-50/80 hover:bg-rose-100/80 text-rose-600 border border-rose-200/50 text-[10px] font-bold py-2.5 rounded-xl transition active:scale-[0.97]">
-                <i class="fas fa-trash-alt mr-1.5"></i> Hapus Foto Saat Ini
+        <?php if ($hasFoto): ?>
+            <button onclick="confirmDelete()" class="inline-flex items-center gap-1 text-[10px] font-semibold text-red-600 hover:text-red-700 pt-1">
+                <span class="material-symbols-outlined text-xs">delete</span>
+                <span>Hapus Foto Profil</span>
             </button>
         <?php endif; ?>
     </div>
-</div>
 
-<form action="<?= base_url('siswa/profile/update-foto') ?>" method="POST" enctype="multipart/form-data" id="foto-form" class="hidden">
-    <?= csrf_field() ?>
-    <input type="file" id="foto-input" name="foto" accept="image/*" onchange="previewAndSubmit(this)">
-</form>
+    <!-- Hidden photo upload forms -->
+    <form action="<?= base_url('siswa/profile/update-foto') ?>" method="POST" enctype="multipart/form-data" id="foto-form" class="hidden">
+        <?= csrf_field() ?>
+        <input type="file" id="foto-input" name="foto" accept="image/*" onchange="previewAndSubmit(this)">
+    </form>
+    <form action="<?= base_url('siswa/profile/delete-foto') ?>" method="POST" id="delete-foto-form" class="hidden">
+        <?= csrf_field() ?>
+    </form>
 
-<form action="<?= base_url('siswa/profile/delete-foto') ?>" method="POST" id="delete-foto-form" class="hidden">
-    <?= csrf_field() ?>
-</form>
+    <!-- Settings Navigation -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] space-y-2">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white pb-2 border-b border-gray-100 dark:border-gray-800">
+            Pengaturan Akun
+        </h4>
 
-<!-- Settings Menu Glass -->
-<div class="mb-4">
-    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 ml-2">Akun & Pengaturan</h3>
-    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/20 overflow-hidden">
-        <a href="<?= base_url('siswa/ubah-password') ?>" class="flex items-center gap-4 p-4 active:bg-slate-50/50 transition border-b border-slate-100/50">
-            <div class="w-9 h-9 bg-indigo-50/80 rounded-xl flex items-center justify-center flex-shrink-0 text-indigo-600 border border-indigo-200/30">
-                <i class="fas fa-lock text-sm"></i>
+        <a href="<?= base_url('siswa/ubah-password') ?>"
+           class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-xl text-brand-500">lock_reset</span>
+                <div>
+                    <h5 class="text-xs font-bold text-gray-900 dark:text-white">Ubah Password</h5>
+                    <p class="text-[10px] text-gray-400">Ganti kata sandi akun pendaftaran</p>
+                </div>
             </div>
-            <div class="flex-1">
-                <p class="font-bold text-xs text-slate-800">Ubah Password</p>
-                <p class="text-[10px] text-slate-500">Perbarui kata sandi akun Anda</p>
-            </div>
-            <i class="fas fa-chevron-right text-slate-300 text-[10px]"></i>
+            <span class="material-symbols-outlined text-base text-gray-400">chevron_right</span>
         </a>
-        
-        <a href="<?= base_url('siswa/biodata') ?>" class="flex items-center gap-4 p-4 active:bg-slate-50/50 transition border-b border-slate-100/50">
-            <div class="w-9 h-9 bg-teal-50/80 rounded-xl flex items-center justify-center flex-shrink-0 text-teal-600 border border-teal-200/30">
-                <i class="fas fa-user-edit text-sm"></i>
+
+        <a href="<?= base_url('siswa/biodata') ?>"
+           class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-xl text-emerald-500">edit_note</span>
+                <div>
+                    <h5 class="text-xs font-bold text-gray-900 dark:text-white">Edit Formulir Biodata</h5>
+                    <p class="text-[10px] text-gray-400">Lengkapi data pribadi dan orang tua</p>
+                </div>
             </div>
-            <div class="flex-1">
-                <p class="font-bold text-xs text-slate-800">Update Biodata</p>
-                <p class="text-[10px] text-slate-500">Lengkapi formulir registrasi PPDB</p>
-            </div>
-            <i class="fas fa-chevron-right text-slate-300 text-[10px]"></i>
-        </a>
-        
-        <a href="<?= base_url('logout') ?>" class="flex items-center gap-4 p-4 active:bg-rose-50/50 transition">
-            <div class="w-9 h-9 bg-rose-50/80 rounded-xl flex items-center justify-center flex-shrink-0 text-rose-600 border border-rose-200/30">
-                <i class="fas fa-sign-out-alt text-sm"></i>
-            </div>
-            <div class="flex-1">
-                <p class="font-bold text-xs text-rose-600">Logout</p>
-                <p class="text-[10px] text-slate-500">Keluar dari sesi saat ini</p>
-            </div>
+            <span class="material-symbols-outlined text-base text-gray-400">chevron_right</span>
         </a>
     </div>
+
 </div>
 
-<?= $this->endSection() ?>
-
-<?= $this->section('scripts') ?>
 <script>
-    function previewAndSubmit(input) {
-        if (input.files && input.files[0]) {
-            const file = input.files[0];
-            if (file.size > 2 * 1024 * 1024) return alert('Maks 2MB');
-            if (!file.type.match('image.*')) return alert('Hanya gambar');
-            if (confirm('Update foto profil?')) document.getElementById('foto-form').submit();
-            else input.value = '';
-        }
+function previewAndSubmit(input) {
+    if (input.files && input.files[0]) {
+        document.getElementById('foto-form').submit();
     }
-    function confirmDelete() {
-        if (confirm('Hapus foto profil?')) document.getElementById('delete-foto-form').submit();
+}
+function confirmDelete() {
+    if (confirm('Apakah Anda yakin ingin menghapus foto profil?')) {
+        document.getElementById('delete-foto-form').submit();
     }
+}
 </script>
+
 <?= $this->endSection() ?>

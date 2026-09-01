@@ -41,16 +41,24 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
         // $this->session = service('session');
 
-        // Load Website Settings to Global Variables
-        $webModel = new \App\Models\TblWebModel();
-        $webData = $webModel->first();
+        // Load Website & SEO Settings — cache 30 menit agar tidak query DB setiap request
+        $cache   = \Config\Services::cache();
+        $appData = $cache->get('app_settings');
+        if ($appData === null) {
+            $webModel  = new \App\Models\TblWebModel();
+            $seoModel  = new \App\Models\SeoModel();
+            $appData   = [
+                'web' => $webModel->first() ?? [],
+                'seo' => $seoModel->find(1) ?? [],
+            ];
+            $cache->save('app_settings', $appData, 1800); // 30 menit
+        }
+
+        $webData = $appData['web'];
+        $seoData = $appData['seo'];
 
         \Config\Services::renderer()->setVar('app_alias', $webData['app_alias'] ?? 'PPDB');
         \Config\Services::renderer()->setVar('web_logo', $webData['logo_sekolah'] ?? null);
-
-        // Load SEO Settings to Global Variables
-        $seoModel = new \App\Models\SeoModel();
-        $seoData = $seoModel->find(1);
-        \Config\Services::renderer()->setVar('seo_global', $seoData ?? []);
+        \Config\Services::renderer()->setVar('seo_global', $seoData);
     }
 }

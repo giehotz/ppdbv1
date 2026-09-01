@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 @theme {
   --color-tertiary-fixed-dim: #9ad1cb;
   --color-secondary: #735c00;
@@ -69,8 +71,35 @@
   --color-primary-950: #022c22;
   --font-family-display: "Sora", sans-serif;
   --font-family-sans: "Plus Jakarta Sans", sans-serif;
-  --shadow-glow-green: 0 0 40px -8px rgba(16, 185, 129, 0.5);
-  --shadow-glow-gold: 0 0 40px -8px rgba(245, 158, 11, 0.5);
-  --shadow-card: 0 4px 40px -8px rgba(0,0,0,0.08);
-  --shadow-card-hover: 0 20px 60px -12px rgba(16, 185, 129, 0.18);
+  --color-brand-50: #ecf3ff;
+  --color-brand-100: #dde9ff;
+  --color-brand-200: #c2d7ff;
+  --color-brand-300: #9cbfff;
+  --color-brand-400: #709eff;
+  --color-brand-500: #465fff;
+  --color-brand-600: #2d44e6;
+  --color-brand-700: #2233c4;
+  --color-brand-800: #1f2ca0;
+  --color-brand-900: #1e287f;
+  --color-brand-950: #13184e;
+  --shadow-theme-xs: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  --shadow-theme-sm: 0px 1px 3px 0px rgba(16, 24, 40, 0.1), 0px 1px 2px 0px rgba(16, 24, 40, 0.06);
+  --shadow-theme-md: 0px 4px 8px -2px rgba(16, 24, 40, 0.1), 0px 2px 4px -2px rgba(16, 24, 40, 0.06);
+  --shadow-theme-lg: 0px 12px 16px -4px rgba(16, 24, 40, 0.08), 0px 4px 6px -2px rgba(16, 24, 40, 0.03);
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
 }

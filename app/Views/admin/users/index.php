@@ -5,114 +5,134 @@
 
 <?= $this->section('content') ?>
 
-<?php if (session()->getFlashdata('success')) : ?>
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"><?= session()->getFlashdata('success') ?></span>
-    </div>
-<?php endif; ?>
-
-<?php if (session()->getFlashdata('error')) : ?>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"><?= session()->getFlashdata('error') ?></span>
-    </div>
-<?php endif; ?>
-
 <?php
-$totalUsers   = count($users);
-$adminCount   = count(array_filter($users, fn($u) => $u['level'] === 'admin'));
+$totalUsers       = count($users);
+$adminCount       = count(array_filter($users, fn($u) => $u['level'] === 'admin'));
 $verifikatorCount = count(array_filter($users, fn($u) => $u['level'] === 'verifikator'));
 ?>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
-            <i class="fas fa-users text-green-600 text-xl"></i>
+<!-- Metric Stats Row -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-6">
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="flex items-center justify-between">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-500 dark:bg-brand-500/15 dark:text-brand-400">
+                <i class="fas fa-users text-lg"></i>
+            </div>
+            <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-semibold text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
+                Semua User
+            </span>
         </div>
-        <div>
-            <p class="text-sm text-gray-500 font-medium">Total Pengguna</p>
-            <p class="text-2xl font-bold text-gray-800"><?= $totalUsers ?></p>
+        <div class="mt-4 flex items-end justify-between">
+            <div>
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Total Pengguna</span>
+                <h4 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90"><?= $totalUsers ?></h4>
+            </div>
         </div>
     </div>
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
-            <i class="fas fa-user-shield text-blue-600 text-xl"></i>
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="flex items-center justify-between">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+                <i class="fas fa-user-shield text-lg"></i>
+            </div>
+            <span class="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+                Administrator
+            </span>
         </div>
-        <div>
-            <p class="text-sm text-gray-500 font-medium">Admin</p>
-            <p class="text-2xl font-bold text-gray-800"><?= $adminCount ?></p>
+        <div class="mt-4 flex items-end justify-between">
+            <div>
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Admin</span>
+                <h4 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90"><?= $adminCount ?></h4>
+            </div>
         </div>
     </div>
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center shrink-0">
-            <i class="fas fa-user-check text-purple-600 text-xl"></i>
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="flex items-center justify-between">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-500/15 dark:text-purple-400">
+                <i class="fas fa-user-check text-lg"></i>
+            </div>
+            <span class="rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-semibold text-purple-600 dark:bg-purple-500/15 dark:text-purple-400">
+                Staf Verifikator
+            </span>
         </div>
-        <div>
-            <p class="text-sm text-gray-500 font-medium">Verifikator</p>
-            <p class="text-2xl font-bold text-gray-800"><?= $verifikatorCount ?></p>
+        <div class="mt-4 flex items-end justify-between">
+            <div>
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Verifikator</span>
+                <h4 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90"><?= $verifikatorCount ?></h4>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h3 class="text-lg font-semibold text-gray-800">Daftar Pengguna</h3>
-        <div class="flex items-center gap-3">
-            <div class="relative">
-                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                <input type="text" id="searchInput" placeholder="Cari pengguna..."
-                    class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none w-full sm:w-56">
+<!-- Table Card -->
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="border-b border-gray-100 px-5 py-4 dark:border-gray-800 md:px-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+                <h3 class="text-sm font-bold text-gray-800 dark:text-white">Daftar Pengguna Sistem</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Kelola akun administrator dan staf verifikator.</p>
             </div>
-            <a href="<?= base_url('admin/users/create') ?>"
-                class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition duration-200 inline-flex items-center gap-2 shrink-0">
-                <i class="fas fa-plus"></i> Tambah User
-            </a>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                        <i class="fas fa-search text-xs"></i>
+                    </span>
+                    <input type="text" id="searchInput" placeholder="Cari pengguna..."
+                        class="h-9 w-full rounded-lg border border-gray-200 bg-gray-50/50 py-2 pr-3 pl-9 text-xs text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none dark:border-gray-800 dark:bg-gray-900/50 dark:text-gray-100 dark:placeholder:text-gray-500 sm:w-56">
+                </div>
+                <a href="<?= base_url('admin/users/create') ?>"
+                    class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-xs font-semibold text-white shadow-theme-xs transition-colors hover:bg-brand-600 shrink-0">
+                    <i class="fas fa-plus"></i> Tambah User
+                </a>
+            </div>
         </div>
     </div>
 
     <div class="overflow-x-auto">
         <table class="w-full text-left" id="usersTable">
             <thead>
-                <tr class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider">
-                    <th class="py-4 px-6">User</th>
-                    <th class="py-4 px-6">Username</th>
-                    <th class="py-4 px-6">Email</th>
-                    <th class="py-4 px-6">Level</th>
-                    <th class="py-4 px-6">Tanggal Daftar</th>
-                    <th class="py-4 px-6 text-center">Aksi</th>
+                <tr class="border-b border-gray-100 text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:border-gray-800 dark:text-gray-500 bg-gray-50/50 dark:bg-gray-800/30">
+                    <th class="py-3.5 px-5">User</th>
+                    <th class="py-3.5 px-4">Username</th>
+                    <th class="py-3.5 px-4">Email</th>
+                    <th class="py-3.5 px-4">Level</th>
+                    <th class="py-3.5 px-4">Tanggal Daftar</th>
+                    <th class="py-3.5 px-5 text-center">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="text-gray-600 text-sm divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-100 text-xs dark:divide-gray-800">
                 <?php if (!empty($users)) : ?>
                     <?php foreach ($users as $user) :
                         $avatarChar = strtoupper(substr($user['nama_lengkap'], 0, 1));
                     ?>
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
-                            <td class="py-4 px-6">
+                        <tr class="hover:bg-gray-50/50 transition-colors dark:hover:bg-white/[0.02]">
+                            <td class="py-3.5 px-5">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600 font-bold text-xs dark:bg-brand-500/15 dark:text-brand-400">
                                         <?= $avatarChar ?>
                                     </div>
-                                    <div class="font-medium text-gray-800"><?= esc($user['nama_lengkap']) ?></div>
+                                    <div class="font-semibold text-gray-900 dark:text-gray-100"><?= esc($user['nama_lengkap']) ?></div>
                                 </div>
                             </td>
-                            <td class="py-4 px-6"><?= esc($user['username']) ?></td>
-                            <td class="py-4 px-6"><?= esc($user['email']) ?: '<span class="text-gray-400">—</span>' ?></td>
-                            <td class="py-4 px-6">
+                            <td class="py-3.5 px-4 font-mono text-gray-700 dark:text-gray-300"><?= esc($user['username']) ?></td>
+                            <td class="py-3.5 px-4 text-gray-500 dark:text-gray-400"><?= esc($user['email']) ?: '<span class="text-gray-400">—</span>' ?></td>
+                            <td class="py-3.5 px-4">
                                 <?php if ($user['level'] === 'admin') : ?>
-                                    <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full">
-                                        <i class="fas fa-shield-alt text-xs"></i> Admin
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-semibold text-blue-700 dark:bg-blue-500/15 dark:text-blue-400">
+                                        <i class="fas fa-shield-alt text-[10px]"></i> Admin
                                     </span>
                                 <?php else : ?>
-                                    <span class="inline-flex items-center gap-1 bg-purple-100 text-purple-700 text-xs font-medium px-3 py-1 rounded-full">
-                                        <i class="fas fa-check-circle text-xs"></i> Verifikator
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2.5 py-0.5 text-[11px] font-semibold text-purple-700 dark:bg-purple-500/15 dark:text-purple-400">
+                                        <i class="fas fa-check-circle text-[10px]"></i> Verifikator
                                     </span>
                                 <?php endif; ?>
                             </td>
-                            <td class="py-4 px-6 text-gray-500"><?= date('d M Y', strtotime($user['tgl_daftar'])) ?></td>
-                            <td class="py-4 px-6 text-center">
-                                <div class="flex items-center justify-center gap-2">
+                            <td class="py-3.5 px-4 text-gray-500 dark:text-gray-400 text-[11px]"><?= date('d M Y', strtotime($user['tgl_daftar'])) ?></td>
+                            <td class="py-3.5 px-5 text-center">
+                                <div class="flex items-center justify-center gap-1.5">
                                     <a href="<?= base_url('admin/users/edit/' . $user['id_user']) ?>"
-                                        class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700 flex items-center justify-center transition-colors duration-150"
+                                        class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-500 hover:bg-amber-50 hover:text-amber-600 transition-colors dark:text-gray-400 dark:hover:bg-amber-500/15 dark:hover:text-amber-400"
                                         title="Edit User">
                                         <i class="fas fa-pen text-xs"></i>
                                     </a>
@@ -122,13 +142,13 @@ $verifikatorCount = count(array_filter($users, fn($u) => $u['level'] === 'verifi
                                             style="display:inline">
                                             <?= csrf_field() ?>
                                             <button type="submit"
-                                                class="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 flex items-center justify-center transition-colors duration-150"
+                                                class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors dark:text-gray-400 dark:hover:bg-red-500/15 dark:hover:text-red-400"
                                                 title="Hapus User">
                                                 <i class="fas fa-trash-alt text-xs"></i>
                                             </button>
                                         </form>
                                     <?php else : ?>
-                                        <span class="w-8 h-8 rounded-lg bg-gray-100 text-gray-300 flex items-center justify-center cursor-not-allowed" title="Admin tidak dapat dihapus">
+                                        <span class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-300 dark:text-gray-600 cursor-not-allowed" title="Admin tidak dapat dihapus">
                                             <i class="fas fa-trash-alt text-xs"></i>
                                         </span>
                                     <?php endif; ?>
@@ -139,9 +159,9 @@ $verifikatorCount = count(array_filter($users, fn($u) => $u['level'] === 'verifi
                 <?php else : ?>
                     <tr>
                         <td colspan="6" class="py-12 px-6 text-center">
-                            <div class="flex flex-col items-center gap-2 text-gray-400">
-                                <i class="fas fa-users text-4xl"></i>
-                                <p class="text-sm">Belum ada data pengguna.</p>
+                            <div class="flex flex-col items-center gap-2 text-gray-400 dark:text-gray-500">
+                                <i class="fas fa-users text-4xl text-gray-300 dark:text-gray-700"></i>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Belum ada data pengguna.</p>
                             </div>
                         </td>
                     </tr>

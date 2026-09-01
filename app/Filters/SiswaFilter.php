@@ -15,47 +15,79 @@ class SiswaFilter implements FilterInterface
             return redirect()->to('/login');
         }
 
+        // Determine user type with all possible fallbacks
+        $userType = session()->get('user_type') ?? session()->get('level') ?? session()->get('role');
+
         // Check if user is student
-        if (session()->get('user_type') !== 'siswa') {
-            session()->setFlashdata('error', 'Akses ditolak. Halaman ini hanya untuk siswa.');
-            if (session()->get('user_type') === 'verifikator') {
+        if ($userType !== 'siswa') {
+            if ($userType === 'verifikator') {
                 return redirect()->to('/verifikator/dashboard')->withCookies();
             }
-            return redirect()->to('/admin/dashboard')->withCookies();
+            if ($userType === 'admin') {
+                return redirect()->to('/admin/dashboard')->withCookies();
+            }
+            // Sesi korup / tidak valid -> destroy dan kembali ke login
+            session()->destroy();
+            return redirect()->to('/login')->withCookies();
         }
 
-        // Cek apakah fitur wajib biodata 100% diaktifkan oleh admin
-        $tblWebModel = new \App\Models\TblWebModel();
-        $web = $tblWebModel->find(1);
+        // Cek apakah fitur wajib biodata 100% diaktifkan oleh admin — gunakan cache
+        $cache      = \Config\Services::cache();
+        $appData    = $cache->get('app_settings');
+        if ($appData === null) {
+            $tblWebModel = new \App\Models\TblWebModel();
+            $seoModel    = new \App\Models\SeoModel();
+            $appData     = [
+                'web' => $tblWebModel->first() ?? [],
+                'seo' => $seoModel->find(1) ?? [],
+            ];
+            $cache->save('app_settings', $appData, 1800);
+        }
+        $web = $appData['web'];
         $wajibBiodata = ($web['wajib_biodata_100'] ?? 1) == 1;
 
         if ($wajibBiodata) {
-            // Cek kelengkapan biodata 100%
-            $siswaModel = new \App\Models\SiswaModel();
-            $siswa = $siswaModel->find(session()->get('id_siswa'));
-            
-            if ($siswa) {
-                $completionData = $siswaModel->calculateCompletionPercentage($siswa);
-                if ($completionData['percentage'] < 100) {
-                    $uriPath = (string) $request->getUri()->getPath();
-                    
-                    $isAllowed = false;
-                    $allowedRoutes = [
-                        'siswa/biodata',
-                        'siswa/biodata/update',
-                        'siswa/biodata/auto-save'
-                    ];
-                    
-                    foreach ($allowedRoutes as $route) {
-                        if (strpos($uriPath, $route) !== false) {
-                            $isAllowed = true;
-                            break;
-                        }
+            $siswaId = session()->get('id_siswa');
+            if ($siswaId) {
+                $siswaModel = new \App\Models\SiswaModel();
+                $siswa = $siswaModel->find($siswaId);
+                
+                if ($siswa) {
+                    // Cache completion percentage per siswa (2 menit)
+                    $cacheKey      = 'completion_' . $siswaId;
+                    $completionData = $cache->get($cacheKey);
+                    if ($completionData === null) {
+                        $completionData = $siswaModel->calculateCompletionPercentage($siswa);
+                        $cache->save($cacheKey, $completionData, 120); // 2 menit
                     }
+                    if ($completionData['percentage'] < 100) {
+                        $uriPath = (string) $request->getUri()->getPath();
+                        
+                        $isAllowed = false;
+                        // Semua route biodata yang boleh diakses saat belum 100%
+                        $allowedRoutes = [
+                            'siswa/biodata',
+                            'siswa/biodata/update',
+                            'siswa/biodata/auto-save',
+                            'siswa/biodata/finalize',
+                            'siswa/biodata/ajukan-buka',
+                        ];
 
-                    if (!$isAllowed) {
-                        session()->setFlashdata('warning', 'Akses dibatasi. Anda wajib melengkapi formulir biodata ini hingga 100% sebelum dapat menggunakan sistem. (Saat ini kelengkapan Anda: ' . $completionData['percentage'] . '%)');
-                        return redirect()->to('/siswa/biodata');
+                        // Bersihkan leading slash agar perbandingan konsisten
+                        $cleanPath = ltrim($uriPath, '/');
+                        
+                        foreach ($allowedRoutes as $route) {
+                            // Cocokkan dari awal path atau sebagai substring (untuk sub-route)
+                            if ($cleanPath === $route || strpos($cleanPath, $route) === 0) {
+                                $isAllowed = true;
+                                break;
+                            }
+                        }
+
+                        if (!$isAllowed) {
+                            session()->setFlashdata('warning', 'Akses dibatasi. Anda wajib melengkapi formulir biodata ini hingga 100% sebelum dapat menggunakan sistem. (Saat ini kelengkapan Anda: ' . $completionData['percentage'] . '%)');
+                            return redirect()->to('/siswa/biodata');
+                        }
                     }
                 }
             }

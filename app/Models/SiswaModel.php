@@ -102,9 +102,9 @@ class SiswaModel extends Model
 
     // Validation
     protected $validationRules      = [
-        'nisn'          => 'required|numeric|min_length[10]|max_length[20]',
-        'nik'           => 'required|numeric|min_length[16]|max_length[20]',
-        'nama_lengkap'  => 'required|string|max_length[255]',
+        'nisn'          => 'permit_empty|numeric|min_length[10]|max_length[20]',
+        'nik'           => 'permit_empty|numeric|min_length[16]|max_length[20]',
+        'nama_lengkap'  => 'permit_empty|string|max_length[255]',
         'email'         => 'permit_empty|valid_email|max_length[100]',
         'no_hp_siswa'   => 'permit_empty|regex_match[/^[0-9+\-\s]+$/]|max_length[20]',
         'no_hp_ortu'    => 'permit_empty|regex_match[/^[0-9+\-\s]+$/]|max_length[20]',

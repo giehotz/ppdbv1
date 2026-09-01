@@ -1,172 +1,184 @@
 <?= $this->extend('layouts/siswa') ?>
 
-<?= $this->section('title') ?>
-Pengumuman Kelulusan
+<?= $this->section('title') ?>Pengumuman Kelulusan<?= $this->endSection() ?>
+<?= $this->section('page_title') ?>
+<span class="material-symbols-outlined text-brand-500 mr-1">school</span> Hasil Seleksi &amp; Kelulusan
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-<div class="max-w-4xl mx-auto pb-12 px-4">
-    <!-- Main Card -->
-    <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-emerald-100">
+<div class="max-w-3xl mx-auto space-y-6">
+    
+    <!-- Main Result Card (TailAdmin Style) -->
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 md:p-10 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] text-center overflow-hidden relative">
         
-        <!-- Header: Diserasikan dengan Status Pendaftaran -->
-        <div class="bg-gradient-to-br from-emerald-500 via-green-600 to-green-700 text-white p-8 relative overflow-hidden">
-            <div class="relative z-10 text-center">
-                <h2 class="text-3xl font-extrabold mb-2 tracking-tight">
-                    Pengumuman Kelulusan
-                </h2>
-                <p class="text-emerald-50 opacity-90 font-medium italic">
-                    <?= $web['app_name'] ?? 'Penerimaan Peserta Didik Baru' ?>
-                </p>
-            </div>
-            <!-- Dekorasi Lingkaran -->
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
-            <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-emerald-400/20 rounded-full blur-xl"></div>
-        </div>
+        <?php if (isset($web['pengumuman_aktif']) && $web['pengumuman_aktif'] == 1) : ?>
+            
+            <?php if (($siswa['status_lulus'] ?? '') === 'Lulus') : ?>
+                <!-- CASE 1: LULUS SELEKSI -->
+                <div class="space-y-6">
+                    <div class="inline-flex h-24 w-24 items-center justify-center rounded-3xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-500/30 shadow-theme-sm mx-auto">
+                        <span class="material-symbols-outlined text-5xl">verified</span>
+                    </div>
 
-        <div class="p-8">
-            <?php if (isset($web['pengumuman_aktif']) && $web['pengumuman_aktif'] == 1) : ?>
-                
-                <?php if ($siswa['status_lulus'] == 'Lulus') : ?>
-                    <!-- CASE: LULUS -->
-                    <div class="text-center mb-10">
-                        <div class="relative inline-block mb-6">
-                            <div class="w-28 h-28 bg-emerald-100 rounded-full flex items-center justify-center mx-auto shadow-inner">
-                                <i class="fas fa-check text-emerald-600 text-6xl animate-bounce-short"></i>
-                            </div>
-                            <div class="absolute -right-2 -bottom-2 bg-yellow-400 text-white p-2 rounded-full shadow-lg">
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                        
-                        <h3 class="text-4xl font-black text-gray-800 mb-2 uppercase tracking-tighter">Selamat!</h3>
-                        <p class="text-xl text-gray-600 max-w-md mx-auto leading-relaxed">
-                            Anda dinyatakan <span class="text-emerald-600 font-bold px-2 py-1 bg-emerald-50 rounded">LULUS</span> seleksi <?= $app_alias ?? 'PPDB' ?>.
+                    <div class="space-y-2">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-4 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
+                            <span class="material-symbols-outlined text-sm">celebration</span>
+                            Hasil Seleksi Diumumkan
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                            Selamat! Anda Dinyatakan <span class="text-emerald-600 dark:text-emerald-400">LULUS</span>
+                        </h2>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
+                            Selamat atas keberhasilan Anda lolos dalam proses seleksi <?= esc($app_alias ?? 'PPDB') ?> di <?= esc($web['nama_sekolah'] ?? 'Madrasah/Sekolah') ?>.
                         </p>
                     </div>
 
-                    <!-- Info Detail Siswa (Box Style) -->
-                    <div class="bg-gray-50/80 rounded-2xl border border-emerald-100 p-6 mb-8 max-w-lg mx-auto shadow-sm">
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center py-2 border-b border-emerald-50">
-                                <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">Nama Lengkap</span>
-                                <span class="font-bold text-gray-800"><?= $siswa['nama_lengkap'] ?></span>
-                            </div>
-                            <div class="flex justify-between items-center py-2 border-b border-emerald-50">
-                                <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">No. Pendaftaran</span>
-                                <span class="font-mono font-bold text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-100 shadow-sm">
-                                    <?= $siswa['no_pendaftaran'] ?>
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center py-2">
-                                <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">NISN</span>
-                                <span class="font-bold text-gray-800 tracking-wider"><?= $siswa['nisn'] ?></span>
-                            </div>
+                    <!-- Student Detail Grid Box -->
+                    <div class="rounded-2xl border border-gray-200 bg-gray-50/70 p-5 dark:border-gray-800 dark:bg-gray-850/50 max-w-md mx-auto text-left space-y-3">
+                        <div class="flex justify-between items-center py-1.5 border-b border-gray-200/60 dark:border-gray-700/60">
+                            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Nama Lengkap</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white"><?= esc($siswa['nama_lengkap']) ?></span>
+                        </div>
+                        <div class="flex justify-between items-center py-1.5 border-b border-gray-200/60 dark:border-gray-700/60">
+                            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">No. Pendaftaran</span>
+                            <span class="font-mono text-xs font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/15 px-2 py-0.5 rounded-lg border border-brand-200 dark:border-brand-800/40">
+                                <?= esc($siswa['no_pendaftaran']) ?>
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center py-1.5">
+                            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">NISN</span>
+                            <span class="font-mono text-xs font-bold text-gray-800 dark:text-gray-200"><?= esc($siswa['nisn'] ?? '-') ?></span>
                         </div>
                     </div>
 
-                    <!-- Action Lulus -->
-                    <div class="text-center space-y-4">
-                        <p class="text-gray-500 italic text-sm">Silakan cetak bukti kelulusan ini sebagai syarat daftar ulang.</p>
-                        <a href="<?= base_url('siswa/kelulusan/cetak') ?>" target="_blank" class="group inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-10 rounded-xl transition duration-300 shadow-lg shadow-emerald-200">
-                            <i class="fas fa-print mr-3 group-hover:scale-110 transition-transform"></i> 
-                            Cetak Bukti Kelulusan
+                    <!-- Print Action Button -->
+                    <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                        <a href="<?= base_url('siswa/kelulusan/cetak') ?>" target="_blank" rel="noopener"
+                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-xs sm:text-sm font-bold text-white shadow-theme-xs hover:bg-emerald-700 transition-all active:scale-[0.98] w-full sm:w-auto">
+                            <span class="material-symbols-outlined text-base">print</span>
+                            <span>Cetak Surat Bukti Kelulusan</span>
                         </a>
-                    </div>
 
-                <?php elseif ($siswa['status_lulus'] == 'Tidak Lulus') : ?>
-                    <!-- CASE: TIDAK LULUS -->
-                    <div class="text-center py-10">
-                        <div class="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-red-100 shadow-sm">
-                            <i class="fas fa-times text-red-500 text-5xl"></i>
-                        </div>
-                        <h3 class="text-3xl font-extrabold text-gray-800 mb-3 uppercase">Mohon Maaf</h3>
-                        <p class="text-lg text-gray-600 max-w-md mx-auto leading-relaxed">
-                            Anda dinyatakan <span class="font-bold text-red-600">TIDAK LULUS</span> seleksi <?= $app_alias ?? 'PPDB' ?>.
-                        </p>
-                        <div class="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-100 inline-block">
-                            <p class="text-gray-500 font-medium">Tetap semangat dan jangan pernah putus asa!</p>
-                        </div>
-                    </div>
-
-                <?php else : ?>
-                    <!-- CASE: DALAM PROSES -->
-                    <div class="text-center py-10">
-                        <div class="w-24 h-24 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-amber-100 shadow-sm">
-                            <i class="fas fa-hourglass-half text-amber-500 text-5xl animate-pulse"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2 uppercase">Dalam Proses</h3>
-                        <p class="text-gray-600 mb-6 font-medium">Status kelulusan Anda sedang dalam tahap finalisasi oleh Panitia.</p>
-                        
-                        <?php if(!empty($web['tgl_pengumuman']) && $web['tgl_pengumuman'] != '0000-00-00 00:00:00') : ?>
-                            <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100 inline-block">
-                                <p class="text-sm text-amber-800">Harap cek kembali pada tanggal:</p>
-                                <p class="text-lg font-bold text-amber-900"><?= date('d F Y, H:i', strtotime($web['tgl_pengumuman'])) ?> WIB</p>
-                            </div>
+                        <?php if (isset($web['tampil_grup_wa']) && $web['tampil_grup_wa'] == 1 && !empty($web['link_grup_wa'])) : ?>
+                            <a href="<?= esc($web['link_grup_wa']) ?>" target="_blank" rel="noopener"
+                                class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-3 text-xs sm:text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 transition-all w-full sm:w-auto">
+                                <i class="fab fa-whatsapp text-emerald-600 dark:text-emerald-400 text-base"></i>
+                                <span>Grup WhatsApp Siswa Lulus</span>
+                            </a>
                         <?php endif; ?>
                     </div>
-                <?php endif; ?>
 
-                <!-- Footer Info (Timestamp) -->
-                <?php if(!empty($web['tgl_pengumuman']) && $web['tgl_pengumuman'] != '0000-00-00 00:00:00') : ?>
-                    <div class="mt-12 pt-6 border-t border-gray-100 text-center">
-                        <span class="inline-flex items-center text-xs font-semibold text-gray-400 bg-gray-50 px-3 py-1.5 rounded-full uppercase tracking-widest">
-                            <i class="fas fa-calendar-alt mr-2"></i>
-                            Diumumkan: <?= date('d M Y, H:i', strtotime($web['tgl_pengumuman'])) ?> WIB
-                        </span>
+                    <!-- Petunjuk Daftar Ulang -->
+                    <div class="rounded-xl border border-emerald-200/70 bg-emerald-50/50 p-4 text-left dark:border-emerald-900/40 dark:bg-emerald-950/20 text-xs space-y-1.5">
+                        <div class="flex items-center gap-1.5 font-bold text-emerald-800 dark:text-emerald-300">
+                            <span class="material-symbols-outlined text-base">info</span>
+                            <span>Langkah Selanjutnya:</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed pl-5">
+                            Silakan cetak dan simpan <strong>Surat Bukti Kelulusan</strong> di atas, lalu lakukan proses daftar ulang sesuai jadwal yang tertera pada surat atau pengumuman panitia.
+                        </p>
                     </div>
-                <?php endif; ?>
+                </div>
+
+            <?php elseif (($siswa['status_lulus'] ?? '') === 'Tidak Lulus') : ?>
+                <!-- CASE 2: TIDAK LULUS -->
+                <div class="space-y-5 py-4">
+                    <div class="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400 border border-red-200 dark:border-red-800/40 mx-auto">
+                        <span class="material-symbols-outlined text-4xl">cancel</span>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <span class="inline-flex items-center gap-1 rounded-full bg-red-50 px-3 py-0.5 text-xs font-bold text-red-700 dark:bg-red-500/15 dark:text-red-400">
+                            Pengumuman Seleksi
+                        </span>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+                            Mohon Maaf, Belum Lulus
+                        </h2>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
+                            Berdasarkan hasil penilaian panitia seleksi <?= esc($app_alias ?? 'PPDB') ?>, Anda dinyatakan <strong>belum berhasil lolos</strong> pada periode ini.
+                        </p>
+                    </div>
+
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-850 max-w-sm mx-auto text-xs text-gray-600 dark:text-gray-400">
+                        <p class="italic">"Jangan berkecil hati, tetap semangat belajar dan terus berjuang untuk meraih masa depan yang gemilang."</p>
+                    </div>
+                </div>
 
             <?php else : ?>
-                <!-- CASE: BELUM AKTIF -->
-                <div class="text-center py-12">
-                    <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-blue-100 shadow-sm">
-                        <i class="fas fa-bullhorn text-blue-500 text-5xl"></i>
+                <!-- CASE 3: DALAM PROSES -->
+                <div class="space-y-5 py-4">
+                    <div class="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40 mx-auto">
+                        <span class="material-symbols-outlined text-4xl animate-pulse">hourglass_top</span>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3 uppercase">Belum Diumumkan</h3>
-                    <p class="text-gray-600 max-w-sm mx-auto mb-8 font-medium">
-                        Sabar ya! Hasil seleksi <?= $app_alias ?? 'PPDB' ?> saat ini belum dipublikasikan oleh panitia.
-                    </p>
-                    
-                    <?php if(!empty($web['tgl_pengumuman']) && $web['tgl_pengumuman'] != '0000-00-00 00:00:00') : ?>
-                        <div class="relative overflow-hidden bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-2xl p-6 shadow-lg shadow-blue-100 inline-block">
-                            <div class="relative z-10 flex items-center space-x-4">
-                                <div class="bg-white/20 p-3 rounded-xl">
-                                    <i class="fas fa-calendar-check text-2xl"></i>
-                                </div>
-                                <div class="text-left">
-                                    <p class="text-xs uppercase font-bold opacity-80 tracking-tighter">Jadwal Pengumuman</p>
-                                    <p class="text-xl font-black"><?= date('d F Y', strtotime($web['tgl_pengumuman'])) ?></p>
-                                    <p class="text-sm font-medium opacity-90">Pukul <?= date('H:i', strtotime($web['tgl_pengumuman'])) ?> WIB</p>
-                                </div>
-                            </div>
+
+                    <div class="space-y-1.5">
+                        <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-0.5 text-xs font-bold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">
+                            Tahap Seleksi Berjalan
+                        </span>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+                            Proses Seleksi Sedang Berlangsung
+                        </h2>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
+                            Data berkas dan formulir pendaftaran Anda sedang dalam tahap verifikasi serta perankingan oleh panitia penerimaan siswa baru.
+                        </p>
+                    </div>
+
+                    <?php if (!empty($web['tgl_pengumuman']) && $web['tgl_pengumuman'] != '0000-00-00 00:00:00') : ?>
+                        <div class="inline-block rounded-xl border border-amber-200 bg-amber-50/60 p-4 text-xs dark:border-amber-900/40 dark:bg-amber-950/20">
+                            <span class="text-amber-800 dark:text-amber-300 block font-medium">Jadwal Rilis Pengumuman:</span>
+                            <span class="text-sm font-bold text-amber-900 dark:text-amber-200 mt-0.5 block font-mono">
+                                <?= date('d F Y, H:i', strtotime($web['tgl_pengumuman'])) ?> WIB
+                            </span>
                         </div>
-                    <?php else : ?>
-                        <p class="text-gray-400 italic text-sm">Pantau terus akun Anda atau website resmi sekolah.</p>
                     <?php endif; ?>
                 </div>
-            <?php endif; ?>
-        </div>
 
-        <!-- Tombol Kembali yang Seragam -->
-        <div class="bg-gray-50 p-6 border-t border-gray-100">
-            <a href="<?= base_url('siswa/dashboard') ?>" class="flex items-center justify-center text-gray-600 hover:text-emerald-700 font-bold py-2 transition duration-200">
-                <i class="fas fa-arrow-left mr-2"></i>
-                Kembali ke Dashboard
+            <?php endif; ?>
+
+        <?php else : ?>
+            <!-- CASE 4: BELUM DIUMUMKAN / PENGUMUMAN NONAKTIF -->
+            <div class="space-y-5 py-6">
+                <div class="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400 border border-blue-200 dark:border-blue-800/40 mx-auto">
+                    <span class="material-symbols-outlined text-4xl">campaign</span>
+                </div>
+
+                <div class="space-y-1.5">
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                        Pengumuman Belum Dibuka
+                    </h2>
+                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
+                        Hasil seleksi penerimaan siswa baru saat ini belum dipublikasikan secara resmi oleh panitia.
+                    </p>
+                </div>
+
+                <?php if (!empty($web['tgl_pengumuman']) && $web['tgl_pengumuman'] != '0000-00-00 00:00:00') : ?>
+                    <div class="rounded-2xl border border-brand-200 bg-brand-50/60 p-5 dark:border-brand-900/40 dark:bg-brand-950/20 max-w-sm mx-auto text-center space-y-1">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-brand-700 dark:text-brand-300">Estimasi Jadwal Pengumuman</span>
+                        <p class="text-base font-bold text-gray-900 dark:text-white font-mono">
+                            <?= date('d F Y', strtotime($web['tgl_pengumuman'])) ?>
+                        </p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Pukul <?= date('H:i', strtotime($web['tgl_pengumuman'])) ?> WIB</p>
+                    </div>
+                <?php else : ?>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 italic">
+                        Pantau akun pendaftaran Anda atau portal informasi resmi madrasah secara berkala.
+                    </p>
+                <?php endif; ?>
+            </div>
+
+        <?php endif; ?>
+
+        <!-- Footer Navigation Link -->
+        <div class="mt-8 pt-5 border-t border-gray-100 dark:border-gray-800 text-center">
+            <a href="<?= base_url('siswa/dashboard') ?>" class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-400 transition-colors">
+                <span class="material-symbols-outlined text-base">arrow_back</span>
+                <span>Kembali ke Dashboard Siswa</span>
             </a>
         </div>
-    </div>
-</div>
 
-<style>
-    @keyframes bounce-short {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-    }
-    .animate-bounce-short {
-        animation: bounce-short 1s ease-in-out infinite;
-    }
-</style>
+    </div>
+
+</div>
 
 <?= $this->endSection() ?>

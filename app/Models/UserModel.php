@@ -28,6 +28,7 @@ class UserModel extends Model
         'kepsek',
         'nip_kepsek',
         'level',
+        'foto',
         'last_login',
         'tgl_daftar',
     ];

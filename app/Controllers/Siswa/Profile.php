@@ -58,17 +58,19 @@ class Profile extends BaseController
         $foto = $this->request->getFile('foto');
 
         if ($foto->isValid() && !$foto->hasMoved()) {
+            $cleanNisn = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)$nisn);
             // Create directory if not exists
-            $uploadPath = FCPATH . 'uploads/berkas/' . $nisn;
+            $uploadPath = FCPATH . 'uploads/berkas/' . $cleanNisn;
             if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+                mkdir($uploadPath, 0755, true);
             }
 
-            // Delete old photo if exists
+            // Delete old photo if exists with safe path check
             $siswa = $this->siswaModel->where('nisn', $nisn)->first();
             if (!empty($siswa['foto'])) {
-                $oldFotoPath = $uploadPath . '/' . $siswa['foto'];
-                if (file_exists($oldFotoPath)) {
+                $safeName = basename($siswa['foto']);
+                $oldFotoPath = realpath($uploadPath . '/' . $safeName);
+                if ($oldFotoPath !== false && strpos($oldFotoPath, realpath($uploadPath)) === 0 && file_exists($oldFotoPath)) {
                     unlink($oldFotoPath);
                 }
             }
@@ -91,12 +93,14 @@ class Profile extends BaseController
     public function deleteFoto()
     {
         $nisn = session()->get('nisn');
+        $cleanNisn = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)$nisn);
         $siswa = $this->siswaModel->where('nisn', $nisn)->first();
 
         if (!empty($siswa['foto'])) {
-            // Delete file from storage
-            $fotoPath = FCPATH . 'uploads/berkas/' . $nisn . '/' . $siswa['foto'];
-            if (file_exists($fotoPath)) {
+            $uploadPath = FCPATH . 'uploads/berkas/' . $cleanNisn;
+            $safeName = basename($siswa['foto']);
+            $fotoPath = realpath($uploadPath . '/' . $safeName);
+            if ($fotoPath !== false && strpos($fotoPath, realpath($uploadPath)) === 0 && file_exists($fotoPath)) {
                 unlink($fotoPath);
             }
 
@@ -108,6 +112,7 @@ class Profile extends BaseController
 
         return redirect()->to('/siswa/profile')->with('error', 'Tidak ada foto untuk dihapus');
     }
+
 
     public function ubahPassword()
     {

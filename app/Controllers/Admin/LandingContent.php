@@ -69,7 +69,7 @@ class LandingContent extends BaseController
 
         foreach ($updates as $key => $value) {
             // Sanitize HTML fields to allow safe HTML while preventing XSS
-            $allowedHtmlFields = ['headline', 'subheadline', 'announcement'];
+            $allowedHtmlFields = ['headline', 'subheadline', 'announcement', 'title'];
             if (in_array($key, $allowedHtmlFields, true)) {
                 $value = $this->sanitizeHtml($value);
             }
@@ -81,6 +81,7 @@ class LandingContent extends BaseController
             $this->contentModel->upsertContent($section, $key, $data);
         }
 
+        $this->clearLandingCache();
         session()->setFlashdata('success', 'Konten berhasil diperbarui.');
         return redirect()->to('/admin/landing-content');
     }
@@ -108,6 +109,7 @@ class LandingContent extends BaseController
         ];
 
         $this->contentModel->upsertContent($section, $contentKey, $data);
+        $this->clearLandingCache();
 
         return $this->response->setJSON([
             'success' => true,
@@ -137,6 +139,7 @@ class LandingContent extends BaseController
             $this->fiturModel->insert($data);
         }
 
+        $this->clearLandingCache();
         session()->setFlashdata('success', 'Data Fitur berhasil disimpan.');
         return redirect()->to('/admin/landing-content');
     }
@@ -144,6 +147,7 @@ class LandingContent extends BaseController
     public function deleteFitur($id)
     {
         $this->fiturModel->delete($id);
+        $this->clearLandingCache();
         session()->setFlashdata('success', 'Data Fitur berhasil dihapus.');
         return redirect()->to('/admin/landing-content');
     }
@@ -181,6 +185,7 @@ class LandingContent extends BaseController
             $this->galeriModel->insert($data);
         }
 
+        $this->clearLandingCache();
         session()->setFlashdata('success', 'Data Galeri berhasil disimpan.');
         return redirect()->to('/admin/landing-content');
     }
@@ -194,6 +199,7 @@ class LandingContent extends BaseController
         // }
 
         $this->galeriModel->delete($id);
+        $this->clearLandingCache();
         session()->setFlashdata('success', 'Data Galeri berhasil dihapus.');
         return redirect()->to('/admin/landing-content');
     }
@@ -228,6 +234,7 @@ class LandingContent extends BaseController
             $this->testimoniModel->insert($data);
         }
 
+        $this->clearLandingCache();
         session()->setFlashdata('success', 'Data Testimoni berhasil disimpan.');
         return redirect()->to('/admin/landing-content');
     }
@@ -235,6 +242,7 @@ class LandingContent extends BaseController
     public function deleteTestimoni($id)
     {
         $this->testimoniModel->delete($id);
+        $this->clearLandingCache();
         session()->setFlashdata('success', 'Data Testimoni berhasil dihapus.');
         return redirect()->to('/admin/landing-content');
     }
@@ -257,6 +265,7 @@ class LandingContent extends BaseController
             $this->faqModel->insert($data);
         }
 
+        $this->clearLandingCache();
         session()->setFlashdata('success', 'Data FAQ berhasil disimpan.');
         return redirect()->to('/admin/landing-content');
     }
@@ -264,6 +273,7 @@ class LandingContent extends BaseController
     public function deleteFaq($id)
     {
         $this->faqModel->delete($id);
+        $this->clearLandingCache();
         session()->setFlashdata('success', 'Data FAQ berhasil dihapus.');
         return redirect()->to('/admin/landing-content');
     }
@@ -292,6 +302,7 @@ class LandingContent extends BaseController
                 unlink(FCPATH . 'favicon.ico');
             }
             $file->move(FCPATH, 'favicon.ico');
+            $this->clearLandingCache();
             session()->setFlashdata('success', 'Favicon berhasil diperbarui. (Mungkin butuh CTRL+F5/Hard Refresh untuk melihat perubahan di browser)');
         } catch (\Exception $e) {
             session()->setFlashdata('error', 'Gagal mengganti file: ' . $e->getMessage());
@@ -322,5 +333,13 @@ class LandingContent extends BaseController
         $html = preg_replace('/<\/?(?:input|button|select|textarea|label|option|optgroup|fieldset|legend)[^>]*>/i', '', $html);
 
         return strip_tags($html, $allowedTags);
+    }
+
+    private function clearLandingCache(): void
+    {
+        $cache = \Config\Services::cache();
+        $cache->delete('home_landing_data');
+        $cache->delete('app_settings');
+        $cache->delete('web_settings');
     }
 }

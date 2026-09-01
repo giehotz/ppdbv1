@@ -14,6 +14,7 @@ $routes->get('sitemap.xml', 'Seo::sitemap');
 $routes->get('/login', 'Auth::index');
 $routes->post('/auth/login', 'Auth::login');
 $routes->get('/logout', 'Auth::logout');
+$routes->post('/auth/logout', 'Auth::logout');
 $routes->get('/auth/register', 'Auth::register');
 $routes->post('/auth/doRegister', 'Auth::doRegister');
 $routes->post('/auth/forgot-password', 'Auth::submitForgotPassword');
