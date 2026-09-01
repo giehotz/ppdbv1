@@ -143,3 +143,10 @@ tests_playwright/
 tests_playwright/*
 playwright-report/
 playwright-report/*
+#-------------------------
+# Public Uploads (User Files)
+#-------------------------
+public/uploads/*
+!public/uploads/**/index.html
+!public/uploads/**/.gitkeep
+!public/uploads/**/.htaccess
