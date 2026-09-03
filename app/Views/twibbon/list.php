@@ -7,7 +7,7 @@
     <meta name="description" content="Pilih kampanye twibbon resmi, pasang foto profil terbaik Anda, dan bagikan dukungan Anda untuk <?= esc($web['nama_sekolah'] ?? 'sekolah kami') ?>!">
 
     <?php 
-    $ogImage = base_url('favicon.png');
+    $ogImage = base_url('favicon.ico');
     if (!empty($campaigns) && !empty($campaigns[0]['frame']['file_path'])) {
         $ogImage = base_url($campaigns[0]['frame']['file_path']);
     }
@@ -24,7 +24,7 @@
     <meta name="twitter:description" content="Pilih kampanye twibbon resmi, pasang foto profil terbaik Anda, dan bagikan dukungan Anda!">
     <meta name="twitter:image" content="<?= $ogImage ?>">
 
-    <link rel="icon" type="image/png" href="<?= base_url('favicon.png') ?>">
+    <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>?v=<?= @filemtime(FCPATH . 'favicon.ico') ?>">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

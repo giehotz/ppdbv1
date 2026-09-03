@@ -7,18 +7,18 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">No. Kartu Keluarga Sejahtera (KKS)</label>
-            <input type="text" name="no_kks" value="<?= esc($siswa['no_kks'] ?? '', 'attr') ?>" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 font-mono" placeholder="Kosongkan jika tidak memiliki KKS">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">No. Kartu Keluarga Sejahtera (KKS)</label>
+            <input type="text" name="no_kks" value="<?= esc($siswa['no_kks'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 font-mono" placeholder="Kosongkan jika tidak memiliki KKS">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">No. Program Keluarga Harapan (PKH)</label>
-            <input type="text" name="no_pkh" value="<?= esc($siswa['no_pkh'] ?? '', 'attr') ?>" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 font-mono" placeholder="Kosongkan jika tidak memiliki PKH">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">No. Program Keluarga Harapan (PKH)</label>
+            <input type="text" name="no_pkh" value="<?= esc($siswa['no_pkh'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 font-mono" placeholder="Kosongkan jika tidak memiliki PKH">
         </div>
 
         <div class="md:col-span-2">
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">No. Kartu Indonesia Pintar (KIP)</label>
-            <input type="text" name="no_kip" value="<?= esc($siswa['no_kip'] ?? '', 'attr') ?>" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 font-mono" placeholder="Kosongkan jika tidak memiliki KIP">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">No. Kartu Indonesia Pintar (KIP)</label>
+            <input type="text" name="no_kip" value="<?= esc($siswa['no_kip'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 font-mono" placeholder="Kosongkan jika tidak memiliki KIP">
         </div>
     </div>
 </div>

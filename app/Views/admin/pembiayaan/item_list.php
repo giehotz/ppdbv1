@@ -18,6 +18,15 @@ Item Pembiayaan
     </div>
 
     <div class="flex flex-wrap items-center gap-2.5">
+        <!-- Toggle Menu Siswa -->
+        <div class="flex items-center gap-2 mr-2 sm:border-r border-gray-200 dark:border-gray-700 sm:pr-4">
+            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Menu Siswa:</span>
+            <label for="togglePembiayaan" class="relative inline-flex cursor-pointer items-center" title="Tampilkan/Sembunyikan Menu Pembiayaan di Akun Siswa">
+                <input type="checkbox" id="togglePembiayaan" class="peer sr-only" <?= (!isset($web['tampil_pembiayaan_siswa']) || $web['tampil_pembiayaan_siswa'] == 1) ? 'checked' : '' ?> onchange="toggleMenuSiswa(this)">
+                <div class="h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-brand-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
+            </label>
+        </div>
+
         <a href="<?= base_url('admin/pembiayaan/siswa') ?>" class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2.5 text-xs font-semibold shadow-theme-xs transition dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 active:scale-[0.97]">
             <span class="material-symbols-outlined text-base text-brand-500">group</span>
             <span>Tagihan Siswa</span>
@@ -208,6 +217,65 @@ Item Pembiayaan
 </div>
 
 <script>
+function toggleMenuSiswa(el) {
+    const status = el.checked ? 1 : 0;
+    
+    // Attempt to get CSRF token from page
+    let csrfName = '<?= csrf_token() ?>';
+    let csrfHash = '<?= csrf_hash() ?>';
+    let formElement = document.querySelector('input[name="' + csrfName + '"]');
+    if (formElement) {
+        csrfHash = formElement.value;
+    }
+
+    const formData = new FormData();
+    formData.append('status', status);
+    formData.append(csrfName, csrfHash);
+
+    fetch('<?= base_url('admin/pembiayaan/toggle-siswa') ?>', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Gagal memperbarui pengaturan menu siswa.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            el.checked = !el.checked;
+        } else {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Status menu siswa berhasil diterapkan!',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            if (data.csrfHash) {
+                document.querySelectorAll('input[name="'+csrfName+'"]').forEach(input => input.value = data.csrfHash);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan Jaringan',
+            text: 'Terjadi kesalahan jaringan, silakan coba lagi.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+        el.checked = !el.checked;
+    });
+}
+
 function openEdit(item) {
     document.getElementById('edit_id').value = item.id_item;
     document.getElementById('edit_nama').value = item.nama;

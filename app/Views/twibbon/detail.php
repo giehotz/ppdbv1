@@ -18,7 +18,7 @@
     <meta name="twitter:description" content="<?= esc(strip_tags($campaign['description'] ?: 'Ikut serta dalam kampanye twibbon kami dengan memasang foto profil Anda di bingkai ini.')) ?>">
     <meta name="twitter:image" content="<?= base_url($frame['file_path']) ?>">
 
-    <link rel="icon" type="image/png" href="<?= base_url('favicon.png') ?>">
+    <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>?v=<?= @filemtime(FCPATH . 'favicon.ico') ?>">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

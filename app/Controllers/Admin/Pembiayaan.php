@@ -27,8 +27,28 @@ class Pembiayaan extends BaseController
     public function index()
     {
         $items = $this->itemModel->orderBy('urutan', 'ASC')->findAll();
-        $data = ['items' => $items];
+        $db = \Config\Database::connect();
+        $web = $db->table('tbl_web')->get()->getRowArray();
+        
+        $data = [
+            'items' => $items,
+            'web'   => $web
+        ];
         return view('admin/pembiayaan/item_list', $data);
+    }
+
+    public function toggleMenuSiswa()
+    {
+        $status = $this->request->getPost('status');
+        $db = \Config\Database::connect();
+        $db->table('tbl_web')->update(['tampil_pembiayaan_siswa' => (int) $status]);
+        
+        catat_log('Ubah Fitur', "Admin mengubah status visibilitas menu pembiayaan siswa menjadi: " . ($status ? 'Tampil' : 'Sembunyi'));
+        
+        return $this->response->setJSON([
+            'success' => true, 
+            'message' => 'Pengaturan visibilitas menu pembiayaan siswa berhasil disimpan.'
+        ]);
     }
 
     public function store()

@@ -15,7 +15,7 @@
     <div class="space-y-3">
         <?php foreach ($requiredDocs as $jenis => $label): ?>
             <?php $isUploaded = isset($uploadedBerkas[$jenis]); ?>
-            <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-theme-xs transition-all hover:border-brand-500/40 dark:border-gray-800 dark:bg-white/[0.02]">
+            <div class="rounded-sm border border-gray-200 bg-white p-4 sm:p-6 shadow-default transition-all hover:border-brand-500/40 dark:border-gray-800 dark:bg-gray-900">
                 
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <!-- Dokumen Info -->

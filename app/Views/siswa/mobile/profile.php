@@ -5,10 +5,10 @@
 
 <?= $this->section('content') ?>
 
-<div class="space-y-4">
+<div class="space-y-5 pb-6">
     
     <!-- Profile Card (TailAdmin Mobile) -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] text-center space-y-3">
+    <div class="rounded-[1.25rem] border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-white/[0.03] text-center space-y-4">
         <?php
         $nisn = $siswa['nisn'] ?? session()->get('nisn');
         $foto = $siswa['foto'] ?? session()->get('foto');
@@ -19,7 +19,7 @@
         ?>
 
         <div class="relative inline-block mx-auto">
-            <div class="h-20 w-20 rounded-2xl overflow-hidden bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 flex items-center justify-center font-bold text-2xl border border-brand-200 dark:border-brand-500/30 shadow-theme-xs">
+            <div class="h-24 w-24 rounded-full overflow-hidden bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 flex items-center justify-center font-bold text-3xl border-2 border-brand-100 dark:border-brand-500/30 shadow-sm">
                 <?php if ($avatarUrl): ?>
                     <img src="<?= $avatarUrl ?>" alt="Foto" class="h-full w-full object-cover">
                 <?php else: ?>
@@ -34,18 +34,18 @@
         </div>
 
         <div>
-            <h3 class="text-sm font-bold text-gray-900 dark:text-white"><?= esc($siswa['nama_lengkap']) ?></h3>
-            <p class="text-xs font-mono text-gray-400 mt-0.5">NISN: <?= esc($siswa['nisn'] ?? '-') ?></p>
+            <h3 class="text-base font-bold text-gray-900 dark:text-white"><?= esc($siswa['nama_lengkap']) ?></h3>
+            <p class="text-[11px] font-mono text-gray-400 mt-1">NISN: <?= esc($siswa['nisn'] ?? '-') ?></p>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 pt-1 text-left">
-            <div class="rounded-xl border border-gray-100 bg-gray-50/70 p-2.5 dark:border-gray-800 dark:bg-gray-850/40">
-                <span class="text-[9px] font-bold uppercase tracking-wider text-gray-400 block">No. Pendaftaran</span>
+        <div class="grid grid-cols-2 gap-3 pt-2 text-left">
+            <div class="rounded-xl border border-gray-100 bg-gray-50/70 p-3 dark:border-gray-800 dark:bg-gray-850/40">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-gray-400 block mb-0.5">No. Pendaftaran</span>
                 <span class="text-xs font-bold font-mono text-brand-600 dark:text-brand-400"><?= esc($siswa['no_pendaftaran'] ?? '-') ?></span>
             </div>
 
-            <div class="rounded-xl border border-gray-100 bg-gray-50/70 p-2.5 dark:border-gray-800 dark:bg-gray-850/40">
-                <span class="text-[9px] font-bold uppercase tracking-wider text-gray-400 block">Status Verifikasi</span>
+            <div class="rounded-xl border border-gray-100 bg-gray-50/70 p-3 dark:border-gray-800 dark:bg-gray-850/40">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-gray-400 block mb-0.5">Status Verifikasi</span>
                 <?php
                 $statusVerif = $siswa['status_verifikasi'] ?? 'Menunggu';
                 if ($statusVerif === 'Terverifikasi') {
@@ -78,30 +78,38 @@
     </form>
 
     <!-- Settings Navigation -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] space-y-2">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white pb-2 border-b border-gray-100 dark:border-gray-800">
-            Pengaturan Akun
-        </h4>
+    <div class="rounded-[1.25rem] border border-gray-100 bg-white p-3 shadow-sm dark:border-gray-800 dark:bg-white/[0.03] space-y-1">
+        <div class="px-3 py-2 flex items-center justify-between">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white">
+                Pengaturan Akun
+            </h4>
+        </div>
 
         <a href="<?= base_url('siswa/ubah-password') ?>"
            class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors">
             <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-xl text-brand-500">lock_reset</span>
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600 border border-brand-100">
+                    <span class="material-symbols-outlined text-[20px]">lock_reset</span>
+                </div>
                 <div>
                     <h5 class="text-xs font-bold text-gray-900 dark:text-white">Ubah Password</h5>
-                    <p class="text-[10px] text-gray-400">Ganti kata sandi akun pendaftaran</p>
+                    <p class="text-[10px] text-gray-500">Ganti kata sandi akun pendaftaran</p>
                 </div>
             </div>
             <span class="material-symbols-outlined text-base text-gray-400">chevron_right</span>
         </a>
 
+        <div class="mx-3 border-t border-gray-50 dark:border-gray-800"></div>
+
         <a href="<?= base_url('siswa/biodata') ?>"
            class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors">
             <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-xl text-emerald-500">edit_note</span>
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100">
+                    <span class="material-symbols-outlined text-[20px]">edit_note</span>
+                </div>
                 <div>
-                    <h5 class="text-xs font-bold text-gray-900 dark:text-white">Edit Formulir Biodata</h5>
-                    <p class="text-[10px] text-gray-400">Lengkapi data pribadi dan orang tua</p>
+                    <h5 class="text-xs font-bold text-gray-900 dark:text-white">Formulir Biodata</h5>
+                    <p class="text-[10px] text-gray-500">Lengkapi data pribadi dan orang tua</p>
                 </div>
             </div>
             <span class="material-symbols-outlined text-base text-gray-400">chevron_right</span>

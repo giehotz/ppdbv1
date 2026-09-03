@@ -4,174 +4,218 @@
 <?= $this->section('page_title') ?>Dashboard Siswa<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
+<div class="space-y-6 pb-6">
 
-<div class="space-y-4">
-
-    <!-- Hero Card (TailAdmin Mobile Style) -->
-    <div class="rounded-2xl bg-gradient-to-br from-brand-600 via-brand-500 to-blue-600 p-4.5 text-white shadow-theme-sm relative overflow-hidden">
-        <div class="flex items-center gap-3.5 relative z-10">
-            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 text-white font-bold text-lg border border-white/25 shrink-0 shadow-inner">
-                <?= esc(strtoupper(substr($siswa['nama_lengkap'] ?? 'S', 0, 1))) ?>
-            </div>
-            <div class="min-w-0 flex-1">
-                <span class="text-[10px] font-semibold text-brand-100 uppercase tracking-wider block">Selamat Datang,</span>
-                <h3 class="text-sm font-bold text-white truncate leading-snug"><?= esc($siswa['nama_lengkap']) ?></h3>
-                <div class="mt-1 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/20 text-[10px] font-mono text-white/95 border border-white/10">
-                    <span class="material-symbols-outlined text-[13px]">badge</span>
-                    <span><?= esc($siswa['no_pendaftaran']) ?></span>
-                </div>
-            </div>
-        </div>
-
-        <?php if (isset($web['tampil_grup_wa']) && $web['tampil_grup_wa'] == 1 && !empty($web['link_grup_wa'])) : ?>
-            <div class="mt-3.5 pt-3 border-t border-white/15">
-                <a href="<?= esc($web['link_grup_wa']) ?>" target="_blank" rel="noopener"
-                   class="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-white text-emerald-700 hover:bg-white/95 px-3 py-2 text-xs font-bold shadow-sm transition-all active:scale-[0.98]">
-                    <i class="fab fa-whatsapp text-emerald-600 text-sm"></i>
-                    <span>Gabung Grup WhatsApp Siswa</span>
-                </a>
-            </div>
-        <?php endif; ?>
-    </div>
-
-    <!-- Metric Status Cards -->
-    <div class="grid grid-cols-2 gap-3">
-        <!-- Verification Status -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-3.5 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] text-center flex flex-col items-center justify-center">
+    <!-- Header / Dashboard Title & Avatar (Reference Style) -->
+    <div class="flex items-center justify-between pt-2">
+        <h2 class="text-2xl font-bold tracking-tight text-gray-900">Dashboard</h2>
+        <div class="h-10 w-10 overflow-hidden rounded-full ring-2 ring-brand-100 bg-brand-50 flex items-center justify-center shadow-sm">
             <?php 
-            $statusVerif = $siswa['status_verifikasi'] ?? 'Menunggu';
-            if ($statusVerif === 'Terverifikasi') {
-                $vColor = 'text-emerald-600 dark:text-emerald-400';
-                $vBg = 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400';
-                $vIcon = 'check_circle';
-                $vLabel = 'Terverifikasi';
-            } elseif ($statusVerif === 'Ditolak') {
-                $vColor = 'text-red-600 dark:text-red-400';
-                $vBg = 'bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400';
-                $vIcon = 'cancel';
-                $vLabel = 'Ditolak';
-            } else {
-                $vColor = 'text-amber-600 dark:text-amber-400';
-                $vBg = 'bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400';
-                $vIcon = 'hourglass_top';
-                $vLabel = 'Menunggu';
-            }
-            ?>
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl <?= $vBg ?> mb-2">
-                <span class="material-symbols-outlined text-xl"><?= $vIcon ?></span>
-            </div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Verifikasi</span>
-            <p class="text-xs font-bold mt-0.5 <?= $vColor ?> truncate"><?= $vLabel ?></p>
-        </div>
-
-        <!-- Completion Percentage -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-3.5 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] text-center flex flex-col items-center justify-center">
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 font-extrabold text-xs mb-2">
-                <?= $completionPercentage ?? 0 ?>%
-            </div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Kelengkapan</span>
-            <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 mt-1.5 overflow-hidden">
-                <div class="bg-brand-500 h-1.5 rounded-full" style="width: <?= $completionPercentage ?? 0 ?>%"></div>
-            </div>
+            $nisn = session()->get('nisn');
+            $foto = session()->get('foto');
+            $fotoPath = 'uploads/berkas/' . $nisn . '/' . $foto;
+            $hasFoto = !empty($foto) && file_exists(FCPATH . $fotoPath);
+            if ($hasFoto): ?>
+                <img src="<?= base_url($fotoPath) ?>" alt="Avatar" class="h-full w-full object-cover" />
+            <?php else: ?>
+                <span class="text-sm font-bold text-brand-600"><?= esc(strtoupper(substr($siswa['nama_lengkap'] ?? 'S', 0, 1))) ?></span>
+            <?php endif; ?>
         </div>
     </div>
 
     <!-- Alert for Incomplete Data -->
     <?php if (!empty($incompleteFields)): ?>
-        <div class="rounded-2xl border border-amber-200 bg-amber-50/70 p-3.5 dark:border-amber-900/40 dark:bg-amber-950/20 text-xs">
-            <div class="flex items-center gap-1.5 font-bold text-amber-800 dark:text-amber-300 mb-1">
-                <span class="material-symbols-outlined text-base">warning</span>
-                <span>Biodata Belum Lengkap (<?= count($incompleteFields) ?> Kolom)</span>
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-3.5 shadow-sm">
+            <div class="flex items-center gap-2 font-bold text-amber-800 mb-1">
+                <span class="material-symbols-outlined text-[18px]">warning</span>
+                <span class="text-xs">Biodata Belum Lengkap (<?= count($incompleteFields) ?>)</span>
             </div>
-            <p class="text-amber-700 dark:text-amber-400 text-[11px]">Silakan lengkapi formulir biodata hingga 100% agar dapat mencetak bukti dan finalisasi.</p>
+            <p class="text-amber-700 text-[10px] pl-6">Silakan lengkapi biodata hingga 100%.</p>
         </div>
     <?php endif; ?>
 
-    <!-- Service Grid (TailAdmin Style) -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] space-y-3">
-        <div class="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-gray-800">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white">Menu Layanan Siswa</h4>
-            <span class="text-[10px] text-gray-400">8 Menu</span>
+    <!-- 2x2 Metric Grid -->
+    <div class="grid grid-cols-2 gap-3.5">
+        
+        <!-- Card 1: Kelengkapan (Dark Theme) -->
+        <div class="rounded-[1.25rem] bg-gray-900 p-4 text-white shadow-lg flex flex-col justify-between h-32 relative overflow-hidden">
+            <div>
+                <h3 class="text-2xl font-bold font-mono tracking-tight"><?= $completionPercentage ?? 0 ?>%</h3>
+                <span class="text-[10px] text-gray-400 font-medium">Kelengkapan</span>
+            </div>
+            <div class="mt-4">
+                <div class="flex items-center justify-between text-[9px] text-gray-400 font-mono mb-1.5">
+                    <span>0%</span>
+                    <span>100%</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-white h-1.5 rounded-full" style="width: <?= $completionPercentage ?? 0 ?>%"></div>
+                </div>
+            </div>
         </div>
 
-        <div class="grid grid-cols-4 gap-2.5">
+        <!-- Card 2: Verifikasi (Light Theme) -->
+        <?php 
+        $statusVerif = $siswa['status_verifikasi'] ?? 'Menunggu';
+        if ($statusVerif === 'Terverifikasi') {
+            $vLabel = 'Selesai';
+            $vPct = 100;
+            $vColor = 'bg-blue-500';
+            $vBg = 'bg-blue-100';
+        } elseif ($statusVerif === 'Ditolak') {
+            $vLabel = 'Ditolak';
+            $vPct = 100;
+            $vColor = 'bg-red-500';
+            $vBg = 'bg-red-100';
+        } else {
+            $vLabel = 'Menunggu';
+            $vPct = 50;
+            $vColor = 'bg-blue-400';
+            $vBg = 'bg-blue-50';
+        }
+        ?>
+        <div class="rounded-[1.25rem] bg-white p-4 text-gray-900 shadow-sm border border-gray-100 flex flex-col justify-between h-32">
+            <div>
+                <h3 class="text-lg font-bold tracking-tight truncate"><?= $vLabel ?></h3>
+                <span class="text-[10px] text-gray-500 font-medium">Verifikasi</span>
+            </div>
+            <div class="mt-4">
+                <div class="flex items-center justify-between text-[9px] text-gray-400 font-mono mb-1.5">
+                    <span>Status</span>
+                    <span>Panitia</span>
+                </div>
+                <div class="w-full <?= $vBg ?> rounded-full h-1.5 overflow-hidden">
+                    <div class="<?= $vColor ?> h-1.5 rounded-full" style="width: <?= $vPct ?>%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Pembayaran (Light Theme) -->
+        <div class="rounded-[1.25rem] bg-white p-4 text-gray-900 shadow-sm border border-gray-100 flex flex-col justify-between h-32">
+            <div>
+                <h3 class="text-lg font-bold tracking-tight text-emerald-600">Lunas</h3>
+                <span class="text-[10px] text-gray-500 font-medium">Biaya Masuk</span>
+            </div>
+            <div class="mt-4">
+                <div class="flex items-center justify-between text-[9px] text-gray-400 font-mono mb-1.5">
+                    <span>Min</span>
+                    <span>Max</span>
+                </div>
+                <div class="w-full bg-emerald-50 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-emerald-400 h-1.5 rounded-full" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Berkas (Light Theme) -->
+        <div class="rounded-[1.25rem] bg-white p-4 text-gray-900 shadow-sm border border-gray-100 flex flex-col justify-between h-32">
+            <div>
+                <h3 class="text-lg font-bold tracking-tight text-pink-600 truncate">Lengkap</h3>
+                <span class="text-[10px] text-gray-500 font-medium">Dokumen</span>
+            </div>
+            <div class="mt-4">
+                <div class="flex items-center justify-between text-[9px] text-gray-400 font-mono mb-1.5">
+                    <span>0%</span>
+                    <span>100%</span>
+                </div>
+                <div class="w-full bg-pink-50 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-pink-400 h-1.5 rounded-full" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Group WhatsApp & Cetak Section (Replacing Revenue Chart) -->
+    <div class="space-y-3">
+        <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-gray-900">Tindakan</h3>
+        </div>
+        <div class="rounded-[1.25rem] bg-white p-1 shadow-sm border border-gray-100">
+            <?php
+            $isLocked = isset($completionPercentage) && $completionPercentage < 100;
+            $url = $isLocked ? '#' : base_url('siswa/cetak-formulir');
+            $target = $isLocked ? '' : 'target="_blank" rel="noopener"';
+            $onClick = $isLocked ? 'onclick="alert(\'Silahkan lengkapi biodata 100% untuk mencetak formulir.\'); return false;"' : '';
+            ?>
+            <a href="<?= $url ?>" <?= $target ?> <?= $onClick ?>
+               class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors <?= $isLocked ? 'opacity-60 cursor-not-allowed' : '' ?>">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+                    <span class="material-symbols-outlined">print</span>
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-xs font-bold text-gray-900">Cetak Formulir</h4>
+                    <p class="text-[10px] text-gray-500">Bukti pendaftaran siswa</p>
+                </div>
+                <div class="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+                    <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                </div>
+            </a>
+
+            <?php if (isset($web['tampil_grup_wa']) && $web['tampil_grup_wa'] == 1 && !empty($web['link_grup_wa'])) : ?>
+            <div class="mx-4 border-t border-gray-50"></div>
+            <a href="<?= esc($web['link_grup_wa']) ?>" target="_blank" rel="noopener"
+               class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-xs font-bold text-gray-900">Grup WhatsApp</h4>
+                    <p class="text-[10px] text-gray-500">Gabung grup calon siswa</p>
+                </div>
+                <div class="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+                    <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                </div>
+            </a>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Trending Items / Menu Layanan (List Style like Reference Image) -->
+    <details class="group">
+        <summary class="flex items-center justify-between mb-3 cursor-pointer list-none select-none [&::-webkit-details-marker]:hidden">
+            <div class="flex items-center gap-1.5">
+                <h3 class="text-sm font-bold text-gray-900">Menu Layanan</h3>
+                <span class="material-symbols-outlined text-gray-400 text-[18px] transition-transform duration-200 group-open:rotate-180">expand_more</span>
+            </div>
+            <span class="text-[10px] text-brand-600 font-bold bg-brand-50 px-2 py-0.5 rounded-full">Tampilkan</span>
+        </summary>
+        
+        <div class="rounded-[1.25rem] bg-white p-2 shadow-sm border border-gray-100 space-y-1">
             <?php 
             $mobileMenus = [
-                ['url' => 'siswa/biodata', 'icon' => 'badge', 'label' => 'Biodata'],
-                ['url' => 'siswa/berkas', 'icon' => 'upload_file', 'label' => 'Berkas'],
-                ['url' => 'siswa/status', 'icon' => 'rule', 'label' => 'Status'],
-                ['url' => 'siswa/pembiayaan', 'icon' => 'payments', 'label' => 'Biaya'],
-                ['url' => 'siswa/pengumuman', 'icon' => 'campaign', 'label' => 'Info'],
-                ['url' => 'siswa/pesan', 'icon' => 'mail', 'label' => 'Pesan'],
-                ['url' => 'siswa/kelulusan', 'icon' => 'school', 'label' => 'Kelulusan'],
-                ['url' => 'siswa/twibbon', 'icon' => 'photo_filter', 'label' => 'Twibbon'],
+                ['url' => 'siswa/biodata', 'icon' => 'badge', 'label' => 'Biodata Siswa', 'desc' => 'Lengkapi data identitas'],
+                ['url' => 'siswa/berkas', 'icon' => 'upload_file', 'label' => 'Upload Berkas', 'desc' => 'Dokumen persyaratan'],
+                ['url' => 'siswa/status', 'icon' => 'rule', 'label' => 'Status Pendaftaran', 'desc' => 'Cek hasil verifikasi'],
             ];
-            foreach ($mobileMenus as $m) :
+
+            if (!isset($web['tampil_pembiayaan_siswa']) || $web['tampil_pembiayaan_siswa'] == 1) {
+                $mobileMenus[] = ['url' => 'siswa/pembiayaan', 'icon' => 'payments', 'label' => 'Pembiayaan', 'desc' => 'Informasi tagihan & bayar'];
+            }
+
+            $mobileMenus = array_merge($mobileMenus, [
+                ['url' => 'siswa/pengumuman', 'icon' => 'campaign', 'label' => 'Pengumuman', 'desc' => 'Informasi terbaru'],
+                ['url' => 'siswa/kelulusan', 'icon' => 'school', 'label' => 'Hasil Kelulusan', 'desc' => 'Pengumuman kelulusan'],
+            ]);
+            foreach ($mobileMenus as $i => $m) :
             ?>
-                <a href="<?= base_url($m['url']) ?>"
-                   class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-gray-50/80 hover:bg-brand-50/50 hover:border-brand-200 border border-gray-100 dark:border-gray-800 dark:bg-gray-800/40 dark:hover:bg-gray-800 transition-all active:scale-95 text-center">
-                    <span class="material-symbols-outlined text-2xl text-brand-500 mb-1"><?= $m['icon'] ?></span>
-                    <span class="text-[10px] font-semibold text-gray-700 dark:text-gray-300 truncate w-full"><?= $m['label'] ?></span>
+                <a href="<?= base_url($m['url']) ?>" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-50 text-gray-600 border border-gray-100">
+                            <span class="material-symbols-outlined text-[20px]"><?= $m['icon'] ?></span>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-gray-900"><?= $m['label'] ?></h4>
+                            <p class="text-[10px] text-gray-500"><?= $m['desc'] ?></p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-bold text-brand-500 bg-brand-50 px-2.5 py-1 rounded-lg">Buka</span>
                 </a>
+                <?php if($i < count($mobileMenus)-1): ?>
+                    <div class="mx-4 border-t border-gray-50"></div>
+                <?php endif; ?>
             <?php endforeach; ?>
         </div>
-
-        <!-- Cetak Formulir CTA -->
-        <?php
-        $isLocked = isset($completionPercentage) && $completionPercentage < 100;
-        $url = $isLocked ? '#' : base_url('siswa/cetak-formulir');
-        $target = $isLocked ? '' : 'target="_blank" rel="noopener"';
-        $onClick = $isLocked ? 'onclick="alert(\'Silahkan lengkapi biodata 100% untuk mencetak formulir.\'); return false;"' : '';
-        ?>
-        <a href="<?= $url ?>" <?= $target ?> <?= $onClick ?>
-           class="mt-2 w-full flex items-center justify-between p-3.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white shadow-theme-xs active:scale-[0.98] transition-all <?= $isLocked ? 'opacity-50 cursor-not-allowed' : '' ?>">
-            <div class="flex items-center gap-2.5">
-                <span class="material-symbols-outlined text-xl">print</span>
-                <span class="text-xs font-bold">Cetak Formulir Pendaftaran</span>
-            </div>
-            <span class="material-symbols-outlined text-base">arrow_forward</span>
-        </a>
-    </div>
-
-    <!-- Timeline Progress -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] space-y-3">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white pb-2 border-b border-gray-100 dark:border-gray-800">
-            Alur Tahapan PPDB
-        </h4>
-
-        <div class="space-y-4 pl-1">
-            <div class="flex items-start gap-3 relative">
-                <div class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400 font-bold text-xs shrink-0">
-                    <span class="material-symbols-outlined text-sm">check</span>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <h5 class="text-xs font-bold text-gray-900 dark:text-white">Registrasi Akun Siswa</h5>
-                    <p class="text-[10px] text-gray-400"><?= $siswa['tgl_siswa'] ? date('d M Y', strtotime($siswa['tgl_siswa'])) : '-' ?></p>
-                </div>
-            </div>
-
-            <div class="flex items-start gap-3 relative">
-                <div class="flex h-7 w-7 items-center justify-center rounded-full bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 font-bold text-xs shrink-0">
-                    <span class="material-symbols-outlined text-sm">edit</span>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <h5 class="text-xs font-bold text-gray-900 dark:text-white">Pengisian Formulir Biodata</h5>
-                    <p class="text-[10px] text-gray-400">Kelengkapan: <?= $completionPercentage ?? 0 ?>%</p>
-                </div>
-            </div>
-
-            <div class="flex items-start gap-3 relative">
-                <div class="flex h-7 w-7 items-center justify-center rounded-full bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400 font-bold text-xs shrink-0">
-                    <span class="material-symbols-outlined text-sm">hourglass_top</span>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <h5 class="text-xs font-bold text-gray-900 dark:text-white">Verifikasi Dokumen &amp; Seleksi</h5>
-                    <p class="text-[10px] text-gray-400">Pemeriksaan oleh panitia</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    </details>
 
 </div>
-
 <?= $this->endSection() ?>

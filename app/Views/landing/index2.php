@@ -611,7 +611,7 @@
 
     <!-- NAVBAR -->
     <nav id="navbar" class="sticky top-0 z-50 bg-white border-b-[3px] border-black transition-all duration-200">
-        <div class="container mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
+        <div class="container mx-auto px-3 md:px-6 py-1.5 md:py-3 flex items-center justify-between">
 
             <!-- Logo & Brand -->
             <a href="#" class="flex items-center gap-2 md:gap-3 group min-w-0 shrink-0 whitespace-nowrap">
@@ -624,7 +624,7 @@
                         <?= mb_substr(esc($content['navbar']['nama_sekolah'] ?? 'M'), 0, 1) ?>
                     </div>
                 <?php endif; ?>
-                <div class="flex flex-col min-w-0 navbar-brand-text">
+                <div class="hidden md:flex flex-col min-w-0 navbar-brand-text">
                     <span class="school-name font-heading font-black text-sm md:text-xl tracking-tight text-black line-clamp-1 group-hover:text-[#FF6B8B] transition-colors">
                         <?= esc($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus') ?>
                     </span>
@@ -651,11 +651,11 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex items-center gap-2 md:gap-3 shrink-0">
-                <a href="<?= base_url('login') ?>" class="hidden md:inline-flex neo-btn bg-white hover:bg-gray-100 text-black py-2 px-5 rounded-xl text-sm">
-                    <i class="fas fa-sign-in-alt mr-2"></i> Login
+            <div class="flex items-center gap-1.5 md:gap-3 shrink-0">
+                <a href="<?= base_url('login') ?>" class="inline-flex neo-btn bg-white hover:bg-gray-100 text-black py-1.5 md:py-2 px-3 md:px-5 rounded-xl text-xs md:text-sm shadow-[2px_2px_0px_0px_#000]">
+                    <i class="fas fa-sign-in-alt mr-1 md:mr-2"></i> Login
                 </a>
-                <a href="<?= base_url('auth/register') ?>" class="navbar-cta-register neo-btn bg-[#FFE600] hover:bg-[#FFE600] text-black py-2 px-4 md:px-6 rounded-xl text-xs md:text-sm">
+                <a href="<?= base_url('auth/register') ?>" class="navbar-cta-register neo-btn bg-[#FFE600] hover:bg-[#FFE600] text-black py-1.5 md:py-2 px-3 md:px-6 rounded-xl text-xs md:text-sm shadow-[2px_2px_0px_0px_#000]">
                     <i class="fas fa-rocket mr-1 md:mr-2"></i> Daftar
                 </a>
 
@@ -690,7 +690,8 @@
     </nav>
 
     <!-- HERO SECTION -->
-    <header id="beranda" class="relative bg-neo-grid py-10 md:py-24 border-b-[3px] border-black overflow-hidden">
+    <?php $heroBg = $content['hero']['background_image'] ?? ''; ?>
+    <header id="beranda" class="relative py-10 md:py-24 border-b-[3px] border-black overflow-hidden <?= empty($heroBg) ? 'bg-neo-grid' : '' ?>" <?= !empty($heroBg) ? 'style="background-image: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.9)), url(\'' . base_url($heroBg) . '\'); background-attachment: fixed; background-size: cover; background-position: center;"' : '' ?>>
         <!-- Floating Neo Stickers -->
         <div class="hidden lg:block absolute top-12 left-10 -rotate-6 z-0">
             <span class="inline-block px-4 py-2 bg-[#FF6B8B] text-white font-black text-xs uppercase tracking-wider rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000]">
@@ -897,7 +898,7 @@
             <div class="flex flex-col lg:flex-row gap-8 md:gap-12 items-start">
 
                 <!-- Left Column: Title & Info Box -->
-                <div class="w-full lg:w-5/12 sticky top-24">
+                <div class="w-full lg:w-5/12 lg:sticky top-24 z-10 mb-8 lg:mb-0">
                     <span class="inline-block px-3 md:px-4 py-1 md:py-1.5 bg-[#FF6B8B] text-white font-black text-[10px] md:text-xs uppercase tracking-widest rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_#000] mb-3 md:mb-4">
                         📋 DOKUMEN WAJIB
                     </span>

@@ -31,23 +31,23 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">NISN <span class="text-red-500">*</span></label>
-            <input type="text" name="nisn" value="<?= esc($siswa['nisn'] ?? '', 'attr') ?>" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-100 px-3.5 text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 font-mono" readonly>
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">NISN <span class="text-red-500">*</span></label>
+            <input type="text" name="nisn" value="<?= esc($siswa['nisn'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-gray-100 py-3 px-5 text-sm text-gray-500 outline-none transition dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 font-mono disabled:cursor-not-allowed" readonly>
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">NIK (Nomor Induk Kependudukan) <span class="text-red-500">*</span></label>
-            <input type="text" name="nik" value="<?= esc($siswa['nik'] ?? '', 'attr') ?>" maxlength="16" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 font-mono" placeholder="16 digit NIK">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">NIK (Nomor Induk Kependudukan) <span class="text-red-500">*</span></label>
+            <input type="text" name="nik" value="<?= esc($siswa['nik'] ?? '', 'attr') ?>" maxlength="16" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 font-mono" placeholder="16 digit NIK">
         </div>
 
         <div class="md:col-span-2">
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Nama Lengkap Siswa <span class="text-red-500">*</span></label>
-            <input type="text" name="nama_lengkap" value="<?= esc($siswa['nama_lengkap'] ?? '', 'attr') ?>" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100" placeholder="Nama lengkap sesuai akta kelahiran">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Nama Lengkap Siswa <span class="text-red-500">*</span></label>
+            <input type="text" name="nama_lengkap" value="<?= esc($siswa['nama_lengkap'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500" placeholder="Nama lengkap sesuai akta kelahiran">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Jenis Kelamin <span class="text-red-500">*</span></label>
-            <select name="jk" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Jenis Kelamin <span class="text-red-500">*</span></label>
+            <select name="jk" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
                 <option value="">-- Pilih Jenis Kelamin --</option>
                 <option value="L" <?= ($siswa['jk'] ?? '') == 'L' ? 'selected' : '' ?>>Laki-laki</option>
                 <option value="P" <?= ($siswa['jk'] ?? '') == 'P' ? 'selected' : '' ?>>Perempuan</option>
@@ -55,8 +55,8 @@
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Status dalam Keluarga</label>
-            <select name="status_keluarga" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Status dalam Keluarga</label>
+            <select name="status_keluarga" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
                 <option value="">-- Pilih Status --</option>
                 <option value="Anak Kandung" <?= ($siswa['status_keluarga'] ?? '') == 'Anak Kandung' ? 'selected' : '' ?>>Anak Kandung</option>
                 <option value="Anak Tiri" <?= ($siswa['status_keluarga'] ?? '') == 'Anak Tiri' ? 'selected' : '' ?>>Anak Tiri</option>
@@ -65,8 +65,8 @@
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Agama <span class="text-red-500">*</span></label>
-            <select name="agama" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Agama <span class="text-red-500">*</span></label>
+            <select name="agama" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
                 <option value="">-- Pilih Agama --</option>
                 <option value="Islam" <?= ($siswa['agama'] ?? '') == 'Islam' ? 'selected' : '' ?>>Islam</option>
                 <option value="Kristen" <?= ($siswa['agama'] ?? '') == 'Kristen' ? 'selected' : '' ?>>Kristen</option>
@@ -78,48 +78,48 @@
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Tempat Lahir <span class="text-red-500">*</span></label>
-            <input type="text" name="tempat_lahir" value="<?= esc($siswa['tempat_lahir'] ?? '', 'attr') ?>" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100" placeholder="Kota / Kabupaten Kelahiran">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Tempat Lahir <span class="text-red-500">*</span></label>
+            <input type="text" name="tempat_lahir" value="<?= esc($siswa['tempat_lahir'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500" placeholder="Kota / Kabupaten Kelahiran">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Tanggal Lahir <span class="text-red-500">*</span></label>
-            <input type="date" name="tgl_lahir" value="<?= esc($siswa['tgl_lahir'] ?? '', 'attr') ?>" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Tanggal Lahir <span class="text-red-500">*</span></label>
+            <input type="date" name="tgl_lahir" value="<?= esc($siswa['tgl_lahir'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Email Siswa / Ortu</label>
-            <input type="email" name="email" value="<?= esc($siswa['email'] ?? '', 'attr') ?>" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100" placeholder="nama@email.com">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Email Siswa / Ortu</label>
+            <input type="email" name="email" value="<?= esc($siswa['email'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500" placeholder="nama@email.com">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">No. HP / WhatsApp Siswa</label>
-            <input type="text" name="no_hp_siswa" value="<?= esc($siswa['no_hp_siswa'] ?? '', 'attr') ?>" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100" placeholder="08xxxxxxxxxx">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">No. HP / WhatsApp Siswa</label>
+            <input type="text" name="no_hp_siswa" value="<?= esc($siswa['no_hp_siswa'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500" placeholder="08xxxxxxxxxx">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Anak Ke-</label>
-            <input type="number" name="anak_ke" value="<?= esc($siswa['anak_ke'] ?? '', 'attr') ?>" min="1" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Anak Ke-</label>
+            <input type="number" name="anak_ke" value="<?= esc($siswa['anak_ke'] ?? '', 'attr') ?>" min="1" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Jumlah Saudara</label>
-            <input type="number" name="jml_saudara" value="<?= esc($siswa['jml_saudara'] ?? '', 'attr') ?>" min="0" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Jumlah Saudara</label>
+            <input type="number" name="jml_saudara" value="<?= esc($siswa['jml_saudara'] ?? '', 'attr') ?>" min="0" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Hobi / Minat</label>
-            <input type="text" name="hobi" value="<?= esc($siswa['hobi'] ?? '', 'attr') ?>" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100" placeholder="Membaca, Olahraga, dll.">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Hobi / Minat</label>
+            <input type="text" name="hobi" value="<?= esc($siswa['hobi'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500" placeholder="Membaca, Olahraga, dll.">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Cita-cita</label>
-            <input type="text" name="cita" value="<?= esc($siswa['cita'] ?? '', 'attr') ?>" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100" placeholder="Dokter, Guru, Insinyur, dll.">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Cita-cita</label>
+            <input type="text" name="cita" value="<?= esc($siswa['cita'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500" placeholder="Dokter, Guru, Insinyur, dll.">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Pernah PAUD?</label>
-            <select name="paud" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Pernah PAUD?</label>
+            <select name="paud" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
                 <option value="">-- Pilih --</option>
                 <option value="Ya" <?= ($siswa['paud'] ?? '') == 'Ya' ? 'selected' : '' ?>>Ya</option>
                 <option value="Tidak" <?= ($siswa['paud'] ?? '') == 'Tidak' ? 'selected' : '' ?>>Tidak</option>
@@ -127,8 +127,8 @@
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Pernah TK / RA?</label>
-            <select name="tk" class="h-10.5 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 text-xs text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Pernah TK / RA?</label>
+            <select name="tk" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
                 <option value="">-- Pilih --</option>
                 <option value="Ya" <?= ($siswa['tk'] ?? '') == 'Ya' ? 'selected' : '' ?>>Ya</option>
                 <option value="Tidak" <?= ($siswa['tk'] ?? '') == 'Tidak' ? 'selected' : '' ?>>Tidak</option>

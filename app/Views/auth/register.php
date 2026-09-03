@@ -128,7 +128,10 @@
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">lock</span>
                         <input type="password" id="password" name="password" required minlength="6" placeholder="Min. 6 karakter"
-                               class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/60 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-gray-400 shadow-theme-xs">
+                               class="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/60 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-gray-400 shadow-theme-xs">
+                        <button type="button" onclick="togglePassword('password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 flex items-center justify-center transition-colors focus:outline-none" title="Lihat Password">
+                            <span class="material-symbols-outlined text-lg">visibility_off</span>
+                        </button>
                     </div>
                 </div>
 
@@ -139,7 +142,10 @@
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">lock_reset</span>
                         <input type="password" id="confirm_password" name="confirm_password" required minlength="6" placeholder="Ulangi password"
-                               class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/60 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-gray-400 shadow-theme-xs">
+                               class="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/60 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-gray-400 shadow-theme-xs">
+                        <button type="button" onclick="togglePassword('confirm_password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 flex items-center justify-center transition-colors focus:outline-none" title="Lihat Password">
+                            <span class="material-symbols-outlined text-lg">visibility_off</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -169,6 +175,19 @@
     </div>
 
     <?= view('partials/sweetalert') ?>
+    <script>
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('span');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility_off';
+            }
+        }
+    </script>
 </body>
 
 </html>

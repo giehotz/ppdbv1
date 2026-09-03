@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $this->renderSection('title') ?> - Siswa <?= esc($app_alias ?? 'PPDB') ?></title>
-    <link rel="icon" type="image/png" href="<?= base_url('favicon.png') ?>">
+    <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>?v=<?= @filemtime(FCPATH . 'favicon.ico') ?>">
 
     <!-- Google Fonts: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -82,7 +82,6 @@
             ['label' => 'Upload Berkas',       'icon' => 'file-upload',     'url' => 'siswa/berkas'],
         ],
         'Tahapan PPDB' => [
-            ['label' => 'Pembiayaan',          'icon' => 'money-bill-wave', 'url' => 'siswa/pembiayaan'],
             ['label' => 'Status Pendaftaran',  'icon' => 'clipboard-check', 'url' => 'siswa/status'],
             ['label' => 'Hasil Kelulusan',     'icon' => 'graduation-cap',  'url' => 'siswa/kelulusan'],
         ],
@@ -92,6 +91,10 @@
             ['label' => 'Kotak Masuk',         'icon' => 'inbox',           'url' => 'siswa/pesan', 'badge' => $unreadPesan],
         ],
     ];
+
+    if (!isset($webData['tampil_pembiayaan_siswa']) || $webData['tampil_pembiayaan_siswa'] == 1) {
+        array_unshift($sidebarMenus['Tahapan PPDB'], ['label' => 'Pembiayaan', 'icon' => 'money-bill-wave', 'url' => 'siswa/pembiayaan']);
+    }
 
     $nisn = session()->get('nisn');
     $foto = session()->get('foto');
@@ -116,6 +119,22 @@
         <!-- Content Area -->
         <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
             
+            <!-- Impersonation Banner -->
+            <?php if (session()->get('impersonator_id')): ?>
+            <div class="sticky top-0 z-[1000] bg-orange-500 text-white px-4 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between shadow-md gap-2">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-xl">visibility</span>
+                    <span class="text-xs sm:text-sm font-semibold">Mode Menyamar: Mengakses sebagai <strong><?= esc(session()->get('nama_lengkap') ?? 'Siswa') ?></strong></span>
+                </div>
+                <form action="<?= base_url('impersonate/stop') ?>" method="POST" class="m-0 p-0 shrink-0">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="w-full sm:w-auto bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border border-white/30 flex items-center justify-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">logout</span> Kembali ke Akun Asli
+                    </button>
+                </form>
+            </div>
+            <?php endif; ?>
+
             <!-- Header Bar -->
             <header
               x-data="{ notificationOpen: false, profileOpen: false }"

@@ -40,42 +40,42 @@ $this->setData([
     </div>
 <?php endif; ?>
 
-<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+<div class="rounded-sm border border-gray-200 bg-white shadow-default dark:border-gray-800 dark:bg-gray-900">
     <!-- Tabs Navigation (TailAdmin Style) -->
-    <div class="border-b border-gray-100 bg-gray-50/70 px-4 dark:border-gray-800 dark:bg-gray-800/40">
-        <nav class="flex space-x-2 sm:space-x-4 overflow-x-auto no-scrollbar scrollable-tabs py-2" style="scroll-behavior: smooth; -webkit-overflow-scrolling: touch;">
+    <div class="border-b border-gray-200 px-4 dark:border-gray-800">
+        <nav class="flex gap-5 sm:gap-10 overflow-x-auto no-scrollbar scrollable-tabs" style="scroll-behavior: smooth; -webkit-overflow-scrolling: touch;">
             <button onclick="showTab('dataDiri')" id="tab-dataDiri"
-                class="tab-button inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition-all shrink-0 bg-white text-brand-600 shadow-theme-xs border border-brand-200 dark:bg-brand-500/15 dark:text-brand-400 dark:border-brand-500/30">
+                class="tab-button inline-flex items-center gap-1.5 border-b-2 py-4 text-sm font-medium transition-all shrink-0 border-brand-500 text-brand-600 dark:text-brand-400">
                 <span class="material-symbols-outlined text-base">person</span>
                 <span>Data Diri</span>
             </button>
 
             <button onclick="showTab('alamat')" id="tab-alamat"
-                class="tab-button inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-white/60 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/60 transition-all shrink-0">
+                class="tab-button inline-flex items-center gap-1.5 border-b-2 py-4 text-sm font-medium transition-all shrink-0 border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
                 <span class="material-symbols-outlined text-base">home_pin</span>
                 <span>Alamat</span>
             </button>
 
             <button onclick="showTab('orangTua')" id="tab-orangTua"
-                class="tab-button inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-white/60 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/60 transition-all shrink-0">
+                class="tab-button inline-flex items-center gap-1.5 border-b-2 py-4 text-sm font-medium transition-all shrink-0 border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
                 <span class="material-symbols-outlined text-base">family_restroom</span>
                 <span>Orang Tua/Wali</span>
             </button>
 
             <button onclick="showTab('kesejahteraan')" id="tab-kesejahteraan"
-                class="tab-button inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-white/60 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/60 transition-all shrink-0">
+                class="tab-button inline-flex items-center gap-1.5 border-b-2 py-4 text-sm font-medium transition-all shrink-0 border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
                 <span class="material-symbols-outlined text-base">card_membership</span>
                 <span>Kesejahteraan</span>
             </button>
 
             <button onclick="showTab('sekolah')" id="tab-sekolah"
-                class="tab-button inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-white/60 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/60 transition-all shrink-0">
+                class="tab-button inline-flex items-center gap-1.5 border-b-2 py-4 text-sm font-medium transition-all shrink-0 border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
                 <span class="material-symbols-outlined text-base">school</span>
                 <span>Asal Sekolah</span>
             </button>
 
             <button onclick="showTab('berkas')" id="tab-berkas"
-                class="tab-button inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-white/60 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/60 transition-all shrink-0">
+                class="tab-button inline-flex items-center gap-1.5 border-b-2 py-4 text-sm font-medium transition-all shrink-0 border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
                 <span class="material-symbols-outlined text-base">upload_file</span>
                 <span>Upload Berkas</span>
             </button>

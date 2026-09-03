@@ -115,6 +115,7 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
 
     // Pembiayaan (Payment/Fee)
     $routes->get('pembiayaan', 'Admin\Pembiayaan::index');
+    $routes->post('pembiayaan/toggle-siswa', 'Admin\Pembiayaan::toggleMenuSiswa');
     $routes->post('pembiayaan/store', 'Admin\Pembiayaan::store');
     $routes->post('pembiayaan/update', 'Admin\Pembiayaan::update');
     $routes->post('pembiayaan/delete/(:num)', 'Admin\Pembiayaan::delete/$1');

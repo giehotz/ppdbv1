@@ -196,9 +196,9 @@ $kelulusanCount = $totalKelulusan ?? 0;
                             <td class="py-4 px-4 text-center whitespace-nowrap">
                                 <div class="flex items-center justify-center gap-1.5">
                                     <!-- Toggle Status -->
-                                    <form method="post" action="<?= base_url('admin/pengumuman/toggleStatus/' . $p['id_pengumuman']) ?>" class="inline" onsubmit="return confirm('Ubah status keaktifan pengumuman ini?')">
+                                    <form method="post" action="<?= base_url('admin/pengumuman/toggleStatus/' . $p['id_pengumuman']) ?>" class="inline" id="form-toggle-<?= $p['id_pengumuman'] ?>">
                                         <?= csrf_field() ?>
-                                        <button type="submit"
+                                        <button type="button" onclick="confirmToggle(<?= $p['id_pengumuman'] ?>)"
                                                 class="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition"
                                                 title="<?= $p['is_active'] ? 'Nonaktifkan' : 'Aktifkan' ?>">
                                             <span class="material-symbols-outlined text-base">power_settings_new</span>
@@ -213,9 +213,9 @@ $kelulusanCount = $totalKelulusan ?? 0;
                                     </a>
 
                                     <!-- Delete -->
-                                    <form method="post" action="<?= base_url('admin/pengumuman/delete/' . $p['id_pengumuman']) ?>" class="inline" onsubmit="return confirm('Yakin ingin menghapus pengumuman ini secara permanen?')">
+                                    <form method="post" action="<?= base_url('admin/pengumuman/delete/' . $p['id_pengumuman']) ?>" class="inline" id="form-delete-<?= $p['id_pengumuman'] ?>">
                                         <?= csrf_field() ?>
-                                        <button type="submit"
+                                        <button type="button" onclick="confirmDelete(<?= $p['id_pengumuman'] ?>)"
                                                 class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 transition"
                                                 title="Hapus">
                                             <span class="material-symbols-outlined text-base">delete</span>
@@ -266,5 +266,41 @@ $kelulusanCount = $totalKelulusan ?? 0;
         background: #f3f4f6; color: #111827;
     }
 </style>
+
+<script>
+function confirmToggle(id) {
+    Swal.fire({
+        title: 'Konfirmasi',
+        text: 'Ubah status keaktifan pengumuman ini?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Ubah!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('form-toggle-' + id).submit();
+        }
+    });
+}
+
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Konfirmasi Hapus',
+        text: 'Yakin ingin menghapus pengumuman ini secara permanen?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('form-delete-' + id).submit();
+        }
+    });
+}
+</script>
 
 <?= $this->endSection() ?>

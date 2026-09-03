@@ -31,10 +31,10 @@ $tabMeta = [
 ];
 ?>
 
-<div class="biodata-mobile-wrapper space-y-3 pb-24">
+<div class="biodata-mobile-wrapper pb-24">
 
     <?php if (session()->getFlashdata('errors')) : ?>
-        <div class="rounded-2xl border border-red-200 bg-red-50/90 p-3.5 text-red-800 text-xs dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300 shadow-sm">
+        <div class="mb-3 rounded-xl border border-red-200 bg-red-50/90 p-3.5 text-red-800 text-xs dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300 shadow-sm">
             <span class="font-bold block mb-1">Periksa kembali data:</span>
             <ul class="list-disc list-inside space-y-0.5">
                 <?php foreach (session()->getFlashdata('errors') as $error) : ?>
@@ -46,9 +46,9 @@ $tabMeta = [
 
 
     <!-- ═══════ Progress Card ═══════ -->
-    <div class="progress-card rounded-2xl border border-gray-200/80 bg-white p-4 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] overflow-hidden relative">
+    <div class="mb-3 progress-card rounded-[1.25rem] border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03] overflow-hidden relative">
         <!-- Subtle accent gradient top-line -->
-        <div class="absolute top-0 left-0 right-0 h-1 rounded-t-2xl <?= $pct < 100 ? 'bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500' : 'bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500' ?>"></div>
+        <div class="absolute top-0 left-0 right-0 h-1 rounded-t-[1.25rem] <?= $pct < 100 ? 'bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500' : 'bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500' ?>"></div>
 
         <div class="flex items-center justify-between gap-3 mb-2.5 pt-0.5">
             <div class="flex items-center gap-2 min-w-0">
@@ -83,7 +83,7 @@ $tabMeta = [
     </div>
 
     <!-- ═══════ Segmented Tab Navigation ═══════ -->
-    <div class="sticky top-0 z-10 -mx-4 px-3 py-2.5 bg-white/95 backdrop-blur-xl dark:bg-gray-900/95 border-b border-gray-200/70 dark:border-gray-800 shadow-sm">
+    <div class="mb-3 sticky top-0 z-10 -mx-4 px-3 py-2.5 bg-white/95 backdrop-blur-xl dark:bg-gray-900/95 border-b border-gray-200/70 dark:border-gray-800 shadow-sm">
         <nav class="flex gap-1 overflow-x-auto no-scrollbar scrollable-tabs" id="mobileTabsNav" style="scroll-behavior: smooth; -webkit-overflow-scrolling: touch;">
             <?php foreach ($tabMeta as $i => $tab): ?>
                 <button type="button" onclick="showTab('<?= $tab['id'] ?>')" id="tab-<?= $tab['id'] ?>"
@@ -99,7 +99,7 @@ $tabMeta = [
     </div>
 
     <!-- ═══════ Main Card Body ═══════ -->
-    <div class="rounded-2xl border border-gray-200/80 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] overflow-hidden">
+    <div class="rounded-[1.25rem] border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-white/[0.03] overflow-hidden">
         <!-- Card Inner with nice padding -->
         <div class="p-4">
             <form action="<?= base_url('siswa/biodata/update') ?>" method="post" id="formBiodata" class="space-y-4">

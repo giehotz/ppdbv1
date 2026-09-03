@@ -67,11 +67,11 @@ function showTab(tabName) {
 
     // Remove active state from all tabs
     const buttons = document.querySelectorAll('.tab-button');
-    const activeClasses = ['bg-white', 'text-brand-600', 'shadow-theme-xs', 'border', 'border-brand-200', 'dark:bg-brand-500/15', 'dark:text-brand-400', 'dark:border-brand-500/30', 'font-bold'];
-    const inactiveClasses = ['text-gray-500', 'dark:text-gray-400', 'font-semibold'];
+    const activeClasses = ['border-brand-500', 'text-brand-600', 'dark:text-brand-400'];
+    const inactiveClasses = ['border-transparent', 'text-gray-500', 'hover:text-gray-900', 'dark:text-gray-400', 'dark:hover:text-white'];
 
     buttons.forEach(button => {
-        button.classList.remove(...activeClasses, 'border-blue-600', 'text-blue-600');
+        button.classList.remove(...activeClasses, 'border-brand-500');
         button.classList.add(...inactiveClasses);
     });
 

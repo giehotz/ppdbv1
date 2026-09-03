@@ -22,6 +22,10 @@ $routes->post('/auth/forgot-password', 'Auth::submitForgotPassword');
 // Verification QR code route
 $routes->get('/verify/(:any)', 'Verify::index/$1');
 
+// Impersonate Routes
+$routes->get('/impersonate/start/(:num)', 'Impersonate::start/$1');
+$routes->post('/impersonate/stop', 'Impersonate::stop');
+
 $routes->get('/pendaftar', 'Pendaftar::index');
 
 $routes->get('admin', function () {

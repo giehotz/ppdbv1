@@ -40,6 +40,7 @@ class TblWebModel extends Model
         'wajib_biodata_100',
         'popup_biodata_welcome',
         'popup_biodata_warning',
+        'tampil_pembiayaan_siswa',
     ];
 
     // Dates

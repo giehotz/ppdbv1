@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title><?= $this->renderSection('title') ?> - <?= $app_alias ?? 'PPDB' ?></title>
+    <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>?v=<?= @filemtime(FCPATH . 'favicon.ico') ?>">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,10 +51,10 @@
 
         /* Header Glass */
         .header-glass {
-            background: rgba(18, 24, 38, 0.95);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
         /* Bottom Tab Bar */
@@ -104,7 +105,7 @@
     <div class="flex flex-col h-screen">
 
         <!-- ===== HEADER (TailAdmin Mobile - No Hamburger) ===== -->
-        <header class="header-glass text-white safe-top sticky top-0 z-20 shadow-theme-xs">
+        <header class="header-glass text-gray-900 safe-top sticky top-0 z-20 shadow-sm">
             <div class="flex items-center justify-between px-4 h-14">
                 <?php 
                 $isRootDashboard = (uri_string() === 'siswa/dashboard' || uri_string() === 'siswa' || uri_string() === '');
@@ -112,33 +113,57 @@
 
                 <?php if ($isRootDashboard): ?>
                     <div class="flex items-center gap-2.5">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500 text-white font-bold text-sm shadow-theme-xs">
-                            <span class="material-symbols-outlined text-lg">school</span>
-                        </div>
+                        <?php 
+                        $schoolLogo = $web['logo_sekolah'] ?? ($web_logo ?? null);
+                        if (!empty($schoolLogo)): ?>
+                            <img src="<?= base_url('uploads/logo/' . esc($schoolLogo, 'url')) ?>" alt="Logo" class="h-8 w-8 object-contain">
+                        <?php else: ?>
+                            <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500 text-white font-bold text-sm shadow-sm">
+                                <span class="material-symbols-outlined text-lg">school</span>
+                            </div>
+                        <?php endif; ?>
                         <div>
-                            <h1 class="text-xs font-extrabold tracking-tight text-white"><?= esc($app_alias ?? 'PPDB') ?></h1>
-                            <span class="text-[9px] text-gray-400 block -mt-0.5">Portal Calon Siswa</span>
+                            <h1 class="text-xs font-extrabold tracking-tight text-gray-900"><?= esc($app_alias ?? 'PPDB') ?></h1>
+                            <span class="text-[9px] text-gray-500 block -mt-0.5">Portal Calon Siswa</span>
                         </div>
                     </div>
                 <?php else: ?>
                     <button onclick="window.location.href='<?= base_url('siswa/dashboard') ?>'" 
-                            class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white hover:bg-white/20 active:scale-95 transition-all" 
+                            class="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 active:scale-95 transition-all border border-gray-200/50" 
                             aria-label="Kembali ke Beranda" title="Kembali ke Dashboard">
                         <span class="material-symbols-outlined text-xl">arrow_back</span>
                     </button>
                     
-                    <h1 class="text-sm font-bold truncate max-w-[200px] text-center tracking-tight">
+                    <h1 class="text-sm font-bold truncate max-w-[200px] text-center tracking-tight text-gray-900">
                         <?= $this->renderSection('page_title') ?>
                     </h1>
                 <?php endif; ?>
 
                 <button onclick="if(confirm('Apakah Anda yakin ingin keluar?')) window.location.href='<?= base_url('logout') ?>'" 
-                        class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white hover:bg-red-500/30 active:scale-95 transition-all" 
+                        class="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 text-gray-500 hover:text-red-600 hover:bg-red-50 active:scale-95 transition-all border border-gray-200/50" 
                         aria-label="Keluar" title="Keluar">
                     <span class="material-symbols-outlined text-xl">logout</span>
                 </button>
             </div>
         </header>
+
+        <!-- Impersonation Banner -->
+        <?php if (session()->get('impersonator_id')): ?>
+        <div class="bg-orange-500 text-white px-3 py-2 flex items-center justify-between shadow-md z-10 shrink-0">
+            <div class="flex items-center gap-1.5 min-w-0">
+                <span class="material-symbols-outlined text-lg shrink-0">visibility</span>
+                <span class="text-[10px] sm:text-xs font-bold leading-tight truncate">
+                    Menyamar sebagai: <?= esc(session()->get('nama_lengkap') ?? 'Siswa') ?>
+                </span>
+            </div>
+            <form action="<?= base_url('impersonate/stop') ?>" method="POST" class="m-0 p-0 shrink-0">
+                <?= csrf_field() ?>
+                <button type="submit" class="bg-white/20 hover:bg-white/30 px-2 py-1 rounded-md text-[10px] font-bold transition-colors border border-white/30">
+                    Kembali
+                </button>
+            </form>
+        </div>
+        <?php endif; ?>
 
         <!-- ===== CONTENT ===== -->
         <main class="flex-1 overflow-y-auto hide-scrollbar p-4 bg-gray-100/60">

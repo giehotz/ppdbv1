@@ -27,13 +27,13 @@ Calon Siswa
             </div>
 
             <div class="flex flex-col sm:flex-row w-full lg:w-auto items-stretch sm:items-center gap-2.5">
-                <a href="<?= base_url('admin/siswa/reset-throttle') ?>"
-                   onclick="return confirm('Reset batas waktu login untuk membuka seluruh IP/akun yang terkunci?');"
+                <button type="button"
+                   onclick="confirmResetThrottle('<?= base_url('admin/siswa/reset-throttle') ?>')"
                    class="inline-flex items-center justify-center gap-1.5 h-9 rounded-lg border border-amber-200 bg-amber-50 px-3 text-xs font-semibold text-amber-700 hover:bg-amber-100 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300 transition-colors shadow-theme-xs shrink-0"
                    title="Reset batas waktu 15 menit login jika ada akun/IP terkunci">
                     <i class="fas fa-unlock-alt text-xs"></i>
                     <span>Reset Batas Waktu Login</span>
-                </a>
+                </button>
 
                 <a href="<?= base_url('admin/siswa/export-excel') ?>"
                    class="inline-flex items-center justify-center gap-2 h-9 rounded-lg bg-emerald-600 px-4 text-xs font-semibold text-white shadow-theme-xs transition-all hover:bg-emerald-700 shrink-0">
@@ -143,6 +143,11 @@ Calon Siswa
                             </td>
                             <td class="py-3 px-4">
                                 <div class="flex items-center justify-center gap-1.5">
+                                    <a href="<?= base_url('impersonate/start/' . $s['id_siswa']) ?>"
+                                        class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-500 hover:bg-orange-50 hover:text-orange-600 transition-colors dark:text-gray-400 dark:hover:bg-orange-500/15 dark:hover:text-orange-400 focus:outline-none"
+                                        title="Login sebagai Siswa (Menyamar)">
+                                        <i class="fas fa-user-secret text-xs"></i>
+                                    </a>
                                     <a href="<?= base_url('admin/siswa/detail/' . $s['id_siswa']) ?>"
                                         class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors dark:text-gray-400 dark:hover:bg-blue-500/15 dark:hover:text-blue-400"
                                         title="Lihat Detail">
@@ -310,6 +315,23 @@ Calon Siswa
 </div>
 
 <script>
+    function confirmResetThrottle(url) {
+        Swal.fire({
+            title: 'Konfirmasi Reset',
+            text: 'Apakah Anda yakin ingin mereset batas waktu login untuk semua IP/akun yang terkunci?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Reset!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+
     function openDeleteModal(name, url) {
         document.getElementById('deleteForm').action = url;
         document.getElementById('deleteStudentName').textContent = name;

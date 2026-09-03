@@ -153,6 +153,11 @@
                             <!-- Aksi -->
                             <td class="py-3.5 px-5 text-center whitespace-nowrap">
                                 <div class="inline-flex items-center gap-1">
+                                    <a href="<?= base_url('impersonate/start/' . $s['id_siswa']) ?>"
+                                        class="p-1.5 rounded-lg text-gray-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-500/15 transition-colors focus:outline-none"
+                                        title="Login sebagai Siswa (Menyamar)">
+                                        <span class="material-symbols-outlined text-base">switch_account</span>
+                                    </a>
                                     <a href="<?= base_url('verifikator/siswa/detail/' . $s['id_siswa']) ?>"
                                         class="p-1.5 rounded-lg text-gray-500 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-500/15 transition-colors"
                                         title="Detail & Verifikasi">
