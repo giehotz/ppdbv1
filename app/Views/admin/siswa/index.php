@@ -143,11 +143,14 @@ Calon Siswa
                             </td>
                             <td class="py-3 px-4">
                                 <div class="flex items-center justify-center gap-1.5">
-                                    <a href="<?= base_url('impersonate/start/' . $s['id_siswa']) ?>"
-                                        class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-500 hover:bg-orange-50 hover:text-orange-600 transition-colors dark:text-gray-400 dark:hover:bg-orange-500/15 dark:hover:text-orange-400 focus:outline-none"
-                                        title="Login sebagai Siswa (Menyamar)">
-                                        <i class="fas fa-user-secret text-xs"></i>
-                                    </a>
+                                    <form action="<?= base_url('impersonate/start/' . $s['id_siswa']) ?>" method="POST" class="inline m-0 p-0">
+                                        <?= csrf_field() ?>
+                                        <button type="submit"
+                                            class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-500 hover:bg-orange-50 hover:text-orange-600 transition-colors dark:text-gray-400 dark:hover:bg-orange-500/15 dark:hover:text-orange-400 focus:outline-none"
+                                            title="Login sebagai Siswa (Menyamar)">
+                                            <i class="fas fa-user-secret text-xs"></i>
+                                        </button>
+                                    </form>
                                     <a href="<?= base_url('admin/siswa/detail/' . $s['id_siswa']) ?>"
                                         class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors dark:text-gray-400 dark:hover:bg-blue-500/15 dark:hover:text-blue-400"
                                         title="Lihat Detail">

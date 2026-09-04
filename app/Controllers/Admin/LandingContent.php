@@ -99,6 +99,20 @@ class LandingContent extends BaseController
             ]);
         }
 
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+        $allowedExts  = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'];
+        $maxSize      = 2097152; // 2MB
+
+        $mime = $file->getMimeType();
+        $ext  = strtolower($file->getExtension());
+
+        if (!in_array($mime, $allowedMimes, true) || !in_array($ext, $allowedExts, true) || $file->getSize() > $maxSize) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Format file tidak diizinkan. Hanya gambar (JPG, PNG, WebP, GIF, SVG) maksimal 2MB.'
+            ]);
+        }
+
         // Upload file
         $newName = $file->getRandomName();
         $file->move(FCPATH . 'uploads/landing', $newName);

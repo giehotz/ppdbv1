@@ -129,6 +129,9 @@ class Biodata extends BaseController
         ];
 
         if ($siswaModel->update($idSiswa, $dataToUpdate)) {
+            $namaSiswa = session()->get('nama_lengkap') ?? "ID $idSiswa";
+            catat_log('Finalisasi Biodata', "Siswa $namaSiswa memfinalisasi formulir biodata (Status: Final)");
+
             $message = 'Data Biodata berhasil dikirim secara permanen (Final). Anda tidak dapat mengubahnya lagi.';
             session()->setFlashdata('success', $message);
             
@@ -189,6 +192,9 @@ class Biodata extends BaseController
         ];
 
         if ($unlockRequestModel->insert($dataToInsert)) {
+            $namaSiswa = session()->get('nama_lengkap') ?? "ID $idSiswa";
+            catat_log('Pengajuan Buka Kunci', "Siswa $namaSiswa mengajukan buka kunci biodata: " . mb_substr($alasan, 0, 50));
+
             session()->setFlashdata('success', 'Permohonan buka kunci berhasil diajukan. Silakan tunggu Admin meninjaunya.');
         } else {
             session()->setFlashdata('error', 'Gagal mengajukan permohonan buka kunci.');

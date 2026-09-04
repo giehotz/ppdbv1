@@ -1,6 +1,6 @@
 <?php
 // Version Control
-$app_version = "v1.0.1";
+$app_version = "v1.1.0";
 ?>
 <!-- TailAdmin Footer Area -->
 <footer class="border-t border-gray-200 bg-white/80 backdrop-blur-md px-4 py-3.5 sm:px-6 dark:border-gray-800 dark:bg-gray-900/80 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 dark:text-gray-400 mt-auto relative z-10 gap-2">
@@ -50,9 +50,47 @@ $app_version = "v1.0.1";
                             <i class="fas fa-star text-brand-500 text-[10px]"></i>
                         </span>
                         <div class="flex flex-col sm:flex-row sm:items-center mb-1.5 gap-1 sm:gap-2">
-                            <h4 class="text-xs font-bold text-gray-900 dark:text-white">Versi 1.0.1</h4>
+                            <h4 class="text-xs font-bold text-gray-900 dark:text-white">Versi 1.1.0</h4>
                             <span class="inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">Terbaru</span>
-                            <span class="text-[11px] text-gray-400 dark:text-gray-500 sm:ml-auto"><i class="far fa-calendar-alt mr-1"></i> Juni 2026</span>
+                            <span class="text-[11px] text-gray-400 dark:text-gray-500 sm:ml-auto"><i class="far fa-calendar-alt mr-1"></i> September 2026</span>
+                        </div>
+                        <p class="mb-2 text-xs text-gray-500 dark:text-gray-400 font-medium">Pembaruan keamanan, arsitektur, UI mobile, & pengujian otomatis:</p>
+                        <ul class="space-y-1.5 text-xs text-gray-600 dark:text-gray-300">
+                            <li class="flex items-start gap-1.5">
+                                <span class="rounded bg-rose-50 px-1.5 py-0.2 text-[10px] font-bold text-rose-600 dark:bg-rose-500/15 dark:text-rose-400 shrink-0 mt-0.5">Security</span>
+                                <span>Proteksi CSRF global aktif &amp; pengamanan direktori upload dari eksekusi script (.htaccess).</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <span class="rounded bg-emerald-50 px-1.5 py-0.2 text-[10px] font-bold text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400 shrink-0 mt-0.5">Baru</span>
+                                <span>Fitur <em>Login sebagai Siswa</em> (Impersonate) aman via POST dengan middleware filter.</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <span class="rounded bg-brand-50 px-1.5 py-0.2 text-[10px] font-bold text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 shrink-0 mt-0.5">UI</span>
+                                <span>Penyegaran tampilan modern Dashboard &amp; Formulir Biodata Siswa versi mobile ramah sentuhan.</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <span class="rounded bg-indigo-50 px-1.5 py-0.2 text-[10px] font-bold text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400 shrink-0 mt-0.5">Service</span>
+                                <span>Ekstraksi <em>UnlockRequestService</em> untuk modularitas permohonan buka kunci biodata.</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <span class="rounded bg-blue-50 px-1.5 py-0.2 text-[10px] font-bold text-blue-600 dark:bg-blue-500/15 dark:text-blue-400 shrink-0 mt-0.5">Audit</span>
+                                <span>Pencatatan log aktivitas otomatis untuk verifikasi berkas, pengajuan, &amp; finalisasi formulir.</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <span class="rounded bg-purple-50 px-1.5 py-0.2 text-[10px] font-bold text-purple-600 dark:bg-purple-500/15 dark:text-purple-400 shrink-0 mt-0.5">QA</span>
+                                <span>Pemasangan automated test suite PHPUnit untuk validasi kalkulasi dan logika bisnis PPDB.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="relative pl-6">
+                        <span class="absolute -left-3 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 ring-4 ring-white dark:bg-gray-800 dark:ring-gray-900">
+                            <i class="fas fa-check text-gray-500 text-[10px]"></i>
+                        </span>
+                        <div class="flex items-center mb-1.5">
+                            <h4 class="text-xs font-bold text-gray-900 dark:text-white">Versi 1.0.1</h4>
+                            <span class="text-[11px] text-gray-400 dark:text-gray-500 ml-auto"><i class="far fa-calendar-alt mr-1"></i> Juni 2026</span>
                         </div>
                         <p class="mb-2 text-xs text-gray-500 dark:text-gray-400 font-medium">Pembaruan tampilan TailAdmin & perbaikan fitur:</p>
                         <ul class="space-y-1.5 text-xs text-gray-600 dark:text-gray-300">

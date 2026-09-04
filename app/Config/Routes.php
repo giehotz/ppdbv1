@@ -22,9 +22,9 @@ $routes->post('/auth/forgot-password', 'Auth::submitForgotPassword');
 // Verification QR code route
 $routes->get('/verify/(:any)', 'Verify::index/$1');
 
-// Impersonate Routes
-$routes->get('/impersonate/start/(:num)', 'Impersonate::start/$1');
-$routes->post('/impersonate/stop', 'Impersonate::stop');
+// Impersonate Routes (Protected with auth filter & POST method to prevent CSRF)
+$routes->post('/impersonate/start/(:num)', 'Impersonate::start/$1', ['filter' => 'auth']);
+$routes->post('/impersonate/stop', 'Impersonate::stop', ['filter' => 'auth']);
 
 $routes->get('/pendaftar', 'Pendaftar::index');
 

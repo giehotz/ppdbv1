@@ -4,6 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function() {
+            try {
+                if (localStorage.getItem('darkMode') === 'true') {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.style.colorScheme = 'dark';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.style.colorScheme = 'light';
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <style>
+        html.dark {
+            color-scheme: dark;
+            background-color: #030712;
+        }
+        html.dark body {
+            background-color: #030712 !important;
+            color: #e5e7eb;
+        }
+    </style>
     <title>Daftar Pendaftar - <?= esc($content['navbar']['nama_sekolah'] ?? $web['nama_sekolah'] ?? 'PPDB Online') ?></title>
     
     <?php
@@ -29,15 +52,6 @@
 
     <!-- TailAdmin JS -->
     <script defer src="<?= base_url('assets/tailadmin/js/tailadmin.js') ?>"></script>
-
-    <!-- Dark Mode Init Script -->
-    <script>
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
 
     <style>
         body { 
@@ -108,7 +122,7 @@
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800 dark:bg-gray-950 dark:text-gray-200 flex flex-col min-h-screen antialiased transition-colors duration-200">
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-950 dark:text-gray-200 flex flex-col min-h-screen antialiased">
 
     <!-- NAVBAR (TailAdmin Style) -->
     <header class="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/90 backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/90 transition-colors">

@@ -137,12 +137,11 @@ _modules/*
 docs/
 
 #Test
-tests/
-tests/*
+tests/screenshots/
+tests/*.js
 tests_playwright/
-tests_playwright/*
 playwright-report/
-playwright-report/*
+unit/
 #-------------------------
 # Public Uploads (User Files)
 #-------------------------

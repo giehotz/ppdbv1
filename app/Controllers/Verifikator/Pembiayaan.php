@@ -423,12 +423,21 @@ class Pembiayaan extends BaseController
 
         $uploadDir = FCPATH . 'uploads/bukti_pembayaran';
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            mkdir($uploadDir, 0755, true);
         }
+
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+        $allowedExts  = ['jpg', 'jpeg', 'png', 'webp', 'pdf'];
+        $maxSize      = 2097152; // 2MB
 
         $paths = [];
         foreach ($files as $file) {
             if ($file->isValid() && !$file->hasMoved()) {
+                $mime = $file->getMimeType();
+                $ext  = strtolower($file->getExtension());
+                if (!in_array($mime, $allowedMimes, true) || !in_array($ext, $allowedExts, true) || $file->getSize() > $maxSize) {
+                    continue; // Skip invalid or dangerous file types
+                }
                 $newName = 'bukti_' . $siswaId . '_' . time() . '_' . $file->getRandomName();
                 $file->move($uploadDir, $newName);
                 $paths[] = $newName;

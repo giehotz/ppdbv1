@@ -100,6 +100,62 @@ class Twibbon extends BaseController
 
     public function process()
     {
+        // High-Fidelity Client-Rendered Composite Support (100% WYSIWYG)
+        $imageData = $this->request->getPost('image_data');
+        if (!empty($imageData)) {
+            $campaignId = $this->request->getPost('campaign_id');
+            $campaign = $this->campaignModel->find($campaignId);
+            if (!$campaign) {
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'message' => 'Kampanye tidak valid.'
+                ]);
+            }
+
+            if (preg_match('/^data:image\/(\w+);base64,/', $imageData)) {
+                $rawBase64 = substr($imageData, strpos($imageData, ',') + 1);
+                $binaryData = base64_decode($rawBase64);
+                if ($binaryData === false) {
+                    return $this->response->setJSON([
+                        'status'  => 'error',
+                        'message' => 'Format gambar base64 tidak valid.'
+                    ]);
+                }
+            } else {
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'message' => 'Data gambar tidak valid.'
+                ]);
+            }
+
+            $resultsPath = FCPATH . 'uploads/twibbon/results';
+            if (!is_dir($resultsPath)) {
+                mkdir($resultsPath, 0755, true);
+            }
+
+            $outputName = 'twibbon_' . time() . '_' . rand(1000, 9999) . '.jpg';
+            $fullOutputPath = $resultsPath . '/' . $outputName;
+
+            file_put_contents($fullOutputPath, $binaryData);
+
+            // Save statistic
+            $this->statisticModel->insert([
+                'campaign_id' => $campaignId,
+                'ip_address'  => $this->request->getIPAddress(),
+                'user_agent'  => (string) $this->request->getUserAgent()
+            ]);
+
+            // Periodic cleanup: ~5% chance to delete expired files
+            if (mt_rand(1, 20) === 1) {
+                $this->cleanupExpiredFiles();
+            }
+
+            return $this->response->setJSON([
+                'status'       => 'success',
+                'download_url' => base_url('uploads/twibbon/results/' . $outputName)
+            ]);
+        }
+
         $rules = [
             'campaign_id' => 'required|is_not_unique[twibbon_campaigns.id]',
             'photo'       => 'uploaded[photo]|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png,image/webp]|ext_in[photo,jpg,jpeg,png,webp]|max_size[photo,5120]',

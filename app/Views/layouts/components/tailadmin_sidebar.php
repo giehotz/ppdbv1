@@ -2,14 +2,47 @@
 $webData = $web ?? \Config\Services::renderer()->getData()['web'] ?? [];
 $sekolahName = $webData['nama_sekolah'] ?? 'Sekolah';
 $webLogo = $webData['logo'] ?? ($web_logo ?? null);
-$currentUri = uri_string();
+$currentUri = trim(uri_string(), '/');
 
-if (!function_exists('isTailAdminActive')) {
-    function isTailAdminActive($url, $currentUri) {
-        if ($url === 'admin/dashboard') {
-            return $currentUri === 'admin/dashboard' || $currentUri === 'admin';
+// Determine logo redirection based on current role context
+$logoUrl = 'admin/dashboard';
+if (strpos($currentUri, 'verifikator') === 0) {
+    $logoUrl = 'verifikator/dashboard';
+} elseif (strpos($currentUri, 'siswa') === 0) {
+    $logoUrl = 'siswa/dashboard';
+}
+
+// Extract all menu URLs to find the single most specific match (longest prefix)
+$allMenuUrls = [];
+foreach ($sidebarMenus ?? [] as $groupItems) {
+    foreach ($groupItems as $mItem) {
+        if (!empty($mItem['url'])) {
+            $allMenuUrls[] = trim($mItem['url'], '/');
         }
-        return strpos($currentUri, $url) === 0;
+    }
+}
+
+$activeMenuUrl = null;
+$bestMatchLen = -1;
+
+foreach ($allMenuUrls as $menuUrl) {
+    $isMatch = false;
+    if ($menuUrl === 'admin/dashboard' && ($currentUri === 'admin' || $currentUri === 'admin/dashboard')) {
+        $isMatch = true;
+    } elseif ($menuUrl === 'verifikator/dashboard' && ($currentUri === 'verifikator' || $currentUri === 'verifikator/dashboard')) {
+        $isMatch = true;
+    } elseif ($menuUrl === 'siswa/dashboard' && ($currentUri === 'siswa' || $currentUri === 'siswa/dashboard')) {
+        $isMatch = true;
+    } elseif ($currentUri === $menuUrl || strpos($currentUri, $menuUrl . '/') === 0) {
+        $isMatch = true;
+    }
+
+    if ($isMatch) {
+        $len = strlen($menuUrl);
+        if ($len > $bestMatchLen) {
+            $bestMatchLen = $len;
+            $activeMenuUrl = $menuUrl;
+        }
     }
 }
 ?>
@@ -23,7 +56,7 @@ if (!function_exists('isTailAdminActive')) {
     :class="sidebarToggle ? 'justify-center px-2' : 'justify-between px-6'"
     class="flex items-center gap-3 border-b border-gray-100 py-4.5 dark:border-gray-800"
   >
-    <a href="<?= base_url('admin/dashboard') ?>" class="flex items-center gap-3 overflow-hidden">
+    <a href="<?= base_url($logoUrl) ?>" class="flex items-center gap-3 overflow-hidden">
       <?php if (!empty($webLogo) && file_exists(FCPATH . 'uploads/logo/' . $webLogo)): ?>
         <img
           src="<?= base_url('uploads/logo/' . esc($webLogo, 'url')) ?>"
@@ -76,7 +109,8 @@ if (!function_exists('isTailAdminActive')) {
           <ul class="space-y-1">
             <?php foreach ($items as $item): ?>
               <?php
-                $active = isTailAdminActive($item['url'], $currentUri);
+                $itemUrl = trim($item['url'] ?? '', '/');
+                $active = ($itemUrl === $activeMenuUrl);
                 $badge = $item['badge'] ?? null;
               ?>
               <li>

@@ -4,6 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function() {
+            try {
+                if (localStorage.getItem('darkMode') === 'true') {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.style.colorScheme = 'dark';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.style.colorScheme = 'light';
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <style>
+        html.dark {
+            color-scheme: dark;
+            background-color: #111827;
+        }
+        html.dark body {
+            background-color: #111827 !important;
+            color: #f3f4f6;
+        }
+    </style>
     <title><?= $this->renderSection('title') ?> - Verifikator <?= esc($app_alias ?? 'PPDB') ?></title>
     <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>?v=<?= @filemtime(FCPATH . 'favicon.ico') ?>">
 
@@ -23,13 +46,6 @@
     <!-- TailAdmin Bundle JS (Alpine.js, Flatpickr, etc.) -->
     <script defer src="<?= base_url('assets/tailadmin/js/tailadmin.js') ?>"></script>
 
-    <script>
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
     <style>
         body { font-family: 'Outfit', 'Inter', sans-serif; }
         .material-symbols-outlined {
@@ -51,21 +67,25 @@
     x-init="
         if (darkMode) {
             document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
         } else {
             document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
         }
         $watch('darkMode', val => {
             localStorage.setItem('darkMode', JSON.stringify(val));
             if (val) {
                 document.documentElement.classList.add('dark');
+                document.documentElement.style.colorScheme = 'dark';
             } else {
                 document.documentElement.classList.remove('dark');
+                document.documentElement.style.colorScheme = 'light';
             }
         });
         $watch('sidebarToggle', val => localStorage.setItem('sidebarToggle', JSON.stringify(val)));
     "
     :class="darkMode ? 'dark bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-800'"
-    class="font-sans antialiased text-sm h-screen overflow-hidden flex flex-col"
+    class="font-sans antialiased text-sm h-screen overflow-hidden flex flex-col bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100"
 >
 
     <?php

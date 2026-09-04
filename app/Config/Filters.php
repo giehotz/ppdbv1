@@ -75,7 +75,13 @@ class Filters extends BaseFilters
      * }
      */
     public array $globals = [
-        'before' => [],
+        'before' => [
+            'csrf' => [
+                'except' => [
+                    'twibbon/process',
+                ],
+            ],
+        ],
         'after'  => [],
     ];
 

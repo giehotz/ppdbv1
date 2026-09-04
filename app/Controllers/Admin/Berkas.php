@@ -46,6 +46,11 @@ class Berkas extends BaseController
         ];
 
         if ($this->berkasModel->update($id, $data)) {
+            $berkas = $this->berkasModel->find($id);
+            $namaBerkas = $berkas['nama_berkas'] ?? "ID $id";
+            $idSiswa = $berkas['id_siswa'] ?? '-';
+            catat_log('Verifikasi Berkas', "Admin mengubah status berkas $namaBerkas (Siswa ID: $idSiswa) menjadi $status");
+
             session()->setFlashdata('success', 'Status berkas berhasil diperbarui.');
             if ($this->request->isAJAX()) {
                 return $this->response->setJSON([
