@@ -40,12 +40,17 @@
 
             <div>
                 <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Tanggal Lahir Ayah</label>
-                <input type="date" name="tgl_lahir_ayah" value="<?= esc($siswa['tgl_lahir_ayah'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
-            </div>
-
-            <div>
-                <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Tahun Lahir Ayah</label>
-                <input type="number" name="th_lahir_ayah" value="<?= esc($siswa['th_lahir_ayah'] ?? '', 'attr') ?>" min="1930" max="<?= date('Y') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 font-mono" placeholder="YYYY">
+                <div class="relative">
+                    <input type="text" 
+                           name="tgl_lahir_ayah" 
+                           id="tgl_lahir_ayah" 
+                           value="<?= (!empty($siswa['tgl_lahir_ayah']) && $siswa['tgl_lahir_ayah'] !== '0000-00-00') ? esc($siswa['tgl_lahir_ayah'], 'attr') : '' ?>" 
+                           placeholder="Pilih tanggal lahir ayah" 
+                           class="datepicker-parent w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 pl-5 pr-11 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
+                    <span class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+                        <span class="material-symbols-outlined text-xl">calendar_month</span>
+                    </span>
+                </div>
             </div>
 
             <div>
@@ -126,12 +131,17 @@
 
             <div>
                 <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Tanggal Lahir Ibu</label>
-                <input type="date" name="tgl_lahir_ibu" value="<?= esc($siswa['tgl_lahir_ibu'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
-            </div>
-
-            <div>
-                <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Tahun Lahir Ibu</label>
-                <input type="number" name="th_lahir_ibu" value="<?= esc($siswa['th_lahir_ibu'] ?? '', 'attr') ?>" min="1930" max="<?= date('Y') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 font-mono" placeholder="YYYY">
+                <div class="relative">
+                    <input type="text" 
+                           name="tgl_lahir_ibu" 
+                           id="tgl_lahir_ibu" 
+                           value="<?= (!empty($siswa['tgl_lahir_ibu']) && $siswa['tgl_lahir_ibu'] !== '0000-00-00') ? esc($siswa['tgl_lahir_ibu'], 'attr') : '' ?>" 
+                           placeholder="Pilih tanggal lahir ibu" 
+                           class="datepicker-parent w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 pl-5 pr-11 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
+                    <span class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+                        <span class="material-symbols-outlined text-xl">calendar_month</span>
+                    </span>
+                </div>
             </div>
 
             <div>
@@ -212,8 +222,18 @@
             </div>
 
             <div>
-                <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Tahun Lahir Wali</label>
-                <input type="number" id="th_lahir_wali" name="th_lahir_wali" value="<?= esc($siswa['th_lahir_wali'] ?? '', 'attr') ?>" min="1930" max="<?= date('Y') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 font-mono wali-field" placeholder="YYYY">
+                <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Tanggal Lahir Wali</label>
+                <div class="relative">
+                    <input type="text" 
+                           id="tgl_lahir_wali" 
+                           name="tgl_lahir_wali" 
+                           value="<?= (!empty($siswa['tgl_lahir_wali']) && $siswa['tgl_lahir_wali'] !== '0000-00-00') ? esc($siswa['tgl_lahir_wali'], 'attr') : '' ?>" 
+                           placeholder="Pilih tanggal lahir wali" 
+                           class="datepicker-parent wali-field w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 pl-5 pr-11 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
+                    <span class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+                        <span class="material-symbols-outlined text-xl">calendar_month</span>
+                    </span>
+                </div>
             </div>
 
             <div>

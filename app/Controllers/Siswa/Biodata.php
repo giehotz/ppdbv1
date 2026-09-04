@@ -103,6 +103,16 @@ class Biodata extends BaseController
                 unset($data[$field]);
             }
         }
+        
+        // Unset legacy fields
+        unset($data['th_lahir_ayah'], $data['th_lahir_ibu'], $data['th_lahir_wali']);
+
+        // Konversi string kosong pada tanggal lahir menjadi null
+        foreach (['tgl_lahir_ayah', 'tgl_lahir_ibu', 'tgl_lahir_wali'] as $df) {
+            if (array_key_exists($df, $data) && ($data[$df] === '' || $data[$df] === '0000-00-00')) {
+                $data[$df] = null;
+            }
+        }
 
         // Update student data
         if ($siswaModel->update($idSiswa, $data)) {
@@ -225,6 +235,16 @@ class Biodata extends BaseController
         foreach ($restrictedFields as $field) {
             if (isset($data[$field])) {
                 unset($data[$field]);
+            }
+        }
+
+        // Unset legacy fields
+        unset($data['th_lahir_ayah'], $data['th_lahir_ibu'], $data['th_lahir_wali']);
+
+        // Konversi string kosong pada tanggal lahir menjadi null
+        foreach (['tgl_lahir_ayah', 'tgl_lahir_ibu', 'tgl_lahir_wali'] as $df) {
+            if (array_key_exists($df, $data) && ($data[$df] === '' || $data[$df] === '0000-00-00')) {
+                $data[$df] = null;
             }
         }
 

@@ -420,7 +420,7 @@ function initWilayahListeners() {
 
 function handleWaliChanged() {
     const pilihan = document.getElementById('pilih_wali').value;
-    const fields = ['nama', 'nik', 'th_lahir', 'pdd', 'pekerjaan', 'penghasilan'];
+    const fields = ['nama', 'nik', 'tgl_lahir', 'pdd', 'pekerjaan', 'penghasilan'];
 
     fields.forEach(field => {
         const inputWali = document.getElementById(field + '_wali');
@@ -430,16 +430,31 @@ function handleWaliChanged() {
             const sourceInput = document.querySelector(`[name="${field}_${pilihan}"]`);
             if (sourceInput) {
                 inputWali.value = sourceInput.value;
+                if (inputWali._flatpickr) {
+                    inputWali._flatpickr.setDate(sourceInput.value, false);
+                }
             }
             if (!isFinal) {
                 inputWali.setAttribute('readonly', 'readonly');
                 inputWali.classList.add('bg-gray-100', 'pointer-events-none');
+                if (inputWali._flatpickr && inputWali._flatpickr.altInput) {
+                    inputWali._flatpickr.altInput.setAttribute('readonly', 'readonly');
+                    inputWali._flatpickr.altInput.classList.add('bg-gray-100', 'pointer-events-none');
+                }
             }
         } else {
             if (!isFinal) {
-                inputWali.value = inputWali.getAttribute('data-original') || '';
+                const origVal = inputWali.getAttribute('data-original') || '';
+                inputWali.value = origVal;
+                if (inputWali._flatpickr) {
+                    inputWali._flatpickr.setDate(origVal, false);
+                }
                 inputWali.removeAttribute('readonly');
                 inputWali.classList.remove('bg-gray-100', 'pointer-events-none');
+                if (inputWali._flatpickr && inputWali._flatpickr.altInput) {
+                    inputWali._flatpickr.altInput.removeAttribute('readonly');
+                    inputWali._flatpickr.altInput.classList.remove('bg-gray-100', 'pointer-events-none');
+                }
             }
         }
     });
@@ -448,13 +463,13 @@ function handleWaliChanged() {
 function initWaliDetection() {
     if (!isFinal) {
         // Backup initial values for manual mode
-        ['nama', 'nik', 'th_lahir', 'pdd', 'pekerjaan', 'penghasilan'].forEach(field => {
+        ['nama', 'nik', 'tgl_lahir', 'pdd', 'pekerjaan', 'penghasilan'].forEach(field => {
             const el = document.getElementById(field + '_wali');
-            if(el) el.setAttribute('data-original', el.value);
+            if (el) el.setAttribute('data-original', el.value);
         });
 
         // Auto-detect if saved data matches Ayah or Ibu
-        const fields = ['nama', 'nik', 'th_lahir', 'pdd', 'pekerjaan', 'penghasilan'];
+        const fields = ['nama', 'nik', 'tgl_lahir', 'pdd', 'pekerjaan', 'penghasilan'];
         let matchAyah = true;
         let matchIbu = true;
         let hasWali = false;

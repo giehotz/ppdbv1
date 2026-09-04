@@ -79,6 +79,7 @@ class Filters extends BaseFilters
             'csrf' => [
                 'except' => [
                     'twibbon/process',
+                    'siswa/twibbon/process',
                 ],
             ],
         ],

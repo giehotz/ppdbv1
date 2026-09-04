@@ -105,6 +105,7 @@ class ExportSiswa extends BaseController
             'BL' => 'Tempat Lahir Ibu',
             'BM' => 'Tanggal Lahir Ibu',
             'BN' => 'Kompetensi Keahlian',
+            'BO' => 'Tanggal Lahir Wali',
         ];
 
         // Write headers
@@ -113,7 +114,7 @@ class ExportSiswa extends BaseController
         }
 
         // Style header row
-        $lastCol = 'BN';
+        $lastCol = 'BO';
         $headerRange = "A1:{$lastCol}1";
         $sheet->getStyle($headerRange)->applyFromArray([
             'font' => [
@@ -179,7 +180,7 @@ class ExportSiswa extends BaseController
                 $sheet->setCellValue("AB{$row}", $s['nama_ayah'] ?? '');
                 $sheet->setCellValue("AC{$row}", $s['status_ayah'] ?? '');
                 $sheet->setCellValue("AD{$row}", $s['nik_ayah'] ?? '');
-                $sheet->setCellValue("AE{$row}", $s['th_lahir_ayah'] ?? ($s['tanggal_lahir_ayah'] ?? ''));
+                $sheet->setCellValue("AE{$row}", (!empty($s['tgl_lahir_ayah']) && $s['tgl_lahir_ayah'] !== '0000-00-00') ? date('Y', strtotime($s['tgl_lahir_ayah'])) : '');
                 $sheet->setCellValue("AF{$row}", $s['pdd_ayah'] ?? ($s['pendidikan_ayah'] ?? ''));
                 $sheet->setCellValue("AG{$row}", $s['pekerjaan_ayah'] ?? '');
                 $sheet->setCellValue("AH{$row}", $s['penghasilan_ayah'] ?? '');
@@ -187,7 +188,7 @@ class ExportSiswa extends BaseController
                 $sheet->setCellValue("AI{$row}", $s['nama_ibu'] ?? '');
                 $sheet->setCellValue("AJ{$row}", $s['status_ibu'] ?? '');
                 $sheet->setCellValue("AK{$row}", $s['nik_ibu'] ?? '');
-                $sheet->setCellValue("AL{$row}", $s['th_lahir_ibu'] ?? ($s['tanggal_lahir_ibu'] ?? ''));
+                $sheet->setCellValue("AL{$row}", (!empty($s['tgl_lahir_ibu']) && $s['tgl_lahir_ibu'] !== '0000-00-00') ? date('Y', strtotime($s['tgl_lahir_ibu'])) : '');
                 $sheet->setCellValue("AM{$row}", $s['pdd_ibu'] ?? ($s['pendidikan_ibu'] ?? ''));
                 $sheet->setCellValue("AN{$row}", $s['pekerjaan_ibu'] ?? '');
                 $sheet->setCellValue("AO{$row}", $s['penghasilan_ibu'] ?? '');
@@ -195,7 +196,7 @@ class ExportSiswa extends BaseController
                 // Data Wali
                 $sheet->setCellValue("AQ{$row}", $s['nama_wali'] ?? '');
                 $sheet->setCellValue("AR{$row}", $s['nik_wali'] ?? '');
-                $sheet->setCellValue("AS{$row}", $s['th_lahir_wali'] ?? '');
+                $sheet->setCellValue("AS{$row}", (!empty($s['tgl_lahir_wali']) && $s['tgl_lahir_wali'] !== '0000-00-00') ? date('Y', strtotime($s['tgl_lahir_wali'])) : '');
                 $sheet->setCellValue("AT{$row}", $s['pdd_wali'] ?? '');
                 $sheet->setCellValue("AU{$row}", $s['pekerjaan_wali'] ?? '');
                 $sheet->setCellValue("AV{$row}", $s['penghasilan_wali'] ?? '');
@@ -221,6 +222,7 @@ class ExportSiswa extends BaseController
                 $sheet->setCellValue("BL{$row}", $s['tempat_lahir_ibu'] ?? '');
                 $sheet->setCellValue("BM{$row}", $s['tgl_lahir_ibu'] ?? '');
                 $sheet->setCellValue("BN{$row}", $s['komp_ahli'] ?? '');
+                $sheet->setCellValue("BO{$row}", $s['tgl_lahir_wali'] ?? '');
                 $row++;
                 $index++;
             }

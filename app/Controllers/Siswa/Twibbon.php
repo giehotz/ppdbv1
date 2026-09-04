@@ -7,6 +7,7 @@ use App\Models\TwibbonCampaignModel;
 use App\Models\TwibbonFrameModel;
 use App\Models\TwibbonStatisticModel;
 use App\Models\TwibbonSettingModel;
+use App\Models\TblWebModel;
 use App\Libraries\TwibbonLib;
 
 class Twibbon extends BaseController
@@ -14,12 +15,14 @@ class Twibbon extends BaseController
     protected $campaignModel;
     protected $frameModel;
     protected $statisticModel;
+    protected $tblWebModel;
 
     public function __construct()
     {
         $this->campaignModel  = new TwibbonCampaignModel();
         $this->frameModel     = new TwibbonFrameModel();
         $this->statisticModel = new TwibbonStatisticModel();
+        $this->tblWebModel    = new TblWebModel();
     }
 
     public function index()
@@ -30,12 +33,12 @@ class Twibbon extends BaseController
             $c['frame'] = $this->frameModel->where('campaign_id', $c['id'])->first();
         }
 
-        $agent = $this->request->getUserAgent();
-        if ($agent->isMobile()) {
-            return view('siswa/mobile/twibbon_list', ['campaigns' => $campaigns]);
-        }
+        $web = $this->tblWebModel->find(1);
 
-        return view('siswa/twibbon/list', ['campaigns' => $campaigns]);
+        return view('siswa/twibbon/list', [
+            'campaigns' => $campaigns,
+            'web'       => $web,
+        ]);
     }
 
     public function detail($slug)
@@ -64,21 +67,85 @@ class Twibbon extends BaseController
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Bingkai kampanye belum dikonfigurasi.');
         }
 
+        $web = $this->tblWebModel->find(1);
+
         $data = [
             'campaign' => $campaign,
             'frame'    => $frame,
+            'web'      => $web,
         ];
-
-        $agent = $this->request->getUserAgent();
-        if ($agent->isMobile()) {
-            return view('siswa/mobile/twibbon_detail', $data);
-        }
 
         return view('siswa/twibbon/detail', $data);
     }
 
     public function process()
     {
+        // 1. High-Fidelity Client-Rendered Composite Support (100% WYSIWYG)
+        $json = $this->request->getJSON(true) ?? [];
+        $imageData = $json['image_data'] ?? $this->request->getPost('image_data');
+        $campaignId = $json['campaign_id'] ?? $this->request->getPost('campaign_id');
+
+        if (!empty($imageData)) {
+            $campaign = $this->campaignModel->find($campaignId);
+            if (!$campaign) {
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'success' => false,
+                    'message' => 'Kampanye tidak valid.',
+                ]);
+            }
+
+            if (preg_match('/^data:image\/(\w+);base64,/', $imageData)) {
+                $rawBase64 = substr($imageData, strpos($imageData, ',') + 1);
+                $binaryData = base64_decode($rawBase64);
+                if ($binaryData === false) {
+                    return $this->response->setJSON([
+                        'status'  => 'error',
+                        'success' => false,
+                        'message' => 'Format gambar base64 tidak valid.',
+                    ]);
+                }
+            } else {
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'success' => false,
+                    'message' => 'Data gambar tidak valid.',
+                ]);
+            }
+
+            $resultsPath = FCPATH . 'uploads/twibbon/results';
+            if (!is_dir($resultsPath)) {
+                mkdir($resultsPath, 0755, true);
+            }
+
+            $outputName = 'twibbon_' . time() . '_' . rand(1000, 9999) . '.jpg';
+            $fullOutputPath = $resultsPath . '/' . $outputName;
+
+            file_put_contents($fullOutputPath, $binaryData);
+
+            // Record statistic
+            $this->statisticModel->insert([
+                'campaign_id' => $campaignId,
+                'ip_address'  => $this->request->getIPAddress(),
+                'user_agent'  => (string) $this->request->getUserAgent(),
+            ]);
+
+            // Periodic cleanup: ~5% chance
+            if (mt_rand(1, 20) === 1) {
+                $this->cleanupExpiredFiles();
+            }
+
+            $downloadUrl = base_url('uploads/twibbon/results/' . $outputName);
+
+            return $this->response->setJSON([
+                'status'       => 'success',
+                'success'      => true,
+                'download_url' => $downloadUrl,
+                'image_url'    => $downloadUrl,
+            ]);
+        }
+
+        // 2. Fallback to multipart file upload and server GD rendering
         $rules = [
             'campaign_id' => 'required|is_not_unique[twibbon_campaigns.id]',
             'photo'       => 'uploaded[photo]|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png,image/webp]|ext_in[photo,jpg,jpeg,png,webp]|max_size[photo,5120]',
@@ -92,6 +159,7 @@ class Twibbon extends BaseController
         if (!$this->validate($rules)) {
             return $this->response->setJSON([
                 'status'  => 'error',
+                'success' => false,
                 'message' => implode(' ', $this->validator->getErrors()),
             ]);
         }
@@ -101,6 +169,7 @@ class Twibbon extends BaseController
         if (!$frame) {
             return $this->response->setJSON([
                 'status'  => 'error',
+                'success' => false,
                 'message' => 'Bingkai kampanye tidak ditemukan.',
             ]);
         }
@@ -109,6 +178,7 @@ class Twibbon extends BaseController
         if (!$photoFile || !$photoFile->isValid()) {
             return $this->response->setJSON([
                 'status'  => 'error',
+                'success' => false,
                 'message' => 'Gagal mengunggah foto.',
             ]);
         }
@@ -157,14 +227,19 @@ class Twibbon extends BaseController
                 $this->cleanupExpiredFiles();
             }
 
+            $downloadUrl = base_url('uploads/twibbon/results/' . $outputName);
+
             return $this->response->setJSON([
                 'status'       => 'success',
-                'download_url' => base_url('uploads/twibbon/results/' . $outputName),
+                'success'      => true,
+                'download_url' => $downloadUrl,
+                'image_url'    => $downloadUrl,
             ]);
         }
 
         return $this->response->setJSON([
             'status'  => 'error',
+            'success' => false,
             'message' => 'Gagal memproses penggabungan twibbon.',
         ]);
     }

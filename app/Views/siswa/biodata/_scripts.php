@@ -1,5 +1,73 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
 <script src="<?= base_url('js/biodata.js') ?>"></script>
+
+<style>
+    /* Custom Modern Flatpickr styling matching TailAdmin */
+    .flatpickr-calendar {
+        background: #ffffff !important;
+        border-radius: 1rem !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+        border: 1px solid #e5e7eb !important;
+        font-family: inherit !important;
+        padding: 8px !important;
+        width: 310px !important;
+    }
+    .dark .flatpickr-calendar {
+        background: #111827 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6) !important;
+    }
+    .flatpickr-months {
+        border-radius: 0.75rem 0.75rem 0 0;
+    }
+    .dark .flatpickr-months, 
+    .dark .flatpickr-weekdays,
+    .dark span.flatpickr-weekday,
+    .dark .flatpickr-month {
+        background: #111827 !important;
+        color: #9ca3af !important;
+        fill: #9ca3af !important;
+    }
+    .dark .flatpickr-current-month input.cur-year,
+    .dark .flatpickr-current-month select {
+        color: #f9fafb !important;
+        font-weight: 700 !important;
+    }
+    .dark .flatpickr-day {
+        color: #e5e7eb !important;
+    }
+    .dark .flatpickr-day:hover,
+    .dark .flatpickr-day:focus {
+        background: #374151 !important;
+        border-color: #374151 !important;
+    }
+    .flatpickr-day.selected, 
+    .flatpickr-day.selected:hover {
+        background: #465fff !important;
+        border-color: #465fff !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+    }
+    .dark .flatpickr-day.today {
+        border-color: #465fff !important;
+    }
+    .flatpickr-day.today:hover {
+        background: #e0e7ff !important;
+        color: #1e1b4b !important;
+    }
+    .dark .flatpickr-day.today:hover {
+        background: #312e81 !important;
+        color: #e0e7ff !important;
+    }
+    .dark .flatpickr-day.flatpickr-disabled, 
+    .dark .flatpickr-day.flatpickr-disabled:hover {
+        color: #4b5563 !important;
+    }
+</style>
 
 <script>
     // Initialize data from PHP to JS
@@ -211,6 +279,31 @@
                     this.querySelectorAll('[disabled]').forEach(el => el.disabled = false);
                 });
             }
+        }
+
+        // Inisialisasi Flatpickr Date Picker Orang Tua
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr('.datepicker-parent', {
+                locale: 'id',
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'd-m-Y',
+                altInputClass: 'w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 pl-5 pr-11 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500',
+                maxDate: 'today',
+                allowInput: true,
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (instance.input) {
+                        instance.input.dispatchEvent(new Event('change', { bubbles: true }));
+                        instance.input.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                },
+                onClose: function(selectedDates, dateStr, instance) {
+                    if (instance.input) {
+                        instance.input.dispatchEvent(new Event('change', { bubbles: true }));
+                        instance.input.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                }
+            });
         }
     });
 </script>
