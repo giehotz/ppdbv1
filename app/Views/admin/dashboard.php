@@ -16,6 +16,10 @@
                     <i class="fas fa-graduation-cap text-[11px]"></i>
                     <?= esc($app_alias ?? 'PPDB') ?> Online
                 </span>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-0.5 text-xs font-bold text-blue-700 dark:bg-blue-500/15 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50" title="Statistik dashboard hanya menampilkan pendaftar pada tahun ajaran ini">
+                    <i class="fas fa-calendar-alt text-[11px]"></i>
+                    TP <?= esc($activeYear ?? '2025/2026') ?>
+                </span>
             </div>
             <h2 class="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl lg:text-3xl dark:text-white">
                 Selamat Datang, <?= esc(session()->get('nama_lengkap') ?: session()->get('username') ?: 'Administrator') ?>! 👋

@@ -1,80 +1,146 @@
 <!-- Tab: Alamat -->
-<div id="content-alamat" class="tab-content hidden space-y-4">
-    <div class="border-b border-gray-100 dark:border-gray-800 pb-3">
-        <h3 class="text-sm font-bold text-gray-900 dark:text-white">Alamat Domisili Siswa</h3>
-        <p class="text-xs text-gray-500 dark:text-gray-400">Pilih provinsi hingga desa/kelurahan sesuai alamat tempat tinggal sekarang.</p>
+<div id="content-alamat" class="tab-content hidden space-y-6">
+    <!-- Header -->
+    <div class="pb-2 border-b border-gray-100 dark:border-gray-800">
+        <h3 class="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
+                <span class="material-symbols-outlined text-lg">home_pin</span>
+            </span>
+            <span>Alamat Domisili &amp; Tempat Tinggal</span>
+        </h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Pilih provinsi hingga desa/kelurahan sesuai alamat tempat tinggal calon siswa saat ini.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="md:col-span-2">
-            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Alamat Jalan / RT / RW / Dusun <span class="text-red-500">*</span></label>
-            <textarea name="alamat_siswa" rows="2" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500" placeholder="Jl. Contoh No. 123, RT 01 / RW 02"><?= esc($siswa['alamat_siswa'] ?? '') ?></textarea>
+    <!-- Section 1: Alamat Domisili & Wilayah Administratif -->
+    <div class="rounded-2xl border border-gray-100 bg-white p-5 sm:p-6 shadow-sm dark:border-gray-800 dark:bg-gray-800/40 space-y-5">
+        <div class="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-800">
+            <span class="material-symbols-outlined text-brand-500 text-lg">map</span>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-gray-200">1. Alamat Jalan &amp; Wilayah Administratif</h4>
         </div>
 
-        <div>
-            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Provinsi <span class="text-red-500">*</span></label>
-            <select id="provinsi" name="prov" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
-                <option value="">-- Memuat Provinsi --</option>
-            </select>
-            <input type="hidden" id="provinsi_id" value="">
+        <div class="space-y-4">
+            <!-- Alamat Jalan / RT / RW -->
+            <div>
+                <label class="mb-2 block text-xs font-bold text-gray-700 dark:text-gray-300">
+                    Alamat Jalan / RT / RW / Dusun / No. Rumah <span class="text-red-500">*</span>
+                </label>
+                <textarea name="alamat_siswa" rows="2" class="form-input-control border border-gray-300 dark:border-gray-600" placeholder="Contoh: Jl. Merdeka No. 45, RT 02 / RW 05, Dusun Sukamaju"><?= esc($siswa['alamat_siswa'] ?? '') ?></textarea>
+            </div>
+
+            <!-- Cascading Region Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Provinsi -->
+                <div>
+                    <label class="mb-2 block text-xs font-bold text-gray-700 dark:text-gray-300">
+                        Provinsi <span class="text-red-500">*</span>
+                    </label>
+                    <select id="provinsi" name="prov" class="form-input-control border border-gray-300 dark:border-gray-600 cursor-pointer">
+                        <option value="">-- Memuat Provinsi --</option>
+                    </select>
+                    <input type="hidden" id="provinsi_id" value="">
+                </div>
+
+                <!-- Kabupaten / Kota -->
+                <div>
+                    <label class="mb-2 block text-xs font-bold text-gray-700 dark:text-gray-300">
+                        Kabupaten / Kota <span class="text-red-500">*</span>
+                    </label>
+                    <select id="kabupaten" name="kab" class="form-input-control border border-gray-300 dark:border-gray-600 cursor-pointer disabled:opacity-60" disabled>
+                        <option value="">-- Pilih Provinsi Dahulu --</option>
+                    </select>
+                    <input type="hidden" id="kabupaten_id" value="">
+                </div>
+
+                <!-- Kecamatan -->
+                <div>
+                    <label class="mb-2 block text-xs font-bold text-gray-700 dark:text-gray-300">
+                        Kecamatan <span class="text-red-500">*</span>
+                    </label>
+                    <select id="kecamatan" name="kec" class="form-input-control border border-gray-300 dark:border-gray-600 cursor-pointer disabled:opacity-60" disabled>
+                        <option value="">-- Pilih Kab/Kota Dahulu --</option>
+                    </select>
+                    <input type="hidden" id="kecamatan_id" value="">
+                </div>
+
+                <!-- Desa / Kelurahan -->
+                <div>
+                    <label class="mb-2 block text-xs font-bold text-gray-700 dark:text-gray-300">
+                        Desa / Kelurahan <span class="text-red-500">*</span>
+                    </label>
+                    <select id="kelurahan" name="desa" class="form-input-control border border-gray-300 dark:border-gray-600 cursor-pointer disabled:opacity-60" disabled>
+                        <option value="">-- Pilih Kecamatan Dahulu --</option>
+                    </select>
+                </div>
+
+                <!-- Kode Pos -->
+                <div>
+                    <label class="mb-2 block text-xs font-bold text-gray-700 dark:text-gray-300">
+                        Kode Pos
+                    </label>
+                    <div class="input-icon-wrapper">
+                        <span class="input-icon material-symbols-outlined">markunread_mailbox</span>
+                        <input type="text" name="kode_pos" value="<?= esc($siswa['kode_pos'] ?? '', 'attr') ?>" class="form-input-control border border-gray-300 dark:border-gray-600 font-mono" placeholder="5 digit kode pos">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Aksesibilitas & Karakteristik Tempat Tinggal -->
+    <div class="rounded-2xl border border-gray-100 bg-white p-5 sm:p-6 shadow-sm dark:border-gray-800 dark:bg-gray-800/40 space-y-5">
+        <div class="flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-800">
+            <span class="material-symbols-outlined text-brand-500 text-lg">commute</span>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-gray-200">2. Karakteristik Tinggal &amp; Aksesibilitas</h4>
         </div>
 
-        <div>
-            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Kabupaten / Kota <span class="text-red-500">*</span></label>
-            <select id="kabupaten" name="kab" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 disabled:opacity-60" disabled>
-                <option value="">-- Pilih Provinsi Terlebih Dahulu --</option>
-            </select>
-            <input type="hidden" id="kabupaten_id" value="">
-        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+            <!-- Jenis Tinggal -->
+            <div>
+                <label class="mb-2 block text-xs font-bold text-gray-700 dark:text-gray-300">
+                    Jenis Tempat Tinggal
+                </label>
+                <div class="input-icon-wrapper">
+                    <span class="input-icon material-symbols-outlined">apartment</span>
+                    <select name="jenis_tinggal" class="form-input-control border border-gray-300 dark:border-gray-600 cursor-pointer">
+                        <option value="">-- Pilih Jenis Tinggal --</option>
+                        <option value="Bersama Orang Tua" <?= ($siswa['jenis_tinggal'] ?? '') == 'Bersama Orang Tua' ? 'selected' : '' ?>>Bersama Orang Tua</option>
+                        <option value="Bersama Wali" <?= ($siswa['jenis_tinggal'] ?? '') == 'Bersama Wali' ? 'selected' : '' ?>>Bersama Wali</option>
+                        <option value="Kost" <?= ($siswa['jenis_tinggal'] ?? '') == 'Kost' ? 'selected' : '' ?>>Kost</option>
+                        <option value="Asrama" <?= ($siswa['jenis_tinggal'] ?? '') == 'Asrama' ? 'selected' : '' ?>>Asrama / Pesantren</option>
+                        <option value="Panti Asuhan" <?= ($siswa['jenis_tinggal'] ?? '') == 'Panti Asuhan' ? 'selected' : '' ?>>Panti Asuhan</option>
+                    </select>
+                </div>
+            </div>
 
-        <div>
-            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Kecamatan <span class="text-red-500">*</span></label>
-            <select id="kecamatan" name="kec" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 disabled:opacity-60" disabled>
-                <option value="">-- Pilih Kab/Kota Terlebih Dahulu --</option>
-            </select>
-            <input type="hidden" id="kecamatan_id" value="">
-        </div>
+            <!-- Jarak Rumah ke Sekolah -->
+            <div>
+                <label class="mb-2 block text-xs font-bold text-gray-700 dark:text-gray-300">
+                    Jarak ke Sekolah (km)
+                </label>
+                <div class="input-icon-wrapper">
+                    <span class="input-icon material-symbols-outlined">straighten</span>
+                    <input type="number" name="jarak" value="<?= esc($siswa['jarak'] ?? '', 'attr') ?>" step="0.1" min="0" class="form-input-control border border-gray-300 dark:border-gray-600" placeholder="Contoh: 2.5">
+                </div>
+            </div>
 
-        <div>
-            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Desa / Kelurahan <span class="text-red-500">*</span></label>
-            <select id="kelurahan" name="desa" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 disabled:opacity-60" disabled>
-                <option value="">-- Pilih Kecamatan Terlebih Dahulu --</option>
-            </select>
-        </div>
-
-        <div>
-            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Kode Pos</label>
-            <input type="text" name="kode_pos" value="<?= esc($siswa['kode_pos'] ?? '', 'attr') ?>" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 font-mono" placeholder="Kode pos">
-        </div>
-
-        <div>
-            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Jenis Tinggal</label>
-            <select name="jenis_tinggal" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
-                <option value="">-- Pilih Jenis Tinggal --</option>
-                <option value="Bersama Orang Tua" <?= ($siswa['jenis_tinggal'] ?? '') == 'Bersama Orang Tua' ? 'selected' : '' ?>>Bersama Orang Tua</option>
-                <option value="Bersama Wali" <?= ($siswa['jenis_tinggal'] ?? '') == 'Bersama Wali' ? 'selected' : '' ?>>Bersama Wali</option>
-                <option value="Kost" <?= ($siswa['jenis_tinggal'] ?? '') == 'Kost' ? 'selected' : '' ?>>Kost</option>
-                <option value="Asrama" <?= ($siswa['jenis_tinggal'] ?? '') == 'Asrama' ? 'selected' : '' ?>>Asrama</option>
-                <option value="Panti Asuhan" <?= ($siswa['jenis_tinggal'] ?? '') == 'Panti Asuhan' ? 'selected' : '' ?>>Panti Asuhan</option>
-            </select>
-        </div>
-
-        <div>
-            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Jarak Rumah ke Sekolah (km)</label>
-            <input type="number" name="jarak" value="<?= esc($siswa['jarak'] ?? '', 'attr') ?>" step="0.1" min="0" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500" placeholder="Contoh: 2.5">
-        </div>
-
-        <div>
-            <label class="mb-2.5 block text-sm font-medium text-black dark:text-white">Moda Transportasi</label>
-            <select name="trans" class="w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 px-5 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500">
-                <option value="">-- Pilih Transportasi --</option>
-                <option value="Jalan Kaki" <?= ($siswa['trans'] ?? '') == 'Jalan Kaki' ? 'selected' : '' ?>>Jalan Kaki</option>
-                <option value="Sepeda" <?= ($siswa['trans'] ?? '') == 'Sepeda' ? 'selected' : '' ?>>Sepeda</option>
-                <option value="Motor" <?= ($siswa['trans'] ?? '') == 'Motor' ? 'selected' : '' ?>>Motor</option>
-                <option value="Mobil" <?= ($siswa['trans'] ?? '') == 'Mobil' ? 'selected' : '' ?>>Mobil</option>
-                <option value="Angkutan Umum" <?= ($siswa['trans'] ?? '') == 'Angkutan Umum' ? 'selected' : '' ?>>Angkutan Umum</option>
-                <option value="Lainnya" <?= ($siswa['trans'] ?? '') == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
-            </select>
+            <!-- Moda Transportasi -->
+            <div>
+                <label class="mb-2 block text-xs font-bold text-gray-700 dark:text-gray-300">
+                    Moda Transportasi Utama
+                </label>
+                <div class="input-icon-wrapper">
+                    <span class="input-icon material-symbols-outlined">directions_bike</span>
+                    <select name="trans" class="form-input-control border border-gray-300 dark:border-gray-600 cursor-pointer">
+                        <option value="">-- Pilih Transportasi --</option>
+                        <option value="Jalan Kaki" <?= ($siswa['trans'] ?? '') == 'Jalan Kaki' ? 'selected' : '' ?>>Jalan Kaki</option>
+                        <option value="Sepeda" <?= ($siswa['trans'] ?? '') == 'Sepeda' ? 'selected' : '' ?>>Sepeda</option>
+                        <option value="Motor" <?= ($siswa['trans'] ?? '') == 'Motor' ? 'selected' : '' ?>>Sepeda Motor</option>
+                        <option value="Mobil" <?= ($siswa['trans'] ?? '') == 'Mobil' ? 'selected' : '' ?>>Mobil Pribadi</option>
+                        <option value="Angkutan Umum" <?= ($siswa['trans'] ?? '') == 'Angkutan Umum' ? 'selected' : '' ?>>Angkutan Umum</option>
+                        <option value="Lainnya" <?= ($siswa['trans'] ?? '') == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -99,6 +99,7 @@
         }
     </style>
     <?= $this->renderSection('head') ?>
+    <?= $this->renderSection('styles') ?>
 </head>
 <body class="bg-gray-100/70 text-gray-800 antialiased overflow-hidden">
 

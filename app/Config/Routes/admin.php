@@ -6,6 +6,9 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     // Settings
     $routes->get('settings', 'Admin\Settings::index');
     $routes->post('settings/update', 'Admin\Settings::update');
+    $routes->post('settings/tahun-pelajaran/store', 'Admin\Settings::storeTahunPelajaran');
+    $routes->post('settings/tahun-pelajaran/activate/(:num)', 'Admin\Settings::activateTahunPelajaran/$1');
+    $routes->post('settings/tahun-pelajaran/delete/(:num)', 'Admin\Settings::deleteTahunPelajaran/$1');
 
     // Profile
     $routes->get('profile', 'Admin\Profile::index');
@@ -25,8 +28,11 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     // Siswa (Students)
     $routes->get('siswa', 'Admin\Siswa::index');
     $routes->get('siswa/detail/(:num)', 'Admin\Siswa::detail/$1');
+    $routes->get('siswa/quick-detail/(:num)', 'Admin\Siswa::quickDetail/$1');
     $routes->post('siswa/verify/(:num)', 'Admin\Siswa::verify/$1');
+    $routes->post('siswa/bulk-verify', 'Admin\Siswa::bulkVerify');
     $routes->post('siswa/delete/(:num)', 'Admin\Siswa::delete/$1');
+    $routes->post('siswa/bulk-delete', 'Admin\Siswa::bulkDelete');
     $routes->post('siswa/resetPassword/(:num)', 'Admin\Siswa::resetPassword/$1');
     $routes->get('siswa/reset-throttle', 'Admin\Siswa::resetThrottle');
     $routes->post('siswa/reset-throttle', 'Admin\Siswa::resetThrottle');

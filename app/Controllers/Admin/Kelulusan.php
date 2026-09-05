@@ -19,12 +19,13 @@ class Kelulusan extends BaseController
         $search = $this->request->getGet('search');
         $status = $this->request->getGet('status');
 
-        $builder = $this->siswaModel->select('*');
+        $activeTh = $this->siswaModel->getActiveThPelajaran();
+        $selectedTh = $this->request->getGet('th_pelajaran') ?? $activeTh;
 
-        // Filter: Only show students who have verified files or status_verifikasi is valid/lolos
-        // Usually graduation is only for verified students. 
-        // Let's assume we want to see all students but prioritize verified ones.
-        // Or strictly follow users request: "setatus kelulusan siswa"
+        $builder = $this->siswaModel->select('*');
+        if ($selectedTh !== 'all') {
+            $builder->where('th_pelajaran', $selectedTh);
+        }
 
         if (!empty($search)) {
             $builder->groupStart()
@@ -38,12 +39,22 @@ class Kelulusan extends BaseController
             $builder->where('status_lulus', $status);
         }
 
-        $totalAll    = $this->siswaModel->countAll();
-        $totalLulus  = $this->siswaModel->where('status_lulus', 'Lulus')->countAllResults();
-        $totalTl     = $this->siswaModel->where('status_lulus', 'Tidak Lulus')->countAllResults();
-        $totalPending = $this->siswaModel->groupStart()
+        // Hitung statistik pendaftar untuk tahun yang dipilih
+        $countQuery = function() use ($selectedTh) {
+            $m = new SiswaModel();
+            if ($selectedTh !== 'all') {
+                $m->where('th_pelajaran', $selectedTh);
+            }
+            return $m;
+        };
+
+        $totalAll    = $countQuery()->countAllResults();
+        $totalLulus  = $countQuery()->where('status_lulus', 'Lulus')->countAllResults();
+        $totalTl     = $countQuery()->where('status_lulus', 'Tidak Lulus')->countAllResults();
+        $totalPending = $countQuery()->groupStart()
             ->where('status_lulus', 'Pending')
             ->orWhere('status_lulus IS NULL')
+            ->orWhere('status_lulus', '')
             ->groupEnd()->countAllResults();
 
         $data = [
@@ -55,6 +66,8 @@ class Kelulusan extends BaseController
             'totalLulus'   => $totalLulus,
             'totalTl'      => $totalTl,
             'totalPending' => $totalPending,
+            'selectedTh'   => $selectedTh,
+            'activeTh'     => $activeTh,
         ];
 
         return view('admin/kelulusan/index', $data);

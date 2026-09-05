@@ -247,17 +247,20 @@ class Auth extends BaseController
 
         // Mencegah Race Condition: Gunakan Transaksi DB dan manfaatkan Auto-Increment ID
         $db = \Config\Database::connect();
-        $db->transStart();
+        $tblWebModel = new TblWebModel();
+        $web = $tblWebModel->find(1);
+        $thPelajaran = !empty($web['th_pelajaran']) ? $web['th_pelajaran'] : '2025/2026';
 
         // Insert initial data dengan temporary no_pendaftaran
         $data = [
-            'no_pendaftaran' => 'TEMP-' . uniqid(),
-            'nisn' => $this->request->getPost('nisn'),
-            'nama_lengkap' => $this->request->getPost('nama_lengkap'),
-            'email' => $this->request->getPost('email'),
-            'no_hp' => $this->request->getPost('no_hp'),
-            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'tgl_siswa' => date('Y-m-d H:i:s'),
+            'no_pendaftaran'    => 'TEMP-' . uniqid(),
+            'th_pelajaran'      => $thPelajaran,
+            'nisn'              => $this->request->getPost('nisn'),
+            'nama_lengkap'      => $this->request->getPost('nama_lengkap'),
+            'email'             => $this->request->getPost('email'),
+            'no_hp'             => $this->request->getPost('no_hp'),
+            'password'          => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            'tgl_siswa'         => date('Y-m-d H:i:s'),
             'status_verifikasi' => 'Menunggu'
         ];
 
@@ -267,8 +270,6 @@ class Auth extends BaseController
 
         if ($insertId) {
             // Setelah insert ID didapat secara absolut dari MySQL, susun no_pendaftaran permanen
-            $tblWebModel = new TblWebModel();
-            $web = $tblWebModel->find(1);
             $format = !empty($web['format_no_daftar']) ? $web['format_no_daftar'] : 'PPDB-{TAHUN}-{URUT}';
             
             $year = !empty($web['th_pelajaran']) ? substr($web['th_pelajaran'], 0, 4) : date('Y');

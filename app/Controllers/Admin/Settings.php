@@ -4,16 +4,19 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\TblWebModel;
+use App\Models\TahunPelajaranModel;
 
 class Settings extends BaseController
 {
     protected $tblWebModel;
     protected $settingKopModel;
+    protected $tahunPelajaranModel;
 
     public function __construct()
     {
         $this->tblWebModel = new TblWebModel();
         $this->settingKopModel = new \App\Models\SettingKopModel();
+        $this->tahunPelajaranModel = new TahunPelajaranModel();
     }
 
     public function index()
@@ -58,10 +61,13 @@ class Settings extends BaseController
             $kop = $this->settingKopModel->find(1);
         }
 
+        $tahunPelajaranList = $this->tahunPelajaranModel->getWithStudentCount();
+
         $data = [
             'web' => $web,
             'penghasilan_list' => trim($penghasilan_list),
-            'kop' => $kop
+            'kop' => $kop,
+            'tahunPelajaranList' => $tahunPelajaranList,
         ];
         return view('admin/settings/index', $data);
     }
@@ -234,11 +240,126 @@ class Settings extends BaseController
                 }
             }
 
+            // Pastikan th_pelajaran tersinkron ke tbl_tahun_pelajaran jika diubah di form umum
+            $thPelajaranPost = trim((string)$this->request->getPost('th_pelajaran'));
+            if (!empty($thPelajaranPost)) {
+                $existingTh = $this->tahunPelajaranModel->where('tahun_pelajaran', $thPelajaranPost)->first();
+                if ($existingTh) {
+                    if ($existingTh['status'] !== 'Aktif') {
+                        $this->tahunPelajaranModel->setActive($existingTh['id_tahun']);
+                    }
+                } else {
+                    $newId = $this->tahunPelajaranModel->insert([
+                        'tahun_pelajaran' => $thPelajaranPost,
+                        'status'          => 'Tidak Aktif',
+                        'keterangan'      => 'Ditambahkan melalui form pengaturan',
+                    ]);
+                    if ($newId) {
+                        $this->tahunPelajaranModel->setActive($newId);
+                    }
+                }
+            }
+
             catat_log('Pengaturan', 'Memperbarui pengaturan sistem & template landing page (' . $landingVariant . ')');
             session()->setFlashdata('success', 'Pengaturan berhasil diperbarui. Template landing page aktif: ' . strtoupper($landingVariant) . '!');
         } else {
             session()->setFlashdata('error', 'Gagal memperbarui pengaturan.');
         }
+
+        return redirect()->to('/admin/settings');
+    }
+
+    /**
+     * Tambah Tahun Pelajaran baru ke riwayat
+     */
+    public function storeTahunPelajaran()
+    {
+        $tahunPelajaran = trim((string)$this->request->getPost('tahun_pelajaran'));
+        $keterangan     = trim((string)$this->request->getPost('keterangan'));
+        $setAktif       = (bool)$this->request->getPost('set_aktif');
+
+        if (!preg_match('/^[0-9]{4}\/[0-9]{4}$/', $tahunPelajaran)) {
+            session()->setFlashdata('error', 'Format Tahun Pelajaran tidak valid. Gunakan format tahun (contoh: 2026/2027).');
+            return redirect()->to('/admin/settings');
+        }
+
+        $existing = $this->tahunPelajaranModel->where('tahun_pelajaran', $tahunPelajaran)->first();
+        if ($existing) {
+            session()->setFlashdata('error', "Tahun Pelajaran {$tahunPelajaran} sudah ada dalam riwayat.");
+            return redirect()->to('/admin/settings');
+        }
+
+        $data = [
+            'tahun_pelajaran' => $tahunPelajaran,
+            'status'          => 'Tidak Aktif',
+            'keterangan'      => !empty($keterangan) ? $keterangan : null,
+        ];
+
+        $insertId = $this->tahunPelajaranModel->insert($data);
+        if (!$insertId) {
+            session()->setFlashdata('error', 'Gagal menambahkan tahun pelajaran baru.');
+            return redirect()->to('/admin/settings');
+        }
+
+        if ($setAktif) {
+            $this->tahunPelajaranModel->setActive($insertId);
+            catat_log('Pengaturan', "Menambahkan dan mengaktifkan Tahun Pelajaran {$tahunPelajaran}");
+            session()->setFlashdata('success', "Tahun Pelajaran {$tahunPelajaran} berhasil ditambahkan dan langsung AKTIF! Data calon siswa dari tahun sebelumnya otomatis disembunyikan.");
+        } else {
+            catat_log('Pengaturan', "Menambahkan Tahun Pelajaran {$tahunPelajaran} ke riwayat");
+            session()->setFlashdata('success', "Tahun Pelajaran {$tahunPelajaran} berhasil ditambahkan ke riwayat.");
+        }
+
+        return redirect()->to('/admin/settings');
+    }
+
+    /**
+     * Jadikan tahun pelajaran tertentu sebagai aktif
+     */
+    public function activateTahunPelajaran($id)
+    {
+        $tahun = $this->tahunPelajaranModel->find($id);
+        if (!$tahun) {
+            session()->setFlashdata('error', 'Data Tahun Pelajaran tidak ditemukan.');
+            return redirect()->to('/admin/settings');
+        }
+
+        if ($this->tahunPelajaranModel->setActive($id)) {
+            catat_log('Pengaturan', "Mengaktifkan Tahun Pelajaran {$tahun['tahun_pelajaran']}");
+            session()->setFlashdata('success', "Tahun Pelajaran {$tahun['tahun_pelajaran']} kini berstatus AKTIF! Data pendaftar pada tahun ini ditampilkan, dan data tahun lain otomatis disembunyikan.");
+        } else {
+            session()->setFlashdata('error', 'Gagal mengaktifkan Tahun Pelajaran.');
+        }
+
+        return redirect()->to('/admin/settings');
+    }
+
+    /**
+     * Hapus tahun pelajaran dari riwayat (hanya jika non-aktif dan belum ada pendaftar)
+     */
+    public function deleteTahunPelajaran($id)
+    {
+        $tahun = $this->tahunPelajaranModel->find($id);
+        if (!$tahun) {
+            session()->setFlashdata('error', 'Data Tahun Pelajaran tidak ditemukan.');
+            return redirect()->to('/admin/settings');
+        }
+
+        if ($tahun['status'] === 'Aktif') {
+            session()->setFlashdata('error', 'Tahun Pelajaran yang sedang Aktif tidak dapat dihapus.');
+            return redirect()->to('/admin/settings');
+        }
+
+        $db = \Config\Database::connect();
+        $countSiswa = $db->table('tbl_siswa')->where('th_pelajaran', $tahun['tahun_pelajaran'])->where('deleted_at', null)->countAllResults();
+        if ($countSiswa > 0) {
+            session()->setFlashdata('error', "Tahun Pelajaran {$tahun['tahun_pelajaran']} tidak dapat dihapus karena memiliki {$countSiswa} data pendaftar.");
+            return redirect()->to('/admin/settings');
+        }
+
+        $this->tahunPelajaranModel->delete($id);
+        catat_log('Pengaturan', "Menghapus riwayat Tahun Pelajaran {$tahun['tahun_pelajaran']}");
+        session()->setFlashdata('success', "Tahun Pelajaran {$tahun['tahun_pelajaran']} berhasil dihapus dari riwayat.");
 
         return redirect()->to('/admin/settings');
     }

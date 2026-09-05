@@ -55,6 +55,7 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
     <?= $this->renderSection('head') ?>
+    <?= $this->renderSection('styles') ?>
 </head>
 
 <body

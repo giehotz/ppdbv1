@@ -133,6 +133,9 @@ class ExportSiswa extends BaseController
         ]);
 
         // Populate data rows using chunking to prevent memory exhaustion
+        $activeTh = $this->siswaModel->getActiveThPelajaran();
+        $selectedTh = $this->request->getGet('th_pelajaran') ?? $activeTh;
+
         $row = 2;
         $index = 0;
         $limit = 100;
@@ -140,7 +143,11 @@ class ExportSiswa extends BaseController
 
         while (true) {
             // Fetch students in segments
-            $students = $this->siswaModel->orderBy('tgl_siswa', 'DESC')->findAll($limit, $offset);
+            $builder = $this->siswaModel->orderBy('tgl_siswa', 'DESC');
+            if ($selectedTh !== 'all' && !empty($selectedTh)) {
+                $builder->where('th_pelajaran', $selectedTh);
+            }
+            $students = $builder->findAll($limit, $offset);
 
             if (empty($students)) {
                 break;

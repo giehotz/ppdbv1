@@ -17,8 +17,10 @@ class Siswa extends BaseController
     public function index()
     {
         $search = $this->request->getGet('search');
+        $activeTh = $this->siswaModel->getActiveThPelajaran();
+        $selectedTh = $this->request->getGet('th_pelajaran') ?? $activeTh;
 
-        $siswaList = $this->siswaModel->getStudents($search);
+        $siswaList = $this->siswaModel->getStudents($search, 20, 'ASC', $selectedTh);
 
         // Add completion percentage
         foreach ($siswaList as &$s) {
@@ -26,10 +28,16 @@ class Siswa extends BaseController
             $s['kelengkapan'] = $completionData['percentage'];
         }
 
+        $tahunModel = new \App\Models\TahunPelajaranModel();
+        $tahunList = $tahunModel->orderBy('id_tahun', 'DESC')->findAll();
+
         $data = [
-            'siswa' => $siswaList,
-            'pager' => $this->siswaModel->pager,
-            'search' => $search
+            'siswa'      => $siswaList,
+            'pager'      => $this->siswaModel->pager,
+            'search'     => $search,
+            'selectedTh' => $selectedTh,
+            'activeTh'   => $activeTh,
+            'tahunList'  => $tahunList,
         ];
 
         return view('verifikator/siswa/index', $data);
@@ -158,21 +166,26 @@ class Siswa extends BaseController
         }
 
         $db = \Config\Database::connect();
+        $tblWebModel = new \App\Models\TblWebModel();
+        $web = $tblWebModel->find(1);
+        $thPelajaran = !empty($web['th_pelajaran']) ? $web['th_pelajaran'] : '2025/2026';
+
         $db->transStart();
 
         $cleanPhone = preg_replace('/[^0-9]/', '', (string)$this->request->getPost('no_hp'));
 
         // Insert initial data dengan temporary no_pendaftaran
         $data = [
-            'no_pendaftaran' => 'TEMP-' . uniqid(),
-            'nisn' => $this->request->getPost('nisn'),
-            'nama_lengkap' => $this->request->getPost('nama_lengkap'),
-            'email' => $this->request->getPost('email'),
-            'no_hp_siswa' => $cleanPhone,
-            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'tgl_siswa' => date('Y-m-d H:i:s'),
+            'no_pendaftaran'    => 'TEMP-' . uniqid(),
+            'th_pelajaran'      => $thPelajaran,
+            'nisn'              => $this->request->getPost('nisn'),
+            'nama_lengkap'      => $this->request->getPost('nama_lengkap'),
+            'email'             => $this->request->getPost('email'),
+            'no_hp_siswa'       => $cleanPhone,
+            'password'          => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            'tgl_siswa'         => date('Y-m-d H:i:s'),
             'status_verifikasi' => 'Menunggu',
-            'status_pendaftaran' => 'Draft'
+            'status_pendaftaran'=> 'Draft'
         ];
 
         $insertId = $siswaModel->skipValidation(true)->insert($data);
@@ -185,8 +198,6 @@ class Siswa extends BaseController
         }
 
         if ($insertId) {
-            $tblWebModel = new \App\Models\TblWebModel();
-            $web = $tblWebModel->find(1);
             $format = !empty($web['format_no_daftar']) ? $web['format_no_daftar'] : 'PPDB-{TAHUN}-{URUT}';
             
             $year = !empty($web['th_pelajaran']) ? substr($web['th_pelajaran'], 0, 4) : date('Y');

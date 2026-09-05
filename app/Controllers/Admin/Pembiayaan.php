@@ -132,9 +132,15 @@ class Pembiayaan extends BaseController
     public function siswaList()
     {
         $db = \Config\Database::connect();
+        $activeYear = $this->siswaModel->getActiveThPelajaran();
+        $selectedTh = $this->request->getGet('th_pelajaran') ?? $activeYear;
+
         $builder = $db->table('tbl_siswa');
-        $builder->select('tbl_siswa.id_siswa, tbl_siswa.no_pendaftaran, tbl_siswa.nama_lengkap, tbl_siswa.jk');
+        $builder->select('tbl_siswa.id_siswa, tbl_siswa.no_pendaftaran, tbl_siswa.nama_lengkap, tbl_siswa.jk, tbl_siswa.th_pelajaran');
         $builder->where('tbl_siswa.deleted_at', null);
+        if ($selectedTh !== 'all') {
+            $builder->where('tbl_siswa.th_pelajaran', $selectedTh);
+        }
         $siswaList = $builder->orderBy('tbl_siswa.nama_lengkap', 'ASC')->get()->getResultArray();
 
         $data = [];

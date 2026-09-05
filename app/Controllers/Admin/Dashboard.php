@@ -13,31 +13,48 @@ class Dashboard extends BaseController
     {
         $siswaModel = new SiswaModel();
         $pengumumanModel = new PengumumanModel();
+        $activeYear = $siswaModel->getActiveThPelajaran();
 
-        // Main stat cards
-        $totalPendaftar = $siswaModel->countAll();
-        $terverifikasi  = $siswaModel->where('status_verifikasi', 'Terverifikasi')->countAllResults();
-        $pending        = $siswaModel->groupStart()
+        // Main stat cards (difilter berdasarkan tahun ajaran aktif)
+        $totalPendaftar = $siswaModel->where('th_pelajaran', $activeYear)->countAllResults();
+        $terverifikasi  = $siswaModel->where('th_pelajaran', $activeYear)->where('status_verifikasi', 'Terverifikasi')->countAllResults();
+        $pending        = $siswaModel->where('th_pelajaran', $activeYear)->groupStart()
             ->where('status_verifikasi', 'Menunggu')
             ->orWhere('status_verifikasi IS NULL')
+            ->orWhere('status_verifikasi', '')
             ->groupEnd()->countAllResults();
-        $ditolak        = $siswaModel->where('status_verifikasi', 'Ditolak')->countAllResults();
-        $lulus          = $siswaModel->where('status_lulus', 'Lulus')->countAllResults();
+        $ditolak        = $siswaModel->where('th_pelajaran', $activeYear)->where('status_verifikasi', 'Ditolak')->countAllResults();
+        $lulus          = $siswaModel->where('th_pelajaran', $activeYear)->where('status_lulus', 'Lulus')->countAllResults();
 
         // Mini stats
-        $lakiLaki  = $siswaModel->where('jk', 'L')->countAllResults();
-        $perempuan = $siswaModel->where('jk', 'P')->countAllResults();
+        $lakiLaki  = $siswaModel->where('th_pelajaran', $activeYear)->where('jk', 'L')->countAllResults();
+        $perempuan = $siswaModel->where('th_pelajaran', $activeYear)->where('jk', 'P')->countAllResults();
         $pengumumanAktif = $pengumumanModel->where('is_active', 1)->countAll();
 
-        // Berkas stats
+        // Berkas stats (difilter berdasarkan siswa tahun ajaran aktif)
         $db = \Config\Database::connect();
-        $berkasMasuk  = $db->table('tbl_berkas')->countAll();
-        $berkasValid  = $db->table('tbl_berkas')->where('status_verifikasi', 'Terverifikasi')->countAllResults();
-        $berkasInvalid = $db->table('tbl_berkas')->where('status_verifikasi', 'Ditolak')->countAllResults();
+        $berkasMasuk   = $db->table('tbl_berkas')
+            ->join('tbl_siswa', 'tbl_siswa.id_siswa = tbl_berkas.id_siswa')
+            ->where('tbl_siswa.th_pelajaran', $activeYear)
+            ->where('tbl_siswa.deleted_at', null)
+            ->countAllResults();
+        $berkasValid   = $db->table('tbl_berkas')
+            ->join('tbl_siswa', 'tbl_siswa.id_siswa = tbl_berkas.id_siswa')
+            ->where('tbl_siswa.th_pelajaran', $activeYear)
+            ->where('tbl_siswa.deleted_at', null)
+            ->where('tbl_berkas.status_verifikasi', 'Terverifikasi')
+            ->countAllResults();
+        $berkasInvalid = $db->table('tbl_berkas')
+            ->join('tbl_siswa', 'tbl_siswa.id_siswa = tbl_berkas.id_siswa')
+            ->where('tbl_siswa.th_pelajaran', $activeYear)
+            ->where('tbl_siswa.deleted_at', null)
+            ->where('tbl_berkas.status_verifikasi', 'Ditolak')
+            ->countAllResults();
 
-        // Registration trend (last 7 days)
+        // Registration trend (last 7 days - tahun ajaran aktif)
         $trendRaw = $siswaModel
             ->select("DATE(tgl_siswa) as tgl, COUNT(*) as jumlah")
+            ->where('th_pelajaran', $activeYear)
             ->where('tgl_siswa >= DATE_SUB(NOW(), INTERVAL 7 DAY)')
             ->groupBy('DATE(tgl_siswa)')
             ->orderBy('tgl', 'ASC')
@@ -54,9 +71,10 @@ class Dashboard extends BaseController
             $trendData[] = $found;
         }
 
-        // Top schools (top 5)
+        // Top schools (top 5 - tahun ajaran aktif)
         $topSchools = $siswaModel
             ->select('nama_sekolah, COUNT(*) as jumlah')
+            ->where('th_pelajaran', $activeYear)
             ->where('nama_sekolah IS NOT NULL')
             ->where('nama_sekolah !=', '')
             ->groupBy('nama_sekolah')
@@ -65,11 +83,11 @@ class Dashboard extends BaseController
             ->findAll();
 
         // Registration channels
-        $jalurOnline  = $siswaModel->where('jalur_pendaftaran', 'Online')->countAllResults();
-        $jalurOffline = $siswaModel->where('jalur_pendaftaran', 'Offline')->countAllResults();
+        $jalurOnline  = $siswaModel->where('th_pelajaran', $activeYear)->where('jalur_pendaftaran', 'Online')->countAllResults();
+        $jalurOffline = $siswaModel->where('th_pelajaran', $activeYear)->where('jalur_pendaftaran', 'Offline')->countAllResults();
 
         // Recent 5 students
-        $recentStudents = $siswaModel->orderBy('tgl_siswa', 'DESC')->limit(5)->findAll();
+        $recentStudents = $siswaModel->where('th_pelajaran', $activeYear)->orderBy('tgl_siswa', 'DESC')->limit(5)->findAll();
 
         // Recent activity logins
         $userModel = new \App\Models\UserModel();
@@ -112,6 +130,7 @@ class Dashboard extends BaseController
             'activeUsers'         => $activeUsers,
             'pendingUnlock'       => $pendingUnlock,
             'latestAnnouncements' => $latestAnnouncements,
+            'activeYear'          => $activeYear,
         ];
 
         return view('admin/dashboard', $data);

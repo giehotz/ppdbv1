@@ -95,13 +95,24 @@ class SettingKartuController extends BaseController
         $db = \Config\Database::connect();
         $builder = $db->table('tbl_siswa');
 
+        $idsParam = $this->request->getGet('ids');
+        $hasCustomIds = false;
+        if (!empty($idsParam)) {
+            $ids = is_array($idsParam) ? $idsParam : explode(',', (string)$idsParam);
+            $ids = array_filter(array_map('intval', $ids));
+            if (!empty($ids)) {
+                $builder->whereIn('tbl_siswa.id_siswa', $ids);
+                $hasCustomIds = true;
+            }
+        }
+
         if (!empty($statusKelulusan)) {
             $builder->where('status_lulus', $statusKelulusan);
         }
 
         $builder->orderBy('id_siswa', 'ASC');
 
-        if ($limit > 0) {
+        if (!$hasCustomIds && $limit > 0) {
             $builder->limit((int)$limit, (int)$offset);
         }
 

@@ -16,13 +16,18 @@ class Laporan extends BaseController
 
     public function index()
     {
+        $activeTh = $this->laporanModel->getActiveThPelajaran();
+        $selectedTh = $this->request->getGet('th_pelajaran') ?? $activeTh;
+
         $data = [
-            'statistik'  => $this->laporanModel->getStatistikUmum(),
-            'kelulusan'  => $this->laporanModel->getKelulusan(),
-            'gender'     => $this->laporanModel->getGenderStats(),
-            'jalur'      => $this->laporanModel->getJalurPendaftaranStats(),
-            'topSekolah' => $this->laporanModel->getTopSekolah(),
-            'topWilayah' => $this->laporanModel->getTopWilayah(),
+            'statistik'  => $this->laporanModel->getStatistikUmum($selectedTh),
+            'kelulusan'  => $this->laporanModel->getKelulusan($selectedTh),
+            'gender'     => $this->laporanModel->getGenderStats($selectedTh),
+            'jalur'      => $this->laporanModel->getJalurPendaftaranStats($selectedTh),
+            'topSekolah' => $this->laporanModel->getTopSekolah($selectedTh),
+            'topWilayah' => $this->laporanModel->getTopWilayah($selectedTh),
+            'selectedTh' => $selectedTh,
+            'activeTh'   => $activeTh,
         ];
 
         return view('admin/laporan/index', $data);
@@ -30,16 +35,26 @@ class Laporan extends BaseController
 
     public function cetak()
     {
+        $activeTh = $this->laporanModel->getActiveThPelajaran();
+        $selectedTh = $this->request->getGet('th_pelajaran') ?? $activeTh;
+
+        $query = $this->laporanModel->orderBy('tgl_siswa', 'ASC');
+        if ($selectedTh !== 'all') {
+            $query->where('th_pelajaran', $selectedTh);
+        }
+
         $data = [
-            'semua_siswa'=> $this->laporanModel->orderBy('tgl_siswa', 'ASC')->findAll(),
-            'statistik'  => $this->laporanModel->getStatistikUmum(),
-            'kelulusan'  => $this->laporanModel->getKelulusan(),
-            'gender'     => $this->laporanModel->getGenderStats(),
-            'jalur'      => $this->laporanModel->getJalurPendaftaranStats(),
-            'topSekolah' => $this->laporanModel->getTopSekolah(),
-            'topWilayah' => $this->laporanModel->getTopWilayah(),
-            'waktu_cetak'=> date('d-m-Y H:i:s'),
-            'dicetak_oleh'=> session()->get('nama_lengkap') ?? 'Administrator'
+            'semua_siswa' => $query->findAll(),
+            'statistik'   => $this->laporanModel->getStatistikUmum($selectedTh),
+            'kelulusan'   => $this->laporanModel->getKelulusan($selectedTh),
+            'gender'      => $this->laporanModel->getGenderStats($selectedTh),
+            'jalur'       => $this->laporanModel->getJalurPendaftaranStats($selectedTh),
+            'topSekolah'  => $this->laporanModel->getTopSekolah($selectedTh),
+            'topWilayah'  => $this->laporanModel->getTopWilayah($selectedTh),
+            'waktu_cetak' => date('d-m-Y H:i:s'),
+            'dicetak_oleh'=> session()->get('nama_lengkap') ?? 'Administrator',
+            'selectedTh'  => $selectedTh,
+            'activeTh'    => $activeTh,
         ];
 
         return view('admin/laporan/cetak_pdf', $data);

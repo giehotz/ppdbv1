@@ -46,10 +46,9 @@ Detail Calon Siswa
     <div class="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-8 md:px-10 md:py-8 text-white flex flex-col md:flex-row items-center md:items-start gap-6 relative overflow-hidden">
         <i class="fas fa-graduation-cap absolute -right-10 -top-10 text-9xl text-white opacity-10"></i>
         
-        <?php if (!empty($berkasFoto) && !empty($siswa['nisn'])): ?>
-            <?php $fotoUrl = base_url('uploads/berkas/' . $siswa['nisn'] . '/' . $berkasFoto['nama_file']); ?>
+        <?php if (!empty($siswa['foto_url'])): ?>
             <div class="w-24 h-24 rounded-full border-4 border-white/30 flex-shrink-0 shadow-lg overflow-hidden">
-                <img src="<?= $fotoUrl ?>" alt="Foto <?= esc($siswa['nama_lengkap']) ?>" class="w-full h-full object-cover">
+                <img src="<?= $siswa['foto_url'] ?>" alt="Foto <?= esc($siswa['nama_lengkap']) ?>" class="w-full h-full object-cover" onerror="this.parentElement.outerHTML='<div class=\'w-24 h-24 rounded-full bg-white/20 border-4 border-white/30 flex items-center justify-center flex-shrink-0 backdrop-blur-sm shadow-lg\'><i class=\'fas fa-user text-4xl text-white\'></i></div>';">
             </div>
         <?php else: ?>
             <div class="w-24 h-24 rounded-full bg-white/20 border-4 border-white/30 flex items-center justify-center flex-shrink-0 backdrop-blur-sm shadow-lg">

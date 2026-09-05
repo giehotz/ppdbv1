@@ -67,12 +67,16 @@ function showTab(tabName) {
 
     // Remove active state from all tabs
     const buttons = document.querySelectorAll('.tab-button');
-    const activeClasses = ['border-brand-500', 'text-brand-600', 'dark:text-brand-400'];
-    const inactiveClasses = ['border-transparent', 'text-gray-500', 'hover:text-gray-900', 'dark:text-gray-400', 'dark:hover:text-white'];
+    const activeClasses = ['border-brand-500', 'bg-brand-500/10', 'dark:bg-brand-500/20', 'text-brand-600', 'dark:text-brand-400'];
+    const inactiveClasses = ['border-transparent', 'text-gray-500', 'hover:text-gray-900', 'hover:bg-gray-100', 'dark:text-gray-400', 'dark:hover:text-white', 'dark:hover:bg-gray-800'];
 
     buttons.forEach(button => {
-        button.classList.remove(...activeClasses, 'border-brand-500');
+        button.classList.remove(...activeClasses);
         button.classList.add(...inactiveClasses);
+        const stepNum = button.querySelector('span:first-child');
+        if (stepNum && stepNum.textContent.trim().match(/^\d+$/)) {
+            stepNum.className = 'flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-[10px] font-extrabold text-gray-600 dark:text-gray-300';
+        }
     });
 
     // Show selected tab content
@@ -84,6 +88,10 @@ function showTab(tabName) {
     if (activeButton) {
         activeButton.classList.remove(...inactiveClasses);
         activeButton.classList.add(...activeClasses);
+        const stepNum = activeButton.querySelector('span:first-child');
+        if (stepNum && stepNum.textContent.trim().match(/^\d+$/)) {
+            stepNum.className = 'flex h-5 w-5 items-center justify-center rounded-full bg-brand-500 text-[10px] font-extrabold text-white';
+        }
 
         // Scroll active tab into view on mobile
         if (window.innerWidth < 768) {

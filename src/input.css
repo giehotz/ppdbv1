@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@source "../app/Views";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -102,4 +104,65 @@
   direction: ltr;
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
+}
+
+/* Form Controls & Inputs Explicit Borders */
+.form-input-control,
+.tab-content input:not([type="file"]):not([type="hidden"]),
+.tab-content select,
+.tab-content textarea {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1.5px solid #d1d5db !important;
+  background-color: #ffffff;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #111827;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .form-input-control,
+.dark .tab-content input:not([type="file"]):not([type="hidden"]),
+.dark .tab-content select,
+.dark .tab-content textarea {
+  border-color: #4b5563 !important;
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+.form-input-control:focus,
+.tab-content input:not([type="file"]):not([type="hidden"]):focus,
+.tab-content select:focus,
+.tab-content textarea:focus {
+  border-color: #465fff !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(70, 95, 255, 0.18) !important;
+}
+
+.input-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon-wrapper .input-icon {
+  position: absolute;
+  left: 0.875rem;
+  pointer-events: none;
+  color: #9ca3af;
+  font-size: 1.125rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.dark .input-icon-wrapper .input-icon {
+  color: #6b7280;
+}
+
+.input-icon-wrapper input,
+.input-icon-wrapper select {
+  padding-left: 2.625rem !important;
 }

@@ -235,17 +235,17 @@
 
                             if (progressText) {
                                 progressText.textContent = pct + '%';
-                                progressText.className = pct < 100 ? 'text-sm font-bold text-red-500' : 'text-sm font-bold text-green-600';
+                                progressText.className = pct < 100 ? 'text-base sm:text-lg font-black font-mono text-amber-500 dark:text-amber-400' : 'text-base sm:text-lg font-black font-mono text-emerald-500 dark:text-emerald-400';
                             }
                             if (progressBar) {
                                 progressBar.style.width = pct + '%';
-                                progressBar.className = pct < 100 ? 'bg-red-500 h-2.5 rounded-full transition-all duration-500' : 'bg-green-600 h-2.5 rounded-full transition-all duration-500';
+                                progressBar.className = pct < 100 ? 'bg-gradient-to-r from-amber-500 to-orange-500 h-2.5 rounded-full transition-all duration-500' : 'bg-gradient-to-r from-emerald-500 to-teal-500 h-2.5 rounded-full transition-all duration-500';
                             }
                             if (progressInfo) {
                                 if (pct < 100) {
-                                    progressInfo.innerHTML = `Ada <span class="font-bold text-red-500">${incompleteCount}</span> kolom wajib yang belum diisi.`;
+                                    progressInfo.innerHTML = `Terdapat <span class="font-bold text-amber-600 dark:text-amber-400">${incompleteCount}</span> kolom wajib yang belum lengkap.`;
                                 } else {
-                                    progressInfo.innerHTML = `<span class="text-green-600 font-medium"><i class="fas fa-check-circle mr-1"></i> Biodata sudah 100% lengkap! Anda dapat mengakses Dashboard.</span>`;
+                                    progressInfo.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400 font-bold inline-flex items-center gap-1"><span class="material-symbols-outlined text-sm">verified</span> Formulir 100% lengkap! Siap untuk tahap finalisasi.</span>`;
                                 }
                             }
                         }
