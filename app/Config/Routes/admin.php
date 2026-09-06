@@ -6,6 +6,7 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     // Settings
     $routes->get('settings', 'Admin\Settings::index');
     $routes->post('settings/update', 'Admin\Settings::update');
+    $routes->post('settings/stepper/reset', 'Admin\Settings::resetStepper');
     $routes->post('settings/tahun-pelajaran/store', 'Admin\Settings::storeTahunPelajaran');
     $routes->post('settings/tahun-pelajaran/activate/(:num)', 'Admin\Settings::activateTahunPelajaran/$1');
     $routes->post('settings/tahun-pelajaran/delete/(:num)', 'Admin\Settings::deleteTahunPelajaran/$1');
@@ -55,6 +56,14 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     $routes->get('kelulusan', 'Admin\Kelulusan::index');
     $routes->post('kelulusan/update/(:num)', 'Admin\Kelulusan::update/$1');
     $routes->post('kelulusan/bulkUpdate', 'Admin\Kelulusan::bulkUpdate');
+    $routes->post('kelulusan/toggle-daftar-ulang', 'Admin\Kelulusan::toggleDaftarUlang');
+
+    // Daftar Ulang & Seragam Management
+    $routes->get('daftar-ulang', 'Admin\DaftarUlang::index');
+    $routes->post('daftar-ulang/simpan-pengaturan', 'Admin\DaftarUlang::simpanPengaturan');
+    $routes->post('daftar-ulang/simpan-form-seragam', 'Admin\DaftarUlang::simpanFormSeragam');
+    $routes->post('daftar-ulang/reset-form-seragam', 'Admin\DaftarUlang::resetFormSeragam');
+    $routes->get('daftar-ulang/export-excel', 'Admin\DaftarUlang::exportExcel');
 
     // Laporan & Analisis
     $routes->get('laporan', 'Admin\Laporan::index');
@@ -96,6 +105,7 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     $routes->post('landing-content/deleteFitur/(:num)', 'Admin\LandingContent::deleteFitur/$1');
     $routes->post('landing-content/saveGaleri', 'Admin\LandingContent::saveGaleri');
     $routes->post('landing-content/deleteGaleri/(:num)', 'Admin\LandingContent::deleteGaleri/$1');
+    $routes->post('landing-content/convertAllGaleriToWebp', 'Admin\LandingContent::convertAllGaleriToWebp');
     $routes->post('landing-content/saveTestimoni', 'Admin\LandingContent::saveTestimoni');
     $routes->post('landing-content/deleteTestimoni/(:num)', 'Admin\LandingContent::deleteTestimoni/$1');
     $routes->post('landing-content/saveFaq', 'Admin\LandingContent::saveFaq');

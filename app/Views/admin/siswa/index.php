@@ -32,17 +32,9 @@ Calon Siswa
             <div>
                 <div class="flex items-center gap-2.5 flex-wrap">
                     <h3 class="text-sm font-bold text-gray-800 dark:text-white">Daftar Calon Siswa</h3>
-                    <?php if (!empty($activeTh)): ?>
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-600 text-white shadow-theme-xs ring-2 ring-emerald-500/20 dark:bg-emerald-500 dark:text-gray-950">
-                            <i class="fas fa-calendar-check text-[10px]"></i>
-                            <span>TP: <?= esc($activeTh) ?> ★ (Aktif)</span>
-                        </span>
-                    <?php endif; ?>
                 </div>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Kelola data pendaftaran, kelengkapan berkas, verifikasi, dan pembiayaan siswa.</p>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2.5 w-full xl:w-auto">
+                <div class="flex flex-wrap items-center gap-2.5 w-full xl:w-auto">
                 <button type="button"
                    onclick="confirmResetThrottle('<?= base_url('admin/siswa/reset-throttle') ?>')"
                    class="inline-flex items-center justify-center gap-1.5 h-9 rounded-lg border border-amber-200 bg-amber-50 px-3 text-xs font-semibold text-amber-700 hover:bg-amber-100 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300 transition-colors shadow-theme-xs shrink-0"
@@ -95,6 +87,9 @@ Calon Siswa
                     </div>
                 </form>
             </div>
+            </div>
+
+            
         </div>
 
         <?php if (!empty($selectedTh) && $selectedTh !== $activeTh && $selectedTh !== 'all'): ?>

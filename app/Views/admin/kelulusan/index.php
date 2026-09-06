@@ -75,6 +75,38 @@ $pendingCount = $totalPending ?? 0;
     </div>
 </div>
 
+<!-- Banner Pengaturan Akses Daftar Ulang -->
+<div class="mb-6 rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="flex items-center gap-3.5">
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
+            <span class="material-symbols-outlined text-2xl">backpack</span>
+        </div>
+        <div>
+            <div class="flex items-center gap-2">
+                <h4 class="text-sm font-bold text-gray-900 dark:text-white">Akses Formulir Daftar Ulang &amp; Ukuran Seragam</h4>
+                <span id="badgeDaftarUlang" class="rounded-full px-2.5 py-0.5 text-[10px] font-bold <?= (($web['daftar_ulang_aktif'] ?? '1') == '1') ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400' : 'bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-400' ?>">
+                    <?= (($web['daftar_ulang_aktif'] ?? '1') == '1') ? 'DIBUKA' : 'DITUTUP' ?>
+                </span>
+            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                Buka atau tutup akses konfirmasi daftar ulang dan pemilihan ukuran seragam bagi calon siswa yang telah dinyatakan Lulus.
+            </p>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-3 shrink-0">
+        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Status Akses:</span>
+        <label for="toggleDaftarUlang" class="relative inline-flex cursor-pointer items-center" title="Buka/Tutup Akses Daftar Ulang">
+            <input type="checkbox" id="toggleDaftarUlang" class="peer sr-only" <?= (($web['daftar_ulang_aktif'] ?? '1') == '1') ? 'checked' : '' ?> onchange="toggleDaftarUlangAdmin(this)">
+            <div class="h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-brand-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
+        </label>
+        <a href="<?= base_url('admin/daftar-ulang') ?>" class="text-xs font-semibold text-brand-600 hover:underline dark:text-brand-400 flex items-center gap-1" title="Pengaturan & Rekap Daftar Ulang">
+            <span class="material-symbols-outlined text-sm">tune</span>
+            <span>Atur Batas Waktu &amp; Form Seragam</span>
+        </a>
+    </div>
+</div>
+
 <!-- Table Card -->
 <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
     <div class="border-b border-gray-100 px-5 py-4 dark:border-gray-800 md:px-6">
@@ -273,6 +305,64 @@ $pendingCount = $totalPending ?? 0;
     document.querySelectorAll('.status-form select').forEach(s => {
         s.dataset.prev = s.value;
     });
+
+    function toggleDaftarUlangAdmin(el) {
+        const isChecked = el.checked ? '1' : '0';
+        const csrfName = '<?= csrf_token() ?>';
+        const csrfHash = '<?= csrf_hash() ?>';
+
+        const formData = new FormData();
+        formData.append('status', isChecked);
+        formData.append(csrfName, csrfHash);
+
+        fetch('<?= base_url('admin/kelulusan/toggle-daftar-ulang') ?>', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: data.message || 'Gagal mengubah pengaturan',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                el.checked = !el.checked;
+            } else {
+                const badge = document.getElementById('badgeDaftarUlang');
+                if (isChecked === '1') {
+                    badge.className = 'rounded-full px-2.5 py-0.5 text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400';
+                    badge.innerText = 'DIBUKA';
+                } else {
+                    badge.className = 'rounded-full px-2.5 py-0.5 text-[10px] font-bold bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-400';
+                    badge.innerText = 'DITUTUP';
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan Jaringan',
+                text: 'Terjadi kesalahan jaringan, silakan coba lagi.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            el.checked = !el.checked;
+        });
+    }
 </script>
 
 <style>

@@ -68,6 +68,7 @@ class Kelulusan extends BaseController
             'totalPending' => $totalPending,
             'selectedTh'   => $selectedTh,
             'activeTh'     => $activeTh,
+            'web'          => (new \App\Models\TblWebModel())->first() ?? [],
         ];
 
         return view('admin/kelulusan/index', $data);
@@ -128,5 +129,19 @@ class Kelulusan extends BaseController
         }
 
         return redirect()->back();
+    }
+
+    public function toggleDaftarUlang()
+    {
+        $status = $this->request->getPost('status');
+        $statusVal = ($status === '1' || $status === 1 || $status === true || $status === 'true') ? '1' : '0';
+        $db = \Config\Database::connect();
+        $db->table('tbl_web')->where('id_web', 1)->update(['daftar_ulang_aktif' => $statusVal]);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => $statusVal === '1' ? 'Akses formulir Daftar Ulang & Seragam berhasil DIBUKA untuk siswa lulus.' : 'Akses formulir Daftar Ulang berhasil DITUTUP.',
+            'status'  => $statusVal,
+        ]);
     }
 }

@@ -136,11 +136,26 @@ Landing Content Management
         }
     }
 
-    // Initialize active tab on page load
+    // Initialize active tab on page load (support hash like #Galeri or #galeri)
+    function resolveInitialTab() {
+        const hash = window.location.hash ? window.location.hash.replace('#', '').toLowerCase() : '';
+        if (hash && document.getElementById('tab-' + hash)) {
+            return hash;
+        }
+        return localStorage.getItem('activeLandingTab') || 'navbar';
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-        const activeTab = localStorage.getItem('activeLandingTab') || 'navbar';
+        const activeTab = resolveInitialTab();
         if (document.getElementById('tab-' + activeTab)) {
             switchTab(activeTab);
+        }
+    });
+
+    window.addEventListener('hashchange', function() {
+        const hash = window.location.hash ? window.location.hash.replace('#', '').toLowerCase() : '';
+        if (hash && document.getElementById('tab-' + hash)) {
+            switchTab(hash);
         }
     });
 
@@ -254,32 +269,6 @@ Landing Content Management
         document.getElementById('fitur_ikon').value = '';
         document.getElementById('fitur_deskripsi').value = '';
         document.getElementById('fitur_is_active').checked = true;
-    }
-
-    // =========================================================================
-    // GALERI FUNCTIONS
-    // =========================================================================
-
-    function editGaleri(data) {
-        document.getElementById('galeri-form-title').innerText = 'Edit Galeri';
-        document.getElementById('galeri_id').value = data.galeri_id;
-        document.getElementById('galeri_judul').value = data.judul;
-        document.getElementById('galeri_urutan').value = data.urutan;
-        document.getElementById('galeri_deskripsi').value = data.deskripsi;
-        document.getElementById('galeri_is_active').checked = data.is_active == 1;
-        document.getElementById('galeri_gambar_note').classList.remove('hidden');
-        document.getElementById('galeri_judul').focus();
-    }
-
-    function resetGaleriForm() {
-        document.getElementById('galeri-form-title').innerText = 'Tambah Galeri Baru';
-        document.getElementById('galeri_id').value = '';
-        document.getElementById('galeri_judul').value = '';
-        document.getElementById('galeri_urutan').value = '0';
-        document.getElementById('galeri_gambar').value = '';
-        document.getElementById('galeri_deskripsi').value = '';
-        document.getElementById('galeri_is_active').checked = true;
-        document.getElementById('galeri_gambar_note').classList.add('hidden');
     }
 
     // =========================================================================

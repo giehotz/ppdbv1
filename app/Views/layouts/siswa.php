@@ -101,13 +101,15 @@
             ['label' => 'Dashboard',           'icon' => 'home',            'url' => 'siswa/dashboard'],
             ['label' => 'Biodata Siswa',       'icon' => 'user-edit',       'url' => 'siswa/biodata'],
             ['label' => 'Upload Berkas',       'icon' => 'file-upload',     'url' => 'siswa/berkas'],
+            ['label' => 'Cetak Kartu Peserta', 'icon' => 'id-card',         'url' => 'siswa/cetak-kartu'],
         ],
         'Tahapan PPDB' => [
             ['label' => 'Status Pendaftaran',  'icon' => 'clipboard-check', 'url' => 'siswa/status'],
             ['label' => 'Hasil Kelulusan',     'icon' => 'graduation-cap',  'url' => 'siswa/kelulusan'],
         ],
-        'Informasi & Media' => [
+        'Informasi & Dokumen' => [
             ['label' => 'Pengumuman',          'icon' => 'bullhorn',        'url' => 'siswa/pengumuman'],
+            ['label' => 'Surat Pernyataan',    'icon' => 'file-contract',   'url' => 'siswa/surat-pernyataan'],
             ['label' => 'Twibbon',             'icon' => 'image',           'url' => 'siswa/twibbon'],
             ['label' => 'Kotak Masuk',         'icon' => 'inbox',           'url' => 'siswa/pesan', 'badge' => $unreadPesan],
         ],
@@ -115,6 +117,17 @@
 
     if (!isset($webData['tampil_pembiayaan_siswa']) || $webData['tampil_pembiayaan_siswa'] == 1) {
         array_unshift($sidebarMenus['Tahapan PPDB'], ['label' => 'Pembiayaan', 'icon' => 'money-bill-wave', 'url' => 'siswa/pembiayaan']);
+    }
+
+    $idSiswaNav = session()->get('id_siswa');
+    if ($idSiswaNav) {
+        $siswaModelNav = new \App\Models\SiswaModel();
+        $siswaNav = $siswaModelNav->select('status_lulus')->find($idSiswaNav);
+        if (($siswaNav['status_lulus'] ?? '') === 'Lulus') {
+            $labelDu = (($webData['seragam_aktif'] ?? '1') == '1') ? 'Daftar Ulang & Seragam' : 'Daftar Ulang';
+            $iconDu  = (($webData['seragam_aktif'] ?? '1') == '1') ? 'tshirt' : 'user-check';
+            $sidebarMenus['Tahapan PPDB'][] = ['label' => $labelDu, 'icon' => $iconDu, 'url' => 'siswa/daftar-ulang'];
+        }
     }
 
     $nisn = session()->get('nisn');

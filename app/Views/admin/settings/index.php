@@ -33,6 +33,10 @@ Pengaturan Sistem
             <span class="material-symbols-outlined text-lg">description</span>
             <span>Kop Dokumen</span>
         </button>
+        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="stepper-tab-btn" data-target="tab-stepper" type="button" role="tab">
+            <span class="material-symbols-outlined text-lg">alt_route</span>
+            <span>Alur &amp; Stepper</span>
+        </button>
     </div>
 </div>
 
@@ -60,6 +64,10 @@ Pengaturan Sistem
             <?= view('admin/settings/_tab_kop') ?>
         </div>
 
+        <div id="tab-stepper" class="tab-content hidden">
+            <?= view('admin/settings/_tab_stepper', ['stepperConfig' => $stepperConfig, 'stepperAktif' => $stepperAktif]) ?>
+        </div>
+
         <!-- Submit Button -->
         <div class="flex justify-end pt-6 border-t border-gray-200 dark:border-gray-800">
             <button type="submit" class="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-xl shadow-theme-xs hover:shadow-theme-md transition-all duration-200 active:scale-[0.97]">
@@ -76,6 +84,10 @@ Pengaturan Sistem
 </form>
 
 <form id="form-delete-tp" action="" method="post" class="hidden">
+    <?= csrf_field() ?>
+</form>
+
+<form id="formResetStepperAction" action="<?= base_url('admin/settings/stepper/reset') ?>" method="post" class="hidden">
     <?= csrf_field() ?>
 </form>
 
@@ -122,6 +134,130 @@ Pengaturan Sistem
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal Tambah Tahapan Custom Stepper -->
+<div id="modalTambahStep" class="fixed inset-0 z-[9999] hidden overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-theme-xl dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-brand-500">add_task</span>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white">Tambah Tahapan Baru</h3>
+            </div>
+            <button type="button" onclick="closeModalTambahStep()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="mt-5 space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-gray-800 dark:text-gray-200 mb-1.5">Judul Tahapan <span class="text-red-500">*</span></label>
+                <input type="text" id="newStepTitle" placeholder="Contoh: Wawancara Orang Tua & Siswa"
+                       class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-800 shadow-theme-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-800 dark:text-gray-200 mb-1.5">Deskripsi / Petunjuk Singkat</label>
+                <textarea id="newStepDesc" rows="2" placeholder="Contoh: Datang ke sekolah bersama orang tua sesuai jadwal"
+                          class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs text-gray-800 shadow-theme-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none"></textarea>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-800 dark:text-gray-200 mb-1.5">Icon Material Symbol</label>
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0 border border-gray-200 dark:border-gray-700">
+                            <span id="newStepIconPreview" class="material-symbols-outlined text-brand-500 text-lg">groups</span>
+                        </div>
+                        <input type="text" id="newStepIcon" value="groups" oninput="const prev = document.getElementById('newStepIconPreview'); if(prev) prev.textContent = this.value || 'circle'"
+                               placeholder="groups, event, school"
+                               class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs text-gray-800 shadow-theme-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none">
+                    </div>
+                    <span class="text-[10px] text-gray-400 mt-1 block">Nama icon dari Google Material Symbols</span>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-800 dark:text-gray-200 mb-1.5">Status Bawaan Siswa</label>
+                    <select id="newStepCustomStatus" class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs text-gray-800 shadow-theme-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none">
+                        <option value="pending">Menunggu / Belum Selesai</option>
+                        <option value="success">Selesai (Centang Hijau)</option>
+                        <option value="process">Sedang Berlangsung (Biru)</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-800 dark:text-gray-200 mb-1.5">Link / URL Tombol Aksi (Opsional)</label>
+                <input type="text" id="newStepUrl" placeholder="Contoh: siswa/daftar-ulang atau https://..."
+                       class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs text-gray-800 shadow-theme-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none">
+                <span class="text-[10px] text-gray-400 mt-1 block">Kosongkan jika tahapan ini hanya bersifat informasi tanpa tautan halaman</span>
+            </div>
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-800 mt-6">
+                <button type="button" onclick="closeModalTambahStep()" class="px-4 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                    Batal
+                </button>
+                <button type="button" onclick="handleSaveNewStep()" class="px-5 py-2.5 text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 rounded-xl shadow-theme-xs transition-colors">
+                    Tambahkan ke Alur
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit Tahapan Stepper -->
+<div id="modalEditStep" class="fixed inset-0 z-[9999] hidden overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-theme-xl dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-brand-500">edit_note</span>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white">Edit Tahapan</h3>
+            </div>
+            <button type="button" onclick="closeModalEditStep()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="mt-5 space-y-4">
+            <input type="hidden" id="editStepIndex" value="">
+            <div>
+                <label class="block text-xs font-bold text-gray-800 dark:text-gray-200 mb-1.5">Judul Tahapan <span class="text-red-500">*</span></label>
+                <input type="text" id="editStepTitle"
+                       class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-xs text-gray-800 shadow-theme-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-800 dark:text-gray-200 mb-1.5">Deskripsi / Petunjuk Singkat</label>
+                <textarea id="editStepDesc" rows="2"
+                          class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs text-gray-800 shadow-theme-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none"></textarea>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-800 dark:text-gray-200 mb-1.5">Icon Material Symbol</label>
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0 border border-gray-200 dark:border-gray-700">
+                            <span id="editStepIconPreview" class="material-symbols-outlined text-brand-500 text-lg">circle</span>
+                        </div>
+                        <input type="text" id="editStepIcon" oninput="const prev = document.getElementById('editStepIconPreview'); if(prev) prev.textContent = this.value || 'circle'"
+                               class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs text-gray-800 shadow-theme-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none">
+                    </div>
+                </div>
+                <div id="editCustomStatusWrapper">
+                    <label class="block text-xs font-bold text-gray-800 dark:text-gray-200 mb-1.5">Status Bawaan Siswa</label>
+                    <select id="editStepCustomStatus" class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs text-gray-800 shadow-theme-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none">
+                        <option value="pending">Menunggu / Belum Selesai</option>
+                        <option value="success">Selesai (Centang Hijau)</option>
+                        <option value="process">Sedang Berlangsung (Biru)</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-800 dark:text-gray-200 mb-1.5">Link / URL Tombol Aksi (Opsional)</label>
+                <input type="text" id="editStepUrl" placeholder="Contoh: siswa/daftar-ulang atau https://..."
+                       class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs text-gray-800 shadow-theme-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white outline-none">
+            </div>
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-800 mt-6">
+                <button type="button" onclick="closeModalEditStep()" class="px-4 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                    Batal
+                </button>
+                <button type="button" onclick="handleSaveEditStep()" class="px-5 py-2.5 text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 rounded-xl shadow-theme-xs transition-colors">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 

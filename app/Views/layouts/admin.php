@@ -108,6 +108,7 @@
             ['label' => 'Reset Password',     'icon' => 'key',            'url' => 'admin/reset-password'],
             ['label' => 'Berkas Siswa',       'icon' => 'file-alt',       'url' => 'admin/berkas'],
             ['label' => 'Kelulusan',          'icon' => 'graduation-cap', 'url' => 'admin/kelulusan'],
+            ['label' => 'Daftar Ulang',       'icon' => 'clipboard-check','url' => 'admin/daftar-ulang'],
             ['label' => 'Laporan & Analisis', 'icon' => 'chart-pie',      'url' => 'admin/laporan'],
             ['label' => 'Pembiayaan',         'icon' => 'money-bill-wave','url' => 'admin/pembiayaan'],
             ['label' => 'Log Aktivitas',      'icon' => 'history',        'url' => 'admin/log_aktivitas'],

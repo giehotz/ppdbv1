@@ -62,12 +62,16 @@ class Settings extends BaseController
         }
 
         $tahunPelajaranList = $this->tahunPelajaranModel->getWithStudentCount();
+        $stepperConfig = TblWebModel::getStepperConfig($web);
+        $stepperAktif  = (int)($web['stepper_aktif'] ?? 1);
 
         $data = [
-            'web' => $web,
-            'penghasilan_list' => trim($penghasilan_list),
-            'kop' => $kop,
+            'web'                => $web,
+            'penghasilan_list'   => trim($penghasilan_list),
+            'kop'                => $kop,
             'tahunPelajaranList' => $tahunPelajaranList,
+            'stepperConfig'      => $stepperConfig,
+            'stepperAktif'       => $stepperAktif,
         ];
         return view('admin/settings/index', $data);
     }
@@ -131,7 +135,18 @@ class Settings extends BaseController
             'wajib_biodata_100' => $this->request->getPost('wajib_biodata_100') ?? 1,
             'popup_biodata_welcome' => $this->request->getPost('popup_biodata_welcome'),
             'popup_biodata_warning' => $this->request->getPost('popup_biodata_warning'),
+            'daftar_ulang_aktif'     => $this->request->getPost('daftar_ulang_aktif') ?? '1',
+            'tgl_tutup_daftar_ulang' => !empty($this->request->getPost('tgl_tutup_daftar_ulang')) ? date('Y-m-d H:i:s', strtotime($this->request->getPost('tgl_tutup_daftar_ulang'))) : null,
+            'pesan_daftar_ulang'     => $this->request->getPost('pesan_daftar_ulang'),
+            'seragam_aktif'          => $this->request->getPost('seragam_aktif') ?? '1',
+            'stepper_aktif'          => $this->request->getPost('stepper_aktif') ?? '1',
         ];
+
+        // Handle Stepper Config JSON
+        $stepperConfigJson = $this->request->getPost('stepper_config');
+        if ($stepperConfigJson !== null) {
+            $data['stepper_config'] = $stepperConfigJson;
+        }
 
         // Handle File Upload (Logo)
         $fileLogo = $this->request->getFile('logo_sekolah');
@@ -362,5 +377,26 @@ class Settings extends BaseController
         session()->setFlashdata('success', "Tahun Pelajaran {$tahun['tahun_pelajaran']} berhasil dihapus dari riwayat.");
 
         return redirect()->to('/admin/settings');
+    }
+
+    /**
+     * Reset konfigurasi Alur & Tahapan PPDB (Stepper) ke default sistem
+     */
+    public function resetStepper()
+    {
+        $defaultConfig = TblWebModel::getDefaultStepperConfig();
+        $this->tblWebModel->update(1, [
+            'stepper_aktif'  => 1,
+            'stepper_config' => json_encode($defaultConfig, JSON_UNESCAPED_UNICODE),
+        ]);
+
+        $cache = \Config\Services::cache();
+        $cache->delete('app_settings');
+        $cache->delete('web_settings');
+
+        catat_log('Pengaturan', 'Mereset konfigurasi Alur & Tahapan PPDB (Stepper) ke default sistem');
+        session()->setFlashdata('success', 'Konfigurasi Alur & Tahapan PPDB (Stepper) berhasil dikembalikan ke standar awal sistem.');
+
+        return redirect()->to(base_url('admin/settings'));
     }
 }

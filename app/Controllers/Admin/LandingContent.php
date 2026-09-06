@@ -8,6 +8,7 @@ use App\Models\FiturModel;
 use App\Models\GaleriModel;
 use App\Models\TestimoniModel;
 use App\Models\FaqModel;
+use App\Libraries\ImageOptimizer;
 
 class LandingContent extends BaseController
 {
@@ -46,12 +47,36 @@ class LandingContent extends BaseController
         $testimoni = $this->testimoniModel->orderBy('created_at', 'DESC')->findAll();
         $faqs = $this->faqModel->orderBy('created_at', 'DESC')->findAll();
 
+        // Hitung statistik file galeri
+        $totalGaleriBytes = 0;
+        $nonWebpCount = 0;
+        foreach ($galeri as &$g) {
+            $path = FCPATH . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $g['gambar'] ?? '');
+            if (!empty($g['gambar']) && file_exists($path) && is_file($path)) {
+                $bytes = filesize($path);
+                $g['file_size'] = $bytes;
+                $g['file_size_formatted'] = ImageOptimizer::formatSize($bytes);
+                $g['is_webp'] = strtolower(pathinfo($path, PATHINFO_EXTENSION)) === 'webp';
+                $totalGaleriBytes += $bytes;
+                if (!$g['is_webp']) {
+                    $nonWebpCount++;
+                }
+            } else {
+                $g['file_size'] = 0;
+                $g['file_size_formatted'] = '0 B';
+                $g['is_webp'] = false;
+            }
+        }
+        unset($g);
+
         $data = [
             'sections' => $sections,
             'fitur' => $fitur,
             'galeri' => $galeri,
             'testimoni' => $testimoni,
-            'faqs' => $faqs
+            'faqs' => $faqs,
+            'totalGaleriSize' => ImageOptimizer::formatSize($totalGaleriBytes),
+            'nonWebpCount' => $nonWebpCount,
         ];
 
         return view('admin/landing-content/index', $data);
@@ -176,46 +201,129 @@ class LandingContent extends BaseController
         $file = $this->request->getFile('gambar');
 
         $data = [
-            'judul' => $this->request->getPost('judul'),
+            'judul'     => $this->request->getPost('judul'),
             'deskripsi' => $this->request->getPost('deskripsi'),
-            'urutan' => $this->request->getPost('urutan'),
+            'urutan'    => $this->request->getPost('urutan'),
             'is_active' => $this->request->getPost('is_active') ? 1 : 0
         ];
 
-        // Handle File Upload
+        // Handle File Upload & WebP Conversion
         if ($file && $file->isValid()) {
-            $newName = $file->getRandomName();
-            $file->move(FCPATH . 'uploads/landing/galeri', $newName);
-            $data['gambar'] = 'uploads/landing/galeri/' . $newName;
+            $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
+            if (!in_array($file->getMimeType(), $allowedMimes, true)) {
+                session()->setFlashdata('error', 'Format file tidak diizinkan. Hanya gambar (JPG, PNG, WebP, GIF) maksimal 10MB.');
+                return redirect()->to('/admin/landing-content#galeri')->withInput();
+            }
+
+            // Convert to WebP & downscale proportionally (maks 1600px)
+            $result = ImageOptimizer::convertToWebp($file, 'uploads/landing/galeri', 1600, 1600, 82);
+
+            if ($result['success']) {
+                // Jika sedang mengedit foto, hapus file gambar lama dari disk
+                if ($id) {
+                    $existing = $this->galeriModel->find($id);
+                    if ($existing && !empty($existing['gambar'])) {
+                        ImageOptimizer::deleteFile($existing['gambar']);
+                    }
+                }
+
+                $data['gambar'] = $result['relative_path'];
+            } else {
+                session()->setFlashdata('error', 'Gagal memproses gambar: ' . ($result['message'] ?? 'Terjadi kesalahan.'));
+                return redirect()->to('/admin/landing-content#galeri')->withInput();
+            }
         }
 
         if ($id) {
             $this->galeriModel->update($id, $data);
+            $msg = 'Data Galeri berhasil diperbarui.';
         } else {
             if (!isset($data['gambar'])) {
                 session()->setFlashdata('error', 'Gambar wajib diupload untuk data baru.');
-                return redirect()->back()->withInput();
+                return redirect()->to('/admin/landing-content#galeri')->withInput();
             }
             $this->galeriModel->insert($data);
+            $msg = 'Foto galeri baru berhasil disimpan dan dikonversi ke format WebP super ringan.';
         }
 
         $this->clearLandingCache();
-        session()->setFlashdata('success', 'Data Galeri berhasil disimpan.');
-        return redirect()->to('/admin/landing-content');
+        session()->setFlashdata('success', $msg);
+        return redirect()->to('/admin/landing-content#galeri');
     }
 
     public function deleteGaleri($id)
     {
-        // Optional: Delete file from server
-        // $item = $this->galeriModel->find($id);
-        // if ($item && file_exists(FCPATH . $item['gambar'])) {
-        //     unlink(FCPATH . $item['gambar']);
-        // }
+        $item = $this->galeriModel->find($id);
+        if ($item && !empty($item['gambar'])) {
+            ImageOptimizer::deleteFile($item['gambar']);
+        }
 
         $this->galeriModel->delete($id);
         $this->clearLandingCache();
-        session()->setFlashdata('success', 'Data Galeri berhasil dihapus.');
-        return redirect()->to('/admin/landing-content');
+        session()->setFlashdata('success', 'Data Galeri dan file gambar berhasil dihapus dari server.');
+        return redirect()->to('/admin/landing-content#galeri');
+    }
+
+    /**
+     * Konversi semua foto galeri yang ada ke format WebP (Batch Optimization)
+     */
+    public function convertAllGaleriToWebp()
+    {
+        $items = $this->galeriModel->findAll();
+        if (empty($items)) {
+            session()->setFlashdata('warning', 'Belum ada data galeri untuk dikonversi.');
+            return redirect()->to('/admin/landing-content#galeri');
+        }
+
+        $convertedCount = 0;
+        $totalOldBytes = 0;
+        $totalNewBytes = 0;
+
+        foreach ($items as $item) {
+            $currentPath = $item['gambar'] ?? '';
+            if (empty($currentPath)) continue;
+
+            $fullPath = FCPATH . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $currentPath);
+            if (!file_exists($fullPath) || !is_file($fullPath)) continue;
+
+            $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+            $oldSize = filesize($fullPath);
+
+            // Konversi jika bukan webp atau jika ukurannya masih terlalu besar (> 400KB)
+            if ($ext !== 'webp' || $oldSize > 409600) {
+                $result = ImageOptimizer::convertToWebp($fullPath, 'uploads/landing/galeri', 1600, 1600, 82);
+
+                if ($result['success']) {
+                    // Update database path
+                    $this->galeriModel->update($item['galeri_id'], [
+                        'gambar' => $result['relative_path']
+                    ]);
+
+                    // Hapus file lama jika nama file berbeda
+                    if ($result['relative_path'] !== $currentPath) {
+                        ImageOptimizer::deleteFile($currentPath);
+                    }
+
+                    $convertedCount++;
+                    $totalOldBytes += $oldSize;
+                    $totalNewBytes += $result['new_size'];
+                }
+            }
+        }
+
+        $this->clearLandingCache();
+
+        if ($convertedCount > 0) {
+            $savedBytes = max(0, $totalOldBytes - $totalNewBytes);
+            $savedFormatted = ImageOptimizer::formatSize($savedBytes);
+            $savedPct = $totalOldBytes > 0 ? round(($savedBytes / $totalOldBytes) * 100, 1) : 0;
+
+            session()->setFlashdata('success', "Sukses! Berhasil mengonversi {$convertedCount} foto galeri ke WebP. Menghemat {$savedFormatted} ({$savedPct}% lebih ringan).");
+        } else {
+            session()->setFlashdata('info', 'Semua foto galeri sudah dalam format WebP yang optimal.');
+        }
+
+        return redirect()->to('/admin/landing-content#galeri');
     }
 
     // =========================================================================

@@ -13,6 +13,12 @@ $routes->group('siswa', ['filter' => ['siswa', 'csrf']], function ($routes) {
     $routes->get('status', 'Siswa\Status::index');
     $routes->get('pengumuman', 'Siswa\Pengumuman::index');
     $routes->get('cetak-formulir', 'Siswa\CetakFormulir::index');
+    $routes->get('cetak-kartu', 'Siswa\CetakKartu::index');
+    $routes->get('surat-pernyataan', 'Siswa\Dokumen::suratPernyataan');
+
+    // Daftar Ulang & Seragam (Post-Admission)
+    $routes->get('daftar-ulang', 'Siswa\DaftarUlang::index');
+    $routes->post('daftar-ulang/simpan', 'Siswa\DaftarUlang::simpan');
 
     // Pesan (Private Messages)
     $routes->get('pesan', 'Siswa\Pesan::index');

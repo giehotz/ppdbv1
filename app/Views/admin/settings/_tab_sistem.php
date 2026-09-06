@@ -80,6 +80,56 @@
             </select>
         </div>
 
+        <!-- Pengaturan Daftar Ulang & Seragam Pasca Kelulusan -->
+        <div class="p-4 rounded-xl border border-brand-100 bg-brand-50/30 dark:border-brand-900/40 dark:bg-brand-950/20 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-brand-200/50 pb-2.5 dark:border-brand-800/40">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-brand-600 dark:text-brand-400 text-lg">backpack</span>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white">Pengaturan Fitur Daftar Ulang &amp; Seragam</h4>
+                </div>
+                <a href="<?= base_url('admin/daftar-ulang') ?>" class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300">
+                    <span>Buka Modul Kelola Daftar Ulang &amp; Seragam</span>
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="mb-1.5 block text-xs font-bold text-gray-800 dark:text-gray-200">Status Akses Daftar Ulang</label>
+                    <select name="daftar_ulang_aktif"
+                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white outline-none transition-all">
+                        <option value="1" <?= (($web['daftar_ulang_aktif'] ?? '1') == '1') ? 'selected' : '' ?>>Aktif / Dibuka</option>
+                        <option value="0" <?= (($web['daftar_ulang_aktif'] ?? '1') == '0') ? 'selected' : '' ?>>Tidak Aktif / Ditutup</option>
+                    </select>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Mengontrol apakah siswa lulus dapat mengisi form daftar ulang.</p>
+                </div>
+
+                <div>
+                    <label class="mb-1.5 block text-xs font-bold text-gray-800 dark:text-gray-200">Visibilitas Bagian 2 (Seragam)</label>
+                    <select name="seragam_aktif"
+                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white outline-none transition-all">
+                        <option value="1" <?= (($web['seragam_aktif'] ?? '1') == '1') ? 'selected' : '' ?>>Tampilkan Formulir Seragam</option>
+                        <option value="0" <?= (($web['seragam_aktif'] ?? '1') == '0') ? 'selected' : '' ?>>Sembunyikan (Hanya Kesediaan)</option>
+                    </select>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Sembunyikan jika sekolah tidak mengoordinir seragam.</p>
+                </div>
+
+                <div>
+                    <label class="mb-1.5 block text-xs font-bold text-gray-800 dark:text-gray-200">Batas Waktu Penutupan (Opsional)</label>
+                    <?php $tgl_tutup_du = (!empty($web['tgl_tutup_daftar_ulang']) && $web['tgl_tutup_daftar_ulang'] !== '0000-00-00 00:00:00') ? date('Y-m-d\TH:i', strtotime($web['tgl_tutup_daftar_ulang'])) : ''; ?>
+                    <input type="datetime-local" name="tgl_tutup_daftar_ulang" value="<?= $tgl_tutup_du ?>"
+                           class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs text-gray-800 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white outline-none transition-all">
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Batas akhir pengisian konfirmasi oleh siswa.</p>
+                </div>
+            </div>
+
+            <div>
+                <label class="mb-1.5 block text-xs font-bold text-gray-800 dark:text-gray-200">Instruksi / Catatan Pengumuman untuk Siswa saat Ditutup (Opsional)</label>
+                <textarea name="pesan_daftar_ulang" rows="2" placeholder="Pesan pemberitahuan jika daftar ulang ditutup atau telah berakhir..."
+                          class="w-full rounded-lg border border-gray-300 bg-white p-2.5 text-xs text-gray-800 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white outline-none transition-all"><?= esc($web['pesan_daftar_ulang'] ?? '') ?></textarea>
+            </div>
+        </div>
+
         <div>
             <label class="mb-2 block text-sm font-bold text-gray-800 dark:text-gray-200">Format No. Pendaftaran</label>
             <input type="text" name="format_no_daftar" value="<?= esc($web['format_no_daftar'] ?? 'PPDB-{TAHUN}-{URUT}') ?>"
