@@ -241,6 +241,7 @@ class Siswa extends BaseController
 
         $db = \Config\Database::connect();
         $penghasilan = $db->table('tbl_penghasilan')->orderBy('urutan', 'ASC')->get()->getResultArray();
+        $pekerjaan = $db->table('tbl_pekerjaan')->orderBy('urutan', 'ASC')->get()->getResultArray();
         $tblWebModel = new \App\Models\TblWebModel();
         $web = $tblWebModel->find(1);
 
@@ -261,6 +262,7 @@ class Siswa extends BaseController
             'berkasDeleteUrl' => '/verifikator/siswa/berkasDelete/',
             'siswa' => $siswa,
             'penghasilan' => $penghasilan,
+            'pekerjaan' => $pekerjaan,
             'web' => $web,
             'completionPercentage' => $completionData['percentage'],
             'incompleteFields' => $completionData['incomplete'],
@@ -602,7 +604,7 @@ class Siswa extends BaseController
         $berkasModel->where('id_siswa', $id)->delete();
         $db->table('tbl_verifikasi')->where('id_siswa', $id)->delete();
         $db->table('tbl_pesan')->where('id_siswa', $id)->delete();
-        $db->table('tbl_unlock_request')->where('id_siswa', $id)->delete();
+        $db->table('tbl_unlock_requests')->where('id_siswa', $id)->delete();
         
         $this->siswaModel->delete($id);
 

@@ -42,6 +42,11 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     $routes->get('siswa/cetak-password', 'Admin\Siswa::cetakPassword');
     $routes->get('siswa/export-excel', 'Admin\ExportSiswa::exportExcel');
 
+    // SiswaList (Profil & Biodata Siswa)
+    $routes->get('siswa-list', 'Admin\SiswaList::index');
+    $routes->get('siswa-list/get-data', 'Admin\SiswaList::getDataAjax');
+    $routes->post('siswa-list/update-checklist', 'Admin\SiswaList::updateChecklist');
+
     // Unlock Requests (Permohonan Buka Kunci)
     $routes->get('unlockrequest', 'Admin\UnlockRequest::index');
     $routes->post('unlockrequest/approve/(:num)', 'Admin\UnlockRequest::approve/$1');

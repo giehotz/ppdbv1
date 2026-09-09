@@ -50,6 +50,9 @@ class Biodata extends BaseController
         $db = \Config\Database::connect();
         $penghasilan = $db->table('tbl_penghasilan')->orderBy('urutan', 'ASC')->get()->getResultArray();
 
+        // Get pekerjaan reference data
+        $pekerjaan = $db->table('tbl_pekerjaan')->orderBy('urutan', 'ASC')->get()->getResultArray();
+
         $completionData = $siswaModel->calculateCompletionPercentage($siswa);
 
         $tblWebModel = new \App\Models\TblWebModel();
@@ -61,6 +64,7 @@ class Biodata extends BaseController
             'requiredDocs' => $requiredDocs,
             'uploadedBerkas' => $uploadedBerkas,
             'penghasilan' => $penghasilan,
+            'pekerjaan' => $pekerjaan,
             'completionPercentage' => $completionData['percentage'],
             'incompleteFields' => $completionData['incomplete'],
             'web' => $web,

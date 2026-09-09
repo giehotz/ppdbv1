@@ -73,85 +73,85 @@ $verifikasiProgress = round(($terverifikasi + $ditolak) / $total * 100);
     </div>
 </div>
 
-<!-- Key Stat Cards (TailAdmin Metric Cards) -->
+<!-- Key Stat Cards (Gradient Theme) -->
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-6 mb-6">
     <!-- Total Pendaftar -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+    <div class="rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 p-5 shadow-theme-md transition-all duration-200 text-white hover:shadow-theme-lg hover:-translate-y-0.5 hover:brightness-110 md:p-6">
         <div class="flex items-center justify-between">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
                 <span class="material-symbols-outlined text-2xl">groups</span>
             </div>
-            <span class="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+            <span class="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-semibold text-white">
                 Semua Siswa
             </span>
         </div>
         <div class="mt-4 flex items-end justify-between">
             <div>
-                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Total Pendaftar</span>
-                <h4 class="mt-1 text-2xl font-bold text-gray-900 dark:text-white"><?= number_format($total_pendaftar) ?></h4>
+                <span class="text-xs font-medium text-white/70">Total Pendaftar</span>
+                <h4 class="mt-1 text-2xl font-bold text-white"><?= number_format($total_pendaftar) ?></h4>
             </div>
-            <p class="text-[11px] text-gray-400 dark:text-gray-500">Dalam Sistem</p>
+            <p class="text-[11px] text-white/80">Dalam Sistem</p>
         </div>
     </div>
 
     <!-- Menunggu Verifikasi -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+    <div class="rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 p-5 shadow-theme-md transition-all duration-200 text-white hover:shadow-theme-lg hover:-translate-y-0.5 hover:brightness-110 md:p-6">
         <div class="flex items-center justify-between">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
                 <span class="material-symbols-outlined text-2xl">hourglass_top</span>
             </div>
-            <span class="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">
+            <span class="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-semibold text-white">
                 Perlu Review
             </span>
         </div>
         <div class="mt-4 flex items-end justify-between">
             <div>
-                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Menunggu Verifikasi</span>
-                <h4 class="mt-1 text-2xl font-bold text-gray-900 dark:text-white"><?= number_format($menunggu_verifikasi) ?></h4>
+                <span class="text-xs font-medium text-white/70">Menunggu Verifikasi</span>
+                <h4 class="mt-1 text-2xl font-bold text-white"><?= number_format($menunggu_verifikasi) ?></h4>
             </div>
-            <a href="<?= base_url('verifikator/berkas') ?>" class="text-[11px] font-semibold text-amber-600 hover:underline dark:text-amber-400">
+            <a href="<?= base_url('verifikator/berkas') ?>" class="text-[11px] font-semibold text-white hover:underline">
                 Proses &rarr;
             </a>
         </div>
     </div>
 
     <!-- Terverifikasi -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+    <div class="rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 p-5 shadow-theme-md transition-all duration-200 text-white hover:shadow-theme-lg hover:-translate-y-0.5 hover:brightness-110 md:p-6">
         <div class="flex items-center justify-between">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
                 <span class="material-symbols-outlined text-2xl">task_alt</span>
             </div>
-            <span class="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">
+            <span class="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-semibold text-white">
                 Dokumen Valid
             </span>
         </div>
         <div class="mt-4 flex items-end justify-between">
             <div>
-                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Terverifikasi</span>
-                <h4 class="mt-1 text-2xl font-bold text-gray-900 dark:text-white"><?= number_format($terverifikasi) ?></h4>
+                <span class="text-xs font-medium text-white/70">Terverifikasi</span>
+                <h4 class="mt-1 text-2xl font-bold text-white"><?= number_format($terverifikasi) ?></h4>
             </div>
-            <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+            <p class="text-[11px] text-white/80 font-semibold">
                 <?= $total > 1 ? round(($terverifikasi / $total) * 100) : 0 ?>% dari total
             </p>
         </div>
     </div>
 
     <!-- Ditolak / Invalid -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+    <div class="rounded-2xl bg-gradient-to-br from-red-500 to-red-700 p-5 shadow-theme-md transition-all duration-200 text-white hover:shadow-theme-lg hover:-translate-y-0.5 hover:brightness-110 md:p-6">
         <div class="flex items-center justify-between">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
                 <span class="material-symbols-outlined text-2xl">cancel</span>
             </div>
-            <span class="rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-500/15 dark:text-red-400">
+            <span class="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-semibold text-white">
                 Perlu Perbaikan
             </span>
         </div>
         <div class="mt-4 flex items-end justify-between">
             <div>
-                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Berkas Ditolak</span>
-                <h4 class="mt-1 text-2xl font-bold text-gray-900 dark:text-white"><?= number_format($ditolak) ?></h4>
+                <span class="text-xs font-medium text-white/70">Berkas Ditolak</span>
+                <h4 class="mt-1 text-2xl font-bold text-white"><?= number_format($ditolak) ?></h4>
             </div>
-            <p class="text-[11px] text-red-600 dark:text-red-400 font-semibold">
+            <p class="text-[11px] text-white/80 font-semibold">
                 <?= $total > 1 ? round(($ditolak / $total) * 100) : 0 ?>% dari total
             </p>
         </div>

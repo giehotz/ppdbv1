@@ -45,6 +45,9 @@ foreach ($allMenuUrls as $menuUrl) {
         }
     }
 }
+
+// Grup yang boleh di-collapse (accordion). Default: tidak ada.
+$collapsibleGroups = $collapsibleGroups ?? [];
 ?>
 
 <aside
@@ -95,18 +98,53 @@ foreach ($allMenuUrls as $menuUrl) {
   <div class="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar flex-1 py-4">
     <nav class="space-y-6 px-3">
       <?php foreach ($sidebarMenus as $groupLabel => $items): ?>
-        <div>
-          <!-- Group Title -->
-          <h3
-            :class="sidebarToggle ? 'lg:text-center lg:px-0' : 'px-3'"
-            class="mb-2 text-[11px] font-semibold tracking-wider text-gray-400 uppercase dark:text-gray-500"
-          >
-            <span :class="sidebarToggle ? 'lg:hidden' : 'inline'"><?= esc($groupLabel) ?></span>
-            <span :class="sidebarToggle ? 'hidden lg:inline text-base font-bold' : 'hidden'">•</span>
-          </h3>
+        <?php
+          $isCollapsible = in_array($groupLabel, $collapsibleGroups, true);
+          $groupKey = 'ssb_' . preg_replace('/[^a-z0-9]+/', '_', strtolower($groupLabel));
+          $groupDefaultOpen = false;
+          $hasActiveInGroup = false;
+          foreach ($items as $gItem) {
+              if (trim($gItem['url'] ?? '', '/') === $activeMenuUrl) {
+                  $hasActiveInGroup = true;
+                  break;
+              }
+          }
+          if ($hasActiveInGroup) {
+              $groupDefaultOpen = true;
+          }
+        ?>
+        <div x-data="{ open: (() => { try { const v = localStorage.getItem('<?= $groupKey ?>'); return v === null ? <?= $groupDefaultOpen ? 'true' : 'false' ?> : v === '1'; } catch (e) { return <?= $groupDefaultOpen ? 'true' : 'false' ?>; } })() }">
+          <!-- Group Title / Toggle -->
+          <?php if ($isCollapsible): ?>
+            <button
+              type="button"
+              @click="open = !open; try { localStorage.setItem('<?= $groupKey ?>', open ? '1' : '0'); } catch (e) {}"
+              :disabled="sidebarToggle"
+              class="mb-2 flex w-full items-center justify-between gap-2 text-left text-[11px] font-semibold tracking-wider text-gray-400 uppercase dark:text-gray-500
+                     <?= $hasActiveInGroup ? 'text-brand-600 dark:text-brand-400' : '' ?>"
+            >
+              <span :class="sidebarToggle ? 'lg:text-center lg:px-0' : 'px-0'">
+                <span :class="sidebarToggle ? 'lg:hidden' : 'inline'"><?= esc($groupLabel) ?></span>
+                <span :class="sidebarToggle ? 'hidden lg:inline text-base font-bold' : 'hidden'">•</span>
+              </span>
+              <span :class="sidebarToggle ? 'lg:hidden' : 'inline-flex'" class="shrink-0 text-gray-400">
+                <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+              </span>
+            </button>
+          <?php else: ?>
+            <h3
+              :class="sidebarToggle ? 'lg:text-center lg:px-0' : 'px-3'"
+              class="mb-2 text-[11px] font-semibold tracking-wider text-gray-400 uppercase dark:text-gray-500"
+            >
+              <span :class="sidebarToggle ? 'lg:hidden' : 'inline'"><?= esc($groupLabel) ?></span>
+              <span :class="sidebarToggle ? 'hidden lg:inline text-base font-bold' : 'hidden'">•</span>
+            </h3>
+          <?php endif; ?>
 
           <!-- Items List -->
-          <ul class="space-y-1">
+          <ul <?= $isCollapsible
+            ? 'x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1"'
+            : '' ?> class="space-y-1">
             <?php foreach ($items as $item): ?>
               <?php
                 $itemUrl = trim($item['url'] ?? '', '/');

@@ -231,126 +231,7 @@ $isLockedCard = !($canPrintCard ?? false);
     </div>
 </div>
 
-<!-- 4. METRIC CARDS (4 Cards Grid) -->
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-5 mb-6">
-    
-    <!-- Metric 1: Status Verifikasi Berkas -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03]">
-        <div class="flex items-center justify-between">
-            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">
-                <span class="material-symbols-outlined text-2xl">verified_user</span>
-            </div>
-            <span class="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">
-                Verifikasi
-            </span>
-        </div>
-        <div class="mt-4 flex items-end justify-between">
-            <div>
-                <span class="text-[11px] font-medium text-gray-500 dark:text-gray-400">Status Berkas</span>
-                <div class="mt-1">
-                    <?php if (($siswa['status_verifikasi'] ?? '') === 'Terverifikasi') : ?>
-                        <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                            <span class="material-symbols-outlined text-base">check_circle</span> Terverifikasi
-                        </span>
-                    <?php elseif (($siswa['status_verifikasi'] ?? '') === 'Ditolak') : ?>
-                        <span class="text-sm font-bold text-red-600 dark:text-red-400 flex items-center gap-1">
-                            <span class="material-symbols-outlined text-base">cancel</span> Berkas Ditolak
-                        </span>
-                    <?php else : ?>
-                        <span class="text-sm font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                            <span class="material-symbols-outlined text-base">hourglass_top</span> Menunggu Review
-                        </span>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <a href="<?= base_url('siswa/status') ?>" class="text-[11px] font-semibold text-brand-600 hover:underline dark:text-brand-400">
-                Detail &rarr;
-            </a>
-        </div>
-    </div>
-
-    <!-- Metric 2: Kelengkapan Biodata -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03]">
-        <div class="flex items-center justify-between">
-            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
-                <span class="material-symbols-outlined text-2xl">pie_chart</span>
-            </div>
-            <span class="text-base font-mono font-extrabold text-brand-600 dark:text-brand-400"><?= (int) ($completionPercentage ?? 0) ?>%</span>
-        </div>
-        <div class="mt-4">
-            <div class="flex items-center justify-between text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1">
-                <span>Formulir Biodata</span>
-                <span class="text-[10px] font-bold <?= ($completionPercentage ?? 0) == 100 ? 'text-emerald-600' : 'text-amber-600' ?>">
-                    <?= ($completionPercentage ?? 0) == 100 ? 'Lengkap' : 'Belum Lengkap' ?>
-                </span>
-            </div>
-            <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
-                <div class="h-2 rounded-full transition-all duration-700 <?= ($completionPercentage ?? 0) == 100 ? 'bg-emerald-500' : 'bg-brand-500' ?>" style="width: <?= (int) ($completionPercentage ?? 0) ?>%"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Metric 3: Dokumen Berkas Fisik -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03]">
-        <div class="flex items-center justify-between">
-            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-500/15 dark:text-purple-400">
-                <span class="material-symbols-outlined text-2xl">folder_shared</span>
-            </div>
-            <span class="text-base font-mono font-extrabold text-purple-600 dark:text-purple-400"><?= (int)$berkasCount ?>/<?= (int)$berkasRequiredCount ?></span>
-        </div>
-        <div class="mt-4 flex items-end justify-between">
-            <div>
-                <span class="text-[11px] font-medium text-gray-500 dark:text-gray-400">Unggah Berkas</span>
-                <div class="mt-1">
-                    <span class="text-xs font-bold <?= $berkasCount >= $berkasRequiredCount ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-gray-300' ?>">
-                        <?= $berkasCount >= $berkasRequiredCount ? 'Dokumen Lengkap' : 'Belum Lengkap' ?>
-                    </span>
-                </div>
-            </div>
-            <a href="<?= base_url('siswa/berkas') ?>" class="text-[11px] font-semibold text-brand-600 hover:underline dark:text-brand-400">
-                Upload &rarr;
-            </a>
-        </div>
-    </div>
-
-    <!-- Metric 4: Status Finansial / Pembiayaan -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03]">
-        <div class="flex items-center justify-between">
-            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
-                <span class="material-symbols-outlined text-2xl">payments</span>
-            </div>
-            <?php if ($tampilPembiayaan && $totalTagihan > 0): ?>
-                <span class="rounded-full px-2 py-0.5 text-[10px] font-bold <?= $statusLunas ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400' : 'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400' ?>">
-                    <?= $statusLunas ? 'LUNAS' : 'BELUM LUNAS' ?>
-                </span>
-            <?php else: ?>
-                <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">
-                    BEBAS BIAYA
-                </span>
-            <?php endif; ?>
-        </div>
-        <div class="mt-4 flex items-end justify-between">
-            <div>
-                <span class="text-[11px] font-medium text-gray-500 dark:text-gray-400">Kewajiban Tagihan</span>
-                <h4 class="mt-0.5 text-xs font-bold text-gray-900 dark:text-white">
-                    <?php if ($tampilPembiayaan && $totalTagihan > 0): ?>
-                        <?= $statusLunas ? 'Semua Lunas' : 'Sisa Rp ' . number_format($sisaTagihan, 0, ',', '.') ?>
-                    <?php else: ?>
-                        Rp 0 (Gratis)
-                    <?php endif; ?>
-                </h4>
-            </div>
-            <?php if ($tampilPembiayaan): ?>
-                <a href="<?= base_url('siswa/pembiayaan') ?>" class="text-[11px] font-semibold text-brand-600 hover:underline dark:text-brand-400">
-                    Rincian &rarr;
-                </a>
-            <?php endif; ?>
-        </div>
-    </div>
-
-</div>
-
-<!-- 5. MENU UTAMA PENDAFTARAN (Enhanced Grid dengan Kartu Peserta) -->
+<!-- 4. MENU UTAMA PENDAFTARAN (Enhanced Grid dengan Kartu Peserta) -->
 <div class="mb-6">
     <div class="flex items-center gap-2 mb-4">
         <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
@@ -364,29 +245,29 @@ $isLockedCard = !($canPrintCard ?? false);
         $menus = [
             [
                 'url' => 'siswa/biodata', 'icon' => 'edit_note', 'label' => 'Biodata Siswa',
-                'bg' => 'bg-blue-50 dark:bg-blue-500/15', 'text' => 'text-blue-600 dark:text-blue-400',
+                'card' => 'bg-gradient-to-br from-blue-500 to-blue-700',
             ],
             [
                 'url' => 'siswa/berkas', 'icon' => 'upload_file', 'label' => 'Upload Berkas',
-                'bg' => 'bg-emerald-50 dark:bg-emerald-500/15', 'text' => 'text-emerald-600 dark:text-emerald-400',
+                'card' => 'bg-gradient-to-br from-emerald-500 to-teal-700',
             ],
             [
                 'url' => 'siswa/cetak-kartu', 'icon' => 'badge', 'label' => 'Cetak Kartu Peserta',
-                'bg' => 'bg-indigo-50 dark:bg-indigo-500/15', 'text' => 'text-indigo-600 dark:text-indigo-400',
+                'card' => 'bg-gradient-to-br from-indigo-500 to-violet-700',
                 'is_kartu' => true,
             ],
             [
                 'url' => 'siswa/cetak-formulir', 'icon' => 'picture_as_pdf', 'label' => 'Cetak Formulir',
-                'bg' => 'bg-rose-50 dark:bg-rose-500/15', 'text' => 'text-rose-600 dark:text-rose-400',
+                'card' => 'bg-gradient-to-br from-rose-500 to-pink-700',
                 'is_cetak' => true,
             ],
             [
                 'url' => 'siswa/status', 'icon' => 'rule', 'label' => 'Status Pendaftaran',
-                'bg' => 'bg-amber-50 dark:bg-amber-500/15', 'text' => 'text-amber-600 dark:text-amber-400',
+                'card' => 'bg-gradient-to-br from-amber-500 to-orange-600',
             ],
             [
                 'url' => 'siswa/pengumuman', 'icon' => 'campaign', 'label' => 'Pengumuman',
-                'bg' => 'bg-purple-50 dark:bg-purple-500/15', 'text' => 'text-purple-600 dark:text-purple-400',
+                'card' => 'bg-gradient-to-br from-purple-500 to-fuchsia-700',
             ],
         ];
 
@@ -410,15 +291,15 @@ $isLockedCard = !($canPrintCard ?? false);
         ?>
             <a href="<?= $url ?>"
                <?= $target ?> <?= $onClick ?>
-               class="group rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-theme-xs transition-all duration-200 dark:border-gray-800 dark:bg-white/[0.03] text-center flex flex-col items-center justify-center
-                      <?= $isLocked ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-theme-md hover:-translate-y-0.5 hover:border-brand-500/40' ?>">
-                <div class="mb-2.5 flex h-11 w-11 items-center justify-center rounded-xl <?= $menu['bg'] ?> <?= $menu['text'] ?> group-hover:scale-110 transition-transform">
+               class="group rounded-2xl <?= $menu['card'] ?> p-4 sm:p-5 shadow-theme-md transition-all duration-200 text-white text-center flex flex-col items-center justify-center
+                      <?= $isLocked ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-theme-lg hover:-translate-y-0.5 hover:brightness-110' ?>">
+                <div class="mb-2.5 flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-2xl"><?= $menu['icon'] ?></span>
                 </div>
-                <span class="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors flex items-center justify-center gap-1">
+                <span class="text-xs font-bold text-white flex items-center justify-center gap-1 text-balance">
                     <?= esc($menu['label']) ?>
                     <?php if ($isLocked) : ?>
-                        <span class="material-symbols-outlined text-[12px] text-gray-400">lock</span>
+                        <span class="material-symbols-outlined text-[12px] text-white/70">lock</span>
                     <?php endif; ?>
                 </span>
             </a>

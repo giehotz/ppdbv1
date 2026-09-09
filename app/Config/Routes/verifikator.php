@@ -3,6 +3,13 @@
 $routes->group('verifikator', ['filter' => ['verifikator', 'csrf']], function ($routes) {
     $routes->get('dashboard', 'Verifikator\Dashboard::index');
 
+    // Profile (Profil Saya)
+    $routes->get('profile', 'Verifikator\Profile::index');
+    $routes->post('profile/update', 'Verifikator\Profile::updateProfile');
+    $routes->post('profile/updatePassword', 'Verifikator\Profile::updatePassword');
+    $routes->post('profile/updateFoto', 'Verifikator\Profile::updateFoto');
+    $routes->post('profile/deleteFoto', 'Verifikator\Profile::deleteFoto');
+
     // Siswa (Students)
     $routes->get('siswa', 'Verifikator\Siswa::index');
     $routes->get('siswa/create', 'Verifikator\Siswa::create');

@@ -15,6 +15,7 @@ $this->setData([
     'formAction' => $formAction ?? null,
     'siswa' => $siswa,
     'penghasilan' => $penghasilan ?? [],
+    'pekerjaan' => $pekerjaan ?? [],
     'requiredDocs' => $requiredDocs ?? [],
     'uploadedBerkas' => $uploadedBerkas ?? [],
     'pendingRequest' => $pendingRequest ?? null

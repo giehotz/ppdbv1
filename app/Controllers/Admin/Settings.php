@@ -47,6 +47,12 @@ class Settings extends BaseController
             }
         }
 
+        $pekerjaan = $db->table('tbl_pekerjaan')->orderBy('urutan', 'ASC')->get()->getResultArray();
+        $pekerjaan_list = '';
+        foreach ($pekerjaan as $pk) {
+            $pekerjaan_list .= $pk['nama_pekerjaan'] . "\n";
+        }
+
         $kop = $this->settingKopModel->find(1);
         if (!$kop) {
             $this->settingKopModel->insert([
@@ -68,6 +74,7 @@ class Settings extends BaseController
         $data = [
             'web'                => $web,
             'penghasilan_list'   => trim($penghasilan_list),
+            'pekerjaan_list'     => trim($pekerjaan_list),
             'kop'                => $kop,
             'tahunPelajaranList' => $tahunPelajaranList,
             'stepperConfig'      => $stepperConfig,
@@ -100,6 +107,29 @@ class Settings extends BaseController
             }
             if (!empty($insertData)) {
                 $builder->insertBatch($insertData);
+            }
+        }
+
+        // Handle Pekerjaan List
+        $pekerjaan_list = $this->request->getPost('pekerjaan_list');
+        if ($pekerjaan_list !== null) {
+            $pLines = explode("\n", $pekerjaan_list);
+            $db = \Config\Database::connect();
+            $pBuilder = $db->table('tbl_pekerjaan');
+            $pBuilder->emptyTable();
+            $pUrutan = 1;
+            $pInsertData = [];
+            foreach ($pLines as $pLine) {
+                $pLine = trim($pLine);
+                if (!empty($pLine)) {
+                    $pInsertData[] = [
+                        'nama_pekerjaan' => $pLine,
+                        'urutan' => $pUrutan++
+                    ];
+                }
+            }
+            if (!empty($pInsertData)) {
+                $pBuilder->insertBatch($pInsertData);
             }
         }
 

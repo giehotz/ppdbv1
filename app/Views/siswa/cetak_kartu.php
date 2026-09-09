@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kartu Tanda Peserta PPDB - <?= esc($siswa['nama_lengkap']) ?></title>
+    <title>Cetak Kartu Tanda Peserta - <?= esc($siswa['nama_lengkap']) ?></title>
     <style>
         /* A4 Page Setup */
         @page {
@@ -91,8 +91,8 @@
 
         .btn-print { background-color: var(--secondary-color); color: white; }
         .btn-print:hover { background-color: #059669; transform: translateY(-1px); }
-        .btn-close { background-color: #3b82f6; color: white; }
-        .btn-close:hover { background-color: #2563eb; }
+        .btn-close { background-color: #ef4444; color: white; }
+        .btn-close:hover { background-color: #dc2626; }
 
         /* Card Dimensions: 86mm x 54mm */
         .card-container {
@@ -178,12 +178,10 @@
             height: 30mm;
             border: 1px solid #e5e7eb;
             border-radius: 4px;
-            background-color: #f9fafb;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            background-color: #f9fafb;
+            flex-shrink: 0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
         .photo-box img {
@@ -192,114 +190,89 @@
             object-fit: cover;
         }
 
-        .photo-placeholder {
-            font-size: 8px;
-            color: #9ca3af;
-            text-align: center;
-        }
-
-        /* Student Information Details */
+        /* Info Styles */
         .info-box {
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
-        .card-type-title {
+        .card-label-main {
+            background-color: var(--primary-color);
+            color: white;
             font-size: 9px;
             font-weight: 800;
-            color: var(--primary-color);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            border-bottom: 1px dashed #cbd5e1;
-            padding-bottom: 2px;
-            margin-bottom: 4px;
+            text-align: center;
+            padding: 3px 0;
+            border-radius: 3px;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
         }
 
-        .info-table {
+        .details-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .info-table td {
-            padding: 1px 0;
-            font-size: 7px;
+        .details-table td {
+            font-size: 8px;
+            padding: 1.5px 0;
             vertical-align: top;
+            color: var(--text-dark);
         }
 
-        .info-table .label {
+        .td-label {
+            width: 30%;
+            font-weight: 700;
             color: #4b5563;
-            width: 50px;
+        }
+
+        .td-separator {
+            width: 5px;
+            padding-right: 3px !important;
+        }
+
+        .td-value {
             font-weight: 600;
         }
 
-        .info-table .separator {
-            width: 6px;
-            text-align: center;
-            color: #9ca3af;
-        }
-
-        .info-table .value {
-            color: var(--text-dark);
-            font-weight: 700;
-        }
-
-        /* Barcode Area at Front */
-        .barcode-area {
-            margin-top: auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #f8fafc;
-            padding: 2px 4px;
-            border-radius: 3px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .barcode-text {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 7px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-        }
-
         .qr-front {
-            width: 12mm;
-            height: 12mm;
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 10mm;
+            height: 10mm;
+            background: white;
+            padding: 1.5px;
+            border: 0.5px solid #ddd;
+            border-radius: 2px;
+            z-index: 10;
         }
 
-        /* BACK SIDE STYLES */
+        /* Back Card Styles */
         .back-container {
+            padding: 12px;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 8px;
-            position: relative;
-            z-index: 1;
         }
 
-        .rules-section {
-            font-size: 6px;
-            color: #374151;
-            line-height: 1.3;
+        .rules-text {
+            font-size: 7px;
+            color: #4b5563;
+            line-height: 1.4;
         }
 
         .rules-text ol {
-            margin: 0;
+            margin: 5px 0;
             padding-left: 12px;
-        }
-
-        .rules-text li {
-            margin-bottom: 2px;
         }
 
         .footer-back {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: auto;
         }
 
         .qr-side {
@@ -335,49 +308,48 @@
 
         .sig-date {
             font-size: 7.5px;
-            color: #4b5563;
+            margin-bottom: 2px;
         }
 
         .sig-title {
             font-size: 7.5px;
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 2px;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
 
         .sig-image-wrapper {
             position: relative;
             height: 12mm;
+            margin: 2px 0;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
         .sig-stempel {
             position: absolute;
-            left: 2mm;
-            height: 11mm;
+            height: 18mm;
+            width: auto;
+            left: 50%;
+            transform: translateX(-70%) rotate(-5deg);
             opacity: 0.8;
-            mix-blend-mode: multiply;
-            z-index: 2;
+            z-index: 1;
         }
 
         .sig-ttd {
-            height: 11mm;
-            z-index: 1;
             position: relative;
+            height: 12mm;
+            z-index: 2;
         }
 
         .sig-name {
-            font-size: 7.5px;
-            font-weight: 800;
-            color: #111827;
+            font-size: 8px;
+            font-weight: bold;
             text-decoration: underline;
         }
 
         .sig-nip {
             font-size: 7px;
-            color: #4b5563;
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -387,11 +359,11 @@
 
     <div class="controls no-print">
         <button class="btn btn-print" onclick="window.print()">
-            <i class="fas fa-print"></i> Cetak Kartu Sekarang
+            <i class="fas fa-print"></i> Cetak Sekarang
         </button>
-        <a href="<?= base_url('siswa/dashboard') ?>" class="btn btn-close">
-            <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
-        </a>
+        <button class="btn btn-close" onclick="window.close()">
+            <i class="fas fa-times"></i> Tutup Halaman
+        </button>
     </div>
 
     <!-- FRONT SIDE -->
@@ -411,59 +383,52 @@
 
         <div class="card-content">
             <div class="photo-box">
-                <?php if (!empty($siswa['foto_berkas']) && file_exists(FCPATH . $siswa['foto_berkas'])): ?>
-                    <img src="<?= base_url($siswa['foto_berkas']) ?>" alt="Foto Siswa">
-                <?php elseif (!empty($siswa['foto']) && file_exists(FCPATH . 'uploads/berkas/' . $siswa['nisn'] . '/' . $siswa['foto'])): ?>
-                    <img src="<?= base_url('uploads/berkas/' . $siswa['nisn'] . '/' . $siswa['foto']) ?>" alt="Foto Siswa">
+                <?php if (!empty($siswa['foto_berkas'])): ?>
+                    <img src="<?= base_url(esc($siswa['foto_berkas'])) ?>" alt="Pas Foto Siswa">
+                <?php elseif (!empty($siswa['foto'])): ?>
+                    <img src="<?= base_url('uploads/berkas/' . esc($siswa['nisn']) . '/' . esc($siswa['foto'])) ?>" alt="Foto Database">
                 <?php else: ?>
-                    <div class="photo-placeholder">
-                        <i class="fas fa-user fa-2x" style="margin-bottom: 2px;"></i><br>
-                        FOTO 3x4
-                    </div>
+                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($siswa['nama_lengkap'] ?? 'S') ?>&background=1e3a8a&color=fff&size=128" alt="Placeholder">
                 <?php endif; ?>
             </div>
 
             <div class="info-box">
-                <div class="card-type-title">KARTU TANDA PESERTA PPDB</div>
-                
-                <table class="info-table">
+                <div class="card-label-main">KARTU TANDA PESERTA PPDB</div>
+                <table class="details-table">
                     <tr>
-                        <td class="label">No. Daftar</td>
-                        <td class="separator">:</td>
-                        <td class="value" style="color: var(--primary-color); font-family: monospace;"><?= esc($siswa['no_pendaftaran'] ?? '-') ?></td>
+                        <td class="td-label">No. Daftar</td>
+                        <td class="td-separator">:</td>
+                        <td class="td-value"><?= esc($siswa['no_pendaftaran'] ?? '-') ?></td>
                     </tr>
                     <tr>
-                        <td class="label">NISN</td>
-                        <td class="separator">:</td>
-                        <td class="value" style="font-family: monospace;"><?= esc($siswa['nisn'] ?? '-') ?></td>
+                        <td class="td-label">NISN</td>
+                        <td class="td-separator">:</td>
+                        <td class="td-value"><?= esc($siswa['nisn'] ?? '-') ?></td>
                     </tr>
                     <tr>
-                        <td class="label">Nama</td>
-                        <td class="separator">:</td>
-                        <td class="value"><?= esc($siswa['nama_lengkap'] ?? '-') ?></td>
+                        <td class="td-label">Nama</td>
+                        <td class="td-separator">:</td>
+                        <td class="td-value"><?= esc(strtoupper($siswa['nama_lengkap'] ?? '-')) ?></td>
                     </tr>
                     <tr>
-                        <td class="label">TTL</td>
-                        <td class="separator">:</td>
-                        <td class="value">
+                        <td class="td-label">TTL</td>
+                        <td class="td-separator">:</td>
+                        <td class="td-value">
                             <?= esc($siswa['tempat_lahir'] ?? '-') ?>, 
-                            <?= !empty($siswa['tgl_lahir']) ? date('d/m/Y', strtotime($siswa['tgl_lahir'])) : '-' ?>
+                            <?= $siswa['tgl_lahir'] ? date('d/m/Y', strtotime($siswa['tgl_lahir'])) : '-' ?>
                         </td>
                     </tr>
                     <tr>
-                        <td class="label">Jalur</td>
-                        <td class="separator">:</td>
-                        <td class="value"><?= esc($siswa['jalur_pendaftaran'] ?? 'Reguler') ?></td>
+                        <td class="td-label">Jalur</td>
+                        <td class="td-separator">:</td>
+                        <td class="td-value"><?= esc($siswa['jalur_pendaftaran'] ?? 'Reguler') ?></td>
                     </tr>
                 </table>
-
-                <div class="barcode-area">
-                    <span class="barcode-text"><?= esc($siswa['no_pendaftaran'] ?? '-') ?></span>
-                    <div class="qr-front">
-                        <img src="<?= generate_qr_base64(base_url('verify/' . ($siswa['no_pendaftaran'] ?? 'invalid')), 60, 1) ?>" style="width:100%; height:100%;" alt="QR Mini">
-                    </div>
-                </div>
             </div>
+        </div>
+
+        <div class="qr-front">
+            <img src="<?= generate_qr_base64(base_url('verify/' . ($siswa['no_pendaftaran'] ?? 'invalid')), 60, 1) ?>" style="width:100%; height: 100%; display: block;" alt="QR">
         </div>
     </div>
 
@@ -472,7 +437,7 @@
         <div class="back-container">
             <div class="rules-section">
                 <div style="font-size: 8px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 2px; margin-bottom: 4px; color: var(--primary-color);">
-                    TATA TERTIB &amp; KETENTUAN PESERTA PPDB
+                    TATA TERTIB & KETENTUAN PESERTA PPDB
                 </div>
                 <div class="rules-text">
                     <ol>

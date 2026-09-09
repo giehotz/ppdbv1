@@ -2,14 +2,32 @@
 
 <?= $this->section('title') ?>Biodata Siswa<?= $this->endSection() ?>
 <?= $this->section('page_title') ?>
-<div class="flex items-center gap-2">
-    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
+<div class="flex items-center gap-2 w-full">
+    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400 shrink-0">
         <span class="material-symbols-outlined text-xl">badge</span>
     </span>
-    <div>
+    <div class="min-w-0">
         <h1 class="text-base font-bold text-gray-900 dark:text-white leading-none">Biodata Calon Siswa</h1>
         <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Lengkapi identitas diri, orang tua, dan dokumen pendaftaran</p>
     </div>
+    <?php
+    $pageStatusVerif = strtolower(trim($siswa['status_verifikasi'] ?? ''));
+    $pageIsFinal = (($siswa['status_pendaftaran'] ?? '') === 'Final') && ($pageStatusVerif !== 'ditolak');
+    $pageHasPending = !empty($pendingRequest);
+    ?>
+    <?php if ($pageIsFinal): ?>
+        <div class="flex items-center gap-2 ml-auto shrink-0">
+            <?php if (!$pageHasPending): ?>
+                <button type="button" onclick="requestUnlock()" class="inline-flex items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-2 px-3.5 shadow-sm transition duration-200">
+                    <span class="material-symbols-outlined text-sm">lock_open</span>
+                    <span>Ajukan Buka Kunci</span>
+                </button>
+            <?php endif; ?>
+            <span class="inline-flex items-center gap-1 rounded-full bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-400 border border-red-200 dark:border-red-900/50 text-[10px] font-bold px-3 py-1">
+                <span class="material-symbols-outlined text-xs">lock</span> Data Terkunci (Final)
+            </span>
+        </div>
+    <?php endif; ?>
 </div>
 <?= $this->endSection() ?>
 
@@ -27,6 +45,7 @@ $this->setData([
     'formAction' => $formAction ?? null,
     'siswa' => $siswa,
     'penghasilan' => $penghasilan ?? [],
+    'pekerjaan' => $pekerjaan ?? [],
     'requiredDocs' => $requiredDocs ?? [],
     'uploadedBerkas' => $uploadedBerkas ?? [],
     'pendingRequest' => $pendingRequest ?? null

@@ -112,6 +112,9 @@
         'Komunikasi' => [
             ['label' => 'Pesan Pribadi',      'icon' => 'envelope',       'url' => 'verifikator/pesan'],
         ],
+        'Akun' => [
+            ['label' => 'Profil Saya',        'icon' => 'user-circle',    'url' => 'verifikator/profile'],
+        ],
     ];
     ?>
 

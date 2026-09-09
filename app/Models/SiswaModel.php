@@ -89,7 +89,8 @@ class SiswaModel extends Model
         'verified_by',
         'catatan_verifikasi',
         'status_berkas',
-        'status_lulus'
+        'status_lulus',
+        'is_checked'
     ];
 
     // Dates

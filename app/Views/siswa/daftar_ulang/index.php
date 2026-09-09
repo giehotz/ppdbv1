@@ -1,8 +1,8 @@
 <?= $this->extend('layouts/siswa') ?>
 
-<?= $this->section('title') ?>Konfirmasi Daftar Ulang & Seragam<?= $this->endSection() ?>
+<?= $this->section('title') ?>Konfirmasi Daftar Ulang <?= $this->endSection() ?>
 <?= $this->section('page_title') ?>
-<span class="material-symbols-outlined text-brand-500 mr-1">backpack</span> Konfirmasi Daftar Ulang &amp; Ukuran Seragam
+<span class="material-symbols-outlined text-brand-500 mr-1">backpack</span> Konfirmasi Daftar Ulang
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>

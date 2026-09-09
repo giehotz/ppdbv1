@@ -2,6 +2,8 @@
 $sessionName = session()->get('nama') ?? session()->get('username') ?? 'Pengguna';
 $sessionRole = ucfirst(session()->get('role') ?? 'Admin');
 $sessionFoto = session()->get('foto');
+$sessionUserType = strtolower(session()->get('user_type') ?? session()->get('level') ?? session()->get('role') ?? '');
+$profileUrl = in_array($sessionUserType, ['verifikator', 'siswa']) ? $sessionUserType . '/profile' : 'admin/profile';
 $avatarUrl = !empty($sessionFoto) && file_exists(FCPATH . 'uploads/profile/' . $sessionFoto)
     ? base_url('uploads/profile/' . esc($sessionFoto, 'url'))
     : base_url('assets/tailadmin/images/user/owner.jpg');
@@ -82,7 +84,7 @@ $avatarUrl = !empty($sessionFoto) && file_exists(FCPATH . 'uploads/profile/' . $
       <?php if (!empty($pendingUnlockCount) && $pendingUnlockCount > 0): ?>
       <!-- Notification Icon with Badge -->
       <a
-        href="<?= base_url('admin/unlockrequest') ?>"
+        href="<?= base_url($sessionUserType === 'verifikator' ? 'verifikator/unlockrequest' : 'admin/unlockrequest') ?>"
         class="relative flex h-10 w-10 items-center justify-center rounded-lg border border-amber-200 bg-amber-50/50 text-amber-600 transition-colors hover:bg-amber-100 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-400"
         title="<?= $pendingUnlockCount ?> Permintaan Buka Kunci Menunggu"
       >
@@ -145,12 +147,13 @@ $avatarUrl = !empty($sessionFoto) && file_exists(FCPATH . 'uploads/profile/' . $
 
           <div class="py-1">
             <a
-              href="<?= base_url('admin/profile') ?>"
+              href="<?= base_url($profileUrl) ?>"
               class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white transition-colors"
             >
               <i class="fas fa-user-circle w-4 text-gray-400"></i>
               Profil Saya
             </a>
+            <?php if ($sessionUserType === 'admin'): ?>
             <a
               href="<?= base_url('admin/settings') ?>"
               class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white transition-colors"
@@ -158,6 +161,7 @@ $avatarUrl = !empty($sessionFoto) && file_exists(FCPATH . 'uploads/profile/' . $
               <i class="fas fa-cog w-4 text-gray-400"></i>
               Pengaturan Sistem
             </a>
+            <?php endif; ?>
             <a
               href="<?= base_url() ?>"
               target="_blank"

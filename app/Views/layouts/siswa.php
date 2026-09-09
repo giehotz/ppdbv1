@@ -147,7 +147,8 @@
             'sidebarMenus' => $sidebarMenus,
             'app_alias' => $app_alias ?? 'PPDB',
             'sekolahName' => $sekolahName,
-            'web_logo' => $web_logo ?? null
+            'web_logo' => $web_logo ?? null,
+            'collapsibleGroups' => ['Tahapan PPDB', 'Informasi & Dokumen'],
         ]) ?>
 
         <!-- Content Area -->

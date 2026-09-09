@@ -121,18 +121,11 @@
                     <span class="input-icon material-symbols-outlined">work</span>
                     <select name="pekerjaan_ayah" class="form-input-control border border-gray-300 dark:border-gray-600 cursor-pointer">
                         <option value="">-- Pilih Pekerjaan --</option>
-                        <option value="PNS/TNI/Polri" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'PNS/TNI/Polri' ? 'selected' : '' ?>>PNS / TNI / Polri</option>
-                        <option value="Tenaga Medis" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'Tenaga Medis' ? 'selected' : '' ?>>Tenaga Medis</option>
-                        <option value="Tenaga Pendidik" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'Tenaga Pendidik' ? 'selected' : '' ?>>Tenaga Pendidik</option>
-                        <option value="Karyawan Swasta" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'Karyawan Swasta' ? 'selected' : '' ?>>Karyawan Swasta</option>
-                        <option value="Wiraswasta/Pedagang" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'Wiraswasta/Pedagang' ? 'selected' : '' ?>>Wiraswasta / Pedagang</option>
-                        <option value="Petani/Peternak/Nelayan" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'Petani/Peternak/Nelayan' ? 'selected' : '' ?>>Petani / Peternak / Nelayan</option>
-                        <option value="Buruh/Pekerja Lepas" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'Buruh/Pekerja Lepas' ? 'selected' : '' ?>>Buruh / Pekerja Lepas</option>
-                        <option value="Seni/Hukum/Komunikasi" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'Seni/Hukum/Komunikasi' ? 'selected' : '' ?>>Seni / Hukum / Komunikasi</option>
-                        <option value="Transportasi" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'Transportasi' ? 'selected' : '' ?>>Transportasi</option>
-                        <option value="Pensiunan" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'Pensiunan' ? 'selected' : '' ?>>Pensiunan</option>
-                        <option value="Tidak Bekerja" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'Tidak Bekerja' ? 'selected' : '' ?>>Tidak Bekerja</option>
-                        <option value="Sudah Meninggal" <?= ($siswa['pekerjaan_ayah'] ?? '') == 'Sudah Meninggal' ? 'selected' : '' ?>>Sudah Meninggal</option>
+                        <?php if(!empty($pekerjaan)): foreach ($pekerjaan as $pk): ?>
+                            <option value="<?= esc($pk['nama_pekerjaan']) ?>" <?= ($siswa['pekerjaan_ayah'] ?? '') == $pk['nama_pekerjaan'] ? 'selected' : '' ?>>
+                                <?= esc($pk['nama_pekerjaan']) ?>
+                            </option>
+                        <?php endforeach; endif; ?>
                     </select>
                 </div>
             </div>
@@ -267,18 +260,11 @@
                     <span class="input-icon material-symbols-outlined">work</span>
                     <select name="pekerjaan_ibu" class="form-input-control border border-gray-300 dark:border-gray-600 cursor-pointer">
                         <option value="">-- Pilih Pekerjaan --</option>
-                        <option value="PNS/TNI/Polri" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'PNS/TNI/Polri' ? 'selected' : '' ?>>PNS / TNI / Polri</option>
-                        <option value="Tenaga Medis" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'Tenaga Medis' ? 'selected' : '' ?>>Tenaga Medis</option>
-                        <option value="Tenaga Pendidik" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'Tenaga Pendidik' ? 'selected' : '' ?>>Tenaga Pendidik</option>
-                        <option value="Karyawan Swasta" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'Karyawan Swasta' ? 'selected' : '' ?>>Karyawan Swasta</option>
-                        <option value="Wiraswasta/Pedagang" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'Wiraswasta/Pedagang' ? 'selected' : '' ?>>Wiraswasta / Pedagang</option>
-                        <option value="Petani/Peternak/Nelayan" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'Petani/Peternak/Nelayan' ? 'selected' : '' ?>>Petani / Peternak / Nelayan</option>
-                        <option value="Buruh/Pekerja Lepas" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'Buruh/Pekerja Lepas' ? 'selected' : '' ?>>Buruh / Pekerja Lepas</option>
-                        <option value="Seni/Hukum/Komunikasi" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'Seni/Hukum/Komunikasi' ? 'selected' : '' ?>>Seni / Hukum / Komunikasi</option>
-                        <option value="Transportasi" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'Transportasi' ? 'selected' : '' ?>>Transportasi</option>
-                        <option value="Pensiunan" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'Pensiunan' ? 'selected' : '' ?>>Pensiunan</option>
-                        <option value="Tidak Bekerja" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'Tidak Bekerja' ? 'selected' : '' ?>>Tidak Bekerja / Ibu Rumah Tangga</option>
-                        <option value="Sudah Meninggal" <?= ($siswa['pekerjaan_ibu'] ?? '') == 'Sudah Meninggal' ? 'selected' : '' ?>>Sudah Meninggal</option>
+                        <?php if(!empty($pekerjaan)): foreach ($pekerjaan as $pk): ?>
+                            <option value="<?= esc($pk['nama_pekerjaan']) ?>" <?= ($siswa['pekerjaan_ibu'] ?? '') == $pk['nama_pekerjaan'] ? 'selected' : '' ?>>
+                                <?= esc($pk['nama_pekerjaan']) ?>
+                            </option>
+                        <?php endforeach; endif; ?>
                     </select>
                 </div>
             </div>
