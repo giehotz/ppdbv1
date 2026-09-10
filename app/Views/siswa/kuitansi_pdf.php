@@ -1,55 +1,295 @@
+<?php helper('kop'); ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>Kuitansi Pembayaran - <?= esc($siswa['no_pendaftaran']) ?></title>
     <style>
-        body { font-family: sans-serif; font-size: 12px; margin: 0; padding: 20px; }
-        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; }
-        .header h2 { margin: 0; font-size: 18px; text-transform: uppercase; }
-        .header p { margin: 5px 0 0; color: #666; font-size: 11px; }
-        .info-table { width: 100%; margin-bottom: 20px; }
-        .info-table td { padding: 4px 0; vertical-align: top; }
-        .info-table td:first-child { width: 150px; font-weight: bold; }
-        table.items { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        table.items th, table.items td { border: 1px solid #ccc; padding: 8px 10px; text-align: left; }
-        table.items th { background: #f5f5f5; font-size: 11px; text-transform: uppercase; }
-        table.items td:last-child, table.items th:last-child { text-align: right; }
-        .total-box { background: #f0fdf4; border: 2px solid #22c55e; padding: 15px; text-align: center; margin: 20px 0; border-radius: 8px; }
-        .total-box h3 { margin: 0; color: #16a34a; font-size: 20px; }
-        .footer { margin-top: 40px; text-align: right; font-size: 11px; color: #666; }
-        .signature { margin-top: 60px; text-align: right; }
-        .signature-line { border-top: 1px solid #333; width: 200px; margin-left: auto; padding-top: 5px; }
+        :root {
+            --ink: #1a1a1a;
+            --muted: #555555;
+            --line: #222222;
+            --line-soft: #d0d0d0;
+            --brand: #0f7a5c;
+            --brand-soft: #eaf7f2;
+            --total-bg: #1f8a4c;
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            margin: 0;
+            padding: 0;
+            color: var(--ink);
+        }
+
+        .sheet {
+            max-width: 780px;
+            margin: 0 auto;
+        }
+
+        /* ===== KOP SURAT ===== */
+        .kop-wrap {
+            margin-bottom: 6px;
+        }
+
+        /* ===== TITLE BAR ===== */
+        .title-bar {
+            text-align: center;
+            margin: 14px 0 16px;
+        }
+
+        .title-bar h1 {
+            display: inline-block;
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 2px;
+            color: var(--brand);
+            text-transform: uppercase;
+            padding-bottom: 6px;
+            border-bottom: 3px solid var(--brand);
+        }
+
+        .title-bar p {
+            margin: 4px 0 0;
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== INFO GRID (2 kolom, seperti Bill To / Invoice No) ===== */
+        .info-grid {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 14px;
+        }
+
+        .info-grid td {
+            vertical-align: top;
+            width: 50%;
+            padding: 0;
+        }
+
+        .info-block .info-heading {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 4px;
+            font-size: 11px;
+        }
+
+        .info-row {
+            display: table;
+            width: 100%;
+            margin-bottom: 2px;
+        }
+
+        .info-row .lbl,
+        .info-row .val {
+            display: table-cell;
+        }
+
+        .info-row .lbl {
+            width: 95px;
+            color: var(--ink);
+        }
+
+        .info-row .val {
+            font-weight: 600;
+        }
+
+        .info-right {
+            text-align: left;
+        }
+
+        .info-right .info-row .lbl {
+            width: 110px;
+        }
+
+        /* ===== ITEMS TABLE ===== */
+        table.items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+            border: 1px solid var(--line);
+            font-size: 11px;
+        }
+
+        table.items th,
+        table.items td {
+            border: 1px solid var(--line-soft);
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        table.items th {
+            background: #f0f0f0;
+            font-weight: bold;
+            border: 1px solid var(--line);
+            text-align: center;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        table.items td:first-child,
+        table.items th:first-child {
+            text-align: center;
+            width: 40px;
+        }
+
+        table.items td:last-child,
+        table.items th:last-child {
+            text-align: right;
+        }
+
+        /* ===== TOTAL SUMMARY (mirip Total Before Tax / Grand Total) ===== */
+        .summary-wrap {
+            width: 100%;
+            margin: 10px 0 18px;
+        }
+
+        .summary-table {
+            width: 260px;
+            margin-left: auto;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .summary-table td {
+            padding: 6px 10px;
+            border: 1px solid var(--line-soft);
+        }
+
+        .summary-table td:first-child {
+            text-align: left;
+        }
+
+        .summary-table td:last-child {
+            text-align: right;
+            width: 130px;
+        }
+
+        .summary-table tr.grand td {
+            background: var(--total-bg);
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 12px;
+            border: 1px solid var(--total-bg);
+        }
+
+        .status-tag {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #ffffff;
+            background: var(--total-bg);
+            padding: 3px 10px;
+            border-radius: 3px;
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .section-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin: 4px 0 6px;
+            color: var(--ink);
+        }
+
+        /* ===== FOOTER: DETAIL / SIGNATURE (mirip Detail Payment / Director) ===== */
+        .footer-grid {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+        }
+
+        .footer-grid td {
+            vertical-align: top;
+            width: 50%;
+        }
+
+        .footer-left .foot-heading {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 6px;
+        }
+
+        .footer-right {
+            text-align: center;
+        }
+
+        .footer-right .company-name {
+            font-weight: bold;
+            margin-bottom: 48px;
+        }
+
+        .footer-right .signature-line {
+            border-top: 1px solid var(--ink);
+            display: inline-block;
+            min-width: 170px;
+            padding-top: 4px;
+            font-weight: bold;
+        }
+
+        .footer-right .signature-role {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .tiny-note {
+            margin-top: 10px;
+            font-size: 9px;
+            color: var(--muted);
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2>Kuitansi Pembayaran</h2>
-        <p>Pendaftaran Calon Siswa</p>
+<div class="sheet">
+
+    <div class="kop-wrap">
+        <?= render_kop_surat() ?>
     </div>
 
-    <table class="info-table">
+    <div class="title-bar">
+        <h1>Kuitansi Pembayaran</h1>
+        <p>Pendaftaran Calon Siswa Baru</p>
+    </div>
+
+    <table class="info-grid">
         <tr>
-            <td>No. Pendaftaran</td>
-            <td>: <?= esc($siswa['no_pendaftaran']) ?></td>
-        </tr>
-        <tr>
-            <td>Nama Lengkap</td>
-            <td>: <?= esc($siswa['nama_lengkap']) ?></td>
-        </tr>
-        <tr>
-            <td>NISN</td>
-            <td>: <?= esc($siswa['nisn'] ?? '-') ?></td>
+            <td>
+                <div class="info-block">
+                    <div class="info-heading">Diterima Dari</div>
+                    <div class="info-row"><span class="lbl">Nama Lengkap</span><span class="val">: <?= esc($siswa['nama_lengkap']) ?></span></div>
+                    <div class="info-row"><span class="lbl">NISN</span><span class="val">: <?= esc($siswa['nisn'] ?? '-') ?></span></div>
+                </div>
+            </td>
+            <td class="info-right">
+                <div class="info-block">
+                    <div class="info-row"><span class="lbl">No. Pendaftaran</span><span class="val">: <?= esc($siswa['no_pendaftaran']) ?></span></div>
+                    <div class="info-row"><span class="lbl">Tanggal Cetak</span><span class="val">: <?= date('d/m/Y') ?></span></div>
+                    <div class="info-row"><span class="lbl">Status</span><span class="val">: <strong style="color:#1f8a4c;">LUNAS</strong></span></div>
+                </div>
+            </td>
         </tr>
     </table>
 
-    <h3 style="font-size: 13px; margin-bottom: 10px;">Rincian Tagihan</h3>
+    <div class="section-title">Rincian Tagihan</div>
     <table class="items">
         <thead>
             <tr>
                 <th>No</th>
                 <th>Item</th>
-                <th style="text-align:right">Harga</th>
+                <th>Harga</th>
             </tr>
         </thead>
         <tbody>
@@ -57,56 +297,62 @@
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= esc($t['nama_item']) ?></td>
-                    <td style="text-align:right">Rp <?= number_format($t['harga_satuan'], 0, ',', '.') ?></td>
+                    <td>Rp <?= number_format($t['harga_satuan'], 0, ',', '.') ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
-        <tfoot>
-            <tr style="font-weight:bold; background:#f5f5f5;">
-                <td colspan="2" style="text-align:right">Total Tagihan</td>
-                <td style="text-align:right">Rp <?= number_format($totalTagihan, 0, ',', '.') ?></td>
-            </tr>
-        </tfoot>
     </table>
 
-    <div class="total-box">
-        <p style="margin:0 0 5px; font-size:12px; color:#16a34a;">TOTAL PEMBAYARAN</p>
-        <h3>Rp <?= number_format($totalLunas, 0, ',', '.') ?></h3>
-        <p style="margin:5px 0 0; font-size:11px; color:#15803d;">LUNAS</p>
+    <div class="summary-wrap">
+        <table class="summary-table">
+            <tr>
+                <td>Total Tagihan</td>
+                <td>Rp <?= number_format($totalTagihan, 0, ',', '.') ?></td>
+            </tr>
+            <tr class="grand">
+                <td>TOTAL PEMBAYARAN</td>
+                <td>Rp <?= number_format($totalLunas ?? $totalBayar ?? $totalTagihan, 0, ',', '.') ?></td>
+            </tr>
+        </table>
     </div>
 
-    <?php if (!empty($riwayatBayar)): ?>
-    <h3 style="font-size: 13px; margin-bottom: 10px;">Riwayat Pembayaran</h3>
+    <div class="section-title">Riwayat Pembayaran</div>
     <table class="items">
         <thead>
             <tr>
                 <th>No</th>
                 <th>Tanggal</th>
                 <th>Metode</th>
-                <th style="text-align:right">Jumlah</th>
+                <th>Jumlah</th>
             </tr>
         </thead>
         <tbody>
             <?php $no = 1; foreach ($riwayatBayar as $bayar): ?>
                 <tr>
                     <td><?= $no++ ?></td>
-                    <td><?= date('d/m/Y', strtotime($bayar['tanggal'])) ?></td>
-                    <td><?= esc($bayar['metode'] ?? '-') ?></td>
-                    <td style="text-align:right">Rp <?= number_format($bayar['jumlah'], 0, ',', '.') ?></td>
+                    <td style="text-align:left;"><?= date('d/m/Y', strtotime($bayar['tanggal'])) ?></td>
+                    <td style="text-align:left;"><?= esc($bayar['metode'] ?? '-') ?></td>
+                    <td>Rp <?= number_format($bayar['jumlah'], 0, ',', '.') ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
-    <?php endif; ?>
 
-    <p style="margin-top: 30px; font-size: 11px; color: #666;">
-        Dikeluarkan pada tanggal <?= date('d/m/Y') ?>
-    </p>
+    <table class="footer-grid">
+        <tr>
+            <td class="footer-left">
+                <div class="foot-heading">Keterangan</div>
+                <div>Status Pembayaran: <strong style="color:#1f8a4c;">LUNAS</strong></div>
+                <p class="tiny-note">Kuitansi ini sah dan diterbitkan secara resmi oleh sistem PPDB.<br>Dikeluarkan pada tanggal <?= date('d/m/Y') ?>.</p>
+            </td>
+            <td class="footer-right">
+                <div class="company-name">Panitia PPDB</div>
+                <div class="signature-line">Verifikator</div><br>
+                <div class="signature-role">Petugas Keuangan</div>
+            </td>
+        </tr>
+    </table>
 
-    <div class="signature">
-        <div class="signature-line">
-            <strong>Admin / Verifikator</strong>
-        </div>
-    </div>
+</div>
 </body>
 </html>

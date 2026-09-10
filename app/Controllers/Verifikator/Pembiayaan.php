@@ -454,23 +454,16 @@ class Pembiayaan extends BaseController
             return redirect()->to('/verifikator/pembiayaan');
         }
 
-        $totalTagihan = $this->tagihanModel->getTotalTagihan($siswaId);
-        $totalLunas   = $this->tagihanModel->getTotalLunas($siswaId);
-        $tagihan      = $this->tagihanModel->getTagihanBySiswa($siswaId);
-        $riwayatBayar = $this->pembayaranModel->getRiwayatBySiswa($siswaId);
-
-        if (!$this->tagihanModel->isAllLunas($siswaId)) {
-            session()->setFlashdata('error', 'Kuitansi hanya bisa dicetak setelah semua tagihan lunas.');
+        // Delegate PDF creation to the PdfGenerator helper method.
+        $pdf = new PdfGenerator();
+        try {
+            $pdf->generateKuitansiForSiswa($siswaId, false);
+        } catch (\InvalidArgumentException $e) {
+            session()->setFlashdata('error', $e->getMessage());
+            return redirect()->to('/verifikator/pembiayaan');
+        } catch (\RuntimeException $e) {
+            session()->setFlashdata('error', $e->getMessage());
             return redirect()->back();
         }
-
-        $pdf = new PdfGenerator();
-        $pdf->generate('siswa/kuitansi_pdf', [
-            'siswa'        => $siswa,
-            'tagihan'      => $tagihan,
-            'totalTagihan' => $totalTagihan,
-            'totalLunas'   => $totalLunas,
-            'riwayatBayar' => $riwayatBayar,
-        ], 'kuitansi_' . $siswa['no_pendaftaran'] . '.pdf');
     }
 }

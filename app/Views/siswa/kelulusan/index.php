@@ -7,6 +7,10 @@
 
 <?= $this->section('content') ?>
 
+<?php if (($siswa['status_lulus'] ?? '') === 'Lulus') : ?>
+    <?= $this->include('siswa/kelulusan/confetti_cannon') ?>
+<?php endif; ?>
+
 <div class="max-w-3xl mx-auto space-y-6">
     
     <!-- Main Result Card (TailAdmin Style) -->

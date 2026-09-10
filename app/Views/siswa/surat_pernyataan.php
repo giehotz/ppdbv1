@@ -1,3 +1,4 @@
+<?php helper('kop'); ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -183,29 +184,7 @@
 
     <div class="paper-container">
         <!-- Kop Surat -->
-        <table class="kop-table">
-            <tr>
-                <td style="width: 75px; text-align: center; vertical-align: middle;">
-                    <?php if (!empty($web['logo_sekolah']) && file_exists(FCPATH . 'uploads/logo/' . $web['logo_sekolah'])): ?>
-                        <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="kop-logo">
-                    <?php endif; ?>
-                </td>
-                <td class="kop-text text-center" style="vertical-align: middle;">
-                    <h3>PANITIA PENERIMAAN PESERTA DIDIK BARU (PPDB)</h3>
-                    <h2><?= esc($web['nama_sekolah'] ?? 'NAMA SEKOLAH / MADRASAH') ?></h2>
-                    <p>
-                        <?= esc($web['alamat_sekolah'] ?? '') ?>
-                        <?= !empty($web['kecamatan']) ? ', Kec. ' . esc($web['kecamatan']) : '' ?>
-                        <?= !empty($web['kabupaten']) ? ', ' . esc($web['kabupaten']) : '' ?>
-                    </p>
-                    <p>
-                        NPSN: <?= esc($web['npsn'] ?? '-') ?> | NSM: <?= esc($web['nsm'] ?? '-') ?> 
-                        <?php if (!empty($web['telepon'])): ?> | Telp: <?= esc($web['telepon']) ?><?php endif; ?>
-                        <?php if (!empty($web['email'])): ?> | Email: <?= esc($web['email']) ?><?php endif; ?>
-                    </p>
-                </td>
-            </tr>
-        </table>
+        <?= render_kop_surat() ?>
 
         <!-- Judul -->
         <div class="doc-title">

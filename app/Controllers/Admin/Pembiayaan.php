@@ -573,6 +573,6 @@ class Pembiayaan extends BaseController
             'totalTagihan' => $totalTagihan,
             'totalLunas'   => $totalLunas,
             'riwayatBayar' => $riwayatBayar,
-        ], 'kuitansi_' . $siswa['no_pendaftaran'] . '.pdf');
+        ], 'kuitansi_' . $siswa['no_pendaftaran'] . '.pdf', false);
     }
 }
