@@ -29,6 +29,19 @@ class BerkasPindahanModel extends Model
     protected $updatedField  = 'updated_at';
 
     /**
+     * Status verifikasi berkas pindahan.
+     */
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_VALID   = 'valid';
+    public const STATUS_INVALID = 'invalid';
+
+    public const ALL_STATUS = [
+        self::STATUS_PENDING,
+        self::STATUS_VALID,
+        self::STATUS_INVALID,
+    ];
+
+    /**
      * Jenis dokumen wajib yang harus diupload siswa pindahan.
      */
     public const JENIS_WAJIB = [
@@ -122,40 +135,56 @@ class BerkasPindahanModel extends Model
 
     /**
      * Cek apakah dokumen wajib untuk siswa pindahan sudah lengkap.
+     * Menerima $berkasList opsional untuk menghindari query ulang jika data berkas sudah di-fetch.
+     *
+     * @param int        $idPindahan
+     * @param array|null $berkasList
+     * @return array
      */
-    public function isWajibLengkap($idPindahan): array
-    {
-        $sudahUpload = [];
-        foreach ($this->where('id_pindahan', $idPindahan)->findAll() as $row) {
-            $sudahUpload[$row['jenis_berkas']] = $row;
-        }
-
-        $kurang = [];
-        foreach (self::JENIS_WAJIB as $jenis) {
-            if (!isset($sudahUpload[$jenis])) {
-                $kurang[] = $jenis;
-            }
-        }
-
-        return [
-            'sudah'  => count(array_intersect(self::JENIS_WAJIB, array_keys($sudahUpload))),
-            'total'  => count(self::JENIS_WAJIB),
-            'kurang' => $kurang,
-            'lengkap' => empty($kurang),
-        ];
-    }
-
-    /**
-     * Get jumlah dokumen per status verifikasi.
-     */
-    public function getStatusCounts()
-    {
-        return [
-            'pending' => $this->where('status_verifikasi', 'pending')->countAllResults(),
-            'valid'   => $this->where('status_verifikasi', 'valid')->countAllResults(),
-            'invalid' => $this->where('status_verifikasi', 'invalid')->countAllResults(),
-        ];
-    }
+     public function isWajibLengkap($idPindahan, ?array $berkasList = null): array
+     {
+         $sudahUpload = [];
+         $rows = $berkasList !== null ? $berkasList : $this->where('id_pindahan', $idPindahan)->findAll();
+         foreach ($rows as $row) {
+             $sudahUpload[$row['jenis_berkas']] = $row;
+         }
+ 
+         $kurang = [];
+         foreach (self::JENIS_WAJIB as $jenis) {
+             if (!isset($sudahUpload[$jenis])) {
+                 $kurang[] = $jenis;
+             }
+         }
+ 
+         return [
+             'sudah'   => count(array_intersect(self::JENIS_WAJIB, array_keys($sudahUpload))),
+             'total'   => count(self::JENIS_WAJIB),
+             'kurang'  => $kurang,
+             'lengkap' => empty($kurang),
+         ];
+     }
+ 
+     /**
+      * Get jumlah dokumen per status verifikasi (single query aggregation).
+      */
+     public function getStatusCounts(): array
+     {
+         $db = \Config\Database::connect();
+         $row = $db->table($this->table)
+             ->select("
+                 SUM(CASE WHEN status_verifikasi = " . $db->escape(self::STATUS_PENDING) . " THEN 1 ELSE 0 END) AS pending,
+                 SUM(CASE WHEN status_verifikasi = " . $db->escape(self::STATUS_VALID) . " THEN 1 ELSE 0 END) AS valid,
+                 SUM(CASE WHEN status_verifikasi = " . $db->escape(self::STATUS_INVALID) . " THEN 1 ELSE 0 END) AS invalid_count
+             ")
+             ->get()
+             ->getRowArray();
+ 
+         return [
+             'pending' => (int) ($row['pending'] ?? 0),
+             'valid'   => (int) ($row['valid'] ?? 0),
+             'invalid' => (int) ($row['invalid_count'] ?? 0),
+         ];
+     }
 
     /**
      * Hapus file fisik dari server (dipanggil sebelum hapus record).

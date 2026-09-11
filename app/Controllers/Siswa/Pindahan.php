@@ -62,7 +62,7 @@ class Pindahan extends BaseController
         $completionPct  = $completionData['percentage'];
 
         $berkasList = $this->berkasModel->getByPindahan($idPindahan);
-        $berkasWajib = $this->berkasModel->isWajibLengkap($idPindahan);
+        $berkasWajib = $this->berkasModel->isWajibLengkap($idPindahan, $berkasList);
 
         $tagihanBerkas = count($berkasList);
         $requiredDocs  = BerkasPindahanModel::getJenisBerkasOptions();
@@ -221,12 +221,14 @@ class Pindahan extends BaseController
             return redirect()->back()->withInput();
         }
 
-        if ($this->pindahanModel->skipValidation(true)->update($idPindahan, $data)) {
+        if ($this->pindahanModel->update($idPindahan, $data)) {
             $namaSiswa = $data['nama_lengkap'] ?? ($pindahan['nama_lengkap'] ?? 'ID ' . $idPindahan);
             catat_log('Update Biodata Pindahan', "Siswa pindahan $namaSiswa memperbarui biodata");
             session()->setFlashdata('success', 'Data biodata pindahan berhasil diperbarui.');
         } else {
-            session()->setFlashdata('error', 'Gagal memperbarui data biodata.');
+            $errors = $this->pindahanModel->errors();
+            $msg = !empty($errors) ? implode(', ', $errors) : 'Gagal memperbarui data biodata.';
+            session()->setFlashdata('error', $msg);
         }
 
         return redirect()->to('/siswa/pindahan/biodata');
@@ -245,7 +247,7 @@ class Pindahan extends BaseController
         $data = $this->pindahanService->hitungRataRata($data);
 
         if (!empty($data)) {
-            $this->pindahanModel->skipValidation(true)->update($idPindahan, $data);
+            $this->pindahanModel->update($idPindahan, $data);
             $pindahan = $this->pindahanModel->find($idPindahan);
             $completionData = $this->pindahanModel->calculateCompletionPercentage($pindahan);
             return $this->response->setJSON([
@@ -314,7 +316,7 @@ class Pindahan extends BaseController
             'pindahan'      => $pindahan,
             'requiredDocs'  => BerkasPindahanModel::getJenisBerkasOptions(),
             'uploadedBerkas'=> $uploadedBerkas,
-            'berkasWajib'   => $this->berkasModel->isWajibLengkap($idPindahan),
+            'berkasWajib'   => $this->berkasModel->isWajibLengkap($idPindahan, $berkasList),
         ];
 
         return view('pindahan/siswa/berkas/index', $data);

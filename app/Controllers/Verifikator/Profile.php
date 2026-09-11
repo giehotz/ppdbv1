@@ -225,7 +225,7 @@ class Profile extends BaseController
         if ($foto->isValid() && !$foto->hasMoved()) {
             $uploadPath = FCPATH . 'uploads/profile';
             if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+                mkdir($uploadPath, 0755, true);
             }
 
             // Delete old photo if exists

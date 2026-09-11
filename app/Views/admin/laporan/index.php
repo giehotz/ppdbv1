@@ -121,6 +121,92 @@ Laporan & Analisis
     </div>
 </div>
 
+<!-- Perbandingan Tahun Ajaran (Tren) -->
+<div class="mb-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b border-gray-100 dark:border-gray-800 pb-4 mb-5">
+        <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400">
+                <span class="material-symbols-outlined text-lg">trending_up</span>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white">Perbandingan Tahun Ajaran</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    <?= esc($tren['th_prev'] ?: '-') ?> vs <?= esc($tren['th_active']) ?>
+                </p>
+            </div>
+        </div>
+        <a href="<?= base_url('admin/laporan/tren') ?>"
+           class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 px-4 py-2 text-xs font-bold text-white shadow-theme-xs transition-all duration-200 active:scale-[0.97]">
+            <span class="material-symbols-outlined text-base">open_in_new</span>
+            Lihat Detail Tren
+        </a>
+    </div>
+
+    <?php
+    $arah = $tren['arah'] ?? 'stabil';
+    $badgeArah = [
+        'naik'   => ['text-emerald-700 bg-emerald-50 border-emerald-200/70 dark:text-emerald-400 dark:bg-emerald-500/10 dark:border-emerald-500/20', 'trending_up'],
+        'turun'  => ['text-red-700 bg-red-50 border-red-200/70 dark:text-red-400 dark:bg-red-500/10 dark:border-red-500/20', 'trending_down'],
+        'stabil' => ['text-gray-700 bg-gray-50 border-gray-200/70 dark:text-gray-300 dark:bg-gray-800/60 dark:border-gray-700', 'remove'],
+    ][$arah];
+    ?>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <?php foreach (['previous' => 'Tahun Sebelumnya', 'current' => 'Tahun Aktif'] as $key => $label): ?>
+            <?php $d = $tren[$key]; ?>
+            <div class="rounded-xl border border-gray-200 bg-gray-50/60 dark:border-gray-800 dark:bg-gray-800/40 p-4">
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"><?= $label ?></p>
+                <p class="text-lg font-bold text-gray-800 dark:text-gray-200 mt-1"><?= number_format($d['total']) ?> <span class="text-[11px] font-medium text-gray-400">Siswa</span></p>
+                <div class="mt-2 flex items-center gap-3 text-[11px] font-semibold">
+                    <span class="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400"><span class="material-symbols-outlined text-sm">male</span> <?= number_format($d['L']) ?></span>
+                    <span class="inline-flex items-center gap-1 text-pink-600 dark:text-pink-400"><span class="material-symbols-outlined text-sm">female</span> <?= number_format($d['P']) ?></span>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="rounded-xl border <?= $badgeArah[0] ?> p-4 flex flex-col justify-between">
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Perubahan</p>
+            <div>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                    <?= $tren['selisih'] >= 0 ? '+' : '' ?><?= number_format($tren['selisih']) ?> siswa
+                </p>
+                <span class="mt-1 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold <?= $badgeArah[0] ?>">
+                    <span class="material-symbols-outlined text-xs"><?= $badgeArah[1] ?></span>
+                    <?= $tren['pct'] ?>% <?= ucfirst($arah) ?>
+                </span>
+            </div>
+        </div>
+
+        <!-- Mini Line Chart (Total, L, P) -->
+        <div class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-transparent p-4 col-span-1 sm:col-span-3 lg:col-span-1">
+            <?php
+            $seri = ['total' => 'Total', 'L' => 'Laki-laki', 'P' => 'Perempuan'];
+            $maxV = max(array_merge(array_values($tren['previous']), array_values($tren['current']))) ?: 1;
+            $w = 220; $h = 110; $pad = 12; $ch = $h - $pad * 2;
+            ?>
+            <svg viewBox="0 0 <?= $w ?> <?= $h ?>" class="w-full h-full" role="img" aria-label="Grafik tren pendaftar">
+                <?php foreach ($seri as $key => $nama): ?>
+                    <?php
+                    $prevV = $tren['previous'][$key] ?? 0;
+                    $currV = $tren['current'][$key] ?? 0;
+                    $warna = ['total' => '#6366f1', 'L' => '#3b82f6', 'P' => '#ec4899'][$key];
+                    $p1x = $pad; $p1y = $pad + $ch - ($prevV / $maxV) * $ch;
+                    $p2x = $w - $pad; $p2y = $pad + $ch - ($currV / $maxV) * $ch;
+                    ?>
+                    <line x1="<?= $p1x ?>" y1="<?= $p1y ?>" x2="<?= $p2x ?>" y2="<?= $p2y ?>" stroke="<?= $warna ?>" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="<?= $p1x ?>" cy="<?= $p1y ?>" r="4" fill="#fff" stroke="<?= $warna ?>" stroke-width="2.5"/>
+                    <circle cx="<?= $p2x ?>" cy="<?= $p2y ?>" r="4" fill="#fff" stroke="<?= $warna ?>" stroke-width="2.5"/>
+                <?php endforeach; ?>
+            </svg>
+            <div class="mt-1 flex flex-wrap justify-center gap-3 text-[10px] font-semibold text-gray-500 dark:text-gray-400">
+                <?php foreach ($seri as $key => $nama): ?>
+                    <span class="inline-flex items-center gap-1"><span class="h-1.5 w-3 rounded-full <?= ['total'=>'bg-indigo-500','L'=>'bg-blue-500','P'=>'bg-pink-500'][$key] ?>"></span><?= $nama ?></span>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Section: Demografi & Jalur Pendaftaran -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
     <!-- Card: Status & Demografi -->

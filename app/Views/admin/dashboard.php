@@ -45,38 +45,38 @@
 <!-- Key Stat Cards (TailAdmin Metric Cards) -->
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-6 mb-6">
     <!-- Card 1: Total Pendaftar -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+    <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-blue-800/50 dark:bg-blue-500/10 md:p-6">
         <div class="flex items-center justify-between">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white dark:bg-blue-500/30 dark:text-blue-200">
                 <i class="fas fa-users text-xl"></i>
             </div>
-            <span class="flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+            <span class="flex items-center gap-1 rounded-full bg-white/70 px-2.5 py-0.5 text-xs font-semibold text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">
                 <i class="fas fa-database text-[10px]"></i> Total Data
             </span>
         </div>
         <div class="mt-4 flex items-end justify-between">
             <div>
-                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Total Pendaftar</span>
-                <h4 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90"><?= number_format($totalPendaftar) ?></h4>
+                <span class="text-xs font-medium text-blue-700/70 dark:text-blue-300/70">Total Pendaftar</span>
+                <h4 class="mt-1 text-2xl font-bold text-blue-900 dark:text-white"><?= number_format($totalPendaftar) ?></h4>
             </div>
-            <p class="text-[11px] text-gray-400 dark:text-gray-500">Semua Calon Siswa</p>
+            <p class="text-[11px] text-blue-600/60 dark:text-blue-300/60">Semua Calon Siswa</p>
         </div>
     </div>
 
     <!-- Card 2: Terverifikasi -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+    <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-emerald-800/50 dark:bg-emerald-500/10 md:p-6">
         <div class="flex items-center justify-between">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-white dark:bg-emerald-500/30 dark:text-emerald-200">
                 <i class="fas fa-check-double text-xl"></i>
             </div>
-            <span class="flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
+            <span class="flex items-center gap-1 rounded-full bg-white/70 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
                 <i class="fas fa-shield-alt text-[10px]"></i> Berkas Valid
             </span>
         </div>
         <div class="mt-4 flex items-end justify-between">
             <div>
-                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Terverifikasi</span>
-                <h4 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90"><?= number_format($terverifikasi) ?></h4>
+                <span class="text-xs font-medium text-emerald-700/70 dark:text-emerald-300/70">Terverifikasi</span>
+                <h4 class="mt-1 text-2xl font-bold text-emerald-900 dark:text-white"><?= number_format($terverifikasi) ?></h4>
             </div>
             <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
                 <?= $totalPendaftar > 0 ? round(($terverifikasi / $totalPendaftar) * 100) : 0 ?>% dari total
@@ -85,19 +85,19 @@
     </div>
 
     <!-- Card 3: Menunggu Verifikasi -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+    <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-amber-800/50 dark:bg-amber-500/10 md:p-6">
         <div class="flex items-center justify-between">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500 text-white dark:bg-amber-500/30 dark:text-amber-200">
                 <i class="fas fa-hourglass-half text-xl"></i>
             </div>
-            <span class="flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">
+            <span class="flex items-center gap-1 rounded-full bg-white/70 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:bg-amber-500/20 dark:text-amber-300">
                 <i class="fas fa-clock text-[10px]"></i> Perlu Cek
             </span>
         </div>
         <div class="mt-4 flex items-end justify-between">
             <div>
-                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Menunggu Review</span>
-                <h4 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90"><?= number_format($pending) ?></h4>
+                <span class="text-xs font-medium text-amber-700/70 dark:text-amber-300/70">Menunggu Review</span>
+                <h4 class="mt-1 text-2xl font-bold text-amber-900 dark:text-white"><?= number_format($pending) ?></h4>
             </div>
             <a href="<?= base_url('admin/siswa') ?>" class="text-[11px] text-amber-600 hover:underline dark:text-amber-400 font-medium">
                 Proses &rarr;
@@ -106,21 +106,21 @@
     </div>
 
     <!-- Card 4: Ditolak -->
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+    <div class="rounded-2xl border border-red-200 bg-red-50 p-5 shadow-theme-xs transition-all hover:shadow-theme-md dark:border-red-800/50 dark:bg-red-500/10 md:p-6">
         <div class="flex items-center justify-between">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-600 text-white dark:bg-red-500/30 dark:text-red-200">
                 <i class="fas fa-ban text-xl"></i>
             </div>
-            <span class="flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-600 dark:bg-red-500/15 dark:text-red-400">
+            <span class="flex items-center gap-1 rounded-full bg-white/70 px-2.5 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-500/20 dark:text-red-300">
                 <i class="fas fa-times-circle text-[10px]"></i> Ditolak
             </span>
         </div>
         <div class="mt-4 flex items-end justify-between">
             <div>
-                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Berkas Ditolak</span>
-                <h4 class="mt-1 text-2xl font-bold text-gray-800 dark:text-white/90"><?= number_format($ditolak) ?></h4>
+                <span class="text-xs font-medium text-red-700/70 dark:text-red-300/70">Berkas Ditolak</span>
+                <h4 class="mt-1 text-2xl font-bold text-red-900 dark:text-white"><?= number_format($ditolak) ?></h4>
             </div>
-            <p class="text-[11px] text-gray-400 dark:text-gray-500">Perlu Perbaikan</p>
+            <p class="text-[11px] text-red-600/60 dark:text-red-300/60">Perlu Perbaikan</p>
         </div>
     </div>
 </div>

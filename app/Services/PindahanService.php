@@ -202,17 +202,15 @@ class PindahanService
             return ['success' => false, 'message' => 'File tidak valid atau belum dipilih.'];
         }
 
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
-        if (!in_array($file->getMimeType(), $allowedTypes, true)) {
+        if (!in_array($file->getMimeType(), PindahanConfig::ALLOWED_MIME_TYPES, true)) {
             return ['success' => false, 'message' => 'Hanya file JPG, PNG, atau PDF yang diperbolehkan.'];
         }
 
-        if ($file->getSize() > 2048000) {
+        if ($file->getSize() > PindahanConfig::MAX_FILE_SIZE) {
             return ['success' => false, 'message' => 'Ukuran file maksimal 2MB.'];
         }
 
-        $allowedExts = ['jpg', 'jpeg', 'png', 'pdf'];
-        if (!in_array(strtolower((string) $file->getExtension()), $allowedExts, true)) {
+        if (!in_array(strtolower((string) $file->getExtension()), PindahanConfig::ALLOWED_FILE_EXTENSIONS, true)) {
             return ['success' => false, 'message' => 'Ekstensi file tidak diizinkan.'];
         }
 
@@ -220,7 +218,7 @@ class PindahanService
         $safeNisn = preg_replace('/[^a-zA-Z0-9_-]/', '', (string) $pindahan['nisn']);
         $uploadPath = FCPATH . 'uploads/berkas/' . $safeNisn . '/';
         if (!is_dir($uploadPath)) {
-            mkdir($uploadPath, 0777, true);
+            mkdir($uploadPath, 0755, true);
         }
 
         $jenisLabel = strtoupper($jenisBerkas);
@@ -320,7 +318,7 @@ class PindahanService
      */
     public function doVerify(int $id, string $status, ?string $catatan, string $actorName, string $actorRole = 'Admin'): array
     {
-        if (!in_array($status, ['Terverifikasi', 'Menunggu', 'Ditolak'], true)) {
+        if (!in_array($status, SiswaPindahanModel::ALL_STATUS, true)) {
             return ['success' => false, 'message' => 'Status verifikasi tidak valid.'];
         }
 
@@ -340,7 +338,7 @@ class PindahanService
         ];
 
         // Jika Ditolak, buka kembali form agar bisa diperbaiki
-        if ($status === 'Ditolak') {
+        if ($status === SiswaPindahanModel::STATUS_DITOLAK) {
             $updateData['status_pendaftaran'] = '';
         }
 
@@ -450,10 +448,10 @@ class PindahanService
             'grup_jenjang_asal'      => PindahanConfig::getGrupName($jenjangAsal),
             'tgl_pindahan'           => date('Y-m-d H:i:s'),
             'status_verifikasi'      => SiswaPindahanModel::STATUS_MENUNGGU,
-            'status_pendaftaran'     => 'Draft',
+            'status_pendaftaran'     => SiswaPindahanModel::PENDAFTARAN_DRAFT,
         ];
 
-        $insertId = $this->pindahanModel->skipValidation(true)->insert($data);
+        $insertId = $this->pindahanModel->insert($data);
         if (!$insertId) {
             $db->transRollback();
             return [
@@ -501,16 +499,12 @@ class PindahanService
     // ─────────────────────────────────────────────────────────────
 
     /**
-     * Soft delete siswa pindahan (Admin).
+     * Hapus siswa pindahan beserta seluruh berkas & relasinya (konsisten untuk Admin & Verifikator).
      */
     public function softDeletePindahan(int $id): bool
     {
-        $siswa = $this->pindahanModel->find($id);
-        if (!$siswa) {
-            return false;
-        }
-
-        return (bool) $this->pindahanModel->delete($id);
+        $res = $this->deletePindahanPermanently($id);
+        return $res['success'];
     }
 
     /**

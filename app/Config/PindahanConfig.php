@@ -143,6 +143,23 @@ class PindahanConfig extends BaseConfig
     }
 
     /**
+     * Konfigurasi Upload Berkas Pindahan
+     */
+    public const MAX_FILE_SIZE = 2048000; // 2MB
+    public const ALLOWED_MIME_TYPES = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'application/pdf',
+    ];
+    public const ALLOWED_FILE_EXTENSIONS = [
+        'jpg',
+        'jpeg',
+        'png',
+        'pdf',
+    ];
+
+    /**
      * Ambil label lengkap dari sebuah jenjang.
      *
      * @param string|null $jenjang Nama jenjang (misal 'SD')
@@ -163,5 +180,40 @@ class PindahanConfig extends BaseConfig
         }
 
         return null;
+    }
+
+    /**
+     * Cek apakah dua jenjang berada dalam grup yang setara.
+     *
+     * @param string|null $jenjangAsal
+     * @param string|null $jenjangTujuan
+     * @return bool
+     */
+    public static function isJenjangSetara(?string $jenjangAsal, ?string $jenjangTujuan): bool
+    {
+        $grupAsal   = self::getGrupName($jenjangAsal);
+        $grupTujuan = self::getGrupName($jenjangTujuan);
+
+        if ($grupAsal === null || $grupTujuan === null) {
+            return false;
+        }
+
+        return $grupAsal === $grupTujuan;
+    }
+
+    /**
+     * Daftar kode jenjang sejenis dalam satu grup (termasuk dirinya sendiri).
+     *
+     * @param string|null $jenjang
+     * @return array
+     */
+    public static function getJenjangSejenis(?string $jenjang): array
+    {
+        $grup = self::getGrupName($jenjang);
+        if ($grup === null || !isset(self::$grupJenjang[$grup])) {
+            return [];
+        }
+
+        return array_keys(self::$grupJenjang[$grup]);
     }
 }

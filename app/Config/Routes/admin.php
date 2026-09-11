@@ -73,6 +73,7 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     // Laporan & Analisis
     $routes->get('laporan', 'Admin\Laporan::index');
     $routes->get('laporan/cetak', 'Admin\Laporan::cetak');
+    $routes->get('laporan/tren', 'Admin\Laporan::tren');
 
     // Log Aktivitas
     $routes->get('log_aktivitas', 'Admin\LogAktivitas::index');

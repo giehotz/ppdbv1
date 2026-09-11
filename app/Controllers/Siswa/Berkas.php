@@ -96,7 +96,7 @@ class Berkas extends BaseController
         // Create upload directory if not exists
         $uploadPath = FCPATH . 'uploads/berkas/' . $nisn . '/';
         if (!is_dir($uploadPath)) {
-            mkdir($uploadPath, 0777, true);
+            mkdir($uploadPath, 0755, true);
         }
 
         // Validate extension

@@ -986,8 +986,8 @@
                     <?php foreach ($galeri as $g): ?>
                         <div onclick="openLightbox('<?= base_url($g['gambar']) ?>', '<?= esc(addslashes($g['judul'])) ?>', '<?= esc(addslashes($g['deskripsi'] ?? '')) ?>')"
                              class="bg-white text-black p-3 pb-5 rounded-2xl border-[3px] border-white shadow-[5px_5px_0px_0px_#FFE600] hover:shadow-[7px_7px_0px_0px_#00D2FF] hover:-translate-y-2 transition-all cursor-pointer group">
-                            <div class="aspect-square rounded-xl overflow-hidden border-2 border-black mb-3 bg-gray-100">
-                                <img src="<?= base_url($g['gambar']) ?>" alt="<?= esc($g['judul']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="aspect-[4/3] flex items-center justify-center rounded-xl overflow-hidden border-2 border-black mb-3 bg-[#FFFDF5] p-2">
+                                <img src="<?= base_url($g['gambar']) ?>" alt="<?= esc($g['judul']) ?>" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300">
                             </div>
                             <h4 class="font-heading font-black text-base text-black line-clamp-1 group-hover:text-[#FF6B8B] transition-colors"><?= esc($g['judul']) ?></h4>
                             <?php if (!empty($g['deskripsi'])): ?>
@@ -1007,8 +1007,8 @@
             <button onclick="closeLightbox()" class="absolute -top-4 -right-4 w-10 h-10 bg-[#FF6B8B] text-white rounded-full border-2 border-black shadow-[3px_3px_0px_0px_#000] flex items-center justify-center font-black hover:scale-110 transition-transform">
                 <i class="fas fa-times"></i>
             </button>
-            <div class="rounded-2xl border-2 border-black overflow-hidden mb-4 max-h-[60vh]">
-                <img id="lightbox-img" src="" alt="Gallery Image" class="w-full h-full object-contain bg-gray-100">
+            <div class="rounded-2xl border-2 border-black mb-4 flex items-center justify-center bg-gray-100">
+                <img id="lightbox-img" src="" alt="Gallery Image" class="mx-auto max-w-full max-h-[60vh] object-contain bg-gray-100">
             </div>
             <h3 id="lightbox-caption" class="font-heading font-black text-2xl text-black mb-1"></h3>
             <p id="lightbox-desc" class="text-sm font-semibold text-gray-700"></p>

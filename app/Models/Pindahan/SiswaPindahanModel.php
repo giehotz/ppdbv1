@@ -16,6 +16,9 @@ class SiswaPindahanModel extends Model
         self::STATUS_DITOLAK,
     ];
 
+    public const PENDAFTARAN_DRAFT = 'Draft';
+    public const PENDAFTARAN_FINAL = 'Final';
+
     protected $table            = 'tbl_siswa_pindahan';
     protected $primaryKey       = 'id_pindahan';
     protected $useAutoIncrement = true;
@@ -283,8 +286,12 @@ class SiswaPindahanModel extends Model
 
     /**
      * Hitung persentase kelengkapan biodata siswa pindahan.
+     *
+     * @param array $siswa          Data array siswa
+     * @param bool  $includeDetails Jika false, lewati pengumpulan daftar label field yang belum diisi (optimal untuk loop index)
+     * @return array ['percentage' => int, 'incomplete' => array]
      */
-    public function calculateCompletionPercentage($siswa)
+    public function calculateCompletionPercentage($siswa, bool $includeDetails = true): array
     {
         $requiredFields = [
             'nisn'                   => 'NISN',
@@ -308,9 +315,22 @@ class SiswaPindahanModel extends Model
             'kelas_diterima'       => 'Diterima di Kelas',
         ];
 
-        $filled           = 0;
-        $incompleteFields = [];
+        $totalRequired = count($requiredFields);
+        $filled        = 0;
 
+        if (!$includeDetails) {
+            foreach (array_keys($requiredFields) as $field) {
+                if (!empty($siswa[$field])) {
+                    $filled++;
+                }
+            }
+            return [
+                'percentage' => (int) round(($filled / $totalRequired) * 100),
+                'incomplete' => [],
+            ];
+        }
+
+        $incompleteFields = [];
         foreach ($requiredFields as $field => $label) {
             if (!empty($siswa[$field])) {
                 $filled++;
@@ -320,9 +340,16 @@ class SiswaPindahanModel extends Model
         }
 
         return [
-            'percentage' => round(($filled / count($requiredFields)) * 100),
+            'percentage' => (int) round(($filled / $totalRequired) * 100),
             'incomplete' => $incompleteFields,
         ];
     }
 
+    /**
+     * Hitung hanya persentase kelengkapan (ringan untuk list index).
+     */
+    public function getCompletionPercentageOnly($siswa): int
+    {
+        return $this->calculateCompletionPercentage($siswa, false)['percentage'];
     }
+}

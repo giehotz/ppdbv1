@@ -24,7 +24,7 @@
         }
         html.dark body {
             background-color: #111827 !important;
-            color: #f3f4f6;
+            color: #f3f6f6ff;
         }
     </style>
     <title><?= $this->renderSection('title') ?> - Admin <?= esc($app_alias ?? 'PPDB') ?></title>
@@ -99,32 +99,36 @@
     // Single source of truth for admin sidebar navigation
     $sidebarMenus = [
         'Dashboard' => [
-            ['label' => 'Dashboard',          'icon' => 'tachometer-alt', 'url' => 'admin/dashboard'],
+            ['label' => 'Dashboard', 'icon' => 'tachometer-alt', 'url' => 'admin/dashboard'],
         ],
-        'Manajemen' => [
-            ['label' => 'Pengguna',           'icon' => 'users-cog',      'url' => 'admin/users'],
-            ['label' => 'Calon Siswa',        'icon' => 'user-graduate',  'url' => 'admin/siswa'],
-            ['label' => 'Siswa Pindahan',     'icon' => 'user-friends',    'url' => 'admin/pindahan'],
-            ['label' => 'Profil Siswa',       'icon' => 'address-card',   'url' => 'admin/siswa-list'],
-            ['label' => 'Buka Kunci',         'icon' => 'unlock-alt',     'url' => 'admin/unlockrequest', 'badge' => $pendingUnlockCount],
-            ['label' => 'Reset Password',     'icon' => 'key',            'url' => 'admin/reset-password'],
-            ['label' => 'Berkas Siswa',       'icon' => 'file-alt',       'url' => 'admin/berkas'],
-            ['label' => 'Kelulusan',          'icon' => 'graduation-cap', 'url' => 'admin/kelulusan'],
-            ['label' => 'Daftar Ulang',       'icon' => 'clipboard-check','url' => 'admin/daftar-ulang'],
-            ['label' => 'Laporan & Analisis', 'icon' => 'chart-pie',      'url' => 'admin/laporan'],
-            ['label' => 'Pembiayaan',         'icon' => 'money-bill-wave','url' => 'admin/pembiayaan'],
-            ['label' => 'Log Aktivitas',      'icon' => 'history',        'url' => 'admin/log_aktivitas'],
+        'Manajemen Pengguna' => [
+            ['label' => 'Pengguna',       'icon' => 'users-cog',   'url' => 'admin/users'],
+            ['label' => 'Buka Kunci',     'icon' => 'unlock-alt',  'url' => 'admin/unlockrequest', 'badge' => $pendingUnlockCount],
+            ['label' => 'Reset Password', 'icon' => 'key',         'url' => 'admin/reset-password'],
         ],
-        'Pengaturan Kartu' => [
-            ['label' => 'Desain Cetak Kartu', 'icon' => 'print',          'url' => 'admin/setting-kartu'],
+        'Manajemen Siswa' => [
+            ['label' => 'Calon Siswa',    'icon' => 'user-graduate',  'url' => 'admin/siswa'],
+            ['label' => 'Profil Siswa',   'icon' => 'address-card',   'url' => 'admin/siswa-list'],
+            ['label' => 'Siswa Pindahan', 'icon' => 'user-friends',   'url' => 'admin/pindahan'],
+            ['label' => 'Berkas Siswa',   'icon' => 'file-alt',       'url' => 'admin/berkas'],
+            ['label' => 'Kelulusan',      'icon' => 'graduation-cap', 'url' => 'admin/kelulusan'],
+            ['label' => 'Daftar Ulang',   'icon' => 'clipboard-check','url' => 'admin/daftar-ulang'],
         ],
-        'Konten & Pengaturan' => [
-            ['label' => 'Pesan Pribadi',      'icon' => 'envelope',       'url' => 'admin/pesan'],
-            ['label' => 'Pengumuman',         'icon' => 'bullhorn',       'url' => 'admin/pengumuman'],
-            ['label' => 'Landing Content',    'icon' => 'laptop-code',    'url' => 'admin/landing-content'],
-            ['label' => 'Kampanye Twibbon',   'icon' => 'image',          'url' => 'admin/twibbon'],
-            ['label' => 'Pengaturan Sistem',  'icon' => 'cogs',           'url' => 'admin/settings'],
-            ['label' => 'Pengaturan SEO',     'icon' => 'search',         'url' => 'admin/seo'],
+        'Keuangan & Laporan' => [
+            ['label' => 'Pembiayaan',         'icon' => 'money-bill-wave', 'url' => 'admin/pembiayaan'],
+            ['label' => 'Laporan & Analisis', 'icon' => 'chart-pie',       'url' => 'admin/laporan'],
+            ['label' => 'Log Aktivitas',      'icon' => 'history',         'url' => 'admin/log_aktivitas'],
+        ],
+        'Kartu & Konten' => [
+            ['label' => 'Desain Cetak Kartu', 'icon' => 'print',       'url' => 'admin/setting-kartu'],
+            ['label' => 'Landing Content',    'icon' => 'laptop-code', 'url' => 'admin/landing-content'],
+            ['label' => 'Kampanye Twibbon',   'icon' => 'image',       'url' => 'admin/twibbon'],
+            ['label' => 'Pesan Pribadi',      'icon' => 'envelope',    'url' => 'admin/pesan'],
+            ['label' => 'Pengumuman',         'icon' => 'bullhorn',    'url' => 'admin/pengumuman'],
+        ],
+        'Pengaturan' => [
+            ['label' => 'Pengaturan Sistem', 'icon' => 'cogs',   'url' => 'admin/settings'],
+            ['label' => 'Pengaturan SEO',    'icon' => 'search', 'url' => 'admin/seo'],
         ],
     ];
     ?>
@@ -139,7 +143,8 @@
             'sidebarMenus' => $sidebarMenus,
             'app_alias' => $app_alias ?? 'PPDB',
             'sekolahName' => $sekolahName,
-            'web_logo' => $web_logo ?? null
+            'web_logo' => $web_logo ?? null,
+            'collapsibleGroups' => array_keys($sidebarMenus)
         ]) ?>
 
         <!-- Content Area -->

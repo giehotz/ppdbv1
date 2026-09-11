@@ -136,6 +136,53 @@ class LaporanModel extends Model
     }
 
     /**
+     * Ambil tahun sebelumnya dari format "YYYY/YYYY" (mis. "2026/2027" -> "2025/2026").
+     * Untuk data yang belum ada, hasil statistik otomatis 0.
+     */
+    public function getTahunSebelumnya(?string $thPelajaran = null): string
+    {
+        $th = $thPelajaran ?? $this->getActiveThPelajaran();
+        [$awal, $akhir] = array_replace(['', ''], explode('/', $th));
+        if ($awal === '' || $akhir === '') {
+            return '';
+        }
+        return ($awal - 1) . '/' . ($akhir - 1);
+    }
+
+    /**
+     * Perbandingan jumlah pendaftar tahun aktif vs tahun sebelumnya (total, L, P) + persentase.
+     */
+    public function getTrenPendaftar(?string $thPelajaran = null): array
+    {
+        $th   = $thPelajaran ?? $this->getActiveThPelajaran();
+        $prev = $this->getTahunSebelumnya($th);
+
+        $current = ['total' => 0, 'L' => 0, 'P' => 0];
+        $before  = ['total' => 0, 'L' => 0, 'P' => 0];
+
+        if ($prev !== '') {
+            $before  = $this->getGenderStats($prev);
+            $before['total'] = $before['L'] + $before['P'];
+        }
+        $current = $this->getGenderStats($th);
+        $current['total'] = $current['L'] + $current['P'];
+
+        $selisih = $current['total'] - $before['total'];
+        $pct     = $before['total'] > 0 ? round($selisih / $before['total'] * 100, 1) : 0;
+
+        // ponytail: denominator 0 -> laporkan 0%, bukan null/error
+        return [
+            'th_active'  => $th,
+            'th_prev'    => $prev,
+            'current'    => $current,
+            'previous'   => $before,
+            'selisih'    => $selisih,
+            'pct'        => $pct,
+            'arah'       => $selisih < 0 ? 'turun' : ($selisih > 0 ? 'naik' : 'stabil'),
+        ];
+    }
+
+    /**
      * Top Sebaran Wilayah berdasarkan Kecamatan (5 Terbanyak)
      */
     public function getTopWilayah($thPelajaran = null)

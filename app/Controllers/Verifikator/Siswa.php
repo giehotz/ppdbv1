@@ -420,7 +420,7 @@ class Siswa extends BaseController
         $safeNisn = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)$siswa['nisn']);
         $uploadPath = FCPATH . 'uploads/berkas/' . $safeNisn . '/';
         if (!is_dir($uploadPath)) {
-            mkdir($uploadPath, 0777, true);
+            mkdir($uploadPath, 0755, true);
         }
 
         $extension = strtolower($file->getExtension());

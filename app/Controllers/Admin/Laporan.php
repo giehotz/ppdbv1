@@ -26,11 +26,26 @@ class Laporan extends BaseController
             'jalur'      => $this->laporanModel->getJalurPendaftaranStats($selectedTh),
             'topSekolah' => $this->laporanModel->getTopSekolah($selectedTh),
             'topWilayah' => $this->laporanModel->getTopWilayah($selectedTh),
+            'tren'       => $this->laporanModel->getTrenPendaftar($selectedTh),
             'selectedTh' => $selectedTh,
             'activeTh'   => $activeTh,
         ];
 
         return view('admin/laporan/index', $data);
+    }
+
+    public function tren()
+    {
+        $activeTh   = $this->laporanModel->getActiveThPelajaran();
+        $selectedTh = $this->request->getGet('th_pelajaran') ?? $activeTh;
+
+        $data = [
+            'tren'     => $this->laporanModel->getTrenPendaftar($selectedTh),
+            'selectedTh' => $selectedTh,
+            'activeTh'   => $activeTh,
+        ];
+
+        return view('admin/laporan/tren', $data);
     }
 
     public function cetak()
@@ -43,6 +58,9 @@ class Laporan extends BaseController
             $query->where('th_pelajaran', $selectedTh);
         }
 
+        $webModel = new \App\Models\TblWebModel();
+        $web = $webModel->first() ?? [];
+
         $data = [
             'semua_siswa' => $query->findAll(),
             'statistik'   => $this->laporanModel->getStatistikUmum($selectedTh),
@@ -51,6 +69,8 @@ class Laporan extends BaseController
             'jalur'       => $this->laporanModel->getJalurPendaftaranStats($selectedTh),
             'topSekolah'  => $this->laporanModel->getTopSekolah($selectedTh),
             'topWilayah'  => $this->laporanModel->getTopWilayah($selectedTh),
+            'tren'        => $this->laporanModel->getTrenPendaftar($selectedTh),
+            'web'         => $web,
             'waktu_cetak' => date('d-m-Y H:i:s'),
             'dicetak_oleh'=> session()->get('nama_lengkap') ?? 'Administrator',
             'selectedTh'  => $selectedTh,

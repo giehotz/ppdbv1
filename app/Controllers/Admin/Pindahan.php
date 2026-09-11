@@ -54,9 +54,8 @@ class Pindahan extends BaseController
         $siswaList = $this->pindahanModel->getStudents($search, 20, $sortOrder, $selectedTh, $tab);
 
         foreach ($siswaList as &$s) {
-            $comp = $this->pindahanModel->calculateCompletionPercentage($s);
-            $s['kelengkapan'] = $comp['percentage'];
-            $s['foto_url'] = $this->pindahanService->resolvePhotoUrl($s['foto'] ?? null);
+            $s['kelengkapan'] = $this->pindahanModel->getCompletionPercentageOnly($s);
+            $s['foto_url']    = $this->pindahanService->resolvePhotoUrl($s['foto'] ?? null);
         }
         unset($s);
 
@@ -100,7 +99,7 @@ class Pindahan extends BaseController
             'berkasList'  => $berkasList,
             'verifikasiRiwayat' => $verifikasiRiwayat,
             'semuaJenjang' => PindahanConfig::getAllJenjang(),
-            'berkasWajib' => $this->berkasModel->isWajibLengkap($id),
+            'berkasWajib' => $this->berkasModel->isWajibLengkap($id, $berkasList),
         ];
 
         return view('pindahan/admin/detail', $data);
@@ -169,17 +168,13 @@ class Pindahan extends BaseController
 
     public function delete($id)
     {
-        $siswa = $this->pindahanModel->find($id);
-        if (!$siswa) {
-            session()->setFlashdata('error', 'Data siswa pindahan tidak ditemukan.');
-            return redirect()->to('/admin/pindahan');
-        }
+        $result = $this->pindahanService->deletePindahanPermanently((int) $id);
 
-        if ($this->pindahanService->softDeletePindahan((int) $id)) {
-            catat_log('Hapus Siswa Pindahan', 'Menghapus (soft) siswa pindahan: ' . ($siswa['nama_lengkap'] ?? $id));
+        if ($result['success']) {
+            catat_log('Hapus Siswa Pindahan', 'Admin ' . (session()->get('nama_lengkap') ?: '-') . ' menghapus siswa pindahan: ' . ($result['siswa']['nama_lengkap'] ?? $id));
             session()->setFlashdata('success', 'Data siswa pindahan berhasil dihapus.');
         } else {
-            session()->setFlashdata('error', 'Gagal menghapus data siswa pindahan.');
+            session()->setFlashdata('error', $result['message']);
         }
 
         return redirect()->to('/admin/pindahan');
@@ -201,7 +196,8 @@ class Pindahan extends BaseController
 
         $count = 0;
         foreach ($ids as $id) {
-            if ($this->pindahanService->softDeletePindahan($id)) {
+            $res = $this->pindahanService->deletePindahanPermanently((int) $id);
+            if ($res['success']) {
                 $count++;
             }
         }
@@ -222,8 +218,6 @@ class Pindahan extends BaseController
         $siswa = $this->pindahanModel->find($id);
 
         if ($siswa && $this->pindahanModel->update($id, ['password' => $hashedPassword])) {
-            session()->set('pindahan_pwd_' . $id, $newPassword);
-
             try {
                 \Config\Services::cache()->clean();
             } catch (\Throwable $e) {
@@ -238,7 +232,7 @@ class Pindahan extends BaseController
                 'tanggal' => date('d-m-Y H:i:s'),
                 'jenis'  => 'pindahan',
             ];
-            session()->setFlashdata('success', 'Password siswa pindahan berhasil direset ke: <strong>' . esc($newPassword) . '</strong>.');
+            session()->setFlashdata('success', 'Password siswa pindahan berhasil direset ke: ' . $newPassword . '.');
             session()->setFlashdata('print_password', $printData);
         } else {
             session()->setFlashdata('error', 'Gagal mereset password siswa pindahan.');
@@ -255,7 +249,7 @@ class Pindahan extends BaseController
         }
 
         $status = $this->request->getPost('status');
-        if (!in_array($status, ['pending', 'valid', 'invalid'], true)) {
+        if (!in_array($status, BerkasPindahanModel::ALL_STATUS, true)) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Status berkas tidak valid.']);
         }
 

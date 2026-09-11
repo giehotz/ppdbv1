@@ -101,7 +101,7 @@ $collapsibleGroups = $collapsibleGroups ?? [];
         <?php
           $isCollapsible = in_array($groupLabel, $collapsibleGroups, true);
           $groupKey = 'ssb_' . preg_replace('/[^a-z0-9]+/', '_', strtolower($groupLabel));
-          $groupDefaultOpen = false;
+          $groupDefaultOpen = true;
           $hasActiveInGroup = false;
           foreach ($items as $gItem) {
               if (trim($gItem['url'] ?? '', '/') === $activeMenuUrl) {

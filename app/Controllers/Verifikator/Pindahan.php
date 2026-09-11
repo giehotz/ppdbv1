@@ -50,9 +50,8 @@ class Pindahan extends BaseController
 
         $siswaList = $this->pindahanModel->getStudents($search, 20, 'ASC', $selectedTh, $tab);
         foreach ($siswaList as &$s) {
-            $comp = $this->pindahanModel->calculateCompletionPercentage($s);
-            $s['kelengkapan'] = $comp['percentage'];
-            $s['foto_url'] = $this->pindahanService->resolvePhotoUrl($s['foto'] ?? null);
+            $s['kelengkapan'] = $this->pindahanModel->getCompletionPercentageOnly($s);
+            $s['foto_url']    = $this->pindahanService->resolvePhotoUrl($s['foto'] ?? null);
         }
         unset($s);
 
@@ -91,8 +90,7 @@ class Pindahan extends BaseController
         }
 
         foreach ($siswaList as &$s) {
-            $cd = $this->pindahanModel->calculateCompletionPercentage($s);
-            $s['kelengkapan'] = $cd['percentage'];
+            $s['kelengkapan'] = $this->pindahanModel->getCompletionPercentageOnly($s);
         }
         unset($s);
 
@@ -170,7 +168,7 @@ class Pindahan extends BaseController
             'siswa'        => $siswa,
             'berkasList'   => $berkasList,
             'verifikasiRiwayat' => $verifikasiRiwayat,
-            'berkasWajib'  => $this->berkasModel->isWajibLengkap($id),
+            'berkasWajib'  => $this->berkasModel->isWajibLengkap($id, $berkasList),
         ];
 
         return view('pindahan/verifikator/detail', $data);
@@ -257,12 +255,14 @@ class Pindahan extends BaseController
             }
         }
 
-        if ($this->pindahanModel->skipValidation(true)->update($id, $data)) {
+        if ($this->pindahanModel->update($id, $data)) {
             $namaSiswa = $data['nama_lengkap'] ?? $siswa['nama_lengkap'];
             catat_log('Update Biodata Pindahan (Verifikator)', "Verifikator " . session()->get('nama_lengkap') . " memperbarui data biodata siswa pindahan: $namaSiswa (ID $id)");
             session()->setFlashdata('success', 'Data biodata pindahan berhasil disimpan.');
         } else {
-            session()->setFlashdata('error', 'Gagal memperbarui data biodata ke database.');
+            $errors = $this->pindahanModel->errors();
+            $msg = !empty($errors) ? implode(', ', $errors) : 'Gagal memperbarui data biodata ke database.';
+            session()->setFlashdata('error', $msg);
         }
 
         if ($this->request->getPost('finish_skip')) {
@@ -292,7 +292,7 @@ class Pindahan extends BaseController
             'siswa'         => $siswa,
             'requiredDocs'  => BerkasPindahanModel::getJenisBerkasOptions(),
             'uploadedBerkas'=> $uploadedBerkas,
-            'berkasWajib'   => $this->berkasModel->isWajibLengkap($id),
+            'berkasWajib'   => $this->berkasModel->isWajibLengkap($id, $berkasList),
         ];
 
         return view('pindahan/verifikator/berkas', $data);
@@ -347,6 +347,7 @@ class Pindahan extends BaseController
         }
 
         $siswa['password_asli'] = session()->get('pindahan_pwd_' . $id);
+        session()->remove('pindahan_pwd_' . $id);
 
         return view('pindahan/verifikator/cetak_akun', ['siswa' => $siswa]);
     }
