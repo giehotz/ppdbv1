@@ -74,7 +74,7 @@
                 </label>
                 <div class="input-icon-wrapper">
                     <span class="input-icon material-symbols-outlined">location_city</span>
-                    <input type="text" name="tempat_lahir_ayah" value="<?= esc($siswa['tempat_lahir_ayah'] ?? '', 'attr') ?>" class="form-input-control border border-gray-300 dark:border-gray-600" placeholder="Kota / Kabupaten Lahir">
+                    <input type="text" name="tempat_lahir_ayah" value="<?= esc($siswa['tempat_lahir_ayah'] ?? '', 'attr') ?>" class="form-input-control border border-gray-300 dark:border-gray-600" placeholder="Isi Sesuai KK">
                 </div>
             </div>
 
@@ -213,7 +213,7 @@
                 </label>
                 <div class="input-icon-wrapper">
                     <span class="input-icon material-symbols-outlined">location_city</span>
-                    <input type="text" name="tempat_lahir_ibu" value="<?= esc($siswa['tempat_lahir_ibu'] ?? '', 'attr') ?>" class="form-input-control border border-gray-300 dark:border-gray-600" placeholder="Kota / Kabupaten Lahir">
+                    <input type="text" name="tempat_lahir_ibu" value="<?= esc($siswa['tempat_lahir_ibu'] ?? '', 'attr') ?>" class="form-input-control border border-gray-300 dark:border-gray-600" placeholder="Isi Sesuai KK">
                 </div>
             </div>
 
@@ -346,6 +346,17 @@
                 <div class="input-icon-wrapper">
                     <span class="input-icon material-symbols-outlined">credit_card</span>
                     <input type="text" id="nik_wali" name="nik_wali" value="<?= esc($siswa['nik_wali'] ?? '', 'attr') ?>" maxlength="16" class="form-input-control border border-gray-300 dark:border-gray-600 font-mono wali-field" placeholder="16 digit NIK wali">
+                </div>
+            </div>
+
+            <!-- Tempat Lahir Wali -->
+            <div>
+                <label class="mb-2 block text-xs font-bold text-gray-700 dark:text-gray-300">
+                    Tempat Lahir Wali
+                </label>
+                <div class="input-icon-wrapper">
+                    <span class="input-icon material-symbols-outlined">location_city</span>
+                    <input type="text" id="tempat_lahir_wali" name="tempat_lahir_wali" value="<?= esc($siswa['tempat_lahir_wali'] ?? '', 'attr') ?>" class="form-input-control border border-gray-300 dark:border-gray-600 wali-field" placeholder="Isi Sesuai KK">
                 </div>
             </div>
 

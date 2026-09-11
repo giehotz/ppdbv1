@@ -104,6 +104,7 @@
         'Manajemen' => [
             ['label' => 'Pengguna',           'icon' => 'users-cog',      'url' => 'admin/users'],
             ['label' => 'Calon Siswa',        'icon' => 'user-graduate',  'url' => 'admin/siswa'],
+            ['label' => 'Siswa Pindahan',     'icon' => 'user-friends',    'url' => 'admin/pindahan'],
             ['label' => 'Profil Siswa',       'icon' => 'address-card',   'url' => 'admin/siswa-list'],
             ['label' => 'Buka Kunci',         'icon' => 'unlock-alt',     'url' => 'admin/unlockrequest', 'badge' => $pendingUnlockCount],
             ['label' => 'Reset Password',     'icon' => 'key',            'url' => 'admin/reset-password'],

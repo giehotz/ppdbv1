@@ -38,6 +38,7 @@ class Filters extends BaseFilters
         'admin'         => \App\Filters\AdminFilter::class,
         'verifikator'   => \App\Filters\VerifikatorFilter::class,
         'siswa'         => \App\Filters\SiswaFilter::class,
+        'pindahan'      => \App\Filters\PindahanFilter::class,
     ];
 
     /**

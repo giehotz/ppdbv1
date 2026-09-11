@@ -102,6 +102,7 @@
         ],
         'Verifikasi Data' => [
             ['label' => 'Data Siswa',         'icon' => 'users',          'url' => 'verifikator/siswa'],
+            ['label' => 'Siswa Pindahan',     'icon' => 'user-friends',    'url' => 'verifikator/pindahan'],
             ['label' => 'Daftarkan Siswa',    'icon' => 'user-plus',      'url' => 'verifikator/siswa/create'],
             ['label' => 'Verifikasi Berkas',  'icon' => 'file-signature', 'url' => 'verifikator/berkas'],
             ['label' => 'Antrean Buka Kunci', 'icon' => 'unlock-alt',     'url' => 'verifikator/unlockrequest', 'badge' => $pendingUnlockCount],

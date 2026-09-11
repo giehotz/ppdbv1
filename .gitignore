@@ -173,4 +173,6 @@ app/Views/siswa/mobile/prompt_stitch.txt
 .google/
 .openai/
 .anthropic/
+.ponytail/
+.agents/
 

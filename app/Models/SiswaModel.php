@@ -64,6 +64,7 @@ class SiswaModel extends Model
         'penghasilan_ibu',
         'nama_wali',
         'nik_wali',
+        'tempat_lahir_wali',
         'tgl_lahir_wali',
         'pdd_wali',
         'pekerjaan_wali',

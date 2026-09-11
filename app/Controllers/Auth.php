@@ -24,6 +24,8 @@ class Auth extends BaseController
                 return redirect()->to('/admin/dashboard')->withCookies();
             } elseif ($userType === 'siswa') {
                 return redirect()->to('/siswa/dashboard')->withCookies();
+            } elseif ($userType === 'siswa_pindahan') {
+                return redirect()->to('/siswa/pindahan/dashboard')->withCookies();
             } else {
                 session()->destroy();
             }
@@ -159,8 +161,45 @@ class Auth extends BaseController
                 $session->set($ses_data);
                 $session->regenerate();
 
-                catat_log('Login', 'Berhasil login sebagai calon siswa');
+                catat_log('Login', 'Berhasil login sebagai calon siswa baru');
                 return redirect()->to('/siswa/dashboard');
+            } else {
+                $this->incrementAttempt($throttleKey, self::LOGIN_LOCKOUT_MINUTES);
+                $session->setFlashdata('msg', 'Password Salah');
+                return redirect()->to('/login');
+            }
+        }
+
+        // Try siswa pindahan login — berdiri sendiri di tabel tbl_siswa_pindahan
+        $pindahanModel = new \App\Models\Pindahan\SiswaPindahanModel();
+        $pindahan = $pindahanModel->where('nisn', $identifier)->first();
+        if (!$pindahan) {
+            $pindahan = $pindahanModel->where('email', $identifier)->first();
+        }
+        if (!$pindahan) {
+            $pindahan = $pindahanModel->where('nik', $identifier)->first();
+        }
+
+        if ($pindahan) {
+            $verify_pass = password_verify($password, $pindahan['password']);
+            if ($verify_pass) {
+                $this->clearAttempts($throttleKey);
+                $pindahanModel->update($pindahan['id_pindahan'], ['last_login' => date('Y-m-d H:i:s')]);
+                $ses_data = [
+                    'id_siswa'       => $pindahan['id_pindahan'],
+                    'no_pendaftaran' => $pindahan['no_pendaftaran'],
+                    'nisn'           => $pindahan['nisn'],
+                    'nama_lengkap'   => $pindahan['nama_lengkap'],
+                    'email'          => $pindahan['email'],
+                    'foto'           => $pindahan['foto'],
+                    'logged_in'      => TRUE,
+                    'user_type'      => 'siswa_pindahan'
+                ];
+                $session->set($ses_data);
+                $session->regenerate();
+
+                catat_log('Login', 'Berhasil login sebagai calon siswa pindahan');
+                return redirect()->to('/siswa/pindahan/dashboard');
             } else {
                 $this->incrementAttempt($throttleKey, self::LOGIN_LOCKOUT_MINUTES);
                 $session->setFlashdata('msg', 'Password Salah');
@@ -208,6 +247,8 @@ class Auth extends BaseController
                 return redirect()->to('/admin/dashboard')->withCookies();
             } elseif ($userType === 'siswa') {
                 return redirect()->to('/siswa/dashboard')->withCookies();
+            } elseif ($userType === 'siswa_pindahan') {
+                return redirect()->to('/siswa/pindahan/dashboard')->withCookies();
             } else {
                 session()->destroy();
             }
@@ -226,15 +267,19 @@ class Auth extends BaseController
             return redirect()->to('/auth/register');
         }
 
-        $siswaModel = new \App\Models\SiswaModel();
         $session = session();
+        $jenisPendaftaran = $this->request->getPost('jenis_pendaftaran') ?? 'baru';
+        if (!in_array($jenisPendaftaran, ['baru', 'pindahan'], true)) {
+            $jenisPendaftaran = 'baru';
+        }
 
-        // Validation rules
+        // Validation rules — tabel tujuan tergantung jenis pendaftaran
+        $tableTarget = $jenisPendaftaran === 'pindahan' ? 'tbl_siswa_pindahan' : 'tbl_siswa';
         $validation = \Config\Services::validation();
         $validation->setRules([
-            'nisn' => 'required|numeric|min_length[10]|max_length[10]|is_unique[tbl_siswa.nisn]',
+            'nisn' => 'required|numeric|min_length[10]|max_length[10]|is_unique[' . $tableTarget . '.nisn]',
             'nama_lengkap' => 'required|min_length[3]',
-            'email' => 'required|valid_email|is_unique[tbl_siswa.email]',
+            'email' => 'required|valid_email|is_unique[' . $tableTarget . '.email]',
             'no_hp' => 'required|numeric',
             'password' => 'required|min_length[6]',
             'confirm_password' => 'required|matches[password]'
@@ -251,52 +296,85 @@ class Auth extends BaseController
         $web = $tblWebModel->find(1);
         $thPelajaran = !empty($web['th_pelajaran']) ? $web['th_pelajaran'] : '2025/2026';
 
-        // Insert initial data dengan temporary no_pendaftaran
-        $data = [
-            'no_pendaftaran'    => 'TEMP-' . uniqid(),
-            'th_pelajaran'      => $thPelajaran,
-            'nisn'              => $this->request->getPost('nisn'),
-            'nama_lengkap'      => $this->request->getPost('nama_lengkap'),
-            'email'             => $this->request->getPost('email'),
-            'no_hp'             => $this->request->getPost('no_hp'),
-            'password'          => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'tgl_siswa'         => date('Y-m-d H:i:s'),
-            'status_verifikasi' => 'Menunggu'
-        ];
+        $tglPendaftaran = date('Y-m-d H:i:s');
+        $noPendaftaran = '';
+        $insertId = null;
 
-        // Eksekusi insert, CI4 akan mengembalikan Insert ID dari DB. Bypass model validation karena NIK belum ada.
-        $insertId = $siswaModel->skipValidation(true)->insert($data);
-        $no_pendaftaran = '';
+        $db->transStart();
+
+        if ($jenisPendaftaran === 'pindahan') {
+            // === REGISTRASI SISWA PINDAHAN → tbl_siswa_pindahan ===
+            $pindahanModel = new \App\Models\Pindahan\SiswaPindahanModel();
+            $insertId = $pindahanModel->skipValidation(true)->insert([
+                'no_pendaftaran'    => 'TEMP-' . uniqid(),
+                'th_pelajaran'      => $thPelajaran,
+                'nisn'              => $this->request->getPost('nisn'),
+                'nama_lengkap'      => $this->request->getPost('nama_lengkap'),
+                'email'             => $this->request->getPost('email'),
+                'no_hp'             => $this->request->getPost('no_hp'),
+                'password'          => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+                'tgl_pindahan'      => $tglPendaftaran,
+                'jalur_pendaftaran' => 'pindahan',
+                'status_verifikasi' => 'Menunggu'
+            ]);
+        } else {
+            // === REGISTRASI SISWA BARU → tbl_siswa ===
+            $siswaModel = new \App\Models\SiswaModel();
+            $insertId = $siswaModel->skipValidation(true)->insert([
+                'no_pendaftaran'    => 'TEMP-' . uniqid(),
+                'th_pelajaran'      => $thPelajaran,
+                'nisn'              => $this->request->getPost('nisn'),
+                'nama_lengkap'      => $this->request->getPost('nama_lengkap'),
+                'email'             => $this->request->getPost('email'),
+                'no_hp'             => $this->request->getPost('no_hp'),
+                'password'          => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+                'tgl_siswa'         => $tglPendaftaran,
+                'status_verifikasi' => 'Menunggu'
+            ]);
+        }
 
         if ($insertId) {
-            // Setelah insert ID didapat secara absolut dari MySQL, susun no_pendaftaran permanen
+            // Susun no_pendaftaran permanen dari Auto-Increment ID
             $format = !empty($web['format_no_daftar']) ? $web['format_no_daftar'] : 'PPDB-{TAHUN}-{URUT}';
-            
-            $year = !empty($web['th_pelajaran']) ? substr($web['th_pelajaran'], 0, 4) : date('Y');
+            $year  = !empty($web['th_pelajaran']) ? substr($web['th_pelajaran'], 0, 4) : date('Y');
             $month = date('m');
             $newNumber = str_pad($insertId, 4, '0', STR_PAD_LEFT);
-            
-            // Replace placeholders
-            $no_pendaftaran = str_replace(
-                ['{TAHUN}', '{BULAN}', '{URUT}'], 
-                [$year, $month, $newNumber], 
+            $noPendaftaran = str_replace(
+                ['{TAHUN}', '{BULAN}', '{URUT}'],
+                [$year, $month, $newNumber],
                 $format
             );
 
-            // Perbarui record dengan nomor pendaftaran yang benar & permanen
-            $siswaModel->update($insertId, ['no_pendaftaran' => $no_pendaftaran]);
+            if ($jenisPendaftaran === 'pindahan') {
+                $pindahanModel->update($insertId, ['no_pendaftaran' => $noPendaftaran]);
+            } else {
+                $siswaModel->update($insertId, ['no_pendaftaran' => $noPendaftaran]);
+            }
+
+            // Catat ke tabel registrasi (jenis pendaftaran: baru/pindahan)
+            $db->table('tbl_registrasi')->insert([
+                'jenis_pendaftaran' => $jenisPendaftaran,
+                'no_pendaftaran'    => $noPendaftaran,
+                'th_pelajaran'      => $thPelajaran,
+                'nisn'              => $this->request->getPost('nisn'),
+                'nama_lengkap'      => $this->request->getPost('nama_lengkap'),
+                'email'             => $this->request->getPost('email'),
+                'no_hp'             => $this->request->getPost('no_hp'),
+                'id_siswa'          => $jenisPendaftaran === 'baru' ? $insertId : null,
+                'id_pindahan'       => $jenisPendaftaran === 'pindahan' ? $insertId : null,
+                'created_at'        => $tglPendaftaran,
+            ]);
         }
 
-        // Selesaikan Transaksi
         $db->transComplete();
 
         if ($db->transStatus() === false) {
             $session->setFlashdata('error', 'Registrasi gagal karena kendala sistem. Silakan coba lagi nanti.');
             return redirect()->to('/auth/register')->withInput();
-        } else {
-        $session->setFlashdata('success', 'Registrasi berhasil! Silakan login dengan NISN dan password Anda. Nomor Pendaftaran: ' . $no_pendaftaran);
-            return redirect()->to('/login');
         }
+
+        $session->setFlashdata('success', 'Registrasi berhasil! Silakan login dengan NISN dan password Anda. Nomor Pendaftaran: ' . $noPendaftaran);
+        return redirect()->to('/login');
     }
 
     public function submitForgotPassword()

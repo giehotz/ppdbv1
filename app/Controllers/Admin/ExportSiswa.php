@@ -65,47 +65,46 @@ class ExportSiswa extends BaseController
             'AB' => 'Nama Ayah',
             'AC' => 'Status Ayah',
             'AD' => 'NIK Ayah',
-            'AE' => 'Tahun Lahir Ayah',
-            'AF' => 'Pendidikan Ayah',
-            'AG' => 'Pekerjaan Ayah',
-            'AH' => 'Penghasilan Ayah',
+            'AE' => 'Tempat Lahir Ayah',
+            'AF' => 'Tanggal Lahir Ayah',
+            'AG' => 'Pendidikan Ayah',
+            'AH' => 'Pekerjaan Ayah',
+            'AI' => 'Penghasilan Ayah',
             // Data Ibu
-            'AI' => 'Nama Ibu',
-            'AJ' => 'Status Ibu',
-            'AK' => 'NIK Ibu',
-            'AL' => 'Tahun Lahir Ibu',
-            'AM' => 'Pendidikan Ibu',
-            'AN' => 'Pekerjaan Ibu',
-            'AO' => 'Penghasilan Ibu',
-            'AP' => 'No. HP Orang Tua',
+            'AJ' => 'Nama Ibu',
+            'AK' => 'Status Ibu',
+            'AL' => 'Tempat Lahir Ibu',
+            'AM' => 'Tanggal Lahir Ibu',
+            'AN' => 'Pendidikan Ibu',
+            'AO' => 'Pekerjaan Ibu',
+            'AP' => 'Penghasilan Ibu',
+            'AQ' => 'No. HP Orang Tua',
             // Data Wali
-            'AQ' => 'Nama Wali',
-            'AR' => 'NIK Wali',
-            'AS' => 'Tahun Lahir Wali',
-            'AT' => 'Pendidikan Wali',
-            'AU' => 'Pekerjaan Wali',
-            'AV' => 'Penghasilan Wali',
+            'AR' => 'Nama Wali',
+            'AS' => 'NIK Wali',
+            'AT' => 'Tempat Lahir Wali',
+            'AU' => 'Tanggal Lahir Wali',
+            'AV' => 'Pendidikan Wali',
+            'AW' => 'Pekerjaan Wali',
+            'AX' => 'Penghasilan Wali',
             // Asal Sekolah
-            'AW' => 'Nama Sekolah',
-            'AX' => 'NPSN Sekolah',
-            'AY' => 'Jenjang Sekolah',
-            'AZ' => 'Status Sekolah',
-            'BA' => 'Lokasi Sekolah',
+            'AY' => 'Nama Sekolah',
+            'AZ' => 'NPSN Sekolah',
+            'BA' => 'Jenjang Sekolah',
+            'BB' => 'Status Sekolah',
+            'BC' => 'Lokasi Sekolah',
             // Kesejahteraan
-            'BB' => 'No. KKS',
-            'BC' => 'No. PKH',
-            'BD' => 'No. KIP',
+            'BD' => 'No. KKS',
+            'BE' => 'No. PKH',
+            'BF' => 'No. KIP',
             // Status
+            'BG' => 'Status Verifikasi',
+            'BH' => 'Tanggal Input',
             // Tambahan
-            'BG' => 'Jalur Pendaftaran',
-            'BH' => 'Jarak (km)',
-            'BI' => 'Transportasi',
-            'BJ' => 'Tempat Lahir Ayah',
-            'BK' => 'Tanggal Lahir Ayah',
-            'BL' => 'Tempat Lahir Ibu',
-            'BM' => 'Tanggal Lahir Ibu',
-            'BN' => 'Kompetensi Keahlian',
-            'BO' => 'Tanggal Lahir Wali',
+            'BI' => 'Jalur Pendaftaran',
+            'BJ' => 'Jarak (km)',
+            'BK' => 'Transportasi',
+            'BL' => 'Kompetensi Keahlian',
         ];
 
         // Write headers
@@ -114,7 +113,7 @@ class ExportSiswa extends BaseController
         }
 
         // Style header row
-        $lastCol = 'BO';
+        $lastCol = 'BL';
         $headerRange = "A1:{$lastCol}1";
         $sheet->getStyle($headerRange)->applyFromArray([
             'font' => [
@@ -187,49 +186,46 @@ class ExportSiswa extends BaseController
                 $sheet->setCellValue("AB{$row}", $s['nama_ayah'] ?? '');
                 $sheet->setCellValue("AC{$row}", $s['status_ayah'] ?? '');
                 $sheet->setCellValue("AD{$row}", $s['nik_ayah'] ?? '');
-                $sheet->setCellValue("AE{$row}", (!empty($s['tgl_lahir_ayah']) && $s['tgl_lahir_ayah'] !== '0000-00-00') ? date('Y', strtotime($s['tgl_lahir_ayah'])) : '');
-                $sheet->setCellValue("AF{$row}", $s['pdd_ayah'] ?? ($s['pendidikan_ayah'] ?? ''));
-                $sheet->setCellValue("AG{$row}", $s['pekerjaan_ayah'] ?? '');
-                $sheet->setCellValue("AH{$row}", $s['penghasilan_ayah'] ?? '');
+                $sheet->setCellValue("AE{$row}", $s['tempat_lahir_ayah'] ?? '');
+                $sheet->setCellValue("AF{$row}", (!empty($s['tgl_lahir_ayah']) && $s['tgl_lahir_ayah'] !== '0000-00-00') ? date('Y/m/d', strtotime($s['tgl_lahir_ayah'])) : '');
+                $sheet->setCellValue("AG{$row}", $s['pdd_ayah'] ?? ($s['pendidikan_ayah'] ?? ''));
+                $sheet->setCellValue("AH{$row}", $s['pekerjaan_ayah'] ?? '');
+                $sheet->setCellValue("AI{$row}", $s['penghasilan_ayah'] ?? '');
                 // Data Ibu
-                $sheet->setCellValue("AI{$row}", $s['nama_ibu'] ?? '');
-                $sheet->setCellValue("AJ{$row}", $s['status_ibu'] ?? '');
-                $sheet->setCellValue("AK{$row}", $s['nik_ibu'] ?? '');
-                $sheet->setCellValue("AL{$row}", (!empty($s['tgl_lahir_ibu']) && $s['tgl_lahir_ibu'] !== '0000-00-00') ? date('Y', strtotime($s['tgl_lahir_ibu'])) : '');
-                $sheet->setCellValue("AM{$row}", $s['pdd_ibu'] ?? ($s['pendidikan_ibu'] ?? ''));
-                $sheet->setCellValue("AN{$row}", $s['pekerjaan_ibu'] ?? '');
-                $sheet->setCellValue("AO{$row}", $s['penghasilan_ibu'] ?? '');
-                $sheet->setCellValue("AP{$row}", $s['no_hp_ortu'] ?? ($s['telepon'] ?? ''));
+                $sheet->setCellValue("AJ{$row}", $s['nama_ibu'] ?? '');
+                $sheet->setCellValue("AK{$row}", $s['status_ibu'] ?? '');
+                $sheet->setCellValue("AL{$row}", $s['tempat_lahir_ibu'] ?? '');
+                $sheet->setCellValue("AM{$row}", (!empty($s['tgl_lahir_ibu']) && $s['tgl_lahir_ibu'] !== '0000-00-00') ? date('Y/m/d', strtotime($s['tgl_lahir_ibu'])) : '');
+                $sheet->setCellValue("AN{$row}", $s['pdd_ibu'] ?? ($s['pendidikan_ibu'] ?? ''));
+                $sheet->setCellValue("AO{$row}", $s['pekerjaan_ibu'] ?? '');
+                $sheet->setCellValue("AP{$row}", $s['penghasilan_ibu'] ?? '');
+                $sheet->setCellValue("AQ{$row}", $s['no_hp_ortu'] ?? ($s['telepon'] ?? ''));
                 // Data Wali
-                $sheet->setCellValue("AQ{$row}", $s['nama_wali'] ?? '');
-                $sheet->setCellValue("AR{$row}", $s['nik_wali'] ?? '');
-                $sheet->setCellValue("AS{$row}", (!empty($s['tgl_lahir_wali']) && $s['tgl_lahir_wali'] !== '0000-00-00') ? date('Y', strtotime($s['tgl_lahir_wali'])) : '');
-                $sheet->setCellValue("AT{$row}", $s['pdd_wali'] ?? '');
-                $sheet->setCellValue("AU{$row}", $s['pekerjaan_wali'] ?? '');
-                $sheet->setCellValue("AV{$row}", $s['penghasilan_wali'] ?? '');
+                $sheet->setCellValue("AR{$row}", $s['nama_wali'] ?? '');
+                $sheet->setCellValue("AS{$row}", $s['nik_wali'] ?? '');
+                $sheet->setCellValue("AT{$row}", $s['tempat_lahir_wali'] ?? '');
+                $sheet->setCellValue("AU{$row}", (!empty($s['tgl_lahir_wali']) && $s['tgl_lahir_wali'] !== '0000-00-00') ? date('Y/m/d', strtotime($s['tgl_lahir_wali'])) : '');
+                $sheet->setCellValue("AV{$row}", $s['pdd_wali'] ?? '');
+                $sheet->setCellValue("AW{$row}", $s['pekerjaan_wali'] ?? '');
+                $sheet->setCellValue("AX{$row}", $s['penghasilan_wali'] ?? '');
                 // Asal Sekolah
-                $sheet->setCellValue("AW{$row}", $s['nama_sekolah'] ?? '');
-                $sheet->setCellValue("AX{$row}", $s['npsn_sekolah'] ?? '');
-                $sheet->setCellValue("AY{$row}", $s['jenjang_sekolah'] ?? '');
-                $sheet->setCellValue("AZ{$row}", $s['status_sekolah'] ?? '');
-                $sheet->setCellValue("BA{$row}", $s['lokasi_sekolah'] ?? '');
+                $sheet->setCellValue("AY{$row}", $s['nama_sekolah'] ?? '');
+                $sheet->setCellValue("AZ{$row}", $s['npsn_sekolah'] ?? '');
+                $sheet->setCellValue("BA{$row}", $s['jenjang_sekolah'] ?? '');
+                $sheet->setCellValue("BB{$row}", $s['status_sekolah'] ?? '');
+                $sheet->setCellValue("BC{$row}", $s['lokasi_sekolah'] ?? '');
                 // Kesejahteraan
-                $sheet->setCellValue("BB{$row}", $s['no_kks'] ?? '');
-                $sheet->setCellValue("BC{$row}", $s['no_pkh'] ?? '');
-                $sheet->setCellValue("BD{$row}", $s['no_kip'] ?? '');
+                $sheet->setCellValue("BD{$row}", $s['no_kks'] ?? '');
+                $sheet->setCellValue("BE{$row}", $s['no_pkh'] ?? '');
+                $sheet->setCellValue("BF{$row}", $s['no_kip'] ?? '');
                 // Status
-                $sheet->setCellValue("BE{$row}", $s['status_verifikasi'] ?? '');
-                $sheet->setCellValue("BF{$row}", isset($s['tgl_siswa']) ? date('d/m/Y', strtotime($s['tgl_siswa'])) : '');
+                $sheet->setCellValue("BG{$row}", $s['status_verifikasi'] ?? '');
+                $sheet->setCellValue("BH{$row}", isset($s['tgl_siswa']) ? date('d/m/Y', strtotime($s['tgl_siswa'])) : '');
                 // Tambahan
-                $sheet->setCellValue("BG{$row}", $s['jalur_pendaftaran'] ?? '');
-                $sheet->setCellValue("BH{$row}", $s['jarak'] ?? '');
-                $sheet->setCellValue("BI{$row}", $s['trans'] ?? '');
-                $sheet->setCellValue("BJ{$row}", $s['tempat_lahir_ayah'] ?? '');
-                $sheet->setCellValue("BK{$row}", $s['tgl_lahir_ayah'] ?? '');
-                $sheet->setCellValue("BL{$row}", $s['tempat_lahir_ibu'] ?? '');
-                $sheet->setCellValue("BM{$row}", $s['tgl_lahir_ibu'] ?? '');
-                $sheet->setCellValue("BN{$row}", $s['komp_ahli'] ?? '');
-                $sheet->setCellValue("BO{$row}", $s['tgl_lahir_wali'] ?? '');
+                $sheet->setCellValue("BI{$row}", $s['jalur_pendaftaran'] ?? '');
+                $sheet->setCellValue("BJ{$row}", $s['jarak'] ?? '');
+                $sheet->setCellValue("BK{$row}", $s['trans'] ?? '');
+                $sheet->setCellValue("BL{$row}", $s['komp_ahli'] ?? '');
                 $row++;
                 $index++;
             }

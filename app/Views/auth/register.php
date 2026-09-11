@@ -62,6 +62,47 @@
         <form action="<?= base_url('auth/doRegister') ?>" method="post" class="space-y-4" autocomplete="on">
             <?= csrf_field() ?>
 
+            <!-- Pilihan Jenis Pendaftaran -->
+            <?php $jenisPendaftaran = old('jenis_pendaftaran', 'baru'); ?>
+            <div>
+                <label class="block text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider mb-2">
+                    Jenis Pendaftaran <span class="text-red-500">*</span>
+                </label>
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- Siswa Baru -->
+                    <label class="relative cursor-pointer select-none">
+                        <input type="radio" name="jenis_pendaftaran" value="baru" class="peer sr-only"
+                               <?= $jenisPendaftaran === 'baru' ? 'checked' : '' ?>>
+                        <div class="flex flex-col items-center gap-1.5 p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 peer-checked:border-brand-500 peer-checked:bg-brand-50 dark:peer-checked:bg-brand-500/10 peer-checked:ring-4 peer-checked:ring-brand-500/10 transition-all">
+                            <span class="material-symbols-outlined text-2xl text-gray-400 peer-checked:text-brand-600 dark:peer-checked:text-brand-400">person_add</span>
+                            <span class="text-xs font-bold text-gray-700 dark:text-gray-300">Siswa Baru</span>
+                            <span class="text-[10px] text-gray-400 text-center leading-tight">Mendaftar sebagai calon peserta didik baru</span>
+                        </div>
+                    </label>
+                    <!-- Siswa Pindahan -->
+                    <label class="relative cursor-pointer select-none">
+                        <input type="radio" name="jenis_pendaftaran" value="pindahan" class="peer sr-only"
+                               <?= $jenisPendaftaran === 'pindahan' ? 'checked' : '' ?>>
+                        <div class="flex flex-col items-center gap-1.5 p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-500/10 peer-checked:ring-4 peer-checked:ring-emerald-500/10 transition-all">
+                            <span class="material-symbols-outlined text-2xl text-gray-400 peer-checked:text-emerald-600 dark:peer-checked:text-emerald-400">swap_horiz</span>
+                            <span class="text-xs font-bold text-gray-700 dark:text-gray-300">Siswa Pindahan</span>
+                            <span class="text-[10px] text-gray-400 text-center leading-tight">Pindah dari sekolah & bawa surat pindah</span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Info tambahan jika memilih pindahan -->
+                <div id="infoPindahan" class="mt-3 <?= $jenisPendaftaran === 'pindahan' ? '' : 'hidden' ?>">
+                    <div class="flex gap-2.5 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 px-4 py-3 rounded-2xl text-xs">
+                        <span class="material-symbols-outlined text-base shrink-0 mt-0.5">info</span>
+                        <div class="space-y-1">
+                            <p class="font-bold">Khusus siswa pindahan</p>
+                            <p class="leading-relaxed">Masukkan data sekolah asal tempat siswa menempuh pendidikan sebelumnya. Siapkan dokumen: <b>surat pindah dari sekolah asal, surat pindah Dapodik/EMIS, KK</b>, ijazah/SKL, rapor terakhir, dan pas foto.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- NISN -->
             <div>
                 <label class="block text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider mb-2" for="nisn">
@@ -152,7 +193,7 @@
 
             <!-- Submit Button -->
             <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 shadow-md shadow-brand-500/25 active:scale-[0.98] flex items-center justify-center gap-2 text-sm mt-4 cursor-pointer">
-                <span>Daftar Calon Siswa Sekarang</span>
+                <span id="btnRegisterLabel">Daftar Calon Siswa Sekarang</span>
                 <span class="material-symbols-outlined text-base">arrow_forward</span>
             </button>
         </form>
@@ -187,6 +228,24 @@
                 icon.textContent = 'visibility_off';
             }
         }
+
+        // Toggle info pindahan & label tombol sesuai pilihan jenis pendaftaran
+        document.addEventListener('DOMContentLoaded', function () {
+            const radios = document.querySelectorAll('input[name="jenis_pendaftaran"]');
+            const infoPindahan = document.getElementById('infoPindahan');
+            const btnLabel = document.getElementById('btnRegisterLabel');
+            if (!radios.length || !btnLabel) return;
+
+            function update() {
+                const isPindahan = document.querySelector('input[name="jenis_pendaftaran"]:checked').value === 'pindahan';
+                if (infoPindahan) {
+                    infoPindahan.classList.toggle('hidden', !isPindahan);
+                }
+                btnLabel.textContent = isPindahan ? 'Daftar Siswa Pindahan Sekarang' : 'Daftar Calon Siswa Sekarang';
+            }
+            radios.forEach(r => r.addEventListener('change', update));
+            update();
+        });
     </script>
 </body>
 

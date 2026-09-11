@@ -428,7 +428,7 @@ function initWilayahListeners() {
 
 function handleWaliChanged() {
     const pilihan = document.getElementById('pilih_wali').value;
-    const fields = ['nama', 'nik', 'tgl_lahir', 'pdd', 'pekerjaan', 'penghasilan'];
+    const fields = ['nama', 'nik', 'tempat_lahir', 'tgl_lahir', 'pdd', 'pekerjaan', 'penghasilan'];
 
     fields.forEach(field => {
         const inputWali = document.getElementById(field + '_wali');
@@ -471,13 +471,13 @@ function handleWaliChanged() {
 function initWaliDetection() {
     if (!isFinal) {
         // Backup initial values for manual mode
-        ['nama', 'nik', 'tgl_lahir', 'pdd', 'pekerjaan', 'penghasilan'].forEach(field => {
+        ['nama', 'nik', 'tempat_lahir', 'tgl_lahir', 'pdd', 'pekerjaan', 'penghasilan'].forEach(field => {
             const el = document.getElementById(field + '_wali');
             if (el) el.setAttribute('data-original', el.value);
         });
 
         // Auto-detect if saved data matches Ayah or Ibu
-        const fields = ['nama', 'nik', 'tgl_lahir', 'pdd', 'pekerjaan', 'penghasilan'];
+        const fields = ['nama', 'nik', 'tempat_lahir', 'tgl_lahir', 'pdd', 'pekerjaan', 'penghasilan'];
         let matchAyah = true;
         let matchIbu = true;
         let hasWali = false;

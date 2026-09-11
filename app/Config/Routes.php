@@ -24,6 +24,7 @@ $routes->get('/verify/(:any)', 'Verify::index/$1');
 
 // Impersonate Routes (Protected with auth filter & POST method to prevent CSRF)
 $routes->post('/impersonate/start/(:num)', 'Impersonate::start/$1', ['filter' => 'auth']);
+$routes->post('/impersonate/start-pindahan/(:num)', 'Impersonate::startPindahan/$1', ['filter' => 'auth']);
 $routes->post('/impersonate/stop', 'Impersonate::stop', ['filter' => 'auth']);
 
 $routes->get('/pendaftar', 'Pendaftar::index');
@@ -42,6 +43,19 @@ if (file_exists(APPPATH . 'Config/Routes/admin.php')) {
 
 if (file_exists(APPPATH . 'Config/Routes/verifikator.php')) {
     require APPPATH . 'Config/Routes/verifikator.php';
+}
+
+// Routes khusus modul Siswa Pindahan (terisolasi dari siswa reguler)
+if (file_exists(APPPATH . 'Config/Routes/pindahan_siswa.php')) {
+    require APPPATH . 'Config/Routes/pindahan_siswa.php';
+}
+
+if (file_exists(APPPATH . 'Config/Routes/admin_pindahan.php')) {
+    require APPPATH . 'Config/Routes/admin_pindahan.php';
+}
+
+if (file_exists(APPPATH . 'Config/Routes/verifikator_pindahan.php')) {
+    require APPPATH . 'Config/Routes/verifikator_pindahan.php';
 }
 
 // API Routes
