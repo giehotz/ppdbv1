@@ -183,10 +183,11 @@
                 requiredFields.forEach(fieldName => {
                     const el = document.querySelector(`[name="${fieldName}"]`);
                     if (el) {
+                        const targetEl = (el._flatpickr && el._flatpickr.altInput) ? el._flatpickr.altInput : el;
                         if (!el.value.trim()) {
-                            el.classList.add('border-red-500', 'bg-red-50');
+                            targetEl.classList.add('border-red-500', 'bg-red-50');
                         } else {
-                            el.classList.remove('border-red-500', 'bg-red-50');
+                            targetEl.classList.remove('border-red-500', 'bg-red-50');
                         }
                     }
                 });
@@ -281,14 +282,14 @@
             }
         }
 
-        // Inisialisasi Flatpickr Date Picker Orang Tua
+        // Inisialisasi Flatpickr Date Picker (Orang Tua & Calon Siswa)
         if (typeof flatpickr !== 'undefined') {
-            flatpickr('.datepicker-parent', {
+            flatpickr('.datepicker-parent, .datepicker-siswa', {
                 locale: 'id',
                 dateFormat: 'Y-m-d',
                 altInput: true,
                 altFormat: 'd-m-Y',
-                altInputClass: 'w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 pl-5 pr-11 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500',
+                altInputClass: 'w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 pl-5 pr-11 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500 cursor-pointer',
                 maxDate: 'today',
                 allowInput: true,
                 onChange: function(selectedDates, dateStr, instance) {

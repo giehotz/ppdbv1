@@ -129,9 +129,16 @@
                 <label class="mb-2 block text-xs font-bold text-gray-700 dark:text-gray-300">
                     Tanggal Lahir <span class="text-red-500">*</span>
                 </label>
-                <div class="input-icon-wrapper">
-                    <span class="input-icon material-symbols-outlined">calendar_month</span>
-                    <input type="date" name="tgl_lahir" value="<?= esc($siswa['tgl_lahir'] ?? '', 'attr') ?>" class="form-input-control border border-gray-300 dark:border-gray-600">
+                <div class="relative">
+                    <input type="text" 
+                           name="tgl_lahir" 
+                           id="tgl_lahir" 
+                           value="<?= (!empty($siswa['tgl_lahir']) && $siswa['tgl_lahir'] !== '0000-00-00') ? esc($siswa['tgl_lahir'], 'attr') : '' ?>" 
+                           placeholder="Pilih tanggal lahir" 
+                           class="datepicker-siswa form-input-control border border-gray-300 dark:border-gray-600 pr-11 cursor-pointer">
+                    <span class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+                        <span class="material-symbols-outlined text-lg">calendar_month</span>
+                    </span>
                 </div>
             </div>
         </div>
