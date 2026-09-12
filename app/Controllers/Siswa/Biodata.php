@@ -273,4 +273,83 @@ class Biodata extends BaseController
             'message' => 'Tidak ada perubahan yang diproses'
         ]);
     }
+
+    /**
+     * Cari data sekolah dari API Kemdikbud/Kemenag (ikhsan-rfl/api-sekolah)
+     * Dilengkapi server-side caching 24 jam untuk efisiensi dan respons cepat.
+     * Mendukung pencarian via nama, NPSN, kode wilayah, dan filter bentuk_pendidikan.
+     */
+    public function searchSekolah()
+    {
+        $q = trim($this->request->getGet('q') ?? '');
+        $bentuk = trim($this->request->getGet('bentuk') ?? $this->request->getGet('bentuk_pendidikan') ?? '');
+        $kodeWilayah = trim($this->request->getGet('kode_wilayah') ?? '');
+        $limit = (int) ($this->request->getGet('limit') ?? 20);
+        if ($limit < 1 || $limit > 100) {
+            $limit = 20;
+        }
+
+        if (mb_strlen($q) < 3 && empty($kodeWilayah)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Kata kunci pencarian minimal 3 karakter',
+                'data'    => [],
+            ]);
+        }
+
+        $isNpsn = (bool) preg_match('/^[0-9]{8}$/', $q);
+        $params = [];
+        if ($isNpsn) {
+            $params['npsn'] = $q;
+        } else {
+            if (!empty($kodeWilayah) && preg_match('/^[0-9]{2,6}$/', $kodeWilayah)) {
+                $params['kode_wilayah'] = $kodeWilayah;
+            }
+            if (!empty($q)) {
+                $params['nama'] = $q;
+            }
+            if (!empty($bentuk)) {
+                $params['bentuk_pendidikan'] = strtoupper($bentuk);
+            }
+            $params['limit'] = $limit;
+        }
+
+        $queryString = http_build_query($params);
+        $apiUrl = 'https://sekolah.devapi.id/sekolah?' . $queryString;
+
+        $cacheKey = 'api_sekolah_' . md5($queryString);
+        $cached = cache($cacheKey);
+        if ($cached !== null) {
+            return $this->response->setJSON($cached);
+        }
+
+        try {
+            $client = \Config\Services::curlrequest([
+                'timeout'     => 6,
+                'headers'     => [
+                    'Accept'     => 'application/json',
+                    'User-Agent' => 'PPDB-App/1.0',
+                ],
+                'http_errors' => false,
+            ]);
+
+            $res = $client->get($apiUrl);
+            if ($res->getStatusCode() === 200) {
+                $body = json_decode($res->getBody(), true);
+                if ($body && !empty($body['success'])) {
+                    cache()->save($cacheKey, $body, 86400);
+                    return $this->response->setJSON($body);
+                }
+            }
+        } catch (\Throwable $e) {
+            log_message('error', 'API Sekolah Error: ' . $e->getMessage());
+        }
+
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Data sekolah tidak ditemukan atau server sedang sibuk',
+            'data'    => [],
+        ]);
+    }
 }
+

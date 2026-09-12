@@ -3,6 +3,7 @@
 $routes->group('siswa', ['filter' => ['siswa', 'csrf']], function ($routes) {
     $routes->get('dashboard', 'Siswa\Dashboard::index');
     $routes->get('biodata', 'Siswa\Biodata::index');
+    $routes->get('biodata/search-sekolah', 'Siswa\Biodata::searchSekolah');
     $routes->post('biodata/update', 'Siswa\Biodata::update');
     $routes->post('biodata/auto-save', 'Siswa\Biodata::autoSave');
     $routes->post('biodata/finalize', 'Siswa\Biodata::finalize');
