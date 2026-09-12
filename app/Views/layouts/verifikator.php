@@ -53,6 +53,12 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Dark mode theme toggle icons */
+        html.dark .theme-toggle-moon { display: none !important; }
+        html.dark .theme-toggle-sun { display: block !important; }
+        html:not(.dark) .theme-toggle-sun { display: none !important; }
+        html:not(.dark) .theme-toggle-moon { display: block !important; }
     </style>
     <?= $this->renderSection('head') ?>
     <?= $this->renderSection('styles') ?>
