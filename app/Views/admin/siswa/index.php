@@ -159,172 +159,169 @@ Calon Siswa
 
     <!-- Table Section -->
     <div class="overflow-x-auto">
-        <table class="w-full text-left">
+        <table class="w-full text-left border-collapse">
             <thead>
-                <tr class="border-b border-gray-100 text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:border-gray-800 dark:text-gray-500 bg-gray-50/50 dark:bg-gray-800/30">
-                    <th class="py-3.5 px-3 text-center w-10">
+                <tr class="border-b border-gray-100 text-[11px] font-semibold tracking-wider text-gray-400 dark:border-gray-800 dark:text-gray-500 bg-gray-50/40 dark:bg-gray-800/20">
+                    <th class="py-2.5 px-3 text-center w-9">
                         <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"
                                class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 cursor-pointer"
                                title="Pilih Semua di Halaman Ini">
                     </th>
-                    <th class="py-3.5 px-3 text-center w-10">No</th>
-                    <th class="py-3.5 px-4">No. Pendaftaran</th>
-                    <th class="py-3.5 px-4">NISN</th>
-                    <th class="py-3.5 px-4">Nama Lengkap</th>
-                    <th class="py-3.5 px-4">Gender</th>
-                    <th class="py-3.5 px-4">Kelengkapan</th>
-                    <th class="py-3.5 px-4">Status Validasi</th>
-                    <th class="py-3.5 px-4">Status Tagihan</th>
-                    <th class="py-3.5 px-4">
+                    <th class="py-2.5 px-3 font-semibold text-gray-500 dark:text-gray-400">Nama</th>
+                    <th class="py-2.5 px-2.5 font-semibold text-gray-500 dark:text-gray-400">No. Telepon</th>
+                    <th class="py-2.5 px-2.5 font-semibold text-gray-500 dark:text-gray-400">Asal Sekolah Sebelumnya</th>
+                    <th class="py-2.5 px-2.5 font-semibold text-gray-500 dark:text-gray-400">Tagihan</th>
+                    <th class="py-2.5 px-2 font-semibold text-gray-500 dark:text-gray-400 text-center w-10">Item</th>
+                    <th class="py-2.5 px-2.5 font-semibold text-gray-500 dark:text-gray-400">
                         <a href="<?= base_url('admin/siswa') ?>?search=<?= esc($search ?? '') ?>&sort=<?= ($sort ?? 'ASC') == 'ASC' ? 'DESC' : 'ASC' ?>&th_pelajaran=<?= urlencode($selectedTh ?? '') ?>&tab=<?= urlencode($currentTab ?? 'all') ?>"
-                           class="flex items-center hover:text-brand-500 transition-colors whitespace-nowrap"
-                           title="Klik untuk mengurutkan">
+                           class="inline-flex items-center gap-1 hover:text-brand-500 transition-colors whitespace-nowrap"
+                           title="Urutkan Tanggal">
                             Tanggal Daftar
                             <?php if(($sort ?? 'ASC') == 'ASC'): ?>
-                                <i class="fas fa-sort-up ml-1.5 text-brand-500 mt-1"></i>
+                                <i class="fas fa-sort-up text-brand-500 mt-1"></i>
                             <?php else: ?>
-                                <i class="fas fa-sort-down ml-1.5 text-brand-500 mb-1"></i>
+                                <i class="fas fa-sort-down text-brand-500 mb-1"></i>
                             <?php endif; ?>
                         </a>
                     </th>
-                    <th class="py-3.5 px-4 text-center w-36 whitespace-nowrap">Aksi</th>
+                    <th class="py-2.5 px-2.5 font-semibold text-gray-500 dark:text-gray-400">Status</th>
+                    <th class="py-2.5 px-3 font-semibold text-gray-500 dark:text-gray-400 text-right pr-4">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100 text-xs dark:divide-gray-800">
+            <tbody class="divide-y divide-gray-100 text-xs dark:divide-gray-800/60">
                 <?php if (!empty($siswa)) : ?>
-                    <?php $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; ?>
-                    <?php $nomor = 1 + (20 * ($page - 1)); ?>
                     <?php foreach ($siswa as $s) : ?>
-                        <tr class="hover:bg-gray-50/50 transition-colors dark:hover:bg-white/[0.02]" id="row-<?= $s['id_siswa'] ?>">
-                            <td class="py-3 px-3 text-center">
+                        <?php
+                        // Format phone number cleanly like (+62)8 12 34 56 78
+                        $rawHp = !empty($s['no_hp_siswa']) ? $s['no_hp_siswa'] : (!empty($s['no_hp_ortu']) ? $s['no_hp_ortu'] : '');
+                        $cleanHp = preg_replace('/[^0-9]/', '', $rawHp);
+                        if (!empty($cleanHp)) {
+                            if (str_starts_with($cleanHp, '62')) {
+                                $displayHp = '(+62)' . substr($cleanHp, 2, 1) . ' ' . substr($cleanHp, 3, 2) . ' ' . substr($cleanHp, 5, 2) . ' ' . substr($cleanHp, 7);
+                            } elseif (str_starts_with($cleanHp, '0')) {
+                                $displayHp = '(+62)' . substr($cleanHp, 1, 1) . ' ' . substr($cleanHp, 2, 2) . ' ' . substr($cleanHp, 4, 2) . ' ' . substr($cleanHp, 6);
+                            } else {
+                                $displayHp = '(+62) ' . $cleanHp;
+                            }
+                        } else {
+                            $displayHp = '-';
+                        }
+
+                        // Origin / School or City
+                        $originText = !empty($s['nama_sekolah']) ? $s['nama_sekolah'] : (!empty($s['kab']) ? $s['kab'] : 'Indonesia');
+                        ?>
+                        <tr class="bg-white dark:bg-transparent hover:bg-gray-50/70 dark:hover:bg-white/[0.02] transition-colors" id="row-<?= $s['id_siswa'] ?>">
+                            <!-- Checkbox -->
+                            <td class="py-3 px-3 text-center w-9">
                                 <input type="checkbox" class="siswa-checkbox h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 cursor-pointer"
                                        value="<?= $s['id_siswa'] ?>"
                                        data-name="<?= esc($s['nama_lengkap']) ?>"
                                        onchange="updateBulkBar()">
                             </td>
-                            <td class="py-3 px-3 text-center text-gray-400 dark:text-gray-500 font-medium"><?= $nomor++ ?></td>
-                            <td class="py-3 px-4 whitespace-nowrap">
-                                <span class="inline-flex rounded-md bg-gray-100 px-2 py-0.5 font-mono text-[11px] font-bold text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                                    <?= esc($s['no_pendaftaran']) ?>
-                                </span>
-                            </td>
-                            <td class="py-3 px-4 whitespace-nowrap font-mono text-gray-600 dark:text-gray-400"><?= esc($s['nisn'] ?? '-') ?></td>
-                            <td class="py-3 px-4">
+
+                            <!-- User (Avatar + Name) -->
+                            <td class="py-3 px-3 whitespace-nowrap">
                                 <div class="flex items-center gap-2.5">
                                     <?php if (!empty($s['foto_url'])): ?>
-                                        <img src="<?= $s['foto_url'] ?>" alt="" class="h-7 w-7 rounded-full object-cover border border-gray-200 dark:border-gray-700 shrink-0" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
-                                        <div class="hidden h-7 w-7 rounded-full bg-brand-50 text-brand-600 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-xs shrink-0 font-bold">
+                                        <img src="<?= $s['foto_url'] ?>" alt="" class="h-8 w-8 rounded-full object-cover border border-gray-200 dark:border-gray-700 shrink-0" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                                        <div class="hidden h-8 w-8 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-xs shrink-0 font-bold">
                                             <?= mb_substr($s['nama_lengkap'], 0, 1) ?>
                                         </div>
                                     <?php else: ?>
-                                        <div class="h-7 w-7 rounded-full bg-brand-50 text-brand-600 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-xs shrink-0 font-bold">
+                                        <div class="h-8 w-8 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-xs shrink-0 font-bold">
                                             <?= mb_substr($s['nama_lengkap'], 0, 1) ?>
                                         </div>
                                     <?php endif; ?>
                                     <div class="min-w-0">
-                                        <a href="javascript:void(0)" onclick="openQuickDetail('<?= $s['id_siswa'] ?>')" class="font-semibold text-gray-900 dark:text-gray-100 hover:text-brand-500 dark:hover:text-brand-400 transition-colors truncate block max-w-[180px]" title="Klik untuk Quick Preview">
+                                        <a href="javascript:void(0)" onclick="openQuickDetail('<?= $s['id_siswa'] ?>')" class="font-semibold text-gray-900 dark:text-gray-100 hover:text-brand-500 transition-colors truncate block" title="Klik untuk Quick Detail">
                                             <?= esc($s['nama_lengkap']) ?>
                                         </a>
+                                        <span class="text-[10px] text-gray-400 font-mono block">
+                                            <?= esc($s['no_pendaftaran']) ?>
+                                        </span>
                                     </div>
                                 </div>
                             </td>
-                            <td class="py-3 px-4">
-                                <?= $s['jk'] == 'L'
-                                    ? '<span class="inline-flex items-center gap-1 font-semibold text-blue-600 dark:text-blue-400"><i class="fas fa-mars text-xs"></i> L</span>'
-                                    : '<span class="inline-flex items-center gap-1 font-semibold text-pink-600 dark:text-pink-400"><i class="fas fa-venus text-xs"></i> P</span>' ?>
+
+                            <!-- Phone Number -->
+                            <td class="py-3 px-2.5 whitespace-nowrap font-normal text-gray-500 dark:text-gray-400">
+                                <?= esc($displayHp) ?>
                             </td>
-                            <td class="py-3 px-4 min-w-[130px]">
-                                <div class="flex items-center gap-2">
-                                    <div class="h-2 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-                                        <div class="<?= $s['kelengkapan'] == 100 ? 'bg-emerald-500' : ($s['kelengkapan'] >= 50 ? 'bg-brand-500' : 'bg-red-500') ?> h-2 rounded-full transition-all"
-                                             style="width: <?= esc($s['kelengkapan']) ?>%"></div>
-                                    </div>
-                                    <span class="text-[11px] font-bold text-gray-600 dark:text-gray-400"><?= esc($s['kelengkapan']) ?>%</span>
+
+                            <!-- Country / Origin Flag -->
+                            <td class="py-3 px-2.5 whitespace-nowrap">
+                                <div class="flex items-center gap-1.5 text-gray-800 dark:text-gray-200 font-medium">
+                                    <span class="text-sm shrink-0 leading-none">🇮🇩</span>
+                                    <span class="truncate max-w-[130px]" title="<?= esc($originText) ?>"><?= esc($originText) ?></span>
                                 </div>
                             </td>
-                            <td class="py-3 px-4 whitespace-nowrap">
+
+                            <!-- Amount / Tagihan -->
+                            <td class="py-3 px-2.5 whitespace-nowrap">
+                                <span class="font-semibold text-gray-800 dark:text-gray-200">
+                                    Rp <?= number_format($s['total_tagihan'] ?? 0, 0, ',', '.') ?>
+                                </span>
+                            </td>
+
+                            <!-- Count / Item -->
+                            <td class="py-3 px-2 whitespace-nowrap text-center w-10">
+                                <span class="font-semibold text-gray-700 dark:text-gray-300">
+                                    <?= (int)($s['jml_tagihan'] ?? 0) ?>
+                                </span>
+                            </td>
+
+                            <!-- Date -->
+                            <td class="py-3 px-2.5 whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                <?= !empty($s['tgl_siswa']) ? date('F j, Y', strtotime($s['tgl_siswa'])) : '-' ?>
+                            </td>
+
+                            <!-- Status Pill Badge -->
+                            <td class="py-3 px-2.5 whitespace-nowrap">
                                 <?php if ($s['status_verifikasi'] == 'Terverifikasi') : ?>
-                                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">
-                                        <i class="fas fa-check-circle text-[10px]"></i> Terverifikasi
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 border border-emerald-200/60 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20">
+                                        <i class="far fa-circle-check text-xs"></i> Active
                                     </span>
                                 <?php elseif ($s['status_verifikasi'] == 'Ditolak') : ?>
-                                    <span class="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-0.5 text-[11px] font-semibold text-red-700 dark:bg-red-500/15 dark:text-red-400">
-                                        <i class="fas fa-times-circle text-[10px]"></i> Ditolak
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-semibold text-rose-600 border border-rose-200/60 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20">
+                                        <i class="far fa-circle-xmark text-xs"></i> Failed
                                     </span>
                                 <?php else : ?>
-                                    <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">
-                                        <i class="fas fa-clock text-[10px]"></i> Menunggu
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-600 border border-amber-200/60 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20">
+                                        <i class="far fa-clock text-xs"></i> Pending
                                     </span>
                                 <?php endif; ?>
                             </td>
-                            <td class="py-3 px-4 whitespace-nowrap">
-                                <a href="<?= base_url('admin/pembiayaan/siswa/' . $s['id_siswa']) ?>" class="group inline-flex flex-col items-start hover:opacity-85 transition-opacity" title="Klik untuk kelola pembiayaan siswa">
-                                    <?php if (($s['status_pembiayaan'] ?? '') === 'lunas'): ?>
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40">
-                                            <i class="fas fa-check-circle text-[10px]"></i> Lunas
-                                        </span>
-                                        <span class="text-[10px] text-gray-400 group-hover:text-brand-500 mt-0.5">Rp <?= number_format($s['total_bayar'] ?? 0, 0, ',', '.') ?></span>
-                                    <?php elseif (($s['status_pembiayaan'] ?? '') === 'sebagian'): ?>
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40">
-                                            <i class="fas fa-hourglass-half text-[10px]"></i> Sisa Rp <?= number_format($s['sisa_tagihan'] ?? 0, 0, ',', '.') ?>
-                                        </span>
-                                        <span class="text-[10px] text-gray-400 group-hover:text-brand-500 mt-0.5">Masuk: Rp <?= number_format($s['total_bayar'] ?? 0, 0, ',', '.') ?></span>
-                                    <?php elseif (($s['status_pembiayaan'] ?? '') === 'belum'): ?>
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-700 dark:bg-rose-500/15 dark:text-rose-400 border border-rose-200 dark:border-rose-800/40">
-                                            <i class="fas fa-exclamation-circle text-[10px]"></i> Belum Bayar
-                                        </span>
-                                        <span class="text-[10px] text-gray-400 group-hover:text-brand-500 mt-0.5">Total: Rp <?= number_format($s['total_tagihan'] ?? 0, 0, ',', '.') ?></span>
-                                    <?php else: ?>
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400">
-                                            Belum Ditagih
-                                        </span>
-                                    <?php endif; ?>
-                                </a>
-                            </td>
-                            <td class="py-3 px-4 whitespace-nowrap text-gray-500 dark:text-gray-400 text-[11px]">
-                                <?= $s['tgl_siswa'] ? date('d/m/Y', strtotime($s['tgl_siswa'])) : '-' ?>
-                            </td>
-                            <td class="py-3 px-3 text-center">
-                                <div class="flex items-center justify-center gap-1.5">
-                                    <!-- WhatsApp -->
-                                    <button type="button"
-                                        onclick="openWhatsAppModal('<?= $s['id_siswa'] ?>', '<?= esc(addslashes($s['nama_lengkap'])) ?>', '<?= esc(addslashes($s['no_pendaftaran'])) ?>', '<?= esc($s['no_hp_siswa'] ?? '') ?>', '<?= esc($s['no_hp_ortu'] ?? '') ?>')"
-                                        class="flex h-7 w-7 items-center justify-center rounded-lg text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-500/15 transition-colors focus:outline-none"
-                                        title="Kirim Pesan WhatsApp">
-                                        <i class="fab fa-whatsapp text-xs font-bold"></i>
-                                    </button>
 
-                                    <!-- Quick Preview -->
-                                    <button type="button"
-                                        onclick="openQuickDetail('<?= $s['id_siswa'] ?>')"
-                                        class="flex h-7 w-7 items-center justify-center rounded-lg text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-brand-500/15 transition-colors focus:outline-none"
-                                        title="Quick Preview">
-                                        <i class="fas fa-eye text-xs"></i>
-                                    </button>
-
-                                    <!-- Login Siswa (Impersonate) -->
-                                    <form action="<?= base_url('impersonate/start/' . $s['id_siswa']) ?>" method="POST" class="inline m-0 p-0">
-                                        <?= csrf_field() ?>
-                                        <button type="submit"
-                                            class="flex h-7 w-7 items-center justify-center rounded-lg text-amber-600 hover:bg-amber-50 hover:text-amber-700 dark:text-amber-400 dark:hover:bg-amber-500/15 transition-colors focus:outline-none"
-                                            title="Login sebagai Siswa (Impersonate)">
-                                            <i class="fas fa-user-secret text-xs"></i>
-                                        </button>
-                                    </form>
+                            <!-- Action Buttons: [ Invoice ] [ ... ] -->
+                            <td class="py-3 px-3 whitespace-nowrap text-right">
+                                <div class="inline-flex items-center gap-1.5 justify-end">
+                                    <!-- Invoice Button -->
+                                    <a href="<?= base_url('admin/pembiayaan/siswa/' . $s['id_siswa']) ?>"
+                                       class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 shadow-xs transition-colors whitespace-nowrap"
+                                       title="Lihat Tagihan / Invoice">
+                                        <i class="far fa-circle-play text-[11px] text-gray-400"></i>
+                                        <span>Invoice</span>
+                                    </a>
 
                                     <!-- More Actions Dropdown (Titik Tiga) -->
                                     <div class="relative inline-block text-left">
                                         <button type="button"
                                             onclick="toggleActionMenu(event, 'actionMenu-<?= $s['id_siswa'] ?>')"
-                                            class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200 transition-colors focus:outline-none"
+                                            class="inline-flex items-center justify-center h-7 w-7 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 transition-colors focus:outline-none"
                                             title="Pilihan Aksi Lainnya">
-                                            <i class="fas fa-ellipsis-v text-xs"></i>
+                                            <i class="fas fa-ellipsis text-xs"></i>
                                         </button>
 
                                         <!-- Dropdown Menu Content -->
                                         <div id="actionMenu-<?= $s['id_siswa'] ?>"
-                                             class="student-action-menu hidden absolute right-0 mt-1.5 w-48 rounded-xl border border-gray-100 bg-white p-1.5 shadow-xl dark:border-gray-800 dark:bg-gray-900 z-50 text-left divide-y divide-gray-100 dark:divide-gray-800">
+                                             class="student-action-menu hidden absolute right-0 mt-1.5 w-52 rounded-xl border border-gray-100 bg-white p-1.5 shadow-xl dark:border-gray-800 dark:bg-gray-900 z-50 text-left divide-y divide-gray-100 dark:divide-gray-800">
                                             <div class="py-1">
+                                                <button type="button"
+                                                    onclick="openQuickDetail('<?= $s['id_siswa'] ?>')"
+                                                    class="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white transition-colors text-left">
+                                                    <i class="fas fa-eye text-gray-400 w-4 text-center"></i>
+                                                    <span>Quick Preview</span>
+                                                </button>
                                                 <a href="<?= base_url('admin/siswa/detail/' . $s['id_siswa']) ?>"
                                                    class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white transition-colors">
                                                     <i class="fas fa-id-badge text-gray-400 w-4 text-center"></i>
@@ -338,6 +335,12 @@ Calon Siswa
                                             </div>
 
                                             <div class="py-1">
+                                                <button type="button"
+                                                    onclick="openWhatsAppModal('<?= $s['id_siswa'] ?>', '<?= esc(addslashes($s['nama_lengkap'])) ?>', '<?= esc(addslashes($s['no_pendaftaran'])) ?>', '<?= esc($s['no_hp_siswa'] ?? '') ?>', '<?= esc($s['no_hp_ortu'] ?? '') ?>')"
+                                                    class="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950/30 transition-colors text-left">
+                                                    <i class="fab fa-whatsapp text-emerald-500 w-4 text-center font-bold"></i>
+                                                    <span>Kirim Pesan WhatsApp</span>
+                                                </button>
                                                 <a href="<?= base_url('admin/siswa/cetak/' . $s['id_siswa']) ?>" target="_blank"
                                                    class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-50 hover:text-emerald-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white transition-colors">
                                                     <i class="fas fa-print text-gray-400 w-4 text-center"></i>
@@ -351,6 +354,14 @@ Calon Siswa
                                             </div>
 
                                             <div class="py-1">
+                                                <form action="<?= base_url('impersonate/start/' . $s['id_siswa']) ?>" method="POST" class="m-0 p-0">
+                                                    <?= csrf_field() ?>
+                                                    <button type="submit"
+                                                        class="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-amber-600 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-950/30 transition-colors text-left">
+                                                        <i class="fas fa-user-secret text-amber-500 w-4 text-center"></i>
+                                                        <span>Login sebagai Siswa</span>
+                                                    </button>
+                                                </form>
                                                 <button type="button"
                                                     onclick="openResetPasswordModal('<?= $s['id_siswa'] ?>', '<?= esc(addslashes($s['nama_lengkap'])) ?>')"
                                                     class="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-50 hover:text-amber-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white transition-colors text-left">
@@ -376,7 +387,7 @@ Calon Siswa
                 <?php else : ?>
                     <!-- Empty State -->
                     <tr>
-                        <td colspan="11" class="py-12 px-6 text-center">
+                        <td colspan="9" class="py-12 px-6 text-center">
                             <div class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
                                 <?php if (!empty($search)) : ?>
                                     <i class="fas fa-search-minus text-4xl mb-3 text-gray-300 dark:text-gray-700"></i>
@@ -448,7 +459,7 @@ Calon Siswa
 </div>
 
 <!-- WhatsApp Modal -->
-<div id="whatsappModal" class="fixed inset-0 z-50 hidden">
+<div id="whatsappModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeWhatsAppModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-lg rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 overflow-hidden" id="whatsappModalContent">
@@ -517,7 +528,7 @@ Calon Siswa
 </div>
 
 <!-- Quick Detail Preview Modal -->
-<div id="quickDetailModal" class="fixed inset-0 z-50 hidden">
+<div id="quickDetailModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeQuickDetail()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-3xl max-h-[90vh] rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 flex flex-col overflow-hidden" id="quickDetailContent">
@@ -667,6 +678,13 @@ Calon Siswa
                     <a id="qdCetakKartu" href="#" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 transition-colors">
                         <i class="fas fa-id-card text-[11px] text-purple-500"></i> Kartu
                     </a>
+                    <form id="qdImpersonateForm" action="" method="POST" class="inline m-0 p-0">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300 text-xs font-semibold shadow-xs transition-colors" title="Login sebagai Siswa (Impersonate)">
+                            <i class="fas fa-user-secret text-[11px] text-amber-600"></i>
+                            <span>Login Siswa</span>
+                        </button>
+                    </form>
                 </div>
                 <div class="flex items-center gap-2">
                     <button type="button" onclick="closeQuickDetail()" class="px-3.5 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-50">
@@ -682,7 +700,7 @@ Calon Siswa
 </div>
 
 <!-- Bulk Verify Modal -->
-<div id="bulkVerifyModal" class="fixed inset-0 z-50 hidden">
+<div id="bulkVerifyModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeBulkVerifyModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 overflow-hidden" id="bulkVerifyModalContent">
@@ -736,7 +754,7 @@ Calon Siswa
 </div>
 
 <!-- Bulk Delete Modal -->
-<div id="bulkDeleteModal" class="fixed inset-0 z-50 hidden">
+<div id="bulkDeleteModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeBulkDeleteModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 overflow-hidden" id="bulkDeleteModalContent">
@@ -790,7 +808,7 @@ Calon Siswa
 </div>
 
 <!-- Single Delete Confirmation Modal -->
-<div id="deleteModal" class="fixed inset-0 z-50 hidden">
+<div id="deleteModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeDeleteModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 overflow-hidden" id="deleteModalContent">
@@ -842,7 +860,7 @@ Calon Siswa
 </div>
 
 <!-- Reset Password Modal -->
-<div id="resetPasswordModal" class="fixed inset-0 z-50 hidden">
+<div id="resetPasswordModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeResetPasswordModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 overflow-hidden" id="resetPasswordModalContent">
@@ -1244,6 +1262,7 @@ Calon Siswa
         document.getElementById('qdSubheader').textContent = 'Mengambil data siswa...';
         document.getElementById('qdPhoto').src = 'https://ui-avatars.com/api/?name=Loading&background=random';
         document.getElementById('qdStudentId').value = id;
+        document.getElementById('qdImpersonateForm').action = '<?= base_url('impersonate/start') ?>/' + id;
 
         modal.classList.remove('hidden');
         setTimeout(() => {
@@ -1358,6 +1377,7 @@ Calon Siswa
             // Footer Links
             document.getElementById('qdCetakFormulir').href = '<?= base_url('admin/siswa/cetak') ?>/' + s.id_siswa;
             document.getElementById('qdCetakKartu').href = '<?= base_url('admin/siswa/cetak-kartu') ?>/' + s.id_siswa;
+            document.getElementById('qdImpersonateForm').action = '<?= base_url('impersonate/start') ?>/' + s.id_siswa;
             document.getElementById('qdFullDetailLink').href = '<?= base_url('admin/siswa/detail') ?>/' + s.id_siswa;
 
         } catch (err) {

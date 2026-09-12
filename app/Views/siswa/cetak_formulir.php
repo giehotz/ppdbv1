@@ -1,3 +1,4 @@
+<?php helper(['cetak', 'kop']); ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -19,7 +20,7 @@
             margin: 0 auto;
             padding: 5px;
             background: #f1f5f9;
-            line-height: 1.2;
+            line-height: normal;
         }
         .paper-container {
             background: #fff;

@@ -89,7 +89,7 @@
 </div>
 
 <!-- Modal Add -->
-<div id="addModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+<div id="addModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-99999 flex items-center justify-center p-4">
     <div class="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 overflow-hidden transform transition-all">
         <div class="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/40">
             <h3 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -150,7 +150,7 @@
 </div>
 
 <!-- Modal Edit -->
-<div id="editModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+<div id="editModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-99999 flex items-center justify-center p-4">
     <div class="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 overflow-hidden transform transition-all">
         <div class="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/40">
             <h3 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">

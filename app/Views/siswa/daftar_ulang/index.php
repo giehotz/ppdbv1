@@ -72,10 +72,10 @@
                         <span class="material-symbols-outlined text-xs">verified</span> Lulus Seleksi
                     </span>
                     <h2 class="text-lg sm:text-xl font-extrabold text-gray-900 dark:text-white">
-                        Daftar Ulang &amp; Pemilihan Seragam
+                        Daftar Ulang
                     </h2>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                        Lengkapi formulir konfirmasi kesediaan dan ukuran seragam untuk keperluan persiapan seragam sekolah.
+                        Lengkapi formulir konfirmasi kesediaan untuk keperluan administrasi pendaftaran ulang.
                     </p>
                 </div>
             </div>

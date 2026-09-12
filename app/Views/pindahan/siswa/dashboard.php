@@ -161,22 +161,29 @@ $berkasWajibLengkap = !empty($berkasWajib['lengkap']);
     <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]">
         <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-brand-500">swap_horiz</span>
-            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white">Sekolah Asal</h4>
+            <h4 class="text-sm font-bold uppercase tracking-wider text-gray-800 dark:text-white">Sekolah Asal</h4>
         </div>
-        <?php if (!empty($pindahan['jenjang_sekolah_asal'])): ?>
-            <div class="flex items-center justify-center gap-3 py-4">
+        <?php if (!empty($pindahan['jenjang_sekolah_asal']) || !empty($pindahan['nama_sekolah_asal'])): ?>
+            <div class="flex items-center justify-center gap-3 py-3">
                 <div class="flex-1 text-center">
-                    <span class="block mx-auto h-12 w-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-brand-600 dark:text-brand-400">
-                        <span class="material-symbols-outlined text-2xl">school</span>
+                    <span class="inline-flex mx-auto h-14 w-14 rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-400 items-center justify-center shadow-xs">
+                        <span class="material-symbols-outlined text-3xl">school</span>
                     </span>
-                    <span class="block text-xs font-bold text-gray-900 dark:text-white mt-2"><?= esc($pindahan['jenjang_sekolah_asal']) ?></span>
-                    <span class="block text-[10px] text-gray-400 truncate" title="<?= esc($pindahan['nama_sekolah_asal'] ?? '') ?>"><?= esc($pindahan['nama_sekolah_asal'] ?? 'Sekolah Asal') ?></span>
+                    <h5 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white mt-3 leading-snug break-words" title="<?= esc($pindahan['nama_sekolah_asal'] ?? '') ?>">
+                        <?= esc(!empty($pindahan['nama_sekolah_asal']) ? $pindahan['nama_sekolah_asal'] : 'Nama Sekolah Belum Diisi') ?>
+                    </h5>
+                    <?php if (!empty($pindahan['jenjang_sekolah_asal'])): ?>
+                        <div class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                            <span class="material-symbols-outlined text-sm text-brand-500">domain</span>
+                            <span>Jenjang: <?= esc($pindahan['jenjang_sekolah_asal']) ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php else: ?>
             <div class="py-6 text-center">
                 <span class="material-symbols-outlined text-3xl text-gray-300 dark:text-gray-600">swap_horiz</span>
-                <p class="text-xs text-gray-400 mt-2">Isi sekolah asal pada formulir biodata.</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Isi sekolah asal pada formulir biodata.</p>
             </div>
         <?php endif; ?>
     </div>

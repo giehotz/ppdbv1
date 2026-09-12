@@ -1,5 +1,5 @@
 <!-- WhatsApp Modal -->
-<div id="whatsappModal" class="fixed inset-0 z-50 hidden">
+<div id="whatsappModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeWhatsAppModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-lg rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 overflow-hidden" id="whatsappModalContent">
@@ -65,7 +65,7 @@
 </div>
 
 <!-- Quick Detail Preview Modal -->
-<div id="quickDetailModal" class="fixed inset-0 z-50 hidden">
+<div id="quickDetailModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeQuickDetail()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-3xl max-h-[90vh] rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 flex flex-col overflow-hidden" id="quickDetailContent">
@@ -208,7 +208,7 @@
 </div>
 
 <!-- Bulk Verify Modal -->
-<div id="bulkVerifyModal" class="fixed inset-0 z-50 hidden">
+<div id="bulkVerifyModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeBulkVerifyModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 overflow-hidden" id="bulkVerifyModalContent">
@@ -262,7 +262,7 @@
 </div>
 
 <!-- Bulk Delete Modal -->
-<div id="bulkDeleteModal" class="fixed inset-0 z-50 hidden">
+<div id="bulkDeleteModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeBulkDeleteModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 overflow-hidden" id="bulkDeleteModalContent">
@@ -316,7 +316,7 @@
 </div>
 
 <!-- Single Delete Confirmation Modal -->
-<div id="deleteModal" class="fixed inset-0 z-50 hidden">
+<div id="deleteModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeDeleteModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 overflow-hidden" id="deleteModalContent">
@@ -368,7 +368,7 @@
 </div>
 
 <!-- Reset Password Modal -->
-<div id="resetPasswordModal" class="fixed inset-0 z-50 hidden">
+<div id="resetPasswordModal" class="fixed inset-0 z-99999 hidden">
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeResetPasswordModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 transform transition-all scale-95 opacity-0 overflow-hidden" id="resetPasswordModalContent">

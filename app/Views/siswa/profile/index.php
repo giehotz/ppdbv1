@@ -17,9 +17,7 @@
             <div class="flex flex-col items-center shrink-0">
                 <?php
                 $nisn = $siswa['nisn'] ?? session()->get('nisn');
-                $foto = $siswa['foto'] ?? session()->get('foto');
-                $fotoPath = 'uploads/berkas/' . $nisn . '/' . $foto;
-                $hasFoto = !empty($foto) && file_exists(FCPATH . $fotoPath);
+                $hasFoto = !empty($fotoPath) && file_exists(FCPATH . $fotoPath);
                 $avatarUrl = $hasFoto ? base_url($fotoPath) : null;
                 $inisial = mb_substr(trim($siswa['nama_lengkap'] ?? 'S'), 0, 1);
                 ?>
@@ -35,7 +33,7 @@
 
                     <button onclick="document.getElementById('foto-input').click()"
                         class="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-theme-sm hover:bg-brand-600 transition-transform active:scale-95"
-                        title="Ganti Foto Profil">
+                        title="<?= !empty($isFromBerkas) ? 'Unggah Foto Profil Khusus' : 'Ganti Foto Profil' ?>">
                         <span class="material-symbols-outlined text-lg">photo_camera</span>
                     </button>
                 </div>
@@ -46,7 +44,12 @@
                     <input type="file" id="foto-input" name="foto" accept="image/*" onchange="previewAndSubmit(this)">
                 </form>
 
-                <?php if ($hasFoto): ?>
+                <?php if (!empty($isFromBerkas)): ?>
+                    <span class="mt-2.5 inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/50 px-2.5 py-0.5 rounded-full" title="Foto ini diambil otomatis dari Pas Foto yang diunggah di menu Berkas">
+                        <span class="material-symbols-outlined text-xs text-emerald-600">verified</span>
+                        <span>Foto dari Berkas</span>
+                    </span>
+                <?php elseif ($hasFoto): ?>
                     <button onclick="confirmDelete()"
                         class="mt-3.5 inline-flex items-center gap-1 text-[11px] font-semibold text-red-600 hover:text-red-700 dark:text-red-400">
                         <span class="material-symbols-outlined text-sm">delete</span>

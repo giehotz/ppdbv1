@@ -23,8 +23,30 @@ class Profile extends BaseController
             return redirect()->to('/siswa/dashboard')->with('error', 'Data siswa tidak ditemukan');
         }
 
+        // Cek foto profil khusus siswa
+        $fotoPath = '';
+        $isFromBerkas = false;
+        $hasCustomFoto = !empty($siswa['foto']) && file_exists(FCPATH . 'uploads/berkas/' . $nisn . '/' . basename($siswa['foto']));
+
+        if ($hasCustomFoto) {
+            $fotoPath = 'uploads/berkas/' . $nisn . '/' . basename($siswa['foto']);
+        } else {
+            // Fallback: ambil dari berkas (pas foto) jika siswa tidak mengunggah foto khusus profil
+            $berkasModel = new \App\Models\BerkasModel();
+            $berkasFoto = $berkasModel->where('id_siswa', $siswa['id_siswa'])
+                ->where('jenis_berkas', 'foto')
+                ->first();
+
+            if (!empty($berkasFoto['nama_file']) && file_exists(FCPATH . 'uploads/berkas/' . $nisn . '/' . $berkasFoto['nama_file'])) {
+                $fotoPath = 'uploads/berkas/' . $nisn . '/' . $berkasFoto['nama_file'];
+                $isFromBerkas = true;
+            }
+        }
+
         $data = [
-            'siswa' => $siswa
+            'siswa'        => $siswa,
+            'fotoPath'     => $fotoPath,
+            'isFromBerkas' => $isFromBerkas,
         ];
 
         $agent = $this->request->getUserAgent();
@@ -81,8 +103,9 @@ class Profile extends BaseController
             // Move file
             $foto->move($uploadPath, $newName);
 
-            // Update database
+            // Update database and session
             $this->siswaModel->where('nisn', $nisn)->set(['foto' => $newName])->update();
+            session()->set('foto', $newName);
 
             return redirect()->to('/siswa/profile')->with('success', 'Foto profil berhasil diupdate');
         }
@@ -104,8 +127,9 @@ class Profile extends BaseController
                 unlink($fotoPath);
             }
 
-            // Update database - set foto to null
+            // Update database - set foto to null and sync session
             $this->siswaModel->where('nisn', $nisn)->set(['foto' => null])->update();
+            session()->set('foto', null);
 
             return redirect()->to('/siswa/profile')->with('success', 'Foto profil berhasil dihapus');
         }

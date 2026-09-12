@@ -78,7 +78,7 @@
                     <?php foreach ($siswa as $s) : 
                         $inisial = mb_substr(trim($s['nama_lengkap']), 0, 1);
                     ?>
-                        <tr class="hover:bg-gray-50/50 transition-colors dark:hover:bg-white/[0.02]">
+                        <tr class="odd:bg-white even:bg-gray-50/70 dark:odd:bg-transparent dark:even:bg-white/[0.025] hover:!bg-brand-50/40 dark:hover:!bg-white/[0.05] transition-colors">
                             <!-- No. Daftar -->
                             <td class="py-3.5 px-5 whitespace-nowrap">
                                 <span class="inline-flex rounded-lg bg-gray-100 px-2 py-0.5 font-mono text-[11px] font-bold text-gray-700 dark:bg-gray-800 dark:text-gray-300">
@@ -215,7 +215,7 @@
 </div>
 
 <!-- Reset Password Modal (TailAdmin Style) -->
-<div id="resetPasswordModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+<div id="resetPasswordModal" class="fixed inset-0 bg-black/60 z-99999 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
     <div class="bg-white dark:bg-gray-900 rounded-2xl max-w-md w-full p-6 shadow-theme-xl border border-gray-200 dark:border-gray-800 transform transition-all scale-95" id="resetPasswordModalContent">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">

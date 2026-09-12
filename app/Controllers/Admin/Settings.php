@@ -158,6 +158,8 @@ class Settings extends BaseController
             'semester'          => $this->request->getPost('semester'),
             'tgl_pengumuman'    => !empty($this->request->getPost('tgl_pengumuman')) ? date('Y-m-d H:i:s', strtotime($this->request->getPost('tgl_pengumuman'))) : null,
             'pengumuman_aktif'  => $this->request->getPost('pengumuman_aktif'),
+            'ujian_aktif'       => $this->request->getPost('ujian_aktif') ?? '0',
+            'tgl_ujian'         => !empty($this->request->getPost('tgl_ujian')) ? date('Y-m-d H:i:s', strtotime($this->request->getPost('tgl_ujian'))) : null,
             'format_no_daftar'  => $this->request->getPost('format_no_daftar'),
             'link_grup_wa'      => $this->request->getPost('link_grup_wa'),
             'tampil_grup_wa'    => $this->request->getPost('tampil_grup_wa') ?? 0,

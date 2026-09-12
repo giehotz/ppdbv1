@@ -10,8 +10,22 @@
 <?php
 $nisnSiswa = $siswa['nisn'] ?? session()->get('nisn');
 $fotoSiswa = $siswa['foto'] ?? session()->get('foto');
-$pathFoto = 'uploads/berkas/' . $nisnSiswa . '/' . $fotoSiswa;
+$pathFoto = !empty($fotoSiswa) ? 'uploads/berkas/' . $nisnSiswa . '/' . $fotoSiswa : '';
 $adaFoto = !empty($fotoSiswa) && file_exists(FCPATH . $pathFoto);
+
+if (!$adaFoto && !empty($siswa['id_siswa'])) {
+    $berkasFoto = (new \App\Models\BerkasModel())
+        ->where('id_siswa', $siswa['id_siswa'])
+        ->where('jenis_berkas', 'foto')
+        ->first();
+    if (!empty($berkasFoto['nama_file'])) {
+        $berkasPath = 'uploads/berkas/' . $nisnSiswa . '/' . $berkasFoto['nama_file'];
+        if (file_exists(FCPATH . $berkasPath)) {
+            $pathFoto = $berkasPath;
+            $adaFoto = true;
+        }
+    }
+}
 $inisial = mb_substr(trim($siswa['nama_lengkap'] ?? 'S'), 0, 1);
 $isLockedCard = !($canPrintCard ?? false);
 ?>
@@ -366,25 +380,44 @@ $isLockedCard = !($canPrintCard ?? false);
                 <div class="rounded-xl border border-dashed border-gray-200 bg-gray-50/50 p-4 text-center dark:border-gray-800 dark:bg-gray-800/20 mb-4">
                     <span class="material-symbols-outlined text-2xl text-gray-400 mb-1 block">event_upcoming</span>
                     <span class="text-xs font-semibold text-gray-600 dark:text-gray-400">
-                        <?= !empty($tglUjian) ? 'Jadwal Ujian: ' . date('d F Y', strtotime($tglUjian)) : 'Informasi tanggal ujian akan diumumkan oleh panitia.' ?>
+                        <?php if ($ujianAktif): ?>
+                            <?= !empty($tglUjian) ? 'Jadwal Ujian: ' . date('d F Y', strtotime($tglUjian)) : 'Informasi tanggal ujian akan diumumkan oleh panitia.' ?>
+                        <?php else: ?>
+                            <?= !empty($web['tgl_pengumuman']) ? 'Pengumuman Hasil: ' . date('d F Y', strtotime($web['tgl_pengumuman'])) : 'Seleksi berbasis verifikasi berkas administrasi.' ?>
+                        <?php endif; ?>
                     </span>
                 </div>
             <?php endif; ?>
 
-            <!-- Ketentuan Ujian Singkat -->
+            <!-- Ketentuan Seleksi / Ujian Singkat -->
             <div class="space-y-1.5 text-xs text-gray-600 dark:text-gray-300">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-xs text-emerald-600">check_circle</span>
-                    <span>Wajib mencetak &amp; membawa <strong>Kartu Tanda Peserta PPDB</strong>.</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-xs text-emerald-600">check_circle</span>
-                    <span>Mengenakan pakaian rapi, sopan, dan bersepatu.</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-xs text-emerald-600">check_circle</span>
-                    <span>Hadir di lokasi tes minimal 15 menit sebelum ujian dimulai.</span>
-                </div>
+                <?php if ($ujianAktif): ?>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xs text-emerald-600">check_circle</span>
+                        <span>Wajib mencetak &amp; membawa <strong>Kartu Tanda Peserta PPDB</strong>.</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xs text-emerald-600">check_circle</span>
+                        <span>Mengenakan pakaian rapi, sopan, dan bersepatu.</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xs text-emerald-600">check_circle</span>
+                        <span>Hadir di lokasi tes minimal 15 menit sebelum ujian dimulai.</span>
+                    </div>
+                <?php else: ?>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xs text-emerald-600">check_circle</span>
+                        <span>Simpan / cetak <strong>Kartu Tanda Peserta</strong> sebagai bukti pendaftaran sah.</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xs text-emerald-600">check_circle</span>
+                        <span>Seleksi dilakukan berdasarkan <strong>kelengkapan berkas &amp; data administrasi</strong>.</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xs text-emerald-600">check_circle</span>
+                        <span>Pantau berkala pengumuman hasil seleksi di dashboard ini.</span>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -393,7 +426,7 @@ $isLockedCard = !($canPrintCard ?? false);
                <?= $isLockedCard ? 'onclick="alert(\'Silakan lengkapi biodata 100% untuk mencetak kartu peserta.\'); return false;"' : 'target="_blank" rel="noopener"' ?>
                class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-theme-xs hover:bg-indigo-700 transition-colors <?= $isLockedCard ? 'opacity-60 cursor-not-allowed' : '' ?>">
                 <span class="material-symbols-outlined text-base">badge</span>
-                <span>Cetak Kartu Peserta Ujian Sekarang</span>
+                <span><?= $ujianAktif ? 'Cetak Kartu Peserta Ujian Sekarang' : 'Cetak Kartu Tanda Peserta PPDB' ?></span>
             </a>
         </div>
     </div>

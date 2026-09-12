@@ -90,17 +90,17 @@ if (!function_exists('render_kop_surat')) {
         }
 
         $html = '
-        <table width="100%" style="border-bottom: 3px solid #000; padding-bottom: 5px; margin-bottom: 15px;">
+        <table width="100%" style="border-bottom: 3px solid #000; padding-bottom: 5px; margin-bottom: 15px; line-height: normal;">
             <tr>
                 <td width="15%" style="text-align: center; vertical-align: middle;">
                     <img src="' . $logoSrc . '" alt="Logo" style="width: 80px; height: auto;">
                 </td>
-                <td width="85%" style="text-align: center; vertical-align: middle;">
-                    <div style="font-size: 12pt; font-weight: bold; margin-bottom: 2px;">' . htmlspecialchars($kop['kementerian_pusat']) . '</div>
-                    <div style="font-size: 12pt; font-weight: bold; margin-bottom: 2px;">' . htmlspecialchars($kop['kementerian_kabupaten']) . '</div>
-                    <div style="font-size: 12pt; font-weight: bold; margin-bottom: 2px;">' . htmlspecialchars($kop['nama_madrasah']) . '</div>
-                    <div style="font-size: 9pt; margin-top: 5px;">' . htmlspecialchars($kop['alamat_madrasah']) . '</div>
-                    <div style="font-size: 9pt;">' . htmlspecialchars($kop['email_madrasah']) . '</div>
+                <td width="85%" style="text-align: center; vertical-align: middle; line-height: normal;">
+                    <div style="font-size: 12pt; font-weight: bold; margin-bottom: 2px; line-height: normal;">' . htmlspecialchars($kop['kementerian_pusat']) . '</div>
+                    <div style="font-size: 12pt; font-weight: bold; margin-bottom: 2px; line-height: normal;">' . htmlspecialchars($kop['kementerian_kabupaten']) . '</div>
+                    <div style="font-size: 12pt; font-weight: bold; margin-bottom: 2px; line-height: normal;">' . htmlspecialchars($kop['nama_madrasah']) . '</div>
+                    <div style="font-size: 9pt; margin-top: 5px; line-height: normal;">' . htmlspecialchars($kop['alamat_madrasah']) . '</div>
+                    <div style="font-size: 9pt; line-height: normal;">' . htmlspecialchars($kop['email_madrasah']) . '</div>
                 </td>
             </tr>
         </table>

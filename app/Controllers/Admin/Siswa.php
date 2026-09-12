@@ -92,12 +92,14 @@ class Siswa extends BaseController
                     $s['total_tagihan'] = 0;
                     $s['total_bayar'] = 0;
                     $s['sisa_tagihan'] = 0;
+                    $s['jml_tagihan'] = 0;
                 } else {
                     $totalTagihan = (int)$t['total_tagihan'];
                     $sisa = max(0, $totalTagihan - $b);
                     $s['total_tagihan'] = $totalTagihan;
                     $s['total_bayar'] = $b;
                     $s['sisa_tagihan'] = $sisa;
+                    $s['jml_tagihan'] = (int)$t['jml_tagihan'];
                     if ($sisa == 0 && (int)$t['tagihan_lunas_cnt'] == (int)$t['jml_tagihan']) {
                         $s['status_pembiayaan'] = 'lunas';
                     } elseif ($b > 0) {

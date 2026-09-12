@@ -16,8 +16,21 @@
             <?php 
             $nisn = session()->get('nisn');
             $foto = session()->get('foto');
-            $fotoPath = 'uploads/berkas/' . $nisn . '/' . $foto;
+            $fotoPath = !empty($foto) ? 'uploads/berkas/' . $nisn . '/' . $foto : '';
             $hasFoto = !empty($foto) && file_exists(FCPATH . $fotoPath);
+            if (!$hasFoto && !empty($siswa['id_siswa'])) {
+                $berkasFoto = (new \App\Models\BerkasModel())
+                    ->where('id_siswa', $siswa['id_siswa'])
+                    ->where('jenis_berkas', 'foto')
+                    ->first();
+                if (!empty($berkasFoto['nama_file'])) {
+                    $berkasPath = 'uploads/berkas/' . $nisn . '/' . $berkasFoto['nama_file'];
+                    if (file_exists(FCPATH . $berkasPath)) {
+                        $fotoPath = $berkasPath;
+                        $hasFoto = true;
+                    }
+                }
+            }
             if ($hasFoto): ?>
                 <img src="<?= base_url($fotoPath) ?>" alt="Avatar" class="h-full w-full object-cover" />
             <?php else: ?>
@@ -219,7 +232,7 @@
                             <span class="material-symbols-outlined text-[12px] text-gray-400">lock</span>
                         <?php endif; ?>
                     </h4>
-                    <p class="text-[10px] text-gray-500 truncate">ID Card tanda bukti peserta tes</p>
+                    <p class="text-[10px] text-gray-500 truncate"><?= (($web['ujian_aktif'] ?? '0') == '1') ? 'ID Card tanda bukti peserta tes' : 'Tanda bukti pendaftaran resmi PPDB' ?></p>
                 </div>
                 <span class="material-symbols-outlined text-gray-400 text-sm">chevron_right</span>
             </a>

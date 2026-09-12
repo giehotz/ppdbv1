@@ -60,7 +60,7 @@
                         $inisial = mb_substr(trim($namaLengkap), 0, 1);
                         if (empty($inisial)) $inisial = 'S';
                     ?>
-                        <tr class="hover:bg-gray-50/50 transition-colors dark:hover:bg-white/[0.02]">
+                        <tr class="odd:bg-white even:bg-gray-50/70 dark:odd:bg-transparent dark:even:bg-white/[0.025] hover:!bg-brand-50/40 dark:hover:!bg-white/[0.05] transition-colors">
                             <td class="py-3.5 px-5 whitespace-nowrap">
                                 <span class="inline-flex rounded-lg bg-gray-100 px-2 py-0.5 font-mono text-[11px] font-bold text-gray-700 dark:bg-gray-800 dark:text-gray-300">
                                     <?= esc($s['no_pendaftaran']) ?>
@@ -135,7 +135,7 @@
 </div>
 
 <!-- Modal Registrasi Akun (TailAdmin Style) -->
-<div id="registerModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+<div id="registerModal" class="fixed inset-0 bg-black/60 z-99999 hidden flex items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white dark:bg-gray-900 rounded-2xl max-w-2xl w-full p-6 md:p-8 shadow-theme-xl border border-gray-200 dark:border-gray-800 max-h-[90vh] overflow-y-auto transform transition-all">
         <div class="flex items-center justify-between pb-4 mb-6 border-b border-gray-100 dark:border-gray-800">
             <div>

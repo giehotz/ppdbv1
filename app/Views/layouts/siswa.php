@@ -132,8 +132,23 @@
 
     $nisn = session()->get('nisn');
     $foto = session()->get('foto');
-    $fotoPath = 'uploads/berkas/' . $nisn . '/' . $foto;
+    $fotoPath = !empty($foto) ? 'uploads/berkas/' . $nisn . '/' . $foto : '';
     $hasFoto = !empty($foto) && file_exists(FCPATH . $fotoPath);
+
+    if (!$hasFoto && !empty($idSiswaNav)) {
+        $berkasFoto = (new \App\Models\BerkasModel())
+            ->where('id_siswa', $idSiswaNav)
+            ->where('jenis_berkas', 'foto')
+            ->first();
+        if (!empty($berkasFoto['nama_file'])) {
+            $berkasPath = 'uploads/berkas/' . $nisn . '/' . $berkasFoto['nama_file'];
+            if (file_exists(FCPATH . $berkasPath)) {
+                $fotoPath = $berkasPath;
+                $hasFoto = true;
+            }
+        }
+    }
+
     $avatarUrl = $hasFoto ? base_url($fotoPath) : null;
     ?>
 

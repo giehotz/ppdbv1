@@ -47,7 +47,23 @@
     <script defer src="<?= base_url('assets/tailadmin/js/tailadmin.js') ?>"></script>
 
     <style>
-        body { font-family: 'Outfit', 'Inter', sans-serif; }
+        body { 
+            font-family: 'Outfit', 'Inter', sans-serif; 
+            color: #0f172a;
+        }
+        /* Darker text contrast for light mode */
+        body:not(.dark) {
+            color: #0f172a;
+        }
+        body:not(.dark) .text-gray-400 {
+            color: #64748b;
+        }
+        body:not(.dark) .text-gray-500 {
+            color: #475569;
+        }
+        body:not(.dark) .text-gray-600 {
+            color: #334155;
+        }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
         }
@@ -85,8 +101,8 @@
         });
         $watch('sidebarToggle', val => localStorage.setItem('sidebarToggle', JSON.stringify(val)));
     "
-    :class="darkMode ? 'dark bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-800'"
-    class="font-sans antialiased text-sm h-screen overflow-hidden flex flex-col bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100"
+    :class="darkMode ? 'dark bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'"
+    class="font-sans antialiased text-sm h-screen overflow-hidden flex flex-col bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100"
 >
 
     <?php

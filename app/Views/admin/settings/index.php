@@ -10,31 +10,47 @@ Pengaturan Sistem
 
 <?= $this->section('content') ?>
 
-<!-- Tab Navigation (TailAdmin Pill Style) -->
-<div class="mb-8">
-    <div class="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-gray-800 rounded-xl" id="settings-tabs" role="tablist">
-        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="sistem-tab-btn" data-target="tab-sistem" type="button" role="tab">
-            <span class="material-symbols-outlined text-lg">settings</span>
+<!-- Tab Navigation (TailAdmin Pill Style - Single Line) -->
+<div class="mb-6">
+    <div class="flex items-center gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-x-auto no-scrollbar" id="settings-tabs" role="tablist">
+        <button class="tab-link shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200" id="sistem-tab-btn" data-target="tab-sistem" type="button" role="tab">
+            <span class="material-symbols-outlined text-[17px]">settings</span>
             <span>Sistem PPDB</span>
         </button>
-        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="sekolah-tab-btn" data-target="tab-sekolah" type="button" role="tab">
-            <span class="material-symbols-outlined text-lg">school</span>
+        <button class="tab-link shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200" id="jadwal-tab-btn" data-target="tab-jadwal" type="button" role="tab">
+            <span class="material-symbols-outlined text-[17px]">schedule</span>
+            <span>Jadwal &amp; Ujian</span>
+        </button>
+        <button class="tab-link shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200" id="du-tab-btn" data-target="tab-daftar-ulang" type="button" role="tab">
+            <span class="material-symbols-outlined text-[17px]">backpack</span>
+            <span>Daftar Ulang</span>
+        </button>
+        <button class="tab-link shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200" id="tp-tab-btn" data-target="tab-tahun-pelajaran" type="button" role="tab">
+            <span class="material-symbols-outlined text-[17px]">calendar_month</span>
+            <span>Tahun Pelajaran</span>
+        </button>
+        <button class="tab-link shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200" id="template-tab-btn" data-target="tab-template" type="button" role="tab">
+            <span class="material-symbols-outlined text-[17px]">palette</span>
+            <span>Template Web</span>
+        </button>
+        <button class="tab-link shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200" id="sekolah-tab-btn" data-target="tab-sekolah" type="button" role="tab">
+            <span class="material-symbols-outlined text-[17px]">school</span>
             <span>Profil Sekolah</span>
         </button>
-        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="referensi-tab-btn" data-target="tab-referensi" type="button" role="tab">
-            <span class="material-symbols-outlined text-lg">list_alt</span>
+        <button class="tab-link shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200" id="referensi-tab-btn" data-target="tab-referensi" type="button" role="tab">
+            <span class="material-symbols-outlined text-[17px]">list_alt</span>
             <span>Data Referensi</span>
         </button>
-        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="biodata-tab-btn" data-target="tab-biodata" type="button" role="tab">
-            <span class="material-symbols-outlined text-lg">fact_check</span>
+        <button class="tab-link shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200" id="biodata-tab-btn" data-target="tab-biodata" type="button" role="tab">
+            <span class="material-symbols-outlined text-[17px]">fact_check</span>
             <span>Wajib Biodata</span>
         </button>
-        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="kop-tab-btn" data-target="tab-kop" type="button" role="tab">
-            <span class="material-symbols-outlined text-lg">description</span>
+        <button class="tab-link shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200" id="kop-tab-btn" data-target="tab-kop" type="button" role="tab">
+            <span class="material-symbols-outlined text-[17px]">description</span>
             <span>Kop Dokumen</span>
         </button>
-        <button class="tab-link flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-200" id="stepper-tab-btn" data-target="tab-stepper" type="button" role="tab">
-            <span class="material-symbols-outlined text-lg">alt_route</span>
+        <button class="tab-link shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200" id="stepper-tab-btn" data-target="tab-stepper" type="button" role="tab">
+            <span class="material-symbols-outlined text-[17px]">alt_route</span>
             <span>Alur &amp; Stepper</span>
         </button>
     </div>
@@ -45,7 +61,23 @@ Pengaturan Sistem
 
     <div class="space-y-6">
         <div id="tab-sistem" class="tab-content hidden">
-            <?= view('admin/settings/_tab_sistem') ?>
+            <?= $this->include('admin/settings/sistem/_identitas') ?>
+        </div>
+
+        <div id="tab-jadwal" class="tab-content hidden">
+            <?= $this->include('admin/settings/sistem/_jadwal') ?>
+        </div>
+
+        <div id="tab-daftar-ulang" class="tab-content hidden">
+            <?= $this->include('admin/settings/sistem/_daftar_ulang') ?>
+        </div>
+
+        <div id="tab-tahun-pelajaran" class="tab-content hidden">
+            <?= $this->include('admin/settings/sistem/_tahun_pelajaran') ?>
+        </div>
+
+        <div id="tab-template" class="tab-content hidden">
+            <?= $this->include('admin/settings/sistem/_landing_template') ?>
         </div>
 
         <div id="tab-sekolah" class="tab-content hidden">
@@ -328,6 +360,7 @@ Pengaturan Sistem
                 if (link.getAttribute('data-target') === targetId) {
                     link.classList.remove('text-gray-500', 'dark:text-gray-400');
                     link.classList.add('bg-white', 'dark:bg-gray-900', 'text-brand-500', 'shadow-sm');
+                    link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 }
             });
 

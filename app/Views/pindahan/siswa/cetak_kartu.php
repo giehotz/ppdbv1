@@ -361,7 +361,7 @@
         <button class="btn btn-print" onclick="window.print()">
             <i class="fas fa-print"></i> Cetak Sekarang
         </button>
-        <button class="btn btn-close" onclick="window.close()">
+        <button class="btn btn-close" onclick="closeOrBack()">
             <i class="fas fa-times"></i> Tutup Halaman
         </button>
     </div>
@@ -383,13 +383,50 @@
 
         <div class="card-content">
             <div class="photo-box">
-                <?php if (!empty($pindahan['foto_berkas'])): ?>
-                    <img src="<?= base_url(esc($pindahan['foto_berkas'])) ?>" alt="Pas Foto Siswa">
-                <?php elseif (!empty($pindahan['foto'])): ?>
-                    <img src="<?= base_url('uploads/berkas/' . esc($pindahan['nisn']) . '/' . esc($pindahan['foto'])) ?>" alt="Foto Database">
-                <?php else: ?>
-                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($pindahan['nama_lengkap'] ?? 'S') ?>&background=1e3a8a&color=fff&size=128" alt="Placeholder">
-                <?php endif; ?>
+                <?php
+                    helper('kop');
+                    $fotoSrc = '';
+                    if (empty($fotoBerkas)) {
+                        $fotoBerkas = \Config\Database::connect()->table('tbl_berkas_pindahan')
+                            ->where('id_pindahan', $pindahan['id_pindahan'])
+                            ->where('jenis_berkas', 'foto_siswa')
+                            ->get()->getRowArray();
+                    }
+
+                    $candidates = [];
+                    if (!empty($fotoBerkas['path_file'])) {
+                        $candidates[] = $fotoBerkas['path_file'];
+                    }
+                    if (!empty($fotoBerkas['nama_file'])) {
+                        $candidates[] = 'uploads/berkas/' . ($pindahan['nisn'] ?? '') . '/' . $fotoBerkas['nama_file'];
+                    }
+                    if (!empty($pindahan['foto'])) {
+                        if (str_starts_with($pindahan['foto'], 'uploads/')) {
+                            $candidates[] = $pindahan['foto'];
+                        } else {
+                            $candidates[] = 'uploads/berkas/' . ($pindahan['nisn'] ?? '') . '/' . $pindahan['foto'];
+                        }
+                    }
+                    if (!empty($pindahan['foto_berkas'])) {
+                        $candidates[] = $pindahan['foto_berkas'];
+                    }
+
+                    foreach ($candidates as $cand) {
+                        $candClean = ltrim($cand, '/');
+                        if (is_file(FCPATH . $candClean)) {
+                            $fotoSrc = function_exists('image_to_base64') ? image_to_base64($candClean) : '';
+                            if (empty($fotoSrc)) {
+                                $fotoSrc = base_url($candClean);
+                            }
+                            break;
+                        }
+                    }
+
+                    if (empty($fotoSrc)) {
+                        $fotoSrc = 'https://ui-avatars.com/api/?name=' . urlencode($pindahan['nama_lengkap'] ?? 'S') . '&background=1e3a8a&color=fff&size=128';
+                    }
+                ?>
+                <img src="<?= $fotoSrc ?>" alt="Pas Foto Siswa">
             </div>
 
             <div class="info-box">
@@ -493,5 +530,16 @@
         </div>
     </div>
 
+    <script>
+        function closeOrBack() {
+            if (window.opener) {
+                window.close();
+            } else if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+                window.history.back();
+            } else {
+                window.location.href = '<?= base_url('siswa/pindahan/dashboard') ?>';
+            }
+        }
+    </script>
 </body>
 </html>

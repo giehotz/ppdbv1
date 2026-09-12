@@ -11,9 +11,7 @@
     <div class="rounded-[1.25rem] border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-white/[0.03] text-center space-y-4">
         <?php
         $nisn = $siswa['nisn'] ?? session()->get('nisn');
-        $foto = $siswa['foto'] ?? session()->get('foto');
-        $fotoPath = 'uploads/berkas/' . $nisn . '/' . $foto;
-        $hasFoto = !empty($foto) && file_exists(FCPATH . $fotoPath);
+        $hasFoto = !empty($fotoPath) && file_exists(FCPATH . $fotoPath);
         $avatarUrl = $hasFoto ? base_url($fotoPath) : null;
         $inisial = mb_substr(trim($siswa['nama_lengkap'] ?? 'S'), 0, 1);
         ?>
@@ -28,10 +26,19 @@
             </div>
             <button onclick="document.getElementById('foto-input').click()"
                 class="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-xl bg-brand-500 text-white shadow-theme-xs"
-                title="Ganti Foto">
+                title="<?= !empty($isFromBerkas) ? 'Unggah Foto Profil Khusus' : 'Ganti Foto' ?>">
                 <span class="material-symbols-outlined text-sm">photo_camera</span>
             </button>
         </div>
+
+        <?php if (!empty($isFromBerkas)): ?>
+            <div>
+                <span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/50 px-2.5 py-0.5 rounded-full" title="Foto ini diambil otomatis dari Pas Foto yang diunggah di menu Berkas">
+                    <span class="material-symbols-outlined text-xs text-emerald-600">verified</span>
+                    <span>Foto dari Berkas</span>
+                </span>
+            </div>
+        <?php endif; ?>
 
         <div>
             <h3 class="text-base font-bold text-gray-900 dark:text-white"><?= esc($siswa['nama_lengkap']) ?></h3>
@@ -60,7 +67,7 @@
             </div>
         </div>
 
-        <?php if ($hasFoto): ?>
+        <?php if (empty($isFromBerkas) && $hasFoto): ?>
             <button onclick="confirmDelete()" class="inline-flex items-center gap-1 text-[10px] font-semibold text-red-600 hover:text-red-700 pt-1">
                 <span class="material-symbols-outlined text-xs">delete</span>
                 <span>Hapus Foto Profil</span>

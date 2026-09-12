@@ -297,12 +297,13 @@ class Pindahan extends BaseController
         $printerModel = new \App\Models\SettingPrinterModel();
 
         $data = [
-            'pindahan' => $pindahan,
-            'instansi' => $webModel->first() ?? [],
-            'layout'   => $layoutModel->first() ?? [],
-            'qr'       => $qrModel->first() ?? [],
-            'ttd'      => $ttdModel->first() ?? [],
-            'printer'  => $printerModel->first() ?? [],
+            'pindahan'   => $pindahan,
+            'instansi'   => $webModel->first() ?? [],
+            'layout'     => $layoutModel->first() ?? [],
+            'qr'         => $qrModel->first() ?? [],
+            'ttd'        => $ttdModel->first() ?? [],
+            'printer'    => $printerModel->first() ?? [],
+            'fotoBerkas' => $this->berkasModel->where('id_pindahan', $id)->where('jenis_berkas', 'foto_siswa')->first(),
         ];
 
         return view('pindahan/admin/cetak_kartu', $data);

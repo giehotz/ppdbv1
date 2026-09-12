@@ -1,3 +1,4 @@
+<?php helper('cetak'); ?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -33,6 +34,7 @@
             flex-direction: column;
             align-items: center;
             gap: 30px;
+            line-height: normal;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -361,7 +363,7 @@
         <button class="btn btn-print" onclick="window.print()">
             <i class="fas fa-print"></i> Cetak Sekarang
         </button>
-        <button class="btn btn-close" onclick="window.close()">
+        <button class="btn btn-close" onclick="closeOrBack()">
             <i class="fas fa-times"></i> Tutup Halaman
         </button>
     </div>
@@ -486,5 +488,16 @@
         </div>
     </div>
 
+    <script>
+        function closeOrBack() {
+            if (window.opener) {
+                window.close();
+            } else if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+                window.history.back();
+            } else {
+                window.location.href = '<?= base_url('admin/siswa') ?>';
+            }
+        }
+    </script>
 </body>
 </html>
