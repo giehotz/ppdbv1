@@ -1123,11 +1123,22 @@
                     <div class="w-full h-[320px] md:h-[380px] rounded-2xl border-[3px] border-black shadow-[4px_4px_0px_0px_#000] overflow-hidden bg-gray-100">
                         <?php if (!empty($content['kontak']['google_maps'])): ?>
                             <?php
-                            $mapsHtml = $content['kontak']['google_maps'] ?? '';
-                            if (preg_match('/<iframe[^>]+src=["\'](https?:\/\/[^"\']+\.google\.[^"\']+maps[^"\']*)["\'][^>]*><\/iframe>/i', $mapsHtml, $m)) {
-                                echo '<iframe src="' . esc($m[1]) . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
+                            $mapsInput = trim($content['kontak']['google_maps'] ?? '');
+                            $mapSrc = '';
+
+                            // 1. Jika input berupa tag <iframe> lengkap (embed code dari Google Maps)
+                            if (preg_match('/<iframe\b[^>]*\bsrc=["\']([^"\']+)["\']/is', $mapsInput, $match)) {
+                                $mapSrc = $match[1];
+                            }
+                            // 2. Jika input berupa URL langsung (https://...)
+                            elseif (filter_var($mapsInput, FILTER_VALIDATE_URL) || preg_match('/^https?:\/\//i', $mapsInput)) {
+                                $mapSrc = $mapsInput;
+                            }
+
+                            if (!empty($mapSrc)) {
+                                echo '<iframe src="' . esc($mapSrc, 'attr') . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
                             } else {
-                                echo esc($mapsHtml);
+                                echo $mapsInput;
                             }
                             ?>
                         <?php else: ?>

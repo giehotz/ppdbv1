@@ -983,17 +983,19 @@
                 <div class="mt-8 rounded-4xl overflow-hidden shadow-xl border border-primary-100 reveal"
                      style="height: 400px;">
                     <?php
-                    $mapsHtml = $content['kontak']['google_maps'] ?? '';
-                    if (preg_match('/<iframe[^>]+src=["\'](https?:\/\/[^"\']+\.google\.[^"\']+maps[^"\']*)["\'][^>]*><\/iframe>/i', $mapsHtml, $m)) {
-                        echo '<iframe src="' . esc($m[1]) . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
+                    $mapsInput = trim($content['kontak']['google_maps'] ?? '');
+                    $mapSrc = '';
+
+                    if (preg_match('/<iframe\b[^>]*\bsrc=["\']([^"\']+)["\']/is', $mapsInput, $match)) {
+                        $mapSrc = $match[1];
+                    } elseif (filter_var($mapsInput, FILTER_VALIDATE_URL) || preg_match('/^https?:\/\//i', $mapsInput)) {
+                        $mapSrc = $mapsInput;
+                    }
+
+                    if (!empty($mapSrc)) {
+                        echo '<iframe src="' . esc($mapSrc, 'attr') . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
                     } else {
-                        // Fallback: If it's a raw URL or custom embed, output or wrap it
-                        $srcUrl = trim($mapsHtml);
-                        if (filter_var($srcUrl, FILTER_VALIDATE_URL)) {
-                            echo '<iframe src="' . esc($srcUrl, 'attr') . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
-                        } else {
-                            echo $mapsHtml; // Output as-is
-                        }
+                        echo $mapsInput;
                     }
                     ?>
                 </div>

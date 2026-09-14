@@ -504,11 +504,19 @@
                 <?php if (!empty($content['kontak']['google_maps'])): ?>
                     <div class="w-full h-full">
                         <?php
-                        $mapsHtml = $content['kontak']['google_maps'] ?? '';
-                        if (preg_match('/<iframe[^>]+src=["\'](https?:\/\/[^"\']+\.google\.[^"\']+maps[^"\']*)["\'][^>]*><\/iframe>/i', $mapsHtml, $m)) {
-                            echo '<iframe src="' . esc($m[1]) . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
+                        $mapsInput = trim($content['kontak']['google_maps'] ?? '');
+                        $mapSrc = '';
+
+                        if (preg_match('/<iframe\b[^>]*\bsrc=["\']([^"\']+)["\']/is', $mapsInput, $match)) {
+                            $mapSrc = $match[1];
+                        } elseif (filter_var($mapsInput, FILTER_VALIDATE_URL) || preg_match('/^https?:\/\//i', $mapsInput)) {
+                            $mapSrc = $mapsInput;
+                        }
+
+                        if (!empty($mapSrc)) {
+                            echo '<iframe src="' . esc($mapSrc, 'attr') . '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
                         } else {
-                            echo esc($mapsHtml);
+                            echo $mapsInput;
                         }
                         ?>
                     </div>
