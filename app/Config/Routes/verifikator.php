@@ -42,6 +42,7 @@ $routes->group('verifikator', ['filter' => ['verifikator', 'csrf']], function ($
 
     // Pembiayaan (Payment/Fee)
     $routes->get('pembiayaan', 'Verifikator\Pembiayaan::index');
+    $routes->get('pembiayaan/siswa-tagihan/(:num)', 'Verifikator\Pembiayaan::getSiswaTagihanJson/$1');
     $routes->post('pembiayaan/tambah-semua-siswa', 'Verifikator\Pembiayaan::tambahTagihanSemuaSiswa');
     $routes->get('pembiayaan/siswa/(:num)', 'Verifikator\Pembiayaan::detail/$1');
     $routes->post('pembiayaan/siswa/(:num)/tagihan/tambah', 'Verifikator\Pembiayaan::tambahTagihan/$1');

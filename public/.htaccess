@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------
 # 1. Specify PHP Version
 # ----------------------------------------------------------------------
-AddHandler application/x-httpd-php81 .php
+AddHandler application/x-httpd-php84 .php
 
 # ----------------------------------------------------------------------
 # 2. Security and Performance Headers
@@ -48,5 +48,5 @@ Options -Indexes
     # Tambahan: Mencegah kebocoran referer (Opsional tapi bagus)
     Header always set Referrer-Policy "no-referrer-when-downgrade"
     # Content-Security-Policy: membatasi sumber daya yang bisa dimuat
-    Header always set Content-Security-Policy "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.ckeditor.com https://cdn.jsdelivr.net; img-src 'self' data:; frame-src 'self' https://www.google.com; connect-src 'self'"
+    Header always set Content-Security-Policy "default-src 'self'; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net data:; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.ckeditor.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; frame-src 'self' https://www.google.com; connect-src 'self'"
 </IfModule>

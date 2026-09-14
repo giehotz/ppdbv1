@@ -333,7 +333,13 @@ Pembiayaan - <?= esc($siswa['nama_lengkap']) ?>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Pilih item yang dibayarkan dan simpan transaksi</p>
             </div>
 
-            <?php if (empty($unpaidItems)): ?>
+            <?php if ($totalTagihan == 0): ?>
+                <div class="py-8 text-center text-gray-500 dark:text-gray-400">
+                    <span class="material-symbols-outlined text-4xl block mb-2 text-amber-500">assignment_late</span>
+                    <p class="text-xs font-bold text-gray-800 dark:text-gray-200 mb-1">Belum Ada Item Tagihan</p>
+                    <p class="text-xs mb-4">Tambahkan item tagihan siswa terlebih dahulu melalui pilihan di atas untuk mencatat pembayaran.</p>
+                </div>
+            <?php elseif (empty($unpaidItems)): ?>
                 <div class="py-8 text-center text-emerald-600 dark:text-emerald-400">
                     <span class="material-symbols-outlined text-4xl block mb-2">check_circle</span>
                     <p class="text-xs font-bold">Semua tagihan sudah berstatus Lunas!</p>

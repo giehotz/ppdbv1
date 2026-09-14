@@ -175,4 +175,5 @@ app/Views/siswa/mobile/prompt_stitch.txt
 .anthropic/
 .ponytail/
 .agents/
-
+app/Config/Applocalhost.php
+app/Config/App.php

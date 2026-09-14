@@ -223,13 +223,58 @@ class Pembiayaan extends BaseController
         return redirect()->to('/verifikator/pembiayaan/siswa/' . $siswaId);
     }
 
+    public function getSiswaTagihanJson($siswaId)
+    {
+        $siswa = $this->siswaModel->find($siswaId);
+        if (!$siswa) {
+            return $this->response->setJSON(['status' => false, 'message' => 'Data siswa tidak ditemukan']);
+        }
+
+        $tagihan        = $this->tagihanModel->getTagihanBySiswa($siswaId);
+        $totalTagihan   = $this->tagihanModel->getTotalTagihan($siswaId);
+        $totalLunas     = $this->tagihanModel->getTotalLunas($siswaId);
+        $statusLunas    = $this->tagihanModel->isAllLunas($siswaId);
+        $unpaidItems    = $this->tagihanModel->getUnpaidItems($siswaId);
+        $availableItems = $this->itemModel->getAvailableForSiswa($siswaId);
+        $sisaTagihan    = sisa_tagihan($totalTagihan, $totalLunas);
+
+        return $this->response->setJSON([
+            'status'            => true,
+            'siswa'             => [
+                'id_siswa'       => $siswa['id_siswa'],
+                'no_pendaftaran' => $siswa['no_pendaftaran'],
+                'nama_lengkap'   => $siswa['nama_lengkap'],
+                'jk'             => $siswa['jk'] ?? '',
+            ],
+            'total_tagihan'     => $totalTagihan,
+            'total_tagihan_fmt' => format_rupiah($totalTagihan),
+            'total_lunas'       => $totalLunas,
+            'total_lunas_fmt'   => format_rupiah($totalLunas),
+            'sisa'              => $sisaTagihan,
+            'sisa_fmt'          => format_rupiah($sisaTagihan),
+            'status_lunas'      => $statusLunas,
+            'has_tagihan'       => count($tagihan) > 0,
+            'unpaid_items'      => array_map(function ($item) {
+                return [
+                    'id_tagihan'   => $item['id_tagihan'],
+                    'nama_item'    => $item['nama_item'],
+                    'harga_satuan' => (int) $item['harga_satuan'],
+                    'harga_fmt'    => format_rupiah($item['harga_satuan']),
+                ];
+            }, $unpaidItems),
+            'available_count'   => count($availableItems),
+        ]);
+    }
+
     public function bayar($siswaId)
     {
-        $jumlah     = (int) $this->request->getPost('jumlah');
-        $tanggal    = $this->request->getPost('tanggal');
-        $metode     = $this->request->getPost('metode') ?: 'Tunai';
-        $keterangan = trim($this->request->getPost('keterangan') ?? '');
-        $tagihanIds = $this->request->getPost('tagihan_ids');
+        $jumlah      = (int) $this->request->getPost('jumlah');
+        $tanggal     = $this->request->getPost('tanggal');
+        $metode      = $this->request->getPost('metode') ?: 'Tunai';
+        $keterangan  = trim($this->request->getPost('keterangan') ?? '');
+        $tagihanIds  = $this->request->getPost('tagihan_ids');
+        $redirectUrl = $this->request->getPost('redirect_to') ?: ('/verifikator/pembiayaan/siswa/' . $siswaId);
+        $autoGen     = $this->request->getPost('auto_generate_tagihan');
 
         if ($jumlah <= 0 || empty($tanggal)) {
             session()->setFlashdata('error', 'Jumlah bayar dan tanggal wajib diisi.');
@@ -239,7 +284,23 @@ class Pembiayaan extends BaseController
         // Idempotency Guard (8 seconds window)
         if ($this->pembayaranModel->isDuplicatePayment($siswaId, $jumlah, $tanggal, 8)) {
             session()->setFlashdata('error', 'Transaksi pembayaran yang sama baru saja tercatat. Hindari melakukan klik ganda.');
-            return redirect()->to('/verifikator/pembiayaan/siswa/' . $siswaId);
+            return redirect()->to($redirectUrl);
+        }
+
+        // Auto generate tagihan if requested
+        if ($autoGen == 1) {
+            $available = $this->itemModel->getAvailableForSiswa($siswaId);
+            foreach ($available as $item) {
+                if (!$this->tagihanModel->hasItem($siswaId, $item['id_item'])) {
+                    $this->tagihanModel->save([
+                        'siswa_id'     => $siswaId,
+                        'item_id'      => $item['id_item'],
+                        'harga_satuan' => $item['harga'],
+                        'dibuat_oleh'  => session()->get('nama_lengkap') ?? 'Verifikator',
+                        'status_bayar' => 'belum',
+                    ]);
+                }
+            }
         }
 
         if (!is_array($tagihanIds) && !empty($tagihanIds)) {
@@ -295,7 +356,7 @@ class Pembiayaan extends BaseController
 
         catat_log('Catat Pembayaran', "Verifikator mencatat pembayaran Rp " . number_format($jumlah, 0, ',', '.') . " untuk siswa ID $siswaId");
         session()->setFlashdata('success', 'Pembayaran sebesar ' . format_rupiah($jumlah) . ' berhasil dicatat.');
-        return redirect()->to('/verifikator/pembiayaan/siswa/' . $siswaId);
+        return redirect()->to($redirectUrl);
     }
 
     public function hapusPembayaran($siswaId)
