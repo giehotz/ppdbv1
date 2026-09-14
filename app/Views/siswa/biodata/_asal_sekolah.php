@@ -496,10 +496,11 @@
             showLoading();
 
             try {
-                const url = '<?= base_url('siswa/biodata/search-sekolah') ?>?q=' + encodeURIComponent(query.trim());
+                const url = '<?= base_url('api/search-sekolah') ?>?q=' + encodeURIComponent(query.trim());
                 const res = await fetch(url, {
                     headers: { 'Accept': 'application/json' }
                 });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
                 const json = await res.json();
 
                 if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
@@ -804,12 +805,13 @@
             wrapperHasilWilayah.classList.remove('hidden');
 
             try {
-                let url = '<?= base_url('siswa/biodata/search-sekolah') ?>?q=' + encodeURIComponent(queryLocation) + '&limit=100';
+                let url = '<?= base_url('api/search-sekolah') ?>?q=' + encodeURIComponent(queryLocation) + '&limit=100';
                 if (tingkatVal) {
                     url += '&bentuk=' + encodeURIComponent(tingkatVal);
                 }
 
                 const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
                 const json = await res.json();
 
                 if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {

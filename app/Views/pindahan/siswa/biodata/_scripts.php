@@ -170,8 +170,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Flatpickr
     if (typeof flatpickr !== 'undefined') {
+        const flatpickrIdLocale = (flatpickr.l10ns && flatpickr.l10ns.id) ? flatpickr.l10ns.id : {
+            firstDayOfWeek: 1,
+            weekdays: {
+                shorthand: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+                longhand: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+            },
+            months: {
+                shorthand: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                longhand: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+            }
+        };
+
         flatpickr('.datepicker-parent', {
-            locale: 'id', dateFormat: 'Y-m-d', altInput: true, altFormat: 'd-m-Y',
+            locale: flatpickrIdLocale, dateFormat: 'Y-m-d', altInput: true, altFormat: 'd-m-Y',
             altInputClass: 'w-full rounded-lg border-[1.5px] border-gray-300 bg-transparent py-3 pl-5 pr-11 text-sm text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-brand-500',
             maxDate: 'today', allowInput: true,
             onChange: function(d, ds, inst) { if (inst.input) { inst.input.dispatchEvent(new Event('change', {bubbles:true})); inst.input.dispatchEvent(new Event('input', {bubbles:true})); } },

@@ -27,7 +27,9 @@ $routes->post('/impersonate/start/(:num)', 'Impersonate::start/$1', ['filter' =>
 $routes->post('/impersonate/start-pindahan/(:num)', 'Impersonate::startPindahan/$1', ['filter' => 'auth']);
 $routes->post('/impersonate/stop', 'Impersonate::stop', ['filter' => 'auth']);
 
-$routes->get('/pendaftar', 'Pendaftar::index');
+// Public / Shared API Cari Sekolah
+$routes->get('api/search-sekolah', 'Siswa\Biodata::searchSekolah');
+$routes->get('siswa/biodata/search-sekolah', 'Siswa\Biodata::searchSekolah');
 
 $routes->get('admin', function () {
     return redirect()->to('/admin/dashboard');

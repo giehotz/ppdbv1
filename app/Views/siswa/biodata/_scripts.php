@@ -284,8 +284,20 @@
 
         // Inisialisasi Flatpickr Date Picker (Orang Tua & Calon Siswa)
         if (typeof flatpickr !== 'undefined') {
+            const flatpickrIdLocale = (flatpickr.l10ns && flatpickr.l10ns.id) ? flatpickr.l10ns.id : {
+                firstDayOfWeek: 1,
+                weekdays: {
+                    shorthand: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+                    longhand: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+                },
+                months: {
+                    shorthand: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                    longhand: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+                }
+            };
+
             flatpickr('.datepicker-parent, .datepicker-siswa', {
-                locale: 'id',
+                locale: flatpickrIdLocale,
                 dateFormat: 'Y-m-d',
                 altInput: true,
                 altFormat: 'd-m-Y',
