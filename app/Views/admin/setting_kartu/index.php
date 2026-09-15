@@ -65,6 +65,7 @@ Pengaturan Kartu Siswa
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam  = urlParams.get('tab');
     const activeTab = tabParam || localStorage.getItem('activeSettingKartuTab') || 'instansi';
+    let previousTab = localStorage.getItem('previousSettingKartuTab') || 'instansi';
 
     function switchTab(target) {
         triggers.forEach(t => {
@@ -76,6 +77,12 @@ Pengaturan Kartu Siswa
         if (!trigger) {
             trigger = triggers[0];
             target = trigger.dataset.target;
+        }
+
+        const currentActive = localStorage.getItem('activeSettingKartuTab');
+        if (currentActive && currentActive !== 'preview' && currentActive !== target) {
+            previousTab = currentActive;
+            localStorage.setItem('previousSettingKartuTab', previousTab);
         }
         
         trigger.classList.remove('text-gray-500', 'dark:text-gray-400');
@@ -93,7 +100,36 @@ Pengaturan Kartu Siswa
         }
         
         localStorage.setItem('activeSettingKartuTab', target);
+
+        // Jika membuka tab preview, pastikan iframe bersih dan tidak tersangkut halaman lain
+        if (target === 'preview') {
+            const iframe = document.getElementById('previewCardIframe');
+            if (iframe && (!iframe.src || iframe.src.indexOf('preview') === -1)) {
+                iframe.src = '<?= base_url('admin/setting-kartu/preview') ?>';
+            }
+        }
     }
+
+    // Fungsi untuk menutup pratinjau kartu dari dalam iframe (mencegah bug mirror)
+    window.closeCardPreviewTab = function() {
+        const target = (previousTab && previousTab !== 'preview') ? previousTab : 'instansi';
+        switchTab(target);
+    };
+
+    // Fungsi muat ulang iframe pratinjau
+    window.reloadCardPreview = function() {
+        const iframe = document.getElementById('previewCardIframe');
+        if (iframe) {
+            iframe.src = '<?= base_url('admin/setting-kartu/preview') ?>?_t=' + new Date().getTime();
+        }
+    };
+
+    // Listener postMessage jika iframe berkomunikasi via pesan lintas frame
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.action === 'close_preview') {
+            window.closeCardPreviewTab();
+        }
+    });
 
     triggers.forEach(trigger => {
         trigger.addEventListener('click', () => {

@@ -241,6 +241,13 @@
         </div>
     </div>
 
+    <!-- Anti-mirroring script -->
+    <script>
+        if (window.top !== window.self) {
+            window.top.location.href = window.location.href;
+        }
+    </script>
+
     <!-- Scripts Section -->
     <?= $this->renderSection('scripts') ?>
     <?= view('partials/sweetalert') ?>

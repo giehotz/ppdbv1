@@ -489,7 +489,37 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Jika halaman sedang dirender di dalam iframe (seperti tab pratinjau)
+            if (window.self !== window.top) {
+                const closeBtn = document.querySelector('.btn-close');
+                if (closeBtn) {
+                    closeBtn.innerHTML = '<i class="fas fa-times"></i> Tutup Pratinjau';
+                    closeBtn.title = 'Tutup tab pratinjau dan kembali ke form pengaturan';
+                }
+            }
+        });
+
         function closeOrBack() {
+            // Jika berada di dalam iframe (misal tab pratinjau kartu), minta parent window untuk menutup tab pratinjau
+            if (window.self !== window.top) {
+                try {
+                    if (window.parent && typeof window.parent.closeCardPreviewTab === 'function') {
+                        window.parent.closeCardPreviewTab();
+                        return;
+                    }
+                    if (window.parent && typeof window.parent.switchTab === 'function') {
+                        window.parent.switchTab('instansi');
+                        return;
+                    }
+                    window.parent.postMessage({ action: 'close_preview' }, '*');
+                    return;
+                } catch (e) {
+                    console.log('Error notifying parent:', e);
+                }
+                return;
+            }
+
             try {
                 window.open('', '_self', '');
                 window.close();
