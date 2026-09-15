@@ -377,15 +377,35 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
     <div class="sl-panel-left border-r border-gray-200 dark:border-gray-800" id="panelLeft">
 
         <!-- Header & Search -->
-        <div class="border-b border-gray-100 dark:border-gray-800 px-4 py-3">
-            <div class="flex items-center justify-between mb-2">
+        <div class="border-b border-gray-100 dark:border-gray-800 px-4 py-3 space-y-2.5">
+            <div class="flex items-center justify-between">
                 <h3 class="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-2">
                     <i class="fas fa-list-ul text-xs text-gray-400"></i> Daftar Siswa
                 </h3>
                 <span class="text-[11px] font-semibold text-gray-400 dark:text-gray-500" id="slTotalInfo">0 siswa</span>
             </div>
+
+            <!-- Filter Tahun Ajaran -->
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-blue-500">
+                    <i class="fas fa-calendar-alt text-xs"></i>
+                </div>
+                <select id="slThPelajaran"
+                    class="w-full h-9 pl-8 pr-7 text-xs font-semibold rounded-lg border border-gray-200 bg-gray-50/70 text-gray-800 focus:border-blue-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-100 dark:focus:bg-gray-900 transition-colors cursor-pointer appearance-none shadow-theme-xs">
+                    <?php foreach (($tahunList ?? []) as $t): ?>
+                        <option value="<?= esc($t['tahun_pelajaran']) ?>" <?= (($selectedTh ?? '') === $t['tahun_pelajaran']) ? 'selected' : '' ?>>
+                            Tahun Ajaran: <?= esc($t['tahun_pelajaran']) ?> <?= ($t['status'] === 'Aktif') ? '★ (Aktif)' : '' ?>
+                        </option>
+                    <?php endforeach; ?>
+                    <option value="all" <?= (($selectedTh ?? '') === 'all') ? 'selected' : '' ?>>Semua Tahun Ajaran</option>
+                </select>
+                <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
+                    <i class="fas fa-chevron-down text-[10px]"></i>
+                </div>
+            </div>
+
             <!-- Live Search -->
-            <div class="flex items-center h-9 rounded-lg border border-gray-200 bg-gray-50/50 shadow-theme-xs dark:border-gray-700 dark:bg-gray-900/50 overflow-hidden focus-within:border-blue-500 transition-colors">
+            <div class="flex items-center h-9 rounded-lg border border-gray-200 bg-gray-50/50 shadow-theme-xs dark:border-gray-700 dark:bg-gray-900/50 overflow-hidden focus-within:border-blue-500 focus-within:bg-white dark:focus-within:bg-gray-900 transition-colors">
                 <div class="pl-3 text-gray-400 pointer-events-none">
                     <i class="fas fa-search text-xs"></i>
                 </div>
@@ -401,8 +421,8 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
         <div class="flex items-center justify-between gap-2 px-4 py-2 border-b border-gray-100 dark:border-gray-800 bg-gray-50/40 dark:bg-gray-800/20 flex-wrap">
             <div class="flex items-center gap-2">
                 <span class="text-[11px] font-bold text-blue-700 dark:text-blue-400" id="slCounter">Terpilih: 0</span>
-                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                    ☁️ DB
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" id="slThBadge" title="Tahun Ajaran Aktif">
+                    <i class="fas fa-calendar-check text-[9px]"></i> <span id="slThBadgeText"><?= esc(($selectedTh === 'all') ? 'Semua TA' : ($selectedTh ?? '')) ?></span>
                 </span>
             </div>
             <button id="btnSalinTerpilih"
@@ -481,11 +501,14 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
     let activeId     = null;
 
     // ============ DOM REFS ============
+    const $thPelajaran  = document.getElementById('slThPelajaran');
+    const $thBadgeText  = document.getElementById('slThBadgeText');
     const $search       = document.getElementById('slSearch');
     const $tblLeftBody  = document.getElementById('tblLeftBody');
     const $counter      = document.getElementById('slCounter');
     const $totalInfo    = document.getElementById('slTotalInfo');
     const $detailEmpty  = document.getElementById('detailEmpty');
+    const $detailContent= document.getElementById('detailContent');
     const $toast        = document.getElementById('slToast');
     const $panelLeft    = document.getElementById('panelLeft');
     const $panelRight   = document.getElementById('panelRight');
@@ -542,17 +565,43 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
     }
 
     // ============ LOAD DATA ============
-    function loadData() {
-        fetch(URL_GET_DATA, {
+    function loadData(th) {
+        const selectedYear = th !== undefined ? th : ($thPelajaran ? $thPelajaran.value : '<?= esc($selectedTh ?? '') ?>');
+
+        $tblLeftBody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-gray-400 dark:text-gray-500">
+            <i class="fas fa-circle-notch fa-spin text-2xl mb-2 text-blue-500 block"></i> Memuat data siswa...
+        </td></tr>`;
+        $totalInfo.textContent = 'Memuat...';
+
+        const url = URL_GET_DATA + '?th_pelajaran=' + encodeURIComponent(selectedYear);
+
+        fetch(url, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(r => r.json())
         .then(json => {
             if (json.csrf) csrfToken = json.csrf;
             allSiswa = json.data || [];
+
+            // Reset detail jika siswa yang sedang dilihat tidak ada di data tahun ajaran baru
+            if (activeId && !allSiswa.some(s => s.id_siswa == activeId)) {
+                activeId = null;
+                $detailEmpty.style.display = 'flex';
+                if ($detailContent) {
+                    $detailContent.style.display = 'none';
+                    $detailContent.innerHTML = '';
+                }
+            }
+
             applyFilter();
         })
-        .catch(err => console.error('Load error:', err));
+        .catch(err => {
+            console.error('Load error:', err);
+            $tblLeftBody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-red-500">
+                <i class="fas fa-exclamation-triangle text-2xl mb-2 block"></i> Gagal memuat data
+            </td></tr>`;
+            $totalInfo.textContent = '0 siswa';
+        });
     }
 
     // ============ FILTER ============
@@ -668,12 +717,13 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
                 icon: 'fa-user',
                 cls: 'sec-personal',
                 rows: [
-                    ['Nama Lengkap',          '__DROPDOWN__',        'accent-navy'],
-                    ['NISN',                   s.nisn,                ''],
-                    ['NIS Lokal',              s.no_pendaftaran,      'accent-green'],
-                    ['NIK Siswa',              s.nik,                 ''],
-                    ['Tempat Lahir',           s.tempat_lahir,        ''],
-                    ['Tanggal Lahir',          formatTgl(s.tgl_lahir),''],
+                    ['Nama Lengkap',          '__DROPDOWN__',          'accent-navy'],
+                    ['Tahun Ajaran',          s.th_pelajaran || '-',   'accent-navy'],
+                    ['NISN',                  s.nisn,                  ''],
+                    ['NIS Lokal',             s.no_pendaftaran,        'accent-green'],
+                    ['NIK Siswa',             s.nik,                   ''],
+                    ['Tempat Lahir',          s.tempat_lahir,          ''],
+                    ['Tanggal Lahir',         formatTgl(s.tgl_lahir),  ''],
                     ['Jenis Kelamin',          s.jk === 'L' ? 'Laki-laki' : (s.jk === 'P' ? 'Perempuan' : s.jk), ''],
                     ['Agama',                  s.agama,               ''],
                     ['Jumlah Saudara',         s.jml_saudara,         ''],
@@ -814,6 +864,7 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
         if (s.tk) riwayatPra.push('TK: ' + s.tk);
         return [
             `Nama Lengkap: ${s.nama_lengkap || '-'}`,
+            `Tahun Ajaran: ${s.th_pelajaran || '-'}`,
             `NISN: ${s.nisn || '-'}`,
             `NIS Lokal: ${s.no_pendaftaran || '-'}`,
             `NIK: ${s.nik || '-'}`,
@@ -849,6 +900,23 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
             `Desa/Kelurahan: ${s.desa || '-'}`,
             `Kode Pos: ${s.kode_pos || '-'}`,
         ].join('\n');
+    }
+
+    // ============ FILTER TAHUN AJARAN ============
+    if ($thPelajaran) {
+        $thPelajaran.addEventListener('change', function () {
+            const val = this.value;
+            if ($thBadgeText) {
+                $thBadgeText.textContent = val === 'all' ? 'Semua TA' : val;
+            }
+            try {
+                const url = new URL(window.location);
+                url.searchParams.set('th_pelajaran', val);
+                window.history.replaceState({}, '', url);
+            } catch (e) {}
+
+            loadData(val);
+        });
     }
 
     // ============ SEARCH ============

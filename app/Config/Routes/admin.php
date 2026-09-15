@@ -46,6 +46,7 @@ $routes->group('admin', ['filter' => ['admin', 'csrf']], function ($routes) {
     $routes->get('siswa-list', 'Admin\SiswaList::index');
     $routes->get('siswa-list/get-data', 'Admin\SiswaList::getDataAjax');
     $routes->post('siswa-list/update-checklist', 'Admin\SiswaList::updateChecklist');
+    $routes->post('siswa-list/update-all-checklist', 'Admin\SiswaList::updateAllChecklist');
 
     // Unlock Requests (Permohonan Buka Kunci)
     $routes->get('unlockrequest', 'Admin\UnlockRequest::index');

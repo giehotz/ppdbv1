@@ -19,11 +19,41 @@ class SiswaList extends BaseController
      */
     public function index()
     {
-        return view('admin/siswa_list/dashboard');
+        $activeTh   = $this->siswaListModel->getActiveThPelajaran();
+        $selectedTh = $this->request->getGet('th_pelajaran');
+        if ($selectedTh === null || $selectedTh === '') {
+            $selectedTh = $activeTh;
+        }
+
+        $tahunModel = new \App\Models\TahunPelajaranModel();
+        $tahunList  = $tahunModel->orderBy('id_tahun', 'DESC')->findAll();
+
+        if (empty($tahunList)) {
+            $db = \Config\Database::connect();
+            $distinctYears = $db->table('tbl_siswa')
+                ->select('th_pelajaran')
+                ->distinct()
+                ->where('deleted_at', null)
+                ->where('th_pelajaran !=', null)
+                ->orderBy('th_pelajaran', 'DESC')
+                ->get()->getResultArray();
+            foreach ($distinctYears as $dy) {
+                $tahunList[] = [
+                    'tahun_pelajaran' => $dy['th_pelajaran'],
+                    'status'          => ($dy['th_pelajaran'] === $activeTh) ? 'Aktif' : 'Tidak Aktif',
+                ];
+            }
+        }
+
+        return view('admin/siswa_list/dashboard', [
+            'activeTh'   => $activeTh,
+            'selectedTh' => $selectedTh,
+            'tahunList'  => $tahunList,
+        ]);
     }
 
     /**
-     * Endpoint AJAX GET — mengembalikan JSON data siswa aktif
+     * Endpoint AJAX GET — mengembalikan JSON data siswa aktif terfilter tahun ajaran
      */
     public function getDataAjax()
     {
@@ -31,12 +61,19 @@ class SiswaList extends BaseController
             return $this->response->setStatusCode(403)->setJSON(['error' => 'Forbidden']);
         }
 
-        $data = $this->siswaListModel->getAllSiswaAktif();
+        $activeTh    = $this->siswaListModel->getActiveThPelajaran();
+        $thPelajaran = $this->request->getGet('th_pelajaran');
+        if ($thPelajaran === null || $thPelajaran === '') {
+            $thPelajaran = $activeTh;
+        }
+
+        $data = $this->siswaListModel->getAllSiswaAktif($thPelajaran);
 
         return $this->response->setJSON([
-            'status' => 'success',
-            'data'   => $data,
-            'csrf'   => csrf_hash(),
+            'status'       => 'success',
+            'th_pelajaran' => $thPelajaran,
+            'data'         => $data,
+            'csrf'         => csrf_hash(),
         ]);
     }
 
@@ -70,7 +107,7 @@ class SiswaList extends BaseController
     }
 
     /**
-     * Endpoint AJAX POST — update massal is_checked seluruh siswa aktif
+     * Endpoint AJAX POST — update massal is_checked seluruh siswa aktif (per tahun pelajaran)
      */
     public function updateAllChecklist()
     {
@@ -78,7 +115,8 @@ class SiswaList extends BaseController
             return $this->response->setStatusCode(403)->setJSON(['error' => 'Forbidden']);
         }
 
-        $is_checked = (int) $this->request->getPost('is_checked');
+        $is_checked  = (int) $this->request->getPost('is_checked');
+        $thPelajaran = $this->request->getPost('th_pelajaran');
 
         if (!in_array($is_checked, [0, 1], true)) {
             return $this->response->setStatusCode(400)->setJSON([
@@ -88,7 +126,7 @@ class SiswaList extends BaseController
             ]);
         }
 
-        $result = $this->siswaListModel->updateAllChecklist($is_checked);
+        $result = $this->siswaListModel->updateAllChecklist($is_checked, $thPelajaran);
 
         return $this->response->setJSON([
             'status'  => $result ? 'success' : 'error',
