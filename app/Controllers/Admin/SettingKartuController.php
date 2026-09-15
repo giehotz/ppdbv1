@@ -187,27 +187,51 @@ class SettingKartuController extends BaseController
     public function deleteImage()
     {
         $field = $this->request->getPost('field');
-        $id = $this->request->getPost('id_layout');
 
-        if (!in_array($field, ['bg_depan', 'bg_belakang'])) {
-            return redirect()->to(base_url('admin/setting-kartu'))->with('error', 'Field tidak valid.');
-        }
-
-        if (!$id) {
-            return redirect()->to(base_url('admin/setting-kartu'))->with('error', 'ID layout tidak ditemukan.');
-        }
-
-        $layout = $this->layoutModel->find($id);
-        if ($layout && !empty($layout[$field])) {
-            $filePath = FCPATH . 'uploads/kartu/' . $layout[$field];
-            if (file_exists($filePath)) {
-                unlink($filePath);
+        if (in_array($field, ['bg_depan', 'bg_belakang'])) {
+            $id = $this->request->getPost('id_layout');
+            if (!$id) {
+                return redirect()->to(base_url('admin/setting-kartu?tab=layout'))->with('error', 'ID layout tidak ditemukan.');
             }
-            $this->layoutModel->update($id, [$field => null]);
-            catat_log('Hapus Gambar Kartu', "Menghapus gambar {$field} dari layout kartu.");
+
+            $layout = $this->layoutModel->find($id);
+            if ($layout && !empty($layout[$field])) {
+                $filePath = FCPATH . 'uploads/kartu/' . $layout[$field];
+                if (file_exists($filePath)) {
+                    @unlink($filePath);
+                }
+                $this->layoutModel->update($id, [$field => null]);
+                catat_log('Hapus Gambar Kartu', "Menghapus gambar {$field} dari layout kartu.");
+            }
+
+            return redirect()->to(base_url('admin/setting-kartu?tab=layout'))->with('success', 'Gambar berhasil dihapus.');
         }
 
-        return redirect()->to(base_url('admin/setting-kartu'))->with('success', 'Gambar berhasil dihapus.');
+        if (in_array($field, ['file_ttd', 'file_cap'])) {
+            $id = $this->request->getPost('id_ttd');
+            if (!$id) {
+                $firstTtd = $this->ttdModel->first();
+                $id = $firstTtd['id_ttd'] ?? null;
+            }
+
+            if ($id) {
+                $ttd = $this->ttdModel->find($id);
+                if ($ttd && !empty($ttd[$field])) {
+                    $filePath = FCPATH . 'uploads/kartu/' . $ttd[$field];
+                    if (file_exists($filePath)) {
+                        @unlink($filePath);
+                    }
+                    $this->ttdModel->update($id, [$field => null]);
+                    $label = $field === 'file_ttd' ? 'Tanda Tangan' : 'Cap Stempel';
+                    catat_log('Hapus Gambar TTD/Cap', "Menghapus {$label} dari pengaturan penandatangan.");
+                }
+            }
+
+            $label = $field === 'file_ttd' ? 'Scan Tanda Tangan' : 'Scan Cap Stempel';
+            return redirect()->to(base_url('admin/setting-kartu?tab=ttd'))->with('success', "{$label} berhasil dihapus.");
+        }
+
+        return redirect()->to(base_url('admin/setting-kartu'))->with('error', 'Field tidak valid.');
     }
 
     public function saveQr()

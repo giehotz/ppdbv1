@@ -62,7 +62,9 @@ Pengaturan Kartu Siswa
     const triggers = document.querySelectorAll('.tab-trigger');
     const contents = document.querySelectorAll('.tab-content');
 
-    const activeTab = localStorage.getItem('activeSettingKartuTab') || 'instansi';
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam  = urlParams.get('tab');
+    const activeTab = tabParam || localStorage.getItem('activeSettingKartuTab') || 'instansi';
 
     function switchTab(target) {
         triggers.forEach(t => {

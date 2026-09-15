@@ -55,8 +55,14 @@
                 <div class="rounded-2xl border border-gray-200 bg-gray-50/60 dark:border-gray-700 dark:bg-gray-800/40 p-5">
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2">Scan Tanda Tangan (PNG Transparan)</label>
                     <?php if (!empty($ttd['file_ttd'])): ?>
-                        <div class="h-20 w-48 mx-auto mb-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-2 shadow-theme-xs flex items-center justify-center">
+                        <div class="h-20 w-48 mx-auto mb-2 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-2 shadow-theme-xs flex items-center justify-center">
                             <img src="<?= base_url('uploads/kartu/' . $ttd['file_ttd']) ?>" class="max-h-full max-w-full object-contain" alt="Tanda Tangan">
+                        </div>
+                        <div class="flex justify-center mb-3">
+                            <button type="button" class="text-xs text-red-500 hover:text-red-600 font-semibold inline-flex items-center gap-1 py-1 px-2.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors btn-delete-ttd" data-field="file_ttd" data-label="Tanda Tangan" data-id="<?= esc($ttd['id_ttd'] ?? '') ?>">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                                Hapus Tanda Tangan
+                            </button>
                         </div>
                     <?php endif; ?>
                     <input type="file" name="file_ttd" accept="image/png"
@@ -68,8 +74,14 @@
                 <div class="rounded-2xl border border-gray-200 bg-gray-50/60 dark:border-gray-700 dark:bg-gray-800/40 p-5">
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2">Scan Cap Stempel (PNG Transparan)</label>
                     <?php if (!empty($ttd['file_cap'])): ?>
-                        <div class="h-20 w-48 mx-auto mb-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-2 shadow-theme-xs flex items-center justify-center">
+                        <div class="h-20 w-48 mx-auto mb-2 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-2 shadow-theme-xs flex items-center justify-center">
                             <img src="<?= base_url('uploads/kartu/' . $ttd['file_cap']) ?>" class="max-h-full max-w-full object-contain" alt="Cap Stempel">
+                        </div>
+                        <div class="flex justify-center mb-3">
+                            <button type="button" class="text-xs text-red-500 hover:text-red-600 font-semibold inline-flex items-center gap-1 py-1 px-2.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors btn-delete-ttd" data-field="file_cap" data-label="Cap Stempel" data-id="<?= esc($ttd['id_ttd'] ?? '') ?>">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                                Hapus Cap Stempel
+                            </button>
                         </div>
                     <?php endif; ?>
                     <input type="file" name="file_cap" accept="image/png"
@@ -87,3 +99,23 @@
         </form>
     </div>
 </div>
+
+<script>
+document.querySelectorAll('.btn-delete-ttd').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var field = this.getAttribute('data-field');
+        var label = this.getAttribute('data-label') || 'file';
+        var idTtd = this.getAttribute('data-id');
+        if (confirm('Apakah Anda yakin ingin menghapus file ' + label + ' ini?')) {
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?= base_url("admin/setting-kartu/deleteImage") ?>';
+            form.innerHTML = '<?= csrf_field() ?>'
+                + '<input type="hidden" name="field" value="' + field + '">'
+                + '<input type="hidden" name="id_ttd" value="' + idTtd + '">';
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+});
+</script>
