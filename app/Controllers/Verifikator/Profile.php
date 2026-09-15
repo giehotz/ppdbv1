@@ -116,7 +116,7 @@ class Profile extends BaseController
             'alamat'       => $this->request->getPost('alamat'),
         ];
 
-        if ($this->userModel->update($id_user, $dataUpdate)) {
+        if ($this->userModel->skipValidation(true)->update($id_user, $dataUpdate)) {
             // Update session data
             session()->set([
                 'username'     => $dataUpdate['username'],
@@ -131,7 +131,12 @@ class Profile extends BaseController
             return redirect()->to('/verifikator/profile')->with('success', 'Profil berhasil diperbarui.');
         }
 
-        return redirect()->back()->withInput()->with('error', 'Gagal memperbarui profil.');
+        $errorMsg = 'Gagal memperbarui profil.';
+        if (!empty($this->userModel->errors())) {
+            $errorMsg .= ' ' . implode(', ', $this->userModel->errors());
+        }
+
+        return redirect()->back()->withInput()->with('error', $errorMsg);
     }
 
     public function updatePassword()
