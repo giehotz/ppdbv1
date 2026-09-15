@@ -695,8 +695,6 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
     }
 
     // ============ RENDER DETAIL ============
-    const $detailContent = document.getElementById('detailContent');
-
     function renderDetail(id) {
         const s = allSiswa.find(x => x.id_siswa == id);
         if (!s) return;
