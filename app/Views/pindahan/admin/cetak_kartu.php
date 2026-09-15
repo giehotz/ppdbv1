@@ -532,13 +532,20 @@
 
     <script>
         function closeOrBack() {
-            if (window.opener) {
+            try {
+                window.open('', '_self', '');
                 window.close();
-            } else if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
-                window.history.back();
-            } else {
-                window.location.href = '<?= base_url('admin/pindahan') ?>';
-            }
+            } catch (e) {}
+
+            setTimeout(function () {
+                if (!window.closed) {
+                    if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+                        window.location.href = document.referrer;
+                    } else {
+                        window.location.href = '<?= base_url('admin/pindahan') ?>';
+                    }
+                }
+            }, 150);
         }
     </script>
 </body>
