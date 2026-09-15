@@ -249,8 +249,8 @@
     </div>
 </div>
 
-<!-- Tables Row: Pendaftar Terbaru & Log Aktivitas -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+<!-- Tables Row: Pendaftar Terbaru & Log Aktivitas (Stack Atas Bawah) -->
+<div class="flex flex-col gap-6 mb-6">
     <!-- Pendaftar Terbaru Table -->
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] flex flex-col">
         <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800 md:px-6">
