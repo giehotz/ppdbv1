@@ -99,7 +99,7 @@ $collapsibleGroups = $collapsibleGroups ?? [];
     <nav class="space-y-6 px-3">
       <?php foreach ($sidebarMenus as $groupLabel => $items): ?>
         <?php
-          $isCollapsible = in_array($groupLabel, $collapsibleGroups, true);
+          $isCollapsible = ($groupLabel !== 'Dashboard') && in_array($groupLabel, $collapsibleGroups, true);
           $groupKey = 'ssb_' . preg_replace('/[^a-z0-9]+/', '_', strtolower($groupLabel));
           $groupDefaultOpen = true;
           $hasActiveInGroup = false;

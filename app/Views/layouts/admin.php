@@ -166,7 +166,7 @@
             'app_alias' => $app_alias ?? 'PPDB',
             'sekolahName' => $sekolahName,
             'web_logo' => $web_logo ?? null,
-            'collapsibleGroups' => array_keys($sidebarMenus)
+            'collapsibleGroups' => array_values(array_diff(array_keys($sidebarMenus), ['Dashboard']))
         ]) ?>
 
         <!-- Content Area -->
