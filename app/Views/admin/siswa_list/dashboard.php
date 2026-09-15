@@ -386,22 +386,19 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
             </div>
 
             <!-- Filter Tahun Ajaran -->
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-blue-500">
+            <div class="flex items-center h-9 rounded-lg border border-gray-200 bg-gray-50/50 shadow-theme-xs dark:border-gray-700 dark:bg-gray-900/50 overflow-hidden focus-within:border-blue-500 focus-within:bg-white dark:focus-within:bg-gray-900 transition-colors">
+                <div class="pl-3 pr-1 text-blue-500 shrink-0 pointer-events-none flex items-center">
                     <i class="fas fa-calendar-alt text-xs"></i>
                 </div>
                 <select id="slThPelajaran"
-                    class="w-full h-9 pl-8 pr-7 text-xs font-semibold rounded-lg border border-gray-200 bg-gray-50/70 text-gray-800 focus:border-blue-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-100 dark:focus:bg-gray-900 transition-colors cursor-pointer appearance-none shadow-theme-xs">
+                    class="h-full flex-1 bg-transparent py-1 px-2 text-xs font-semibold text-gray-800 border-none outline-none focus:outline-none focus:ring-0 dark:text-gray-100 cursor-pointer">
                     <?php foreach (($tahunList ?? []) as $t): ?>
-                        <option value="<?= esc($t['tahun_pelajaran']) ?>" <?= (($selectedTh ?? '') === $t['tahun_pelajaran']) ? 'selected' : '' ?>>
+                        <option value="<?= esc($t['tahun_pelajaran']) ?>" <?= (($selectedTh ?? '') === $t['tahun_pelajaran']) ? 'selected' : '' ?> class="text-gray-800 dark:bg-gray-800 dark:text-gray-100">
                             Tahun Ajaran: <?= esc($t['tahun_pelajaran']) ?> <?= ($t['status'] === 'Aktif') ? '★ (Aktif)' : '' ?>
                         </option>
                     <?php endforeach; ?>
-                    <option value="all" <?= (($selectedTh ?? '') === 'all') ? 'selected' : '' ?>>Semua Tahun Ajaran</option>
+                    <option value="all" <?= (($selectedTh ?? '') === 'all') ? 'selected' : '' ?> class="text-gray-800 dark:bg-gray-800 dark:text-gray-100">Semua Tahun Ajaran</option>
                 </select>
-                <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
-                    <i class="fas fa-chevron-down text-[10px]"></i>
-                </div>
             </div>
 
             <!-- Live Search -->
