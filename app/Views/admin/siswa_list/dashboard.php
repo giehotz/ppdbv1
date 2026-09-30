@@ -5,136 +5,161 @@ Profil & Biodata Siswa
 <?= $this->endSection() ?>
 
 <?= $this->section('page_title') ?>
-<i class="fas fa-address-card mr-2 text-blue-600 dark:text-blue-400"></i> Dashboard Profil & Biodata Siswa
+<div class="flex items-center gap-2">
+    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
+        <i class="fas fa-address-card text-sm"></i>
+    </div>
+    <span>Dashboard Profil & Biodata Siswa</span>
+</div>
 <?= $this->endSection() ?>
 
 <?= $this->section('head') ?>
 <style>
 /* ============================================================
-   SISWA LIST DASHBOARD — Scoped styles for Excel-themed detail
+   SISWA LIST DASHBOARD — Scoped styles & performance optimizations
    ============================================================ */
 
-/* Split panel height */
+/* Main split wrapper */
 .sl-wrapper {
     display: flex;
     gap: 0;
-    height: calc(100vh - 180px);
-    min-height: 480px;
+    height: calc(100vh - 215px);
+    min-height: 520px;
+    contain: layout;
 }
+
 .sl-panel-left {
-    width: 400px;
+    width: 390px;
     min-width: 320px;
     display: flex;
     flex-direction: column;
 }
+
 .sl-panel-right {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background: #fafbfc;
+}
+html.dark .sl-panel-right {
+    background: #0f172a;
 }
 
-/* Left table scrollable body */
+/* Scrollable containers with paint containment for 60fps */
 .sl-table-wrap {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
+    contain: content;
 }
 
-/* Active row highlight */
-#tblLeft tbody tr.active-row td {
-    background-color: rgba(59, 130, 246, 0.12) !important;
-}
-html.dark #tblLeft tbody tr.active-row td {
-    background-color: rgba(59, 130, 246, 0.2) !important;
-}
-
-/* Detail scrollable */
 .sl-detail-wrap {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 16px;
+    padding: 20px;
+    contain: content;
 }
 
-/* Section group cards */
-.bio-section {
-    margin-bottom: 16px;
+/* Virtual row rendering optimization */
+.sl-table-row {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 44px;
 }
-.bio-section-title {
+
+/* Active row highlight */
+#tblLeft tbody tr.active-row td {
+    background-color: rgba(70, 95, 255, 0.08) !important;
+}
+html.dark #tblLeft tbody tr.active-row td {
+    background-color: rgba(70, 95, 255, 0.18) !important;
+}
+
+/* Bio Section styling */
+.bio-section {
+    margin-bottom: 20px;
+}
+
+.bio-section-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    color: #fff;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 12px 12px 0 0;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-bottom: none;
 }
-.bio-section-title.sec-personal { background: linear-gradient(135deg, #002060, #1a3a7a); }
-.bio-section-title.sec-family   { background: linear-gradient(135deg, #1e4620, #2d6a30); }
-.bio-section-title.sec-parents  { background: linear-gradient(135deg, #00579a, #0077c2); }
-.bio-section-title.sec-address  { background: linear-gradient(135deg, #4a1d6a, #6b3fa0); }
-
-html.dark .bio-section-title.sec-personal { background: linear-gradient(135deg, #1e3a5f, #2a4a7a); }
-html.dark .bio-section-title.sec-family   { background: linear-gradient(135deg, #1a3520, #2a5530); }
-html.dark .bio-section-title.sec-parents  { background: linear-gradient(135deg, #0a4570, #1a6590); }
-html.dark .bio-section-title.sec-address  { background: linear-gradient(135deg, #3a1a5a, #5a3580); }
+html.dark .bio-section-header {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: #334155;
+}
 
 .bio-section-body {
-    border-radius: 10px;
+    border-radius: 0 0 12px 12px;
     overflow: hidden;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
 }
 html.dark .bio-section-body {
-    border-color: #374151;
+    border-color: #334155;
+    background: rgba(255, 255, 255, 0.015);
 }
 
 /* Bio rows */
 .bio-row {
     display: flex;
     align-items: stretch;
-    border-bottom: 1px solid #e5e7eb;
-    font-size: 12.5px;
-    transition: background-color .15s;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+    transition: background-color .15s ease;
 }
-.bio-row:last-child { border-bottom: none; }
-.bio-row:hover { background-color: rgba(59,130,246,.04); }
-html.dark .bio-row { border-color: #374151; }
-html.dark .bio-row:hover { background-color: rgba(59,130,246,.08); }
+.bio-row:last-child {
+    border-bottom: none;
+}
+.bio-row:hover {
+    background-color: rgba(70, 95, 255, 0.03);
+}
+html.dark .bio-row {
+    border-color: rgba(51, 65, 85, 0.6);
+}
+html.dark .bio-row:hover {
+    background-color: rgba(70, 95, 255, 0.07);
+}
 
 .bio-row .bio-label {
-    width: 210px;
-    min-width: 150px;
-    padding: 8px 12px;
+    width: 220px;
+    min-width: 160px;
+    padding: 10px 14px;
     font-weight: 600;
-    color: #374151;
-    background: #f9fafb;
+    color: #475569;
+    background: #f8fafc;
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    border-right: 1px solid #e5e7eb;
+    border-right: 1px solid #f1f5f9;
+    font-size: 12px;
 }
 html.dark .bio-row .bio-label {
-    background: rgba(255,255,255,.03);
-    color: #d1d5db;
-    border-color: #374151;
+    background: rgba(255, 255, 255, 0.025);
+    color: #94a3b8;
+    border-color: rgba(51, 65, 85, 0.6);
 }
 
 .bio-row .bio-value {
     flex: 1;
-    padding: 8px 12px;
+    padding: 10px 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
-    color: #111827;
+    gap: 12px;
+    color: #0f172a;
     min-width: 0;
 }
-html.dark .bio-row .bio-value { color: #f3f4f6; }
+html.dark .bio-row .bio-value {
+    color: #f1f5f9;
+}
 
 .bio-row .bio-value .val-text {
     flex: 1;
@@ -142,111 +167,104 @@ html.dark .bio-row .bio-value { color: #f3f4f6; }
     word-break: break-word;
 }
 
-/* Accent stripe for highlighted rows */
-.bio-row.accent-navy    { border-left: 4px solid #002060; }
-.bio-row.accent-green   { border-left: 4px solid #00b050; }
-.bio-row.accent-dkgreen { border-left: 4px solid #1e4620; }
-.bio-row.accent-cyan    { border-left: 4px solid #00b0f0; }
+/* Highlighted key identifier rows (subtle background, no heavy side tabs) */
+.bio-row.highlight-key {
+    background-color: rgba(70, 95, 255, 0.025);
+}
+html.dark .bio-row.highlight-key {
+    background-color: rgba(70, 95, 255, 0.05);
+}
 
-/* Copy button — always visible */
+/* Copy button */
 .btn-copy-row {
     display: inline-flex;
     align-items: center;
-    gap: 3px;
-    padding: 3px 8px;
-    border: 1px solid #d1d5db;
+    gap: 4px;
+    padding: 4px 8px;
+    border: 1px solid #e2e8f0;
     border-radius: 6px;
-    background: #f3f4f6;
-    color: #6b7280;
+    background: #ffffff;
+    color: #64748b;
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all .15s;
+    transition: all .15s ease;
     white-space: nowrap;
     flex-shrink: 0;
 }
 .btn-copy-row:hover {
-    background: #e5e7eb;
-    color: #374151;
-    border-color: #9ca3af;
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #cbd5e1;
 }
 html.dark .btn-copy-row {
-    background: #374151;
-    border-color: #4b5563;
-    color: #9ca3af;
+    background: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
 }
 html.dark .btn-copy-row:hover {
-    background: #4b5563;
-    color: #e5e7eb;
-    border-color: #6b7280;
+    background: #334155;
+    color: #f8fafc;
+    border-color: #475569;
 }
-
-/* Dropdown — modern style */
-.sl-select-nama {
-    flex: 1;
-    padding: 6px 10px;
-    font-size: 13px;
-    font-weight: 600;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    background: #fff;
-    color: #111827;
-    outline: none;
-    transition: border-color .2s;
-    min-width: 0;
-}
-.sl-select-nama:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
-html.dark .sl-select-nama {
-    background: #1f2937;
-    border-color: #4b5563;
-    color: #f3f4f6;
-}
-html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px rgba(96,165,250,.15); }
 
 /* Toast */
 .sl-toast {
-    position: fixed; bottom: 24px; right: 24px;
-    background: #065f46; color: #fff;
-    padding: 10px 20px; border-radius: 8px;
-    font-size: 13px; font-weight: 600;
-    box-shadow: 0 4px 16px rgba(0,0,0,.25);
-    opacity: 0; transform: translateY(16px);
-    transition: all .3s ease; z-index: 9999; pointer-events: none;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all .25s ease;
+    z-index: 9999;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.sl-toast.show { opacity: 1; transform: translateY(0); }
+.sl-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
 
-/* Mobile tab switcher */
-.sl-tab-switch { display: none; }
+/* Mobile Tab Switcher */
+.sl-tab-switch {
+    display: none;
+}
 .sl-tab-switch button {
     flex: 1;
-    padding: 11px 0;
+    padding: 12px 0;
     border: none;
     background: transparent;
-    color: rgba(255,255,255,.5);
+    color: #94a3b8;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: all .2s;
+    transition: all .2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
 }
 .sl-tab-switch button.active {
-    color: #fff;
-    background: rgba(255,255,255,.08);
-    border-bottom: 3px solid #3b82f6;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    border-bottom: 2px solid #465fff;
 }
-.sl-tab-switch button i { font-size: 12px; }
 
 /* ============================================================
-   RESPONSIVE — TABLET (≤ 900px)
+   RESPONSIVE — TABLET & MOBILE
    ============================================================ */
 @media (max-width: 900px) {
     .sl-wrapper {
         flex-direction: column;
         height: auto;
-        min-height: calc(100vh - 160px);
+        min-height: calc(100vh - 200px);
     }
     .sl-panel-left {
         width: 100%;
@@ -254,23 +272,26 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
         border-right: none !important;
         border-bottom: 1px solid;
     }
-    .sl-panel-right { min-height: 400px; }
-    .sl-tab-switch { display: flex; }
+    .sl-panel-right {
+        min-height: 420px;
+    }
+    .sl-tab-switch {
+        display: flex;
+    }
     .sl-panel-left.hidden-mobile,
-    .sl-panel-right.hidden-mobile { display: none !important; }
-
-    .bio-row .bio-label { width: 180px; min-width: 120px; font-size: 12px; }
-    .bio-row .bio-value { font-size: 12px; }
+    .sl-panel-right.hidden-mobile {
+        display: none !important;
+    }
+    .bio-row .bio-label {
+        width: 180px;
+        min-width: 130px;
+    }
 }
 
-/* ============================================================
-   RESPONSIVE — SMARTPHONE (≤ 640px)
-   ============================================================ */
 @media (max-width: 640px) {
-    /* Detail padding reduced */
-    .sl-detail-wrap { padding: 10px; }
-
-    /* Bio rows: stack vertically */
+    .sl-detail-wrap {
+        padding: 12px;
+    }
     .bio-row {
         flex-direction: column;
         align-items: stretch;
@@ -279,115 +300,79 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
         width: 100%;
         min-width: unset;
         border-right: none;
-        border-bottom: 1px solid #e5e7eb;
-        padding: 6px 10px;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 7px 12px;
         font-size: 11px;
-        color: #6b7280;
+        color: #64748b;
         text-transform: uppercase;
         letter-spacing: 0.04em;
-        background: #f3f4f6;
+        background: #f8fafc;
     }
     html.dark .bio-row .bio-label {
-        background: rgba(255,255,255,.04);
-        border-color: #374151;
-        color: #9ca3af;
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(51, 65, 85, 0.6);
+        color: #94a3b8;
     }
     .bio-row .bio-value {
-        padding: 8px 10px;
+        padding: 9px 12px;
         font-size: 13px;
-        font-weight: 500;
     }
-
-    /* Accent stripe adapts to top border on mobile */
-    .bio-row.accent-navy    { border-left: none; border-top: 3px solid #002060; }
-    .bio-row.accent-green   { border-left: none; border-top: 3px solid #00b050; }
-    .bio-row.accent-dkgreen { border-left: none; border-top: 3px solid #1e4620; }
-    .bio-row.accent-cyan    { border-left: none; border-top: 3px solid #00b0f0; }
-
-    /* Copy button: compact icon-only on mobile */
-    .btn-copy-row {
-        padding: 5px 8px;
-        font-size: 12px;
-        border-radius: 6px;
-    }
-    .btn-copy-row i { font-size: 11px !important; }
-
-    /* Dropdown full-width */
-    .sl-select-nama {
-        width: 100%;
-        font-size: 14px;
-        padding: 8px 10px;
-    }
-
-    /* Section titles smaller */
-    .bio-section-title {
-        font-size: 11px;
-        padding: 7px 12px;
-        border-radius: 8px;
-    }
-    .bio-section { margin-bottom: 12px; }
-    .bio-section-body { border-radius: 8px; }
-
-    /* Toast repositioned */
     .sl-toast {
         bottom: 16px;
         right: 12px;
         left: 12px;
         text-align: center;
-        font-size: 12px;
-        padding: 8px 16px;
     }
-
-    /* Table left: compact */
-    #tblLeft th { font-size: 10px; padding: 8px 4px; }
-    #tblLeft td { padding: 8px 4px; }
-    #tblLeft .truncate { max-width: 110px; }
 }
 
-/* ============================================================
-   RESPONSIVE — VERY SMALL (≤ 380px)
-   ============================================================ */
-@media (max-width: 380px) {
-    .bio-row .bio-value { font-size: 12px; }
-    .btn-copy-row span.copy-label { display: none; }
-    .sl-select-nama { font-size: 13px; }
-    .bio-section-title { font-size: 10px; padding: 6px 10px; }
+/* Touch Checkbox */
+.chk-siswa {
+    min-width: 18px;
+    min-height: 18px;
 }
-
-/* Checkbox sizing for touch */
-.chk-siswa { min-width: 18px; min-height: 18px; }
 </style>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-<!-- Toast notification -->
+<!-- Toast Notification -->
 <div class="sl-toast" id="slToast"></div>
 
 <!-- Mobile Tab Switcher -->
 <div class="sl-tab-switch rounded-t-2xl bg-gray-900 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700" id="slTabSwitch">
-    <button class="active" data-panel="left" id="tabBtnLeft">📋 Daftar Siswa</button>
-    <button data-panel="right" id="tabBtnRight">👤 Detail Siswa</button>
+    <button class="active" data-panel="left" id="tabBtnLeft">
+        <i class="fas fa-list-ul text-xs"></i>
+        <span>Daftar Siswa</span>
+    </button>
+    <button data-panel="right" id="tabBtnRight">
+        <i class="fas fa-id-card text-xs"></i>
+        <span>Detail Biodata</span>
+    </button>
 </div>
 
 <!-- Main Two-Panel Layout -->
-<div class="sl-wrapper overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]" id="slWrapper">
+<div class="sl-wrapper overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03]" id="slWrapper">
 
     <!-- ==================== PANEL KIRI ==================== -->
-    <div class="sl-panel-left border-r border-gray-200 dark:border-gray-800" id="panelLeft">
+    <div class="sl-panel-left border-r border-gray-200/80 dark:border-gray-800" id="panelLeft">
 
         <!-- Header & Search -->
-        <div class="border-b border-gray-100 dark:border-gray-800 px-4 py-3 space-y-2.5">
+        <div class="border-b border-gray-100 dark:border-gray-800 px-4 py-3.5 space-y-3 bg-white dark:bg-gray-900/40">
             <div class="flex items-center justify-between">
-                <h3 class="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <i class="fas fa-list-ul text-xs text-gray-400"></i> Daftar Siswa
-                </h3>
-                <span class="text-[11px] font-semibold text-gray-400 dark:text-gray-500" id="slTotalInfo">0 siswa</span>
+                <div class="flex items-center gap-2">
+                    <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
+                        <i class="fas fa-users text-xs"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">Daftar Siswa</h3>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 tabular-nums" id="slTotalInfo">
+                    0 siswa
+                </span>
             </div>
 
             <!-- Filter Tahun Ajaran -->
-            <div class="flex items-center h-9 rounded-lg border border-gray-200 bg-gray-50/50 shadow-theme-xs dark:border-gray-700 dark:bg-gray-900/50 overflow-hidden focus-within:border-blue-500 focus-within:bg-white dark:focus-within:bg-gray-900 transition-colors">
-                <div class="pl-3 pr-1 text-blue-500 shrink-0 pointer-events-none flex items-center">
+            <div class="flex items-center h-9 rounded-xl border border-gray-200/90 bg-gray-50/80 shadow-theme-xs dark:border-gray-700 dark:bg-gray-800/60 overflow-hidden focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/20 transition-all">
+                <div class="pl-3 pr-1 text-brand-500 dark:text-brand-400 shrink-0 pointer-events-none flex items-center">
                     <i class="fas fa-calendar-alt text-xs"></i>
                 </div>
                 <select id="slThPelajaran"
@@ -402,30 +387,35 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
             </div>
 
             <!-- Live Search -->
-            <div class="flex items-center h-9 rounded-lg border border-gray-200 bg-gray-50/50 shadow-theme-xs dark:border-gray-700 dark:bg-gray-900/50 overflow-hidden focus-within:border-blue-500 focus-within:bg-white dark:focus-within:bg-gray-900 transition-colors">
-                <div class="pl-3 text-gray-400 pointer-events-none">
+            <div class="flex items-center h-9 rounded-xl border border-gray-200/90 bg-gray-50/80 shadow-theme-xs dark:border-gray-700 dark:bg-gray-800/60 overflow-hidden focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/20 transition-all">
+                <div class="pl-3 text-gray-400 pointer-events-none flex items-center">
                     <i class="fas fa-search text-xs"></i>
                 </div>
                 <input type="text"
                     id="slSearch"
-                    placeholder="Cari nama, NISN, atau desa…"
+                    placeholder="Cari nama, NISN, no daftar, atau desa…"
                     autocomplete="off"
                     class="h-full flex-1 bg-transparent py-1.5 px-2.5 text-xs text-gray-800 placeholder:text-gray-400 border-none outline-none focus:outline-none focus:ring-0 dark:text-gray-100 dark:placeholder:text-gray-500">
+                <button type="button" id="slClearSearch" class="px-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hidden" title="Hapus pencarian">
+                    <i class="fas fa-times text-xs"></i>
+                </button>
             </div>
         </div>
 
-        <!-- Info bar: counter + badge + salin -->
-        <div class="flex items-center justify-between gap-2 px-4 py-2 border-b border-gray-100 dark:border-gray-800 bg-gray-50/40 dark:bg-gray-800/20 flex-wrap">
+        <!-- Info Bar & Action Toolbar -->
+        <div class="flex items-center justify-between gap-2 px-4 py-2.5 border-b border-gray-100 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-800/30 flex-wrap">
             <div class="flex items-center gap-2">
-                <span class="text-[11px] font-bold text-blue-700 dark:text-blue-400" id="slCounter">Terpilih: 0</span>
-                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" id="slThBadge" title="Tahun Ajaran Aktif">
-                    <i class="fas fa-calendar-check text-[9px]"></i> <span id="slThBadgeText"><?= esc(($selectedTh === 'all') ? 'Semua TA' : ($selectedTh ?? '')) ?></span>
+                <span class="text-xs font-bold text-brand-600 dark:text-brand-400 tabular-nums" id="slCounter">Terpilih: 0</span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 border border-emerald-200/70 dark:border-emerald-500/30" id="slThBadge" title="Tahun Ajaran Aktif">
+                    <i class="fas fa-calendar-check text-[10px]"></i>
+                    <span id="slThBadgeText"><?= esc(($selectedTh === 'all') ? 'Semua TA' : ($selectedTh ?? '')) ?></span>
                 </span>
             </div>
             <button id="btnSalinTerpilih"
-                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors shadow-theme-xs"
-                title="Salin data siswa yang dicentang">
-                📋 Salin Terpilih
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 transition-all shadow-theme-xs active:scale-[0.98]"
+                title="Salin biodata siswa yang dicentang">
+                <i class="fas fa-clipboard-list text-xs"></i>
+                <span>Salin Terpilih</span>
             </button>
         </div>
 
@@ -433,14 +423,14 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
         <div class="sl-table-wrap">
             <table class="w-full text-left" id="tblLeft">
                 <thead>
-                    <tr class="border-b border-gray-100 text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:border-gray-800 dark:text-gray-500 bg-gray-50/50 dark:bg-gray-800/30">
+                    <tr class="sticky top-0 z-10 border-b border-gray-200/80 bg-gray-50/90 text-xs font-semibold uppercase tracking-wider text-gray-500 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-900/90 dark:text-gray-400">
                         <th class="py-3 px-2 text-center w-10">
-                            <i class="fas fa-check-square text-[10px]" title="Centang per siswa"></i>
+                            <input type="checkbox" id="chkAllSiswa" class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 cursor-pointer" title="Centang / Hapus Semua">
                         </th>
-                        <th class="py-3 px-2 text-center w-8">No</th>
+                        <th class="py-3 px-2 text-center w-9">No</th>
                         <th class="py-3 px-3">Nama Siswa</th>
-                        <th class="py-3 px-2 w-8">L/P</th>
-                        <th class="py-3 px-3 w-20">NISN</th>
+                        <th class="py-3 px-2 text-center w-10">L/P</th>
+                        <th class="py-3 px-3 w-24">NISN</th>
                     </tr>
                 </thead>
                 <tbody id="tblLeftBody" class="divide-y divide-gray-100 text-xs dark:divide-gray-800"></tbody>
@@ -451,29 +441,52 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
     <!-- ==================== PANEL KANAN ==================== -->
     <div class="sl-panel-right" id="panelRight">
 
-        <!-- Detail header -->
-        <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-gray-800 bg-gray-50/40 dark:bg-gray-800/20 flex-wrap gap-2">
-            <h3 class="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-2" id="detailTitle">
-                <i class="fas fa-id-card text-xs text-gray-400"></i> Detail Biodata Siswa
-            </h3>
-            <button id="btnSalinSemua"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-theme-xs"
-                title="Salin seluruh biodata siswa aktif">
-                <i class="fas fa-copy text-[10px]"></i> Salin Semua
-            </button>
-        </div>
-
-        <!-- Detail content -->
-        <div class="sl-detail-wrap" id="detailWrap">
-            <div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-600 gap-4 p-10 text-center" id="detailEmpty">
-                <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                    <i class="fas fa-user-circle text-4xl opacity-30"></i>
+        <!-- Detail Header -->
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-gray-200/80 dark:border-gray-800 bg-white dark:bg-gray-900/60 flex-wrap gap-2">
+            <div class="flex items-center gap-2.5">
+                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+                    <i class="fas fa-id-card text-sm"></i>
                 </div>
                 <div>
-                    <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Belum ada siswa dipilih</p>
-                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Klik nama siswa di panel kiri untuk melihat detail biodata</p>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white" id="detailTitle">Detail Biodata Siswa</h3>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400" id="detailSubtitle">Data profil lengkap calon peserta didik</p>
                 </div>
             </div>
+
+            <div class="flex items-center gap-2">
+                <div class="flex items-center rounded-lg border border-gray-200/80 bg-gray-50 dark:border-gray-700 dark:bg-gray-800 p-0.5 shadow-theme-xs">
+                    <button type="button" id="btnPrevSiswa" class="px-2.5 py-1 text-xs font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors" title="Siswa Sebelumnya (Panah Atas / Kiri)">
+                        <i class="fas fa-chevron-left text-[11px]"></i>
+                    </button>
+                    <span class="px-2 text-[11px] font-semibold text-gray-500 dark:text-gray-400 tabular-nums border-x border-gray-200 dark:border-gray-700" id="navIndexInfo">-/-</span>
+                    <button type="button" id="btnNextSiswa" class="px-2.5 py-1 text-xs font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors" title="Siswa Selanjutnya (Panah Bawah / Kanan)">
+                        <i class="fas fa-chevron-right text-[11px]"></i>
+                    </button>
+                </div>
+
+                <button id="btnSalinSemua"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-brand-500 text-white hover:bg-brand-600 transition-all shadow-theme-xs active:scale-[0.98]"
+                    title="Salin seluruh biodata siswa yang sedang dibuka">
+                    <i class="fas fa-copy text-xs"></i>
+                    <span>Salin Biodata</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Detail Content -->
+        <div class="sl-detail-wrap" id="detailWrap">
+            <!-- Empty State -->
+            <div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500 gap-3.5 p-10 text-center" id="detailEmpty">
+                <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500 shadow-theme-xs">
+                    <i class="fas fa-address-book text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-gray-700 dark:text-gray-300">Belum Ada Siswa Dipilih</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm">Klik salah satu siswa pada tabel di panel kiri untuk melihat profil biodata lengkap.</p>
+                </div>
+            </div>
+
+            <!-- Populated Content Area -->
             <div id="detailContent" style="display:none"></div>
         </div>
     </div>
@@ -487,10 +500,11 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
     'use strict';
 
     // ============ CONFIG ============
-    const URL_GET_DATA     = '<?= base_url("admin/siswa-list/get-data") ?>';
-    const URL_UPDATE_CHK   = '<?= base_url("admin/siswa-list/update-checklist") ?>';
-    let csrfToken          = '<?= csrf_hash() ?>';
-    const csrfName         = '<?= csrf_token() ?>';
+    const URL_GET_DATA       = '<?= base_url("admin/siswa-list/get-data") ?>';
+    const URL_UPDATE_CHK     = '<?= base_url("admin/siswa-list/update-checklist") ?>';
+    const URL_UPDATE_ALL_CHK = '<?= base_url("admin/siswa-list/update-all-checklist") ?>';
+    let csrfToken            = '<?= csrf_hash() ?>';
+    const csrfName           = '<?= csrf_token() ?>';
 
     // ============ STATE ============
     let allSiswa     = [];
@@ -498,19 +512,24 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
     let activeId     = null;
 
     // ============ DOM REFS ============
-    const $thPelajaran  = document.getElementById('slThPelajaran');
-    const $thBadgeText  = document.getElementById('slThBadgeText');
-    const $search       = document.getElementById('slSearch');
-    const $tblLeftBody  = document.getElementById('tblLeftBody');
-    const $counter      = document.getElementById('slCounter');
-    const $totalInfo    = document.getElementById('slTotalInfo');
-    const $detailEmpty  = document.getElementById('detailEmpty');
-    const $detailContent= document.getElementById('detailContent');
-    const $toast        = document.getElementById('slToast');
-    const $panelLeft    = document.getElementById('panelLeft');
-    const $panelRight   = document.getElementById('panelRight');
-    const $tabBtnLeft   = document.getElementById('tabBtnLeft');
-    const $tabBtnRight  = document.getElementById('tabBtnRight');
+    const $thPelajaran   = document.getElementById('slThPelajaran');
+    const $thBadgeText   = document.getElementById('slThBadgeText');
+    const $search        = document.getElementById('slSearch');
+    const $clearSearch   = document.getElementById('slClearSearch');
+    const $tblLeftBody   = document.getElementById('tblLeftBody');
+    const $chkAllSiswa   = document.getElementById('chkAllSiswa');
+    const $counter       = document.getElementById('slCounter');
+    const $totalInfo     = document.getElementById('slTotalInfo');
+    const $detailEmpty   = document.getElementById('detailEmpty');
+    const $detailContent = document.getElementById('detailContent');
+    const $navIndexInfo  = document.getElementById('navIndexInfo');
+    const $btnPrevSiswa  = document.getElementById('btnPrevSiswa');
+    const $btnNextSiswa  = document.getElementById('btnNextSiswa');
+    const $toast         = document.getElementById('slToast');
+    const $panelLeft     = document.getElementById('panelLeft');
+    const $panelRight    = document.getElementById('panelRight');
+    const $tabBtnLeft    = document.getElementById('tabBtnLeft');
+    const $tabBtnRight   = document.getElementById('tabBtnRight');
 
     // ============ HELPERS ============
     function esc(str) {
@@ -520,15 +539,27 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
         return d.innerHTML;
     }
 
+    function escAttr(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    let toastTimer = null;
     function showToast(msg) {
+        if (toastTimer) clearTimeout(toastTimer);
         $toast.textContent = msg;
         $toast.classList.add('show');
-        setTimeout(() => $toast.classList.remove('show'), 1800);
+        toastTimer = setTimeout(() => $toast.classList.remove('show'), 1800);
     }
 
     function copyText(text) {
         if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(() => showToast('✅ Tersalin!'));
+            navigator.clipboard.writeText(text).then(() => showToast('✅ Tersalin ke clipboard!'));
         } else {
             const ta = document.createElement('textarea');
             ta.value = text;
@@ -538,7 +569,7 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
             ta.select();
             document.execCommand('copy');
             document.body.removeChild(ta);
-            showToast('✅ Tersalin!');
+            showToast('✅ Tersalin ke clipboard!');
         }
     }
 
@@ -556,17 +587,21 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
         .then(r => r.json())
         .then(json => {
             if (json.csrf) csrfToken = json.csrf;
-            cb(json);
+            if (cb) cb(json);
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+            console.error(err);
+            showToast('❌ Gagal menghubungi server');
+        });
     }
 
     // ============ LOAD DATA ============
     function loadData(th) {
         const selectedYear = th !== undefined ? th : ($thPelajaran ? $thPelajaran.value : '<?= esc($selectedTh ?? '') ?>');
 
-        $tblLeftBody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-gray-400 dark:text-gray-500">
-            <i class="fas fa-circle-notch fa-spin text-2xl mb-2 text-blue-500 block"></i> Memuat data siswa...
+        $tblLeftBody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-gray-400 dark:text-gray-500">
+            <i class="fas fa-circle-notch fa-spin text-2xl mb-2 text-brand-500 block"></i>
+            <span class="text-xs font-medium">Memuat data siswa...</span>
         </td></tr>`;
         $totalInfo.textContent = 'Memuat...';
 
@@ -594,8 +629,9 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
         })
         .catch(err => {
             console.error('Load error:', err);
-            $tblLeftBody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-red-500">
-                <i class="fas fa-exclamation-triangle text-2xl mb-2 block"></i> Gagal memuat data
+            $tblLeftBody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-rose-500">
+                <i class="fas fa-exclamation-triangle text-2xl mb-2 block"></i>
+                <span class="text-xs font-semibold">Gagal memuat data siswa</span>
             </td></tr>`;
             $totalInfo.textContent = '0 siswa';
         });
@@ -604,75 +640,133 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
     // ============ FILTER ============
     function applyFilter() {
         const q = ($search.value || '').toLowerCase().trim();
+        if ($clearSearch) {
+            $clearSearch.classList.toggle('hidden', q.length === 0);
+        }
+
         filteredList = allSiswa.filter(s => {
             if (!q) return true;
             return (s.nama_lengkap || '').toLowerCase().includes(q)
                 || (s.nisn || '').toLowerCase().includes(q)
+                || (s.no_pendaftaran || '').toLowerCase().includes(q)
                 || (s.desa || '').toLowerCase().includes(q);
         });
+
         renderLeftTable();
         updateCounter();
+        updateNavState();
         $totalInfo.textContent = filteredList.length + ' siswa';
     }
 
-    // ============ RENDER LEFT TABLE ============
+    // ============ RENDER LEFT TABLE (Optimized HTML generation) ============
     function renderLeftTable() {
-        let html = '';
-        filteredList.forEach((s, i) => {
-            const checked = s.is_checked == 1 ? 'checked' : '';
-            const activeClass = s.id_siswa == activeId ? 'active-row' : '';
-            const genderIcon = s.jk === 'L'
-                ? '<span class="inline-flex items-center gap-0.5 font-semibold text-blue-600 dark:text-blue-400"><i class="fas fa-mars text-[10px]"></i>L</span>'
-                : '<span class="inline-flex items-center gap-0.5 font-semibold text-pink-600 dark:text-pink-400"><i class="fas fa-venus text-[10px]"></i>P</span>';
+        if (!filteredList.length) {
+            $tblLeftBody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-gray-400 dark:text-gray-500">
+                <i class="fas fa-inbox text-3xl opacity-30 block mb-2"></i>
+                <p class="text-xs font-medium">Tidak ada data siswa ditemukan</p>
+            </td></tr>`;
+            return;
+        }
 
-            html += `<tr class="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer ${activeClass}" data-id="${s.id_siswa}">
+        let html = '';
+        for (let i = 0; i < filteredList.length; i++) {
+            const s = filteredList[i];
+            const checked = s.is_checked == 1 ? 'checked' : '';
+            const activeClass = s.id_siswa == activeId ? ' active-row' : '';
+            const genderBadge = s.jk === 'L'
+                ? '<span class="inline-flex items-center justify-center font-bold text-blue-600 dark:text-blue-400 text-[11px]"><i class="fas fa-mars text-[10px]"></i></span>'
+                : '<span class="inline-flex items-center justify-center font-bold text-pink-600 dark:text-pink-400 text-[11px]"><i class="fas fa-venus text-[10px]"></i></span>';
+
+            html += `<tr class="sl-table-row hover:bg-gray-50/70 dark:hover:bg-white/[0.02] transition-colors cursor-pointer${activeClass}" data-id="${s.id_siswa}">
                 <td class="py-2.5 px-2 text-center">
-                    <input type="checkbox" class="chk-siswa h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" data-id="${s.id_siswa}" ${checked}>
+                    <input type="checkbox" class="chk-siswa h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 cursor-pointer" data-id="${s.id_siswa}" ${checked}>
                 </td>
-                <td class="py-2.5 px-2 text-center text-gray-400 dark:text-gray-500 font-medium">${i + 1}</td>
+                <td class="py-2.5 px-2 text-center text-gray-500 dark:text-gray-400 font-medium tabular-nums text-xs">${i + 1}</td>
                 <td class="py-2.5 px-3">
-                    <span class="font-semibold text-gray-900 dark:text-gray-100 truncate block max-w-[160px]" title="${esc(s.nama_lengkap)}">${esc(s.nama_lengkap)}</span>
+                    <span class="font-semibold text-gray-900 dark:text-gray-100 truncate block max-w-[170px]" title="${escAttr(s.nama_lengkap)}">${esc(s.nama_lengkap)}</span>
                 </td>
-                <td class="py-2.5 px-2">${genderIcon}</td>
-                <td class="py-2.5 px-3 font-mono text-gray-500 dark:text-gray-400 text-[11px]">${esc(s.nisn)}</td>
+                <td class="py-2.5 px-2 text-center">${genderBadge}</td>
+                <td class="py-2.5 px-3 font-mono text-gray-600 dark:text-gray-400 text-xs tabular-nums">${esc(s.nisn)}</td>
             </tr>`;
-        });
-        $tblLeftBody.innerHTML = html || `<tr><td colspan="5" class="py-10 text-center text-gray-400 dark:text-gray-600">
-            <i class="fas fa-inbox text-3xl opacity-30 block mb-2"></i>Tidak ada data
-        </td></tr>`;
-        bindLeftTableEvents();
+        }
+
+        $tblLeftBody.innerHTML = html;
+        updateHeaderCheckState();
     }
 
-    // ============ LEFT TABLE EVENTS ============
-    function bindLeftTableEvents() {
-        // Row click → show detail
-        document.querySelectorAll('#tblLeftBody tr[data-id]').forEach(tr => {
-            tr.addEventListener('click', function (e) {
-                if (e.target.type === 'checkbox') return;
-                selectSiswa(parseInt(this.dataset.id));
-            });
-        });
+    // ============ EVENT DELEGATION FOR LEFT TABLE (Zero Memory Churn) ============
+    $tblLeftBody.addEventListener('click', function (e) {
+        if (e.target.matches('.chk-siswa') || e.target.closest('.chk-siswa')) {
+            return; // handled by change event
+        }
+        const tr = e.target.closest('tr[data-id]');
+        if (tr) {
+            selectSiswa(parseInt(tr.dataset.id, 10));
+        }
+    });
 
-        // Individual checkbox → single AJAX update (no bulk)
-        document.querySelectorAll('.chk-siswa').forEach(chk => {
-            chk.addEventListener('change', function (e) {
-                e.stopPropagation();
-                const id = parseInt(this.dataset.id);
-                const val = this.checked ? 1 : 0;
-                // Optimistic update
-                const s = allSiswa.find(x => x.id_siswa == id);
-                if (s) s.is_checked = val;
-                updateCounter();
-                ajaxPost(URL_UPDATE_CHK, { id_siswa: id, is_checked: val }, (json) => {
-                    if (json.status !== 'success') {
-                        // Rollback on failure
-                        if (s) s.is_checked = val ? 0 : 1;
-                        this.checked = !this.checked;
-                        updateCounter();
-                    }
-                });
+    $tblLeftBody.addEventListener('change', function (e) {
+        if (e.target.matches('.chk-siswa')) {
+            const chk = e.target;
+            const id  = parseInt(chk.dataset.id, 10);
+            const val = chk.checked ? 1 : 0;
+
+            // Optimistic update
+            const s = allSiswa.find(x => x.id_siswa == id);
+            if (s) s.is_checked = val;
+            updateCounter();
+            updateHeaderCheckState();
+
+            ajaxPost(URL_UPDATE_CHK, { id_siswa: id, is_checked: val }, (json) => {
+                if (json.status !== 'success') {
+                    // Rollback
+                    if (s) s.is_checked = val ? 0 : 1;
+                    chk.checked = !chk.checked;
+                    updateCounter();
+                    updateHeaderCheckState();
+                }
+            });
+        }
+    });
+
+    // ============ HEADER CHECKBOX (Check / Uncheck All in Filtered List) ============
+    if ($chkAllSiswa) {
+        $chkAllSiswa.addEventListener('change', function () {
+            const isChecked = this.checked ? 1 : 0;
+            const targetIds = filteredList.map(s => s.id_siswa);
+            if (!targetIds.length) return;
+
+            filteredList.forEach(s => s.is_checked = isChecked);
+            document.querySelectorAll('#tblLeftBody .chk-siswa').forEach(c => c.checked = isChecked === 1);
+            updateCounter();
+
+            const curTh = $thPelajaran ? $thPelajaran.value : '';
+            ajaxPost(URL_UPDATE_ALL_CHK, { is_checked: isChecked, th_pelajaran: curTh }, (json) => {
+                if (json.status === 'success') {
+                    showToast(isChecked ? '✅ Semua siswa dicentang' : '⚪ Checklist dibersihkan');
+                }
             });
         });
+    }
+
+    function updateHeaderCheckState() {
+        if (!$chkAllSiswa) return;
+        if (!filteredList.length) {
+            $chkAllSiswa.checked = false;
+            $chkAllSiswa.indeterminate = false;
+            return;
+        }
+        const checkedCount = filteredList.filter(s => s.is_checked == 1).length;
+        if (checkedCount === 0) {
+            $chkAllSiswa.checked = false;
+            $chkAllSiswa.indeterminate = false;
+        } else if (checkedCount === filteredList.length) {
+            $chkAllSiswa.checked = true;
+            $chkAllSiswa.indeterminate = false;
+        } else {
+            $chkAllSiswa.checked = false;
+            $chkAllSiswa.indeterminate = true;
+        }
     }
 
     // ============ COUNTER ============
@@ -681,17 +775,63 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
         $counter.textContent = `Terpilih: ${count}`;
     }
 
+    // ============ NAVIGATION STATE (PREV / NEXT) ============
+    function updateNavState() {
+        if (!activeId || !filteredList.length) {
+            $navIndexInfo.textContent = '-/-';
+            $btnPrevSiswa.disabled = true;
+            $btnNextSiswa.disabled = true;
+            return;
+        }
+        const idx = filteredList.findIndex(s => s.id_siswa == activeId);
+        if (idx === -1) {
+            $navIndexInfo.textContent = '-/-';
+            $btnPrevSiswa.disabled = true;
+            $btnNextSiswa.disabled = true;
+        } else {
+            $navIndexInfo.textContent = `${idx + 1}/${filteredList.length}`;
+            $btnPrevSiswa.disabled = (idx === 0);
+            $btnNextSiswa.disabled = (idx === filteredList.length - 1);
+        }
+    }
+
+    $btnPrevSiswa.addEventListener('click', function () {
+        if (!activeId || !filteredList.length) return;
+        const idx = filteredList.findIndex(s => s.id_siswa == activeId);
+        if (idx > 0) {
+            selectSiswa(filteredList[idx - 1].id_siswa);
+            scrollToActiveRow();
+        }
+    });
+
+    $btnNextSiswa.addEventListener('click', function () {
+        if (!activeId || !filteredList.length) return;
+        const idx = filteredList.findIndex(s => s.id_siswa == activeId);
+        if (idx >= 0 && idx < filteredList.length - 1) {
+            selectSiswa(filteredList[idx + 1].id_siswa);
+            scrollToActiveRow();
+        }
+    });
+
+    function scrollToActiveRow() {
+        const row = document.querySelector(`#tblLeftBody tr[data-id="${activeId}"]`);
+        if (row) {
+            row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }
+
     // ============ SELECT SISWA ============
     function selectSiswa(id) {
         activeId = id;
-        document.querySelectorAll('#tblLeftBody tr').forEach(tr => tr.classList.remove('active-row'));
+        document.querySelectorAll('#tblLeftBody tr.active-row').forEach(tr => tr.classList.remove('active-row'));
         const targetRow = document.querySelector(`#tblLeftBody tr[data-id="${id}"]`);
         if (targetRow) targetRow.classList.add('active-row');
         renderDetail(id);
+        updateNavState();
         switchToTab('right');
     }
 
-    // ============ RENDER DETAIL ============
+    // ============ RENDER DETAIL (Clean Modern TailAdmin UI) ============
     function renderDetail(id) {
         const s = allSiswa.find(x => x.id_siswa == id);
         if (!s) return;
@@ -705,135 +845,162 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
         if (s.tk) riwayatPra.push('TK: ' + s.tk);
         const riwayatPraStr = riwayatPra.length ? riwayatPra.join(', ') : '-';
 
-        // Build grouped sections
         const sections = [
             {
                 title: 'Data Pribadi Siswa',
                 icon: 'fa-user',
-                cls: 'sec-personal',
+                badgeCls: 'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400',
                 rows: [
-                    ['Nama Lengkap',          '__DROPDOWN__',          'accent-navy'],
-                    ['Tahun Ajaran',          s.th_pelajaran || '-',   'accent-navy'],
-                    ['NISN',                  s.nisn,                  ''],
-                    ['NIS Lokal',             s.no_pendaftaran,        'accent-green'],
-                    ['NIK Siswa',             s.nik,                   ''],
-                    ['Tempat Lahir',          s.tempat_lahir,          ''],
-                    ['Tanggal Lahir',         formatTgl(s.tgl_lahir),  ''],
-                    ['Jenis Kelamin',          s.jk === 'L' ? 'Laki-laki' : (s.jk === 'P' ? 'Perempuan' : s.jk), ''],
-                    ['Agama',                  s.agama,               ''],
-                    ['Jumlah Saudara',         s.jml_saudara,         ''],
-                    ['Anak Ke',                s.anak_ke,             ''],
-                    ['Cita-Cita',              s.cita,                ''],
-                    ['Hobi',                   s.hobi,                ''],
-                    ['Yang Membiayai Sekolah', 'Orang Tua',           ''],
-                    ['Riwayat PraSekolah',     riwayatPraStr,         ''],
+                    ['Nama Lengkap',          s.nama_lengkap,          true],
+                    ['Tahun Ajaran',          s.th_pelajaran || '-',   false],
+                    ['NISN',                  s.nisn,                  true],
+                    ['NIS Lokal',             s.no_pendaftaran,        true],
+                    ['NIK Siswa',             s.nik,                   false],
+                    ['Tempat Lahir',          s.tempat_lahir,          false],
+                    ['Tanggal Lahir',         formatTgl(s.tgl_lahir),  false],
+                    ['Jenis Kelamin',          s.jk === 'L' ? 'Laki-laki' : (s.jk === 'P' ? 'Perempuan' : s.jk), false],
+                    ['Agama',                  s.agama,               false],
+                    ['Jumlah Saudara',         s.jml_saudara,         false],
+                    ['Anak Ke',                s.anak_ke,             false],
+                    ['Cita-Cita',              s.cita,                false],
+                    ['Hobi',                   s.hobi,                false],
+                    ['Yang Membiayai Sekolah', 'Orang Tua',           false],
+                    ['Riwayat PraSekolah',     riwayatPraStr,         false],
                 ]
             },
             {
                 title: 'Data Keluarga',
                 icon: 'fa-home',
-                cls: 'sec-family',
+                badgeCls: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400',
                 rows: [
-                    ['No. Kartu Keluarga (KK)',  s.no_kk,             'accent-dkgreen'],
-                    ['Nama Kepala Keluarga',     s.kepala_keluarga,   'accent-cyan'],
+                    ['No. Kartu Keluarga (KK)',  s.no_kk,             true],
+                    ['Nama Kepala Keluarga',     s.kepala_keluarga,   false],
                 ]
             },
             {
                 title: 'Data Orang Tua',
                 icon: 'fa-users',
-                cls: 'sec-parents',
+                badgeCls: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400',
                 rows: [
-                    ['Nama Ayah',                s.nama_ayah,           ''],
-                    ['NIK Ayah',                 s.nik_ayah,            'accent-navy'],
-                    ['Tempat Lahir (Ayah)',      s.tempat_lahir_ayah,   ''],
-                    ['Tanggal Lahir (Ayah)',     formatTgl(s.tgl_lahir_ayah), ''],
-                    ['Pendidikan Terakhir Ayah', s.pdd_ayah,            ''],
-                    ['Pekerjaan Utama Ayah',     s.pekerjaan_ayah,      ''],
-                    ['Nama Ibu',                 s.nama_ibu,            'accent-navy'],
-                    ['NIK Ibu',                  s.nik_ibu,             ''],
-                    ['Tempat Lahir (Ibu)',       s.tempat_lahir_ibu,    ''],
-                    ['Tanggal Lahir (Ibu)',      formatTgl(s.tgl_lahir_ibu), ''],
-                    ['Pendidikan Terakhir Ibu',  s.pdd_ibu,             ''],
-                    ['Pekerjaan Utama Ibu',      s.pekerjaan_ibu,       ''],
-                    ['No. Handphone Ortu',       s.no_hp_ortu,          ''],
+                    ['Nama Ayah',                s.nama_ayah,           false],
+                    ['NIK Ayah',                 s.nik_ayah,            false],
+                    ['Tempat Lahir (Ayah)',      s.tempat_lahir_ayah,   false],
+                    ['Tanggal Lahir (Ayah)',     formatTgl(s.tgl_lahir_ayah), false],
+                    ['Pendidikan Terakhir Ayah', s.pdd_ayah,            false],
+                    ['Pekerjaan Utama Ayah',     s.pekerjaan_ayah,      false],
+                    ['Nama Ibu',                 s.nama_ibu,            false],
+                    ['NIK Ibu',                  s.nik_ibu,             false],
+                    ['Tempat Lahir (Ibu)',       s.tempat_lahir_ibu,    false],
+                    ['Tanggal Lahir (Ibu)',      formatTgl(s.tgl_lahir_ibu), false],
+                    ['Pendidikan Terakhir Ibu',  s.pdd_ibu,             false],
+                    ['Pekerjaan Utama Ibu',      s.pekerjaan_ibu,       false],
+                    ['No. Handphone Ortu',       s.no_hp_ortu,          true],
                 ]
             },
             {
                 title: 'Alamat Tempat Tinggal',
                 icon: 'fa-map-marker-alt',
-                cls: 'sec-address',
+                badgeCls: 'bg-teal-50 text-teal-600 dark:bg-teal-500/15 dark:text-teal-400',
                 rows: [
-                    ['Alamat Jalan / Dusun',  s.alamat_siswa,  'accent-navy'],
-                    ['Provinsi',              s.prov,          ''],
-                    ['Kabupaten/Kota',        s.kab,           ''],
-                    ['Kecamatan',             s.kec,           ''],
-                    ['Desa/Kelurahan',        s.desa,          ''],
-                    ['Kode Pos',              s.kode_pos,      ''],
+                    ['Alamat Jalan / Dusun',  s.alamat_siswa,  false],
+                    ['Provinsi',              s.prov,          false],
+                    ['Kabupaten/Kota',        s.kab,           false],
+                    ['Kecamatan',             s.kec,           false],
+                    ['Desa/Kelurahan',        s.desa,          false],
+                    ['Kode Pos',              s.kode_pos,      false],
                 ]
             }
         ];
 
-        let html = '';
+        // Executive Profile Banner
+        const genderColor = s.jk === 'L' ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400' : 'bg-pink-50 text-pink-600 dark:bg-pink-500/15 dark:text-pink-400';
+        const initial = (s.nama_lengkap || 'S').trim().charAt(0).toUpperCase();
+
+        let html = `
+        <div class="mb-5 rounded-2xl border border-gray-200/80 bg-white p-5 shadow-theme-xs dark:border-gray-800 dark:bg-white/[0.03] flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-3.5">
+                <div class="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl ${genderColor} text-lg font-bold shadow-theme-xs ring-2 ring-white dark:ring-gray-800">
+                    ${initial}
+                </div>
+                <div>
+                    <h2 class="text-base sm:text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-tight">${esc(s.nama_lengkap)}</h2>
+                    <div class="flex flex-wrap items-center gap-2 mt-1.5">
+                        <span class="inline-flex items-center gap-1 rounded-md bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-700 dark:bg-brand-500/15 dark:text-brand-300 border border-brand-200/60 dark:border-brand-500/20 tabular-nums">
+                            NISN: ${esc(s.nisn)}
+                        </span>
+                        <span class="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-300 tabular-nums">
+                            No. Daftar: ${esc(s.no_pendaftaran)}
+                        </span>
+                        <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-500/20">
+                            TP ${esc(s.th_pelajaran || '-')}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" class="btn-copy-row !py-2 !px-3" data-copy="${escAttr(s.nama_lengkap)}" title="Salin Nama Lengkap">
+                    <i class="fas fa-copy text-xs"></i>
+                    <span>Salin Nama</span>
+                </button>
+            </div>
+        </div>
+        `;
+
+        // Section Cards
         sections.forEach(sec => {
-            html += `<div class="bio-section">`;
-            html += `<div class="bio-section-title ${sec.cls}"><i class="fas ${sec.icon} text-xs"></i> ${sec.title}</div>`;
-            html += `<div class="bio-section-body">`;
-            sec.rows.forEach(([label, value, accent]) => {
-                const accentClass = accent ? ' ' + accent : '';
-                let valHtml;
-                if (value === '__DROPDOWN__') {
-                    let opts = '';
-                    allSiswa.forEach(x => {
-                        const sel = x.id_siswa == s.id_siswa ? 'selected' : '';
-                        opts += `<option value="${x.id_siswa}" ${sel}>${esc(x.nama_lengkap)}</option>`;
-                    });
-                    valHtml = `<select class="sl-select-nama" id="ddNamaSiswa">${opts}</select>
-                               <button class="btn-copy-row" onclick="window._slCopy('${escAttr(s.nama_lengkap)}')" title="Salin"><i class="fas fa-copy text-[10px]"></i> Salin</button>`;
-                } else {
-                    const display = (value !== null && value !== undefined && value !== '') ? value : '-';
-                    valHtml = `<span class="val-text">${esc(String(display))}</span>
-                               <button class="btn-copy-row" onclick="window._slCopy('${escAttr(String(display))}')" title="Salin"><i class="fas fa-copy text-[10px]"></i> Salin</button>`;
-                }
-                html += `<div class="bio-row${accentClass}">
+            html += `<div class="bio-section">
+                <div class="bio-section-header">
+                    <div class="flex items-center gap-2.5">
+                        <div class="flex h-7 w-7 items-center justify-center rounded-lg ${sec.badgeCls}">
+                            <i class="fas ${sec.icon} text-xs"></i>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-gray-200">${sec.title}</span>
+                    </div>
+                </div>
+                <div class="bio-section-body">`;
+
+            sec.rows.forEach(([label, value, isHighlight]) => {
+                const hlClass = isHighlight ? ' highlight-key' : '';
+                const display = (value !== null && value !== undefined && value !== '') ? value : '-';
+
+                html += `<div class="bio-row${hlClass}">
                     <div class="bio-label">${esc(label)}</div>
-                    <div class="bio-value">${valHtml}</div>
+                    <div class="bio-value">
+                        <span class="val-text font-medium text-gray-900 dark:text-gray-100 tabular-nums">${esc(String(display))}</span>
+                        <button type="button" class="btn-copy-row" data-copy="${escAttr(String(display))}" title="Salin ${escAttr(label)}">
+                            <i class="fas fa-copy text-[10px]"></i>
+                            <span class="copy-label">Salin</span>
+                        </button>
+                    </div>
                 </div>`;
             });
+
             html += `</div></div>`;
         });
 
         $detailContent.innerHTML = html;
-
-        // Bind dropdown sync
-        const dd = document.getElementById('ddNamaSiswa');
-        if (dd) {
-            dd.addEventListener('change', function () {
-                const newId = parseInt(this.value);
-                selectSiswa(newId);
-                const row = document.querySelector(`#tblLeftBody tr[data-id="${newId}"]`);
-                if (row) row.scrollIntoView({ block: 'center', behavior: 'smooth' });
-            });
-        }
     }
+
+    // ============ EVENT DELEGATION FOR DETAIL PANEL COPY BUTTONS ============
+    $detailContent.addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-copy-row');
+        if (btn) {
+            const val = btn.getAttribute('data-copy');
+            if (val && val !== '-') {
+                copyText(val);
+            } else {
+                showToast('Tidak ada data untuk disalin');
+            }
+        }
+    });
 
     function formatTgl(val) {
         if (!val) return '-';
         const d = new Date(val);
-        if (isNaN(d)) return val;
+        if (isNaN(d.getTime())) return val;
         const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
     }
-
-    function escAttr(str) {
-        if (!str) return '';
-        return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    }
-
-    // Global copy function
-    window._slCopy = function (text) {
-        if (text && text !== '-') copyText(text);
-        else showToast('Tidak ada data untuk disalin');
-    };
 
     // ============ SALIN SEMUA (biodata of active student) ============
     document.getElementById('btnSalinSemua').addEventListener('click', function () {
@@ -918,7 +1085,30 @@ html.dark .sl-select-nama:focus { border-color: #60a5fa; box-shadow: 0 0 0 3px r
     let searchTimer = null;
     $search.addEventListener('input', function () {
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(applyFilter, 200);
+        searchTimer = setTimeout(applyFilter, 120);
+    });
+
+    if ($clearSearch) {
+        $clearSearch.addEventListener('click', function () {
+            $search.value = '';
+            applyFilter();
+            $search.focus();
+        });
+    }
+
+    // ============ KEYBOARD NAVIGATION ============
+    window.addEventListener('keydown', function (e) {
+        // Prevent navigating when typing in search or inputs
+        if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+            return;
+        }
+        if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            $btnPrevSiswa.click();
+        } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            $btnNextSiswa.click();
+        }
     });
 
     // ============ MOBILE TABS ============

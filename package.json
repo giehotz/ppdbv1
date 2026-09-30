@@ -7,8 +7,9 @@
     "test": "tests"
   },
   "scripts": {
-    "build:css": "npx @tailwindcss/cli -i src/input.css -o public/css/app.css --minify",
-    "watch:css": "npx @tailwindcss/cli -i src/input.css -o public/css/app.css --watch",
+    "build": "tailwindcss -i src/input.css -o public/css/app.css --minify",
+    "build:css": "tailwindcss -i src/input.css -o public/css/app.css --minify",
+    "watch:css": "tailwindcss -i src/input.css -o public/css/app.css --watch",
     "test:biodata": "node tests/test_biodata_playwright.js"
   },
   "keywords": [],

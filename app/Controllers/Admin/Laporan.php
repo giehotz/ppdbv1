@@ -19,6 +19,26 @@ class Laporan extends BaseController
         $activeTh = $this->laporanModel->getActiveThPelajaran();
         $selectedTh = $this->request->getGet('th_pelajaran') ?? $activeTh;
 
+        $tahunModel = new \App\Models\TahunPelajaranModel();
+        $tahunList  = $tahunModel->orderBy('id_tahun', 'DESC')->findAll();
+
+        if (empty($tahunList)) {
+            $db = \Config\Database::connect();
+            $distinctYears = $db->table('tbl_siswa')
+                ->select('th_pelajaran')
+                ->distinct()
+                ->where('deleted_at', null)
+                ->where('th_pelajaran !=', null)
+                ->orderBy('th_pelajaran', 'DESC')
+                ->get()->getResultArray();
+            foreach ($distinctYears as $dy) {
+                $tahunList[] = [
+                    'tahun_pelajaran' => $dy['th_pelajaran'],
+                    'status'          => ($dy['th_pelajaran'] === $activeTh) ? 'Aktif' : 'Tidak Aktif',
+                ];
+            }
+        }
+
         $data = [
             'statistik'  => $this->laporanModel->getStatistikUmum($selectedTh),
             'kelulusan'  => $this->laporanModel->getKelulusan($selectedTh),
@@ -29,6 +49,7 @@ class Laporan extends BaseController
             'tren'       => $this->laporanModel->getTrenPendaftar($selectedTh),
             'selectedTh' => $selectedTh,
             'activeTh'   => $activeTh,
+            'tahunList'  => $tahunList,
         ];
 
         return view('admin/laporan/index', $data);
