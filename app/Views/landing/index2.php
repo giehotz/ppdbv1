@@ -36,9 +36,16 @@
             --neo-bg: #FFFDF5;
         }
 
+        html {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--neo-bg);
+            overflow-x: hidden;
+            max-width: 100%;
         }
 
         .font-heading {
@@ -187,15 +194,15 @@
                 padding-bottom: 0.5rem !important;
             }
             .navbar-brand-text .school-name {
-                font-size: 0.8rem !important;
-                max-width: 120px;
+                font-size: 0.75rem !important;
+                max-width: 140px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 display: block;
             }
             .navbar-brand-text .school-sub {
-                font-size: 8px !important;
+                font-size: 7.5px !important;
                 letter-spacing: 0.05em !important;
             }
             .navbar-logo {
@@ -203,8 +210,8 @@
                 height: 2.25rem !important;
             }
             .navbar-cta-register {
-                font-size: 0.7rem !important;
-                padding: 0.4rem 0.75rem !important;
+                font-size: 0.75rem !important;
+                padding: 0.35rem 0.65rem !important;
                 border-width: 2px !important;
                 box-shadow: 2px 2px 0px 0px #000 !important;
             }
@@ -221,56 +228,71 @@
 
             /* -- Hero Mobile -- */
             #beranda {
-                padding-top: 2rem !important;
+                padding-top: 1.5rem !important;
                 padding-bottom: 2rem !important;
             }
             #beranda .badge-pill {
-                font-size: 0.6rem !important;
-                padding: 0.35rem 0.75rem !important;
-                margin-bottom: 1rem !important;
+                font-size: 0.65rem !important;
+                padding: 0.3rem 0.65rem !important;
+                margin-bottom: 0.75rem !important;
                 border-width: 2px !important;
                 box-shadow: 2px 2px 0px 0px #000 !important;
             }
             #beranda h1 {
-                font-size: 1.6rem !important;
-                line-height: 1.2 !important;
-                margin-bottom: 1rem !important;
+                font-size: 1.45rem !important;
+                line-height: 1.25 !important;
+                margin-bottom: 0.75rem !important;
+                max-width: 20rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
             }
             #beranda .hero-subheadline {
-                padding: 1rem !important;
+                padding: 0.75rem !important;
                 border-width: 2px !important;
                 box-shadow: 3px 3px 0px 0px #000 !important;
-                margin-bottom: 1.5rem !important;
+                margin-bottom: 1.25rem !important;
+                max-width: 20rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
             }
             #beranda .hero-subheadline p {
-                font-size: 0.8rem !important;
-                line-height: 1.5 !important;
+                font-size: 0.75rem !important;
+                line-height: 1.45 !important;
             }
             .hero-cta-group {
-                gap: 0.75rem !important;
+                gap: 0.5rem !important;
+                max-width: 20rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
             }
             .hero-cta-group .neo-btn {
-                padding: 0.75rem 1rem !important;
-                font-size: 0.85rem !important;
+                padding: 0.55rem 0.5rem !important;
+                font-size: 0.75rem !important;
                 border-width: 2px !important;
-                box-shadow: 3px 3px 0px 0px #000 !important;
-                border-radius: 0.75rem !important;
+                box-shadow: 2.5px 2.5px 0px 0px #000 !important;
+                border-radius: 0.625rem !important;
             }
             .hero-stats-grid {
-                gap: 0.5rem !important;
-                margin-top: 1.5rem !important;
+                gap: 0.4rem !important;
+                margin-top: 1.25rem !important;
+                max-width: 20rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
             }
             .hero-stats-grid > div {
-                padding: 0.5rem !important;
-                border-radius: 0.625rem !important;
+                padding: 0.4rem 0.3rem !important;
+                border-radius: 0.5rem !important;
                 border-width: 2px !important;
                 box-shadow: 2px 2px 0px 0px #000 !important;
             }
             .hero-stats-grid .font-heading {
-                font-size: 1.25rem !important;
+                font-size: 1.15rem !important;
+                line-height: 1.1 !important;
             }
-            .hero-stats-grid .text-xs {
+            .hero-stats-grid .text-xs,
+            .hero-stats-grid [class*="text-[10px]"] {
                 font-size: 0.6rem !important;
+                line-height: 1.2 !important;
             }
 
             /* -- Section Spacing Mobile -- */
@@ -614,7 +636,7 @@
         <div class="container mx-auto px-3 md:px-6 py-1.5 md:py-3 flex items-center justify-between">
 
             <!-- Logo & Brand -->
-            <a href="#" class="flex items-center gap-2 md:gap-3 group min-w-0 shrink-0 whitespace-nowrap">
+            <a href="#" class="flex items-center gap-2 md:gap-3 group min-w-0 shrink">
                 <?php if (!empty($web['logo_sekolah'])): ?>
                     <div class="navbar-logo w-9 h-9 md:w-11 md:h-11 bg-[#FFE600] rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] p-1 flex items-center justify-center group-hover:rotate-6 transition-transform shrink-0">
                         <img src="<?= base_url('uploads/logo/' . $web['logo_sekolah']) ?>" alt="Logo" class="w-full h-full object-contain">
@@ -624,11 +646,11 @@
                         <?= mb_substr(esc($content['navbar']['nama_sekolah'] ?? 'M'), 0, 1) ?>
                     </div>
                 <?php endif; ?>
-                <div class="hidden md:flex flex-col min-w-0 navbar-brand-text">
-                    <span class="school-name font-heading font-black text-sm md:text-xl tracking-tight text-black line-clamp-1 group-hover:text-[#FF6B8B] transition-colors">
+                <div class="flex flex-col min-w-0 navbar-brand-text max-w-[130px] sm:max-w-xs md:max-w-none">
+                    <span class="school-name font-heading font-black text-xs sm:text-sm md:text-xl tracking-tight text-black truncate group-hover:text-[#FF6B8B] transition-colors">
                         <?= esc($content['navbar']['nama_sekolah'] ?? 'MIN 2 Tanggamus') ?>
                     </span>
-                    <span class="school-sub text-[9px] md:text-[10px] font-extrabold uppercase tracking-widest text-gray-600">PPDB Official Portal</span>
+                    <span class="school-sub text-[8px] sm:text-[9px] md:text-[10px] font-extrabold uppercase tracking-widest text-gray-600 truncate">PPDB Official</span>
                 </div>
             </a>
 
@@ -652,16 +674,16 @@
 
             <!-- Action Buttons -->
             <div class="flex items-center gap-1.5 md:gap-3 shrink-0">
-                <a href="<?= base_url('login') ?>" class="inline-flex neo-btn bg-white hover:bg-gray-100 text-black py-1.5 md:py-2 px-3 md:px-5 rounded-xl text-xs md:text-sm shadow-[2px_2px_0px_0px_#000]">
+                <a href="<?= base_url('login') ?>" class="hidden sm:inline-flex neo-btn bg-white hover:bg-gray-100 text-black py-1.5 md:py-2 px-3 md:px-5 rounded-xl text-xs md:text-sm shadow-[2px_2px_0px_0px_#000]">
                     <i class="fas fa-sign-in-alt mr-1 md:mr-2"></i> Login
                 </a>
-                <a href="<?= base_url('auth/register') ?>" class="navbar-cta-register neo-btn bg-[#FFE600] hover:bg-[#FFE600] text-black py-1.5 md:py-2 px-3 md:px-6 rounded-xl text-xs md:text-sm shadow-[2px_2px_0px_0px_#000]">
-                    <i class="fas fa-rocket mr-1 md:mr-2"></i> Daftar
+                <a href="<?= base_url('auth/register') ?>" class="navbar-cta-register inline-flex items-center neo-btn bg-[#FFE600] hover:bg-[#FFE600] text-black py-1.5 md:py-2 px-2.5 md:px-6 rounded-lg md:rounded-xl text-xs md:text-sm font-bold shadow-[2px_2px_0px_0px_#000]">
+                    <i class="fas fa-rocket mr-1 md:mr-2 text-[11px] md:text-xs"></i> <span>Daftar</span>
                 </a>
 
                 <!-- Mobile Menu Toggle -->
-                <button class="lg:hidden p-2 md:p-2.5 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:bg-[#FFE600] transition-all" id="menu-btn" aria-label="Toggle Menu">
-                    <i class="fas fa-bars text-base md:text-lg w-5 text-center"></i>
+                <button class="lg:hidden p-1.5 md:p-2.5 rounded-lg md:rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:bg-[#FFE600] transition-all flex items-center justify-center shrink-0" id="menu-btn" aria-label="Toggle Menu">
+                    <i class="fas fa-bars text-sm md:text-lg w-4 h-4 md:w-5 md:h-5 flex items-center justify-center"></i>
                 </button>
             </div>
         </div>
@@ -736,36 +758,36 @@
                 <?php endif; ?>
 
                 <!-- CTA Buttons -->
-                <div class="hero-cta-group flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto justify-center items-center">
+                <div class="hero-cta-group grid grid-cols-2 sm:flex sm:flex-row gap-2 sm:gap-4 w-full max-w-xs sm:max-w-none sm:w-auto justify-center items-center mx-auto">
                     <a href="<?= esc($content['hero']['cta_link'] ?? base_url('auth/register'), 'attr') ?>"
-                       class="neo-btn bg-[#FFE600] hover:bg-[#FFE600] text-black py-3 md:py-4 px-6 md:px-10 rounded-xl md:rounded-2xl text-base md:text-xl w-full sm:w-auto group">
+                       class="neo-btn bg-[#FFE600] hover:bg-[#FFE600] text-black py-2.5 sm:py-3 md:py-4 px-2.5 sm:px-6 md:px-10 rounded-xl md:rounded-2xl text-xs sm:text-base md:text-xl w-full sm:w-auto group flex items-center justify-center text-center font-black">
                         <span><?= esc($content['hero']['cta_text'] ?? 'Daftar Sekarang') ?></span>
-                        <i class="fas fa-arrow-right ml-2 md:ml-3 group-hover:translate-x-1.5 transition-transform"></i>
+                        <i class="fas fa-arrow-right ml-1 sm:ml-2 md:ml-3 text-[10px] sm:text-sm group-hover:translate-x-1.5 transition-transform"></i>
                     </a>
                     <a href="#syarat"
-                       class="neo-btn bg-white hover:bg-gray-50 text-black py-3 md:py-4 px-6 md:px-8 rounded-xl md:rounded-2xl text-base md:text-xl w-full sm:w-auto">
-                        <i class="fas fa-clipboard-check mr-2 text-[#FF6B8B]"></i>
-                        <span>Cek Persyaratan</span>
+                       class="neo-btn bg-white hover:bg-gray-50 text-black py-2.5 sm:py-3 md:py-4 px-2.5 sm:px-6 md:px-8 rounded-xl md:rounded-2xl text-xs sm:text-base md:text-xl w-full sm:w-auto flex items-center justify-center text-center font-black">
+                        <i class="fas fa-clipboard-check mr-1 sm:mr-2 text-[#FF6B8B] text-[10px] sm:text-sm"></i>
+                        <span>Persyaratan</span>
                     </a>
                 </div>
 
                 <!-- Quick Stats Badges -->
-                <div class="hero-stats-grid grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4 mt-8 md:mt-14 w-full max-w-3xl">
-                    <div class="bg-[#BAE6FD] p-3 md:p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] text-center">
-                        <div class="font-heading font-black text-xl md:text-3xl text-black">A</div>
-                        <div class="text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1">Akreditasi</div>
+                <div class="hero-stats-grid grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-2.5 md:gap-4 mt-5 sm:mt-8 md:mt-14 w-full max-w-xs sm:max-w-md md:max-w-3xl mx-auto">
+                    <div class="bg-[#BAE6FD] p-2 sm:p-3 md:p-4 rounded-lg md:rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000] md:shadow-[3px_3px_0px_0px_#000] text-center">
+                        <div class="font-heading font-black text-base sm:text-xl md:text-3xl text-black leading-tight">A</div>
+                        <div class="text-[9px] sm:text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1 tracking-tight">Akreditasi</div>
                     </div>
-                    <div class="bg-[#BBF7D0] p-3 md:p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] text-center">
-                        <div class="font-heading font-black text-xl md:text-3xl text-black">100%</div>
-                        <div class="text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1">Digital & Cepat</div>
+                    <div class="bg-[#BBF7D0] p-2 sm:p-3 md:p-4 rounded-lg md:rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000] md:shadow-[3px_3px_0px_0px_#000] text-center">
+                        <div class="font-heading font-black text-base sm:text-xl md:text-3xl text-black leading-tight">100%</div>
+                        <div class="text-[9px] sm:text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1 tracking-tight">Digital & Cepat</div>
                     </div>
-                    <div class="bg-[#FED7AA] p-3 md:p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] text-center">
-                        <div class="font-heading font-black text-xl md:text-3xl text-black">Gratis</div>
-                        <div class="text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1">Biaya Formulir</div>
+                    <div class="bg-[#FED7AA] p-2 sm:p-3 md:p-4 rounded-lg md:rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000] md:shadow-[3px_3px_0px_0px_#000] text-center">
+                        <div class="font-heading font-black text-base sm:text-xl md:text-3xl text-black leading-tight">Gratis</div>
+                        <div class="text-[9px] sm:text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1 tracking-tight">Biaya Formulir</div>
                     </div>
-                    <div class="bg-[#FBCFE8] p-3 md:p-4 rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] text-center">
-                        <div class="font-heading font-black text-xl md:text-3xl text-black">24/7</div>
-                        <div class="text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1">Layanan Bantuan</div>
+                    <div class="bg-[#FBCFE8] p-2 sm:p-3 md:p-4 rounded-lg md:rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_#000] md:shadow-[3px_3px_0px_0px_#000] text-center">
+                        <div class="font-heading font-black text-base sm:text-xl md:text-3xl text-black leading-tight">24/7</div>
+                        <div class="text-[9px] sm:text-[10px] md:text-xs font-bold text-black uppercase mt-0.5 md:mt-1 tracking-tight">Bantuan</div>
                     </div>
                 </div>
 
