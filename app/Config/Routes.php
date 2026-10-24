@@ -6,6 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
+$routes->get('pendaftar', 'Pendaftar::index');
 
 // SEO Routes
 $routes->get('robots.txt', 'Seo::robots');
