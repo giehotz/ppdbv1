@@ -26,6 +26,12 @@
             background-color: #111827 !important;
             color: #f3f4f6;
         }
+        html:not(.dark) body {
+            background-color: #ecfdf5 !important;
+        }
+        html:not(.dark) .content-area-siswa {
+            background-color: #ecfdf5 !important;
+        }
     </style>
     <title><?= $this->renderSection('title') ?> - Siswa <?= esc($app_alias ?? 'PPDB') ?></title>
     <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>?v=<?= @filemtime(FCPATH . 'favicon.ico') ?>">
@@ -91,8 +97,8 @@
         });
         $watch('sidebarToggle', val => localStorage.setItem('sidebarToggle', JSON.stringify(val)));
     "
-    :class="darkMode ? 'dark bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-800'"
-    class="font-sans antialiased text-sm h-screen overflow-hidden flex flex-col bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100"
+    :class="darkMode ? 'dark bg-gray-900 text-gray-100' : 'bg-emerald-50 text-gray-800'"
+    class="font-sans antialiased text-sm h-screen overflow-hidden flex flex-col bg-emerald-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100"
 >
 
     <?php
@@ -115,11 +121,16 @@
         ],
         'Informasi & Dokumen' => [
             ['label' => 'Pengumuman',          'icon' => 'bullhorn',        'url' => 'siswa/pengumuman'],
-            ['label' => 'Surat Pernyataan',    'icon' => 'file-contract',   'url' => 'siswa/surat-pernyataan'],
             ['label' => 'Twibbon',             'icon' => 'image',           'url' => 'siswa/twibbon'],
             ['label' => 'Kotak Masuk',         'icon' => 'inbox',           'url' => 'siswa/pesan', 'badge' => $unreadPesan],
         ],
     ];
+
+    if (!isset($webData['tampil_surat_pernyataan']) || $webData['tampil_surat_pernyataan'] == 1) {
+        array_splice($sidebarMenus['Informasi & Dokumen'], 1, 0, [
+            ['label' => 'Surat Pernyataan', 'icon' => 'file-contract', 'url' => 'siswa/surat-pernyataan']
+        ]);
+    }
 
     if (!isset($webData['tampil_pembiayaan_siswa']) || $webData['tampil_pembiayaan_siswa'] == 1) {
         array_unshift($sidebarMenus['Tahapan PPDB'], ['label' => 'Pembiayaan', 'icon' => 'money-bill-wave', 'url' => 'siswa/pembiayaan']);
@@ -170,10 +181,11 @@
             'sekolahName' => $sekolahName,
             'web_logo' => $web_logo ?? null,
             'collapsibleGroups' => ['Tahapan PPDB', 'Informasi & Dokumen'],
+            'sidebarTheme' => 'emerald',
         ]) ?>
 
         <!-- Content Area -->
-        <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
+        <div class="content-area-siswa relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto bg-emerald-50/50 dark:bg-gray-900">
             
             <!-- Impersonation Banner -->
             <?php if (session()->get('impersonator_id')): ?>

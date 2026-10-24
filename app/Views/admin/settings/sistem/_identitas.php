@@ -59,5 +59,21 @@
                 </p>
             </div>
         </div>
+
+        <div class="pt-5 border-t border-gray-200 dark:border-gray-800 flex items-start justify-between gap-6">
+            <div class="flex-1">
+                <p class="text-sm font-bold text-gray-800 dark:text-gray-200">Tampilkan Surat Pernyataan untuk Siswa</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+                    Jika <b>diaktifkan</b>, siswa dapat melihat dan mencetak dokumen Surat Pernyataan Calon Siswa &amp; Wali bermaterai melalui portal siswa. Jika <b>dinonaktifkan</b>, menu dan tombol unduh surat pernyataan akan disembunyikan bagi siswa.
+                </p>
+            </div>
+            <div class="flex-shrink-0">
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="hidden" name="tampil_surat_pernyataan" value="0">
+                    <input type="checkbox" name="tampil_surat_pernyataan" value="1" <?= ($web['tampil_surat_pernyataan'] ?? 1) == 1 ? 'checked' : '' ?> class="sr-only peer" id="toggleSuratPernyataan">
+                    <div class="w-14 h-7 bg-gray-300 dark:bg-gray-600 rounded-full peer-checked:bg-brand-500 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-7 peer-focus:ring-2 peer-focus:ring-brand-500/30"></div>
+                </label>
+            </div>
+        </div>
     </div>
 </div>

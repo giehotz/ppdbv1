@@ -26,6 +26,19 @@ class Dokumen extends BaseController
         $webModel = new TblWebModel();
         $web = $webModel->first() ?? [];
 
+        // Periksa apakah fitur Surat Pernyataan diaktifkan oleh admin
+        if (isset($web['tampil_surat_pernyataan']) && (int) $web['tampil_surat_pernyataan'] === 0) {
+            session()->setFlashdata('warning', 'Fitur Surat Pernyataan sedang dinonaktifkan oleh panitia.');
+            return redirect()->to(base_url('siswa/dashboard'));
+        }
+
+        // Validasi kelengkapan data siswa (harus 100%)
+        $completionData = $siswaModel->calculateCompletionPercentage($siswa);
+        if ($completionData['percentage'] < 100) {
+            session()->setFlashdata('warning', 'Silakan lengkapi biodata pendaftaran hingga 100% untuk dapat mencetak Surat Pernyataan.');
+            return redirect()->to(base_url('siswa/dashboard'));
+        }
+
         $data = [
             'siswa' => $siswa,
             'web'   => $web,

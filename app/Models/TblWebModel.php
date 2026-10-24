@@ -48,6 +48,7 @@ class TblWebModel extends Model
         'seragam_aktif',
         'seragam_fields',
         'tampil_pembiayaan_siswa',
+        'tampil_surat_pernyataan',
         'stepper_aktif',
         'stepper_config',
     ];

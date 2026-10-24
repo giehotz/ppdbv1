@@ -171,6 +171,7 @@ class Settings extends BaseController
             'tgl_tutup_daftar_ulang' => !empty($this->request->getPost('tgl_tutup_daftar_ulang')) ? date('Y-m-d H:i:s', strtotime($this->request->getPost('tgl_tutup_daftar_ulang'))) : null,
             'pesan_daftar_ulang'     => $this->request->getPost('pesan_daftar_ulang'),
             'seragam_aktif'          => $this->request->getPost('seragam_aktif') ?? '1',
+            'tampil_surat_pernyataan'=> $this->request->getPost('tampil_surat_pernyataan') ?? 0,
             'stepper_aktif'          => $this->request->getPost('stepper_aktif') ?? '1',
         ];
 

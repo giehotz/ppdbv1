@@ -449,6 +449,7 @@ $isLockedCard = !($canPrintCard ?? false);
             </p>
 
             <div class="space-y-3">
+                <?php if (($web['tampil_surat_pernyataan'] ?? 1) == 1) : ?>
                 <!-- Doc 1: Surat Pernyataan Bermaterai -->
                 <div class="flex items-center justify-between p-3 rounded-xl border border-gray-200 bg-gray-50/50 hover:bg-gray-50 transition-colors dark:border-gray-800 dark:bg-gray-800/20">
                     <div class="flex items-center gap-3">
@@ -466,6 +467,7 @@ $isLockedCard = !($canPrintCard ?? false);
                         <span>Cetak</span>
                     </a>
                 </div>
+                <?php endif; ?>
 
                 <!-- Doc 2: Formulir Pendaftaran Lengkap -->
                 <div class="flex items-center justify-between p-3 rounded-xl border border-gray-200 bg-gray-50/50 hover:bg-gray-50 transition-colors dark:border-gray-800 dark:bg-gray-800/20">

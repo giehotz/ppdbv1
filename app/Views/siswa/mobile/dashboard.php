@@ -261,6 +261,7 @@
                 <span class="material-symbols-outlined text-gray-400 text-sm">chevron_right</span>
             </a>
 
+            <?php if (($web['tampil_surat_pernyataan'] ?? 1) == 1) : ?>
             <!-- Cetak Surat Pernyataan -->
             <a href="<?= base_url('siswa/surat-pernyataan') ?>" target="_blank" rel="noopener"
                class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">
@@ -273,6 +274,7 @@
                 </div>
                 <span class="material-symbols-outlined text-gray-400 text-sm">chevron_right</span>
             </a>
+            <?php endif; ?>
 
             <!-- WhatsApp Group (Jika Aktif) -->
             <?php if (isset($web['tampil_grup_wa']) && $web['tampil_grup_wa'] == 1 && !empty($web['link_grup_wa'])) : ?>
